@@ -1,12 +1,12 @@
-1.Make it work, then make it better
+## 1.Make it work, then make it better
 
-2.Focus on one main game design
+## 2.Focus on one main game design
 
-3.Replicate a game or make a new one?
+## 3.Replicate a game or make a new one?
 
 ​	Not entirely new though, have to use a game as module
 
-4.The difficulty different types of game
+## 4.The difficulty different types of game
 
 ​	The following types are just used to differ the difficulties
 
@@ -16,7 +16,7 @@
 
 ​	Strategy, simulation: game play design
 
-5.Examples:
+## 5.Examples:
 
 ​	Ori and the Will of the wisps(Action)
 
