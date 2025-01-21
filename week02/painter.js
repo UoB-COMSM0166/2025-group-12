@@ -6,11 +6,20 @@ let helpButtonY = 0;
 let helpButtonWidth = 20;
 let helpButtonLength = 50;
 
+let backgroundR = 255;
+let backgroundG = 255;
+let backgroundB = 255;
+
+let lineR = 0;
+let lineG = 0;
+let lineB = 0;
+
 function setup() {
   
   createCanvas(1400, 700);
-  background(100, 200, 100);
+  background(backgroundR,backgroundG,backgroundB);
   
+  // setup help button
   fill(255,0,0);
   rect(helpButtonX, helpButtonY, helpButtonLength, helpButtonWidth);
   fill(255,255,255);
@@ -18,10 +27,13 @@ function setup() {
 }
 
 function draw() {
-  if(mouseIsPressed && mouseY>100){
-    fill(100,100,200);
-    stroke(255,255,255);
+  if(!keyIsPressed && mouseIsPressed && mouseButton==LEFT && mouseY>100){
+    stroke(lineR, lineG, lineB);
     line(pmouseX, pmouseY, mouseX, mouseY)
+  }else if(mouseIsPressed && mouseButton==LEFT && keyIsPressed && key=='e'){
+    fill(backgroundR,backgroundG,backgroundB);
+    noStroke();
+    circle(mouseX, mouseY, 50);
   }
 }
 
@@ -29,8 +41,10 @@ function mousePressed(){
   if(mouseIsPressed && mouseX<50 && mouseY<50 ){
     
     if(helpTextStatus==false){
-      helpText = createP("Press Alt+S to save.");
-      helpText.position(helpButtonLength + helpButtonX + 10, -10);
+      color(100,0,200);
+      helpText = createP("Press Alt+S to save. Press E+mouseLeft to erase.", 100, 100);
+      //helpText.position(helpButtonLength + helpButtonX + 10, -10);
+      
       helpTextStatus = true;
     }
     else{
@@ -44,5 +58,25 @@ function mousePressed(){
 function keyPressed(){
   if(key == 's' && ALT){
     save("example.jpg");
+  }
+  else if(key == 'R' && ALT){
+    lineR = 255;
+    lineG = 0;
+    lineB = 0;
+  }
+  else if(key == 'G' && ALT){
+    lineR = 0;
+    lineG = 255;
+    lineB = 0;
+  }
+  else if(key == 'B' && ALT){
+    lineR = 0;
+    lineG = 0;
+    lineB = 255;
+  }
+  else if(key == 'K' && ALT){
+    lineR = 0;
+    lineG = 0;
+    lineB = 0;
   }
 }
