@@ -162,8 +162,6 @@ The game features diverse locations, including various rooms in Miller Manor, th
 
 ### 1. **The Last Express**
 
-![image-20250121131632614](/Users/zhengxiaobai/Library/Application Support/typora-user-images/image-20250121131632614.png)
-
 - **Type**: Narrative Puzzle / Interactive Adventure
 - **Overview**: Developed by Jordan Mechner, this game is set aboard the Orient Express in the early 20th century. Players assume the role of American doctor Robert Cath, who uncovers a web of murder, espionage, and international intrigue following the mysterious death of a friend. The game features real-time events and branching narratives, offering a suspenseful and historically rich experience.
 - **Highlights:**
@@ -177,8 +175,6 @@ The game features diverse locations, including various rooms in Miller Manor, th
 
 ### 2. **The Room Series**
 
-![image-20250121131536418](/Users/zhengxiaobai/Library/Application Support/typora-user-images/image-20250121131536418.png)
-
 - **Type**: 3D Puzzle / Object Interaction
 - **Overview**: Created by Fireproof Games, this series focuses on exploration and puzzles. Players manipulate intricate mechanisms and objects to uncover the secrets hidden within rooms. The puzzles are exceptionally well-crafted and logical.
 - **Highlights:**
@@ -190,8 +186,6 @@ The game features diverse locations, including various rooms in Miller Manor, th
 ------
 
 ### 3. **Rusty Lake Series**
-
-![image-20250121131740143](/Users/zhengxiaobai/Library/Application Support/typora-user-images/image-20250121131740143.png)
 
 - **Type**: Narrative Puzzle / Surreal Horror
 - **Overview**: Developed by the Dutch studio Rusty Lake, this series includes free mobile games like *The White Door* and *Cube Escape* as well as premium titles. Combining bizarre narratives with a distinctive art style, the games form a deeply interconnected, eerie world.
