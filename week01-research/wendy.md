@@ -5,7 +5,7 @@ I. game rules
 Basic Rules: Players need to build defense towers to protect the carrot and prevent monsters from reaching the end point from the starting point. The defense towers attack the monsters on the path, gradually reducing their health points. After the monsters are eliminated, players can obtain gold coins, which are used to build or upgrade defense towers.
 Victory Condition: All monsters are eliminated and the carrot is still alive (with ten health points).
 Defeat Condition: The monsters reach the carrot and the carrot's health points are depleted.
-![alt text](image.png)
+![image](images/image.png)
 
 
 II. Architecture Analysis
@@ -14,7 +14,7 @@ Monster Module: Different types of monsters have different speeds, health points
 Defense Tower Module: There are multiple types of towers (such as slowdown towers, area attack towers, single high-damage towers). Towers can be upgraded to increase attack power or range.
 Resource System: Players obtain gold coins by defeating monsters, and the gold coins are used to build and upgrade towers.
 Level Logic: Each level has different waves of monsters, gradually increasing the difficulty.
-![alt text](image-1.png)
+![image-1](images/image-1.png)
 Stage 1: Preparation stage. Players choose the placement positions of towers and formulate strategies.
 Stage 2: Battle stage. Monsters are generated in waves and towers automatically attack monsters.
 Stage 3: Settlement stage. After the player wins or loses, the score and rewards are counted, and the player proceeds to the next level or restarts the challenge.
@@ -34,8 +34,8 @@ Other Characters: The carrot is the target that players need to protect. The car
 II. Architecture Analysis / Turret
 [Here are some links about turret introductions in the game Protect the Carrot 3]
 https://news.4399.com/bwlb3/paota/
-![alt text](image-2.png)
-![alt text](image-3.png)
+![image2](images/image-2.png)
+![image3](images/image-3.png)
 
 
 III. Innovation Points
@@ -89,8 +89,10 @@ Design the right interface and sound to enhance the user experience of your game
 GAME 2
  hero goes down a hundred floors
 https://haiyong.site/moyu/100/#google_vignette
-![alt text](file:///c%3A/Users/lenovo/Documents/WeChat%20Files/wxid_gn0cgvq94b1j22/FileStorage/Temp/1737543618241.jpg)
-![alt text](file:///c%3A/Users/lenovo/Documents/WeChat%20Files/wxid_gn0cgvq94b1j22/FileStorage/Temp/1737543651711.jpg)
+<!---Missing files-->
+<!---![image](file:///c%3A/Users/lenovo/Documents/WeChat%20Files/wxid_gn0cgvq94b1j22/FileStorage/Temp/1737543618241.jpg))-->
+
+<!---![image](file:///c%3A/Users/lenovo/Documents/WeChat%20Files/wxid_gn0cgvq94b1j22/FileStorage/Temp/1737543651711.jpg)-->
 
 I. Overview of the game
 "Is the hero on the next 100 layers" is a vertical fall as the core of the casual game. The player controls the character from the top of the screen, constantly moving down, avoiding various obstacles on the way, successfully through the floor to reach the 100th floor to win
