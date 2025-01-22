@@ -1,3 +1,7 @@
+let canvasLength = 1280;
+let canvasWidth = 720;
+let topBarWidth = 100;
+
 let helpTextStatus = false;
 let helpText;
 
@@ -16,7 +20,7 @@ let lineB = 0;
 
 function setup() {
   
-  createCanvas(1400, 700);
+  createCanvas(canvasLength, canvasWidth);
   background(backgroundR,backgroundG,backgroundB);
   
   // setup help button
@@ -27,7 +31,7 @@ function setup() {
 }
 
 function draw() {
-  if(!keyIsPressed && mouseIsPressed && mouseButton==LEFT && mouseY>100){
+  if(!keyIsPressed && mouseIsPressed && mouseButton==LEFT && mouseY>topBarWidth){
     stroke(lineR, lineG, lineB);
     line(pmouseX, pmouseY, mouseX, mouseY)
   }else if(mouseIsPressed && mouseButton==LEFT && keyIsPressed && key=='e'){
@@ -57,24 +61,24 @@ function mousePressed(){
 
 function keyPressed(){
   if(key == 's' && ALT){
-    save("example.jpg");
+    save(get(0,topBarWidth,canvasLength,canvasWidth - topBarWidth), "example.jpg");
   }
-  else if(key == 'R' && ALT){
+  else if(key == 'r'){
     lineR = 255;
     lineG = 0;
     lineB = 0;
   }
-  else if(key == 'G' && ALT){
+  else if(key == 'g'){
     lineR = 0;
     lineG = 255;
     lineB = 0;
   }
-  else if(key == 'B' && ALT){
+  else if(key == 'b'){
     lineR = 0;
     lineG = 0;
     lineB = 255;
   }
-  else if(key == 'K' && ALT){
+  else if(key == 'k'){
     lineR = 0;
     lineG = 0;
     lineB = 0;
