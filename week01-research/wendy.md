@@ -80,3 +80,28 @@ The draw() function constantly updates the game state to achieve the dynamic eff
 Optimize your code to improve your game's performance and fluency.
 To handle possible errors and exceptions, debug using console.log().
 Design the right interface and sound to enhance the user experience of your game.
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+GAME 2
+ hero goes down a hundred floors
+https://haiyong.site/moyu/100/#google_vignette
+![alt text](file:///c%3A/Users/lenovo/Documents/WeChat%20Files/wxid_gn0cgvq94b1j22/FileStorage/Temp/1737543618241.jpg)
+![alt text](file:///c%3A/Users/lenovo/Documents/WeChat%20Files/wxid_gn0cgvq94b1j22/FileStorage/Temp/1737543651711.jpg)
+
+I. Overview of the game
+"Is the hero on the next 100 layers" is a vertical fall as the core of the casual game. The player controls the character from the top of the screen, constantly moving down, avoiding various obstacles on the way, successfully through the floor to reach the 100th floor to win
+
+II. core mechanism
+Character movement: The player controls the character's left and right movement mainly through gravity sensing or screen swiping. In gravity sensing mode, the keyboard/mouse determines the direction of movement of the character (left and right), ensuring that the character can flexibly avoid obstacles and accurately land in a safe area.
+Floor generation: The game uses a random algorithm to generate floor layouts. The width and spacing of the platform, as well as the location and type of obstacles, vary from level to level. For example, some floors may have narrow platforms or successive combinations of obstacles that require the player to react quickly.
+Collision detection: An accurate collision detection system is key to the game. When the character collides with an obstacle or the edge of a floor, the game determines that the player has failed and triggers the corresponding failure screen and sound effects. The system monitors the relationship between the character's position and the surrounding environment in real time to ensure the accuracy of the game results.
+
+III. Picture and sound design
+Picture style: 2D pixel style or simple cartoon style
+Sound collocation: The falling process accompanied by continuous wind or slight background music. Jumping, colliding, collecting items and other operations have corresponding sound effects
+Speed increase: As the game progresses, the character falls faster and faster.
+Obstacle complexity increases: the number of obstacles in the floor not only increases, but also its distribution and appearance law is more complex. For example, there may be a single stationary obstacle in the beginning, and a moving obstacle, a combination of obstacles, and a sudden appearance of traps in the later stage.
