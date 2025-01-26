@@ -79,7 +79,7 @@ function movePic(){
     let x = img.position().x;
     let y = img.position().y;
     
-    if (yMoveSpeed==0 && keys[32]  && y > 0) {
+    if (yMoveSpeed==0 && keys[UP_ARROW]  && y > 0) {
       yMoveSpeed -= 20;
     }
 
