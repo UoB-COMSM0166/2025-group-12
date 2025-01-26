@@ -13,105 +13,99 @@ let picWidth = 50;
 let xMoveSpeed = 0;
 let xMaxSpeed = 10;
 let yMoveSpeed = 0;
-let yMaxSpeed = 5;
+let yMaxSpeed = 10;
 
 // variable of image
 let img;
 
-// save multiple keys simultaneously 
+// save multiple keys simultaneously
 let keys = {};
+
+// status of the image
+let onGround = true;
 
 function setup() {
   createCanvas(canvasLength, canvasWidth);
-  
-  background(100,100,100);
-  
-  img = createImg('pic.jpg', "pic");
+
+  background(100, 100, 100);
+
+  img = createImg("pic.jpg", "pic");
   img.size(picLength, picWidth);
   img.position(0, canvasWidth - picWidth);
-  img.style('position', 'absolute');
+  img.style("position", "absolute");
 }
 
 function draw() {
   let x = img.position().x;
   let y = img.position().y;
   
-  freeFall();
-  if(keyIsPressed == true){
-    movePic();
-  }
+  setSpeed();
+  movePic();
   
   // reset speed when idle
-  if(x == img.position().x){
+  if (x == img.position().x) {
     xMoveSpeed = 0;
   }
-  if(y == img.position().y){
+  if (y == img.position().y) {
     yMoveSpeed = 0;
   }
-  
 }
 
-function setSpeed(){
+function setSpeed() {
   let x = img.position().x;
-    let y = img.position().y;
-    
-    if (yMoveSpeed==0 && keys[32]  && y > 0) {
-      yMoveSpeed -= 20;
-    }
-
-    if (keys[LEFT_ARROW]  && x > 0) {
-      if(xMoveSpeed < xMaxSpeed){
-        xMoveSpeed++;
-      }
-      x -= xMoveSpeed;
-    }
-    
-    if (keys[RIGHT_ARROW]  && x + picLength < canvasLength) {
-      if(xMoveSpeed < xMaxSpeed){
-        xMoveSpeed++;
-      }
-      x += xMoveSpeed;
-    }
-    img.position(x, y);
-}
-
-function movePic(){
-    let x = img.position().x;
-    let y = img.position().y;
-    
-    if (yMoveSpeed==0 && keys[UP_ARROW]  && y > 0) {
-      yMoveSpeed -= 20;
-    }
-
-    if (keys[LEFT_ARROW]  && x > 0) {
-      if(xMoveSpeed < xMaxSpeed){
-        xMoveSpeed++;
-      }
-      x -= xMoveSpeed;
-    }
-    
-    if (keys[RIGHT_ARROW]  && x + picLength < canvasLength) {
-      if(xMoveSpeed < xMaxSpeed){
-        xMoveSpeed++;
-      }
-      x += xMoveSpeed;
-    }
-    img.position(x, y);
-}
-
-function freeFall(){
   let y = img.position().y;
-  if (y + picWidth >= canvasWidth) { return;}
-      if(yMoveSpeed < yMaxSpeed){
-        yMoveSpeed++;
-      }
-      y += yMoveSpeed;
-    
-  img.position(img.position().x, y);
+  
+  // if left or right arrow is not pressed, gradually reset horizontal speed
+  if(!keys[65] && !keys[68]){
+    if(xMoveSpeed > 0){
+      xMoveSpeed--;
+    }else if(xMoveSpeed < 0){
+      xMoveSpeed++;
+    }
+  }
+  
+  // jump
+  if (onGround == true && keys[87] && y > 0) {
+    yMoveSpeed -= 20;
+    onGround = false;
+  }
+  // free fall
+  if (yMoveSpeed < yMaxSpeed && y + picWidth < canvasWidth) {
+    yMoveSpeed++;
+  }
+  // move left
+  if (keys[65] && -xMoveSpeed < xMaxSpeed && x > 0) {
+    xMoveSpeed--;
+  }
+  // move right
+  if (keys[68] && xMoveSpeed < xMaxSpeed && x + picLength < canvasLength) {
+    xMoveSpeed++;
+  }
+}
+
+function movePic() {
+  let x = img.position().x;
+  let y = img.position().y;
+
+  if (yMoveSpeed > 0 && y + picWidth >= canvasWidth) {
+    y = canvasWidth - picWidth;
+    yMoveSpeed = 0;
+    onGround = true;
+  }
+  
+  if (xMoveSpeed < 0 && x <= 0) {
+    x = 0;
+    xMoveSpeed = 0;
+  }
+  if (xMoveSpeed > 0 && x + picLength >= canvasLength) {
+    x = canvasLength - picLength;
+    xMoveSpeed = 0;
+  }
+  img.position(x + xMoveSpeed, y + yMoveSpeed);
 }
 
 function keyPressed() {
-  keys[keyCode] = true; 
+  keys[keyCode] = true;
 }
 function keyReleased() {
   keys[keyCode] = false;
