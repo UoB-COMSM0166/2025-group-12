@@ -97,3 +97,29 @@ Additionally, all members are encouraged to explore the limitations of using **p
             - Incorporates tower defense mechanics with survival elements and features a collectible creature or resource guidebook.
 
 ---
+
+# Meeting Agenda for Next Week (Update on January 27, 2025)
+
+Currently, there are two proposed game concepts:
+
+1. **Mole Manor (Simulation Game)**: A management simulation game that combines multiple mini-games with mechanics such as **combat, resource accumulation, and resource consumption** through scene switching.
+2. **Tower Defense + Survival (Story-based Game)**: Inspired by *Plants vs. Zombies* with elements from a fantasy creature collection world and a collectible compendium.
+
+### Agenda:
+
+1. Discuss the design style of the games and determine the target player demographics for each concept.
+2. Decide the priority of execution between **Idea 1** and **Idea 2**.
+3. Identify potential technical or design challenges associated with both game concepts.
+4. Define and concretize the two game concepts into detailed projects, including discussions on their respective prototypes (Minimum Viable Product).
+
+### (中文版)
+
+1. **討論遊戲設計風格及玩家定位：**
+    1. 確定兩個遊戲概念的核心設計風格（例如：畫風、世界觀）
+    2. 目標玩家群體：年齡層、遊戲習慣（休閒玩家 vs 策略玩家）、平台（手機 vs PC）
+2. **確定概念優先執行順序：**技術可行性、玩家吸引力
+3. 確定兩個遊戲概念可能出現的具體問題
+4. 確定兩個概念的最小可行性產品（Prototype）的範圍。
+
+---
+
