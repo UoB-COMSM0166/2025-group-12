@@ -1,3 +1,103 @@
+## Meeting Agenda for Next Week (Update on January 29, 2025)
+
+Currently, the team is divided into two groups, each working independently on a Paper Prototype based on the same fundamental game concept.
+
+- Evaluate the two groups' paper prototypes, identify similarities and differences, and determine which design elements should be integrated.
+    - What are the key findings from the prototype testing?
+    - Does the current gameplay design align with the expectations of strategy-oriented players?
+    - Are there any mechanics or design aspects from both prototypes that should be retained or modified?
+    - Is further testing required, or can we proceed directly to digital prototype development?
+- **Discuss the game's world building, narrative themes, and art style.**
+- **Initial planning of the technical requirements for digital development and potential technical challenges.**
+
+### (中文版)
+
+- 目前分為兩組分別進行 Paper Prototype，在同一個遊戲基本概念的基礎上，獨立進行開發，待下次討論後將兩組的結果結果進行分析討論，進一步整合。
+- 針對兩組的紙上原型進行評估，找出異同點，並確定哪些設計要素應該被整合。
+    - 兩組原型測試的主要發現是什麼？
+    - 目前的玩法設計是否符合策略型玩家的預期？
+    - 兩組原型中是否有機制或設計值得保留或修改？
+    - 是否需要進一步測試，或可直接進入數位原型開發？
+- **討論遊戲的世界觀、敘事主題、整體美術風格。**
+- **初步規劃數位開發的技術需求、以及可能遇到的技術困難。**
+
+---
+
+# **Meeting Record January 28, 2025**
+
+## Meeting Agenda
+
+1. Decide the priority of execution between **Idea 1** and **Idea 2**.
+2. Discuss the design style of the games and determine the target player demographics for each concept.
+3. Define and concretize the two-game concepts into detailed projects, including discussions on their respective prototypes (Minimum Viable Product).
+4. Identify potential technical or design challenges associated with both game concepts. (To be examined in detail after the completion of the Paper Prototype.)
+
+## **Discussion Summary**
+
+**1. Game Design Style and Target Audience**
+
+- The team discussed how to integrate the existing two game concepts, focusing on deciding which concept to prioritize for development, identifying the target audience, defining the game style, and determining the core gameplay mechanics.
+- The discussion emphasized defining the **Minimum Viable Product (MVP)** through a **paper prototype**, helping to validate the feasibility of the game development process.
+- The worldview, narrative themes, and art style will be collaboratively edited online using [Google Doc](https://docs.google.com/document/d/1UdnjfAfNBcTixd8yQA9BvX43T0jND-WYGh5WYngCCVc/edit?usp=sharing). Team members are encouraged to integrate elements of interest into the document, which will be reviewed and discussed in the next meeting.
+- **Key Decisions:**
+    1. **Core Gameplay Mechanics:**
+        - Tower defense
+        - Light strategy simulation
+        - Resource accumulation and consumption
+        - Collectible compendium system
+    2. **Target Audience:**
+        - Art style aimed at **teen players (12+)**
+        - Primary focus on **strategy-oriented players**
+    3. **Platform:**
+        - PC
+    4. **Narrative Theme:**
+        - Possible themes such as **environmental conservation and endangered species**
+    5. **Art Style Reference:**
+        - Inspiration from **Mole Manor**
+1. **Priority Execution Order**
+    - The decision on which game concept to prioritize was made based on:
+        1. **Technical Feasibility:** Evaluating which core mechanics are easier to implement within the team's current capabilities.
+        2. **Player Appeal:** Determining which concept aligns better with the identified target audience.
+2. **Prototype Development Plan**
+    - **Objective:** Create a **paper prototype** to confirm feasibility before proceeding with digital implementation.
+    - Dividing the team into two groups, each working independently on a Paper Prototype based on the same fundamental game concept. After the next discussion, the results from both groups will be analyzed and reviewed for further integration.
+    - Define gameplay loops and mechanics.
+    - Develop an initial **flowchart or storyboard** for key game interactions.
+    - Prepare an early-stage prototype for testing and validation.
+
+### **（中文版）**
+
+1. **遊戲設計風格與目標玩家**
+    - 本次討論如何整合現有的兩個遊戲概念，重點關注 **確定優先開發的順序**、**目標玩家**、**遊戲風格** 以及 **核心玩法**。
+    - 討論過程強調透過 **紙上原型（Paper Prototype）** 確認遊戲概念的可行性，進一步回推所需的開發工作。
+    - 世界觀與敘事主題、美術風格，之後以[Google Doc](https://docs.google.com/document/d/1UdnjfAfNBcTixd8yQA9BvX43T0jND-WYGh5WYngCCVc/edit?usp=sharing)進行線上協同編輯，鼓勵各位將有興趣的元素整合到線上，並在下此討論中進行研討。
+    - **關鍵決策：**
+        1. **核心玩法：**
+            - 塔防機制
+            - 輕度策略模擬
+            - 資源累積與消耗
+            - 收集圖鑑系統
+        2. **目標玩家：**
+            - 風格偏向 **青少年（12+）**
+            - 主要針對 **策略型玩家**
+        3. **實現平台：**
+            - PC
+        4. **世界觀與敘事主題：（**待討論）
+            - 可能的主題，如 **環保、瀕危物種**
+        5. **美術風格參考：（**待討論）
+2. **確定概念優先執行順序**
+    - 根據以下兩個因素決定遊戲概念的優先開發順序：
+        1. **技術可行性：** 評估核心玩法在團隊現有技術能力下的可實現性。
+        2. **玩家吸引力：** 確認哪個遊戲概念與目標玩家群體的需求更為匹配。
+3. **紙上原型開發**
+    - **目標：** 透過 **紙上原型（Paper Prototype）** 來確認遊戲的可行性，確保核心機制運作順暢後再進入數位化開發階段。
+    - 目前分為兩組分別進行 Paper Prototype，在同一個遊戲基本概念的基礎上，獨立進行開發，待下次討論後將兩組的結果結果進行分析討論，進一步整合。
+    - 確定遊戲的基本玩法循環（Gameplay Loop）。
+    - 設計主要互動流程的 **流程圖（Flowchart）** 或 **故事板（Storyboard）**。
+    - 準備初步的紙上原型進行測試與驗證。
+
+---
+
 ## Meeting Agenda for Next Week (Update on January 27, 2025)
 
 Currently, there are two proposed game concepts:
@@ -10,7 +110,7 @@ Currently, there are two proposed game concepts:
 1. Discuss the design style of the games and determine the target player demographics for each concept.
 2. Decide the priority of execution between **Idea 1** and **Idea 2**.
 3. Identify potential technical or design challenges associated with both game concepts.
-4. Define and concretize the two game concepts into detailed projects, including discussions on their respective prototypes (Minimum Viable Product).
+4. Define and concretize the two-game concepts into detailed projects, including discussions on their respective prototypes (Minimum Viable Product).
 
 ### (中文版)
 
