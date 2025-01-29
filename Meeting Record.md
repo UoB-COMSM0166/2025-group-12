@@ -91,7 +91,7 @@ Currently, the team is divided into two groups, each working independently on a 
         2. **玩家吸引力：** 確認哪個遊戲概念與目標玩家群體的需求更為匹配。
 3. **紙上原型開發**
     - **目標：** 透過 **紙上原型（Paper Prototype）** 來確認遊戲的可行性，確保核心機制運作順暢後再進入數位化開發階段。
-    - 目前分為兩組分別進行 Paper Prototype，在同一個遊戲基本概念的基礎上，獨立進行開發，待下次討論後將兩組的結果結果進行分析討論，進一步整合。
+    - 目前分為兩組分別進行 Paper Prototype，在同一個遊戲基本概念的基礎上，獨立進行開發，待下次討論後將兩組的結果進行分析討論，進一步整合。
     - 確定遊戲的基本玩法循環（Gameplay Loop）。
     - 設計主要互動流程的 **流程圖（Flowchart）** 或 **故事板（Storyboard）**。
     - 準備初步的紙上原型進行測試與驗證。
