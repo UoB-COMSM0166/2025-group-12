@@ -1,0 +1,6 @@
+class InputHandler {
+    constructor(p){
+        
+    }
+
+}
