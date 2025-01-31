@@ -1,3 +1,51 @@
+# Meeting Record January 30, 2025
+
+- Evaluate the two groups' paper prototypes, identify similarities and differences, and determine which design elements should be integrated.
+- **Discuss the game's world building, narrative themes, and art style.**
+- **Initial planning of the technical requirements for digital development and potential technical challenges.**
+
+## **Discussion Summary:**
+
+The purpose of this discussion was to integrate the two game subplot concepts proposed in the last meeting (meeting records 2025/1/28). The Minimum Viable Product (MVP) will feature a **turn-based strategy** game that centers around plant cultivation and wasteland restoration as its core mechanics.
+
+1. The game is divided into a “Cultivation System” and a “Combat System,” interconnected through a “Reward Mechanism.”
+    - The integration between the cultivation and reward systems, as well as the combat and reward systems, will be simulated and refined during the later stages of development.
+    - The game will adopt a top-down perspective, eliminating the need for an in-game player avatar.
+    1. **Cultivation System:** Serves as the resource accumulation process, focused on restoring degraded lands (referred to as “green zones”). Resources accumulate each turn, forming the foundation for restoring subsequent areas.
+        - Each type of plant corresponds to a specific type of degraded land, necessitating the creation of a detailed plant database.
+    2. **Combat System:** Acts as the primary resource expenditure mechanism, with natural disasters as the adversaries.
+        - Implemented as a turn-based strategy, focusing on defending against natural disasters; enemies are anthropomorphized as disaster-themed creatures.
+2. The game’s success condition is defined by the complete restoration of all degraded areas within the world.
+3. **Software Development:**
+    - The development process will be divided into tasks, which will be reviewed and confirmed in subsequent task overview sessions.
+4. **Control Mechanics:**
+    - Primary interactions via mouse, with keyboard as auxiliary input.
+5. **Art Style:** Inspired by “Ink Wash Painting” (referencing *The Scroll of Rivers and Mountains*).
+6. **Worldbuilding:** Incorporates themes of natural disasters, land restoration, and the principles of elemental interaction.
+7. **Paper Prototype Development:** Once the specific in-game units are finalized, the paper prototype can be initiated.
+
+### (中文)
+
+本次討論為確定上次討論提出（meeting records 2025/1/28）的提出的兩個遊戲支線概念進行整合，目前最小可行性產品確定以**戰棋式回合制**遊戲來實現植物種植與失地復原的遊戲主軸。
+
+1. 遊戲切割為“種植系統”與“戰鬥系統”，這兩個系統，透過“獎勵機制”來實現兩個系統的串聯
+    - 種植系統與獎勵系統的串聯、戰鬥系統與獎勵系統的串聯，等待由後期的調適進行模擬整合
+    - 直接以上帝視角進行遊戲，無需創建遊戲中玩家的投影
+    1. 種植系統扮演：資源累積的過程，已經確定修復的失地（以「綠地」代稱），每個回後能夠累積資源，成為推動下一個區域修復的資源基礎
+        - 每種植物對應著適合的失地屬性 ⇒ 需要建立相關的植物具體細節資料庫
+    2. 戰鬥系統：作為資源消耗的主要原因，敵方為天然災害
+        - 以戰棋回合制實現，主要在抵禦天然災害 ⇒ 敵方這個概念，以災害擬怪化實現
+2. 遊戲的最終成功條件判定為，將世界中所有區域的失地進行修復
+3. 軟體開發：
+    - 將開發軟體開發過程進行任務切割 ⇒ 待進行任務瀏覽確認後
+4. 具體操作細節：
+    - 由滑鼠進行主要操作，鍵盤為輔助操作
+5. 美術風格：《江南百景圖》，水墨風格
+6. 世界觀：包含自然災害、失地修復、以及屬性相剋原理
+7. 紙上原型（Paper Prototype）製作：待遊戲中具體（植物及災害間的關係）單位確認後，即可開始著手進行紙上原型製作
+
+---
+
 ## Meeting Agenda for Next Week (Update on January 29, 2025)
 
 Currently, the team is divided into two groups, each working independently on a Paper Prototype based on the same fundamental game concept.
