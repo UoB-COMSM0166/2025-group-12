@@ -12,7 +12,7 @@ export class Sprite {
         this.vx =0.1;
         this.vy = 0.1;
         this.speed = 0.1;
-        this.maxDistance = 5;
+        this.maxDistance = 3;
         this.showArea = false;
         this.game.p.mouseClicked = () => {
             if(this.showArea == false){
@@ -41,6 +41,7 @@ export class Sprite {
         this.game.p.push();
         this.game.p.fill(255, 0, 0);
         this.game.p.rect(this.x, this.y, this.width, this.height);
+        this.game.p.fill(0, 0, 0);
         this.game.p.text("example sprite", this.x + 5, this.y + 20);
         this.game.p.pop();
     }
