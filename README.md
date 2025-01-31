@@ -1,5 +1,5 @@
 # 2025-group-12
-2025 COMSM0166 group 12
+2025 COMSM0166 group 12 (https://succulent-fedora-3cf.notion.site/18c028ddf64e809da9e4f3fcc03ee99d?v=18c028ddf64e80aaa882000ce3420299)
 
 ## Your Game
 
@@ -12,6 +12,7 @@ Include a demo video of your game here (you don't have to wait until the end, yo
 ## Your Group
 
 Add a group photo here!
+<img src="./images/Group_photo.JPG" style="zoom:50%;" />
 
 Chin Wei Liu, rq24239@bristol.ac.uk, Chin-pro, manager
 
