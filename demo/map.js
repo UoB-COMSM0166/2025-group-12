@@ -1,33 +1,37 @@
 import Tiles from "./tiles.js";
 export default class Map{
-    constructor(gameWidth, gameHeight, p){
-        this.p = p;
-        this.gameWidth = gameWidth;
-        this.gameHeight = gameHeight;
-        this.tilesArray = [];
+    constructor(game){
+        this.game = game;
+        this.tilesArray = new Array(8).fill(null).map(() => new Array(8).fill(null));
         this.initTiles();
     }
 
     update(){
-        this.tilesArray.forEach(t =>{
-            t.update();
+        this.tilesArray.forEach(row =>{
+            row.forEach(cell => {
+                cell.update();
+            })
         })
     }
 
     draw(){
-        this.tilesArray.forEach(t =>{
-            t.draw();
-        });
+        this.tilesArray.forEach(row =>{
+            row.forEach(cell => {
+                cell.draw();
+            })
+        })
     }
+    
     initTiles(){
-        let x = 5;
-        let y = 5;
-        for(let i = 0; i < 64; i++){
-            this.tilesArray.push(new Tiles(x, y,this.p));
-            x += 30;
-            if(x===245){
-                x = 5;
-                y += 30;
+        const startingX = 650;
+        const startingY = 250;
+        const size = 50;
+        const d = 70;
+        for (let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
+                let x = startingX + i * d;
+                let y = startingY + j * d;
+                this.tilesArray[j][i] = new Tiles(this.game, x, y, size);
             }
         }
     }
