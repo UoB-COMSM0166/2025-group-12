@@ -1,13 +1,13 @@
-export class Sprite {
+export class Sprite {  // 人物類別
     constructor(game){
         this.game = game;
-        this.width = 150;
-        this.height = 250;
-        this.x = 500;
-        this.y = this.game.height - this.height;
-        this.vx =0;
-        this.vy = 10;
-        this.maxDistance = 5;
+        this.width = 150;  // 人物高度
+        this.height = 250;  // 人物高度
+        this.x = 500;  // 位置
+        this.y = this.game.height - this.height;  // 位置
+        this.vx =0;  // 速度
+        this.vy = 10;  // 速度
+        this.maxDistance = 5;  // 最大移動距離
         this.canMove = false;
     }
 

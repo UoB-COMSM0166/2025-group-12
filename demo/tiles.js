@@ -1,4 +1,4 @@
-export default class Tiles{
+export default class Tiles{  // 地圖格線
     constructor(game, x, y, size){
         this.game = game;
         this.x = x;
@@ -24,7 +24,10 @@ export default class Tiles{
     }
 
     mouseOver() {
-        if (this.game.p.mouseX > this.x && this.game.p.mouseX < this.x + this.size && this.game.p.mouseY > this.y && this.game.p.mouseY < this.y + this.size) {
+        if (this.game.p.mouseX > this.x && 
+            this.game.p.mouseX < this.x + this.size && 
+            this.game.p.mouseY > this.y && 
+            this.game.p.mouseY < this.y + this.size) {
             return true;
         }
         else {
