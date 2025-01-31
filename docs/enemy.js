@@ -21,7 +21,18 @@ export default class Enemy extends Sprite{
 
 
     mouseClicked() {
-        super.mouseClicked();
-        console.log("Enemy mouseClicked 被调用");
+        if(this.showArea == false){
+            if(this.mouseOver()){
+                this.showValidArea('green');
+                this.showArea = true;
+                this.statusPanel.setStatus(true);
+            }
+
+        }
+        else{
+            this.showValidArea('white');
+            this.showArea = false;
+            this.statusPanel.setStatus(false);
+        }
     }
 }
