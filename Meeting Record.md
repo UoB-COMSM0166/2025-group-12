@@ -58,7 +58,7 @@ Currently, the team is divided into two groups, each working independently on a 
 - **Discuss the game's world building, narrative themes, and art style.**
 - **Initial planning of the technical requirements for digital development and potential technical challenges.**
 
-### (中文版)
+### (中文)
 
 - 目前分為兩組分別進行 Paper Prototype，在同一個遊戲基本概念的基礎上，獨立進行開發，待下次討論後將兩組的結果結果進行分析討論，進一步整合。
 - 針對兩組的紙上原型進行評估，找出異同點，並確定哪些設計要素應該被整合。
@@ -113,7 +113,7 @@ Currently, the team is divided into two groups, each working independently on a 
     - Develop an initial **flowchart or storyboard** for key game interactions.
     - Prepare an early-stage prototype for testing and validation.
 
-### **（中文版）**
+### **（中文）**
 
 1. **遊戲設計風格與目標玩家**
     - 本次討論如何整合現有的兩個遊戲概念，重點關注 **確定優先開發的順序**、**目標玩家**、**遊戲風格** 以及 **核心玩法**。
@@ -160,7 +160,7 @@ Currently, there are two proposed game concepts:
 3. Identify potential technical or design challenges associated with both game concepts.
 4. Define and concretize the two-game concepts into detailed projects, including discussions on their respective prototypes (Minimum Viable Product).
 
-### (中文版)
+### (中文)
 
 1. **討論遊戲設計風格及玩家定位：**
     1. 確定兩個遊戲概念的核心設計風格（例如：畫風、世界觀）
