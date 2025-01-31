@@ -1,6 +1,7 @@
 import Map from "./map.js";
 import InputHandler from "./inputHandler.js";
 import { Sprite } from "./sprite.js"
+import Enemy from "./enemy.js";
 
 let game;
 class Game {
@@ -12,6 +13,8 @@ class Game {
         this.map = new Map(this);
         this.spriteList = [];
         this.spriteList[0] = new Sprite(this);
+        this.enemyList = [];
+        this.enemyList[0] = new Enemy(this);
     }
 
     update() {
@@ -19,13 +22,21 @@ class Game {
         this.spriteList.forEach(s =>{
             s.update();
         });
+        this.enemyList.forEach(e =>{
+            e.update();
+        });
         this.input.update();
+        console.log(this.enemyList);
+        console.log(this.spriteList);
     }
 
     draw() {
         this.map.draw();
         this.spriteList.forEach(s =>{
             s.draw();
+        });
+        this.enemyList.forEach(e =>{
+            e.draw();
         });
     }
 

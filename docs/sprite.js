@@ -1,4 +1,3 @@
-import Map from "./map.js";
 import StatusPanel from "./statusPanel.js";
 
 export class Sprite {
@@ -15,24 +14,9 @@ export class Sprite {
         this.speed = 0.1;
         this.maxDistance = 3;
         this.showArea = false;
-        this.stateusPanel = new StatusPanel(this.game, this);
+        this.statusPanel = new StatusPanel(this.game, this);
         this.currentStatusPanel = false;
-        this.game.p.mouseClicked = () => {
-            if(this.showArea == false){
-                if(this.mouseOver()){
-                    this.showValidArea('green');
-                    this.showArea = true;
-                    this.stateusPanel.setStatus(true);
-                }
-
-            }
-            else{
-                this.moveToNewTiles();
-                this.showValidArea('white');
-                this.showArea = false;
-                this.stateusPanel.setStatus(false);
-            }
-        };
+ 
     }
 
     update() {
@@ -43,7 +27,7 @@ export class Sprite {
     }
 
     draw() {
-        this.stateusPanel.draw();
+        this.statusPanel.draw();
         this.game.p.push();
         this.game.p.fill(255, 0, 0);
         this.game.p.rect(this.x, this.y, this.width, this.height);
@@ -62,7 +46,6 @@ export class Sprite {
     }
 
     showValidArea(color) {
-
             for (let j = 0; j < 8; j++) {
                 for (let i = 0; i < 8; i++) {
                     let dx = (this.position[0] - j) * (this.position[0] - j);
@@ -102,7 +85,24 @@ export class Sprite {
     }
 
     showStatusPanel(){
-        this.stateusPanel.draw();
+        this.statusPanel.draw();
+    }
+
+    mouseClicked(){
+        if(this.showArea == false){
+            if(this.mouseOver()){
+                this.showValidArea('green');
+                this.showArea = true;
+                this.statusPanel.setStatus(true);
+            }
+
+        }
+        else{
+            this.moveToNewTiles();
+            this.showValidArea('white');
+            this.showArea = false;
+            this.statusPanel.setStatus(false);
+        }
     }
 
 }

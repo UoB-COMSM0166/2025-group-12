@@ -12,7 +12,6 @@ export class Sprite {
     }
 
     update(){
-        if()
         // if(this.mouseOver() && this.game.p.mouseIsPressed){
         //     this.canMove = true;
         // }
