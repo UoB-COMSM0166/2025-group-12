@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title></title>
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.1">
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    #controllerBox {
+      margin-left: 10%;
+
+    }
+
+
+    button {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      border-radius: 20px;
+
+    }
+
+
+
+
+    #left {
+      left: 8%;
+      top: 440px;
+    }
+
+
+    #right {
+      left: 40%;
+      top: 440px;
+    }
+
+
+    #up {
+      left: 25%;
+      top: 60%;
+
+    }
+
+
+    #down {
+      left: 25%;
+      top: 80%;
+
+    }
+
+
+
+
+
+
+
+    canvas {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/gh/JcerelusDev/canvas00/Js/canvas-game.min.js"></script>
+  <script type="text/javascript">
+
+    //game main setting
+    var game = new Stage()
+    game.add(game.stage)
+    game.setSize(600, 600)
+    game.setAnimation(15)
+
+
+
+    //player creation
+    var player = new SpriteSheet(0, 4, 51, 71, 100, 50, 32, 32, 0, 0)
+    player.image.src = "allsprite.png"
+
+    //create plane
+    var plane = new Sprite(0, 0, gW, gH, 0, 0, "#888")
+
+
+
+    function drawWorld() {
+      ctx.save()
+
+      ctx.scale(1, 0.5)
+      ctx.rotate(45 * Deg2Rad)
+      plane.drawSprite()
+      ctx.restore()
+
+    }
+
+
+
+
+    game.update = function () {
+
+
+
+    }
+
+
+
+
+    var World = { x: 0, y: 0, width: plane.w, height: plane.h }
+
+    game.render = function () {
+      game.setCam(player)
+      drawWorld()
+      player.drawSpriteSheet()
+
+
+    }
+
+
+
+    //movement with keyboard
+    function move(e) {
+      switch (e.keyCode) {
+        case 37:
+          leftPress = true
+          break;
+        case 38:
+          upPress = true
+          break;
+
+        case 39:
+          rightPress = true
+          break;
+
+        case 40:
+          downPress = true
+
+          break;
+
+
+      }
+
+
+    }
+
+
+    function dontmove(e) {
+      switch (e.keyCode) {
+        case 37:
+          leftPress = false
+
+        case 38:
+          upPress = false
+
+        case 39:
+          rightPress = false
+
+        case 40:
+          downPress = false
+
+
+
+
+      }
+
+
+    }
+
+
+    // movement with screen button
+
+    var controllerBox = document.createElement("div")
+    controllerBox.setAttribute("id", "controllerBox")
+    document.body.appendChild(controllerBox)
+
+    var rightB = document.createElement("button")
+    rightB.setAttribute("id", "right")
+    rightB.innerHTML = "&rArr;"
+
+    var leftB = document.createElement("button")
+    leftB.setAttribute("id", "left")
+    leftB.innerHTML = "&lArr;"
+
+    var downB = document.createElement("button")
+    downB.setAttribute("id", "down")
+    downB.innerHTML = "&dArr;"
+
+    var upB = document.createElement("button")
+    upB.setAttribute("id", "up")
+    upB.innerHTML = "&uArr;"
+
+
+    controllerBox.appendChild(leftB)
+    controllerBox.appendChild(rightB)
+    controllerBox.appendChild(downB)
+    controllerBox.appendChild(upB)
+
+    let rightPress = false
+    let leftPress = false
+    let downPress = false
+    let upPress = false
+
+
+
+    rightB.ontouchstart = function () {
+      rightPress = true
+
+    }
+
+    rightB.ontouchend = function () {
+      rightPress = false
+
+    }
+
+
+
+    leftB.ontouchstart = function () {
+      leftPress = true
+
+    }
+
+    leftB.ontouchend = function () {
+      leftPress = false
+
+    }
+
+
+    downB.ontouchstart = function () {
+      downPress = true
+
+    }
+
+    downB.ontouchend = function () {
+      downPress = false
+
+    }
+
+
+    upB.ontouchstart = function () {
+      upPress = true
+
+    }
+
+    upB.ontouchend = function () {
+      upPress = false
+
+    }
+
+
+
+
+    setInterval(movement, 500 / 3)
+
+
+    function movement() {
+      if (leftPress) {
+        left()
+
+
+
+      }
+
+      if (rightPress) {
+        right()
+
+
+      }
+
+      if (upPress) {
+        up()
+
+
+
+      }
+
+      if (downPress) {
+        down()
+
+
+      }
+
+
+    }
+
+    function left() {
+      player.vx = - 8
+      player.x += player.vx
+      player.row = 5
+      player.col++
+      if (player.col > 2) {
+        player.col = 0
+      }
+
+
+    }
+
+
+    function right() {
+      player.vx = 8
+      player.x += player.vx
+      player.row = 6
+      player.col++
+
+      if (player.col > 2) {
+        player.col = 0
+      }
+
+
+    }
+
+    function up() {
+      player.vy = - 8
+      player.y += player.vy
+      player.row = 7
+      player.col++
+      if (player.col > 2) {
+        player.col = 0
+      }
+
+
+    }
+
+    function down() {
+      player.vy = 8
+      player.y += player.vy
+
+      player.row = 4
+      player.col++
+      if (player.col > 2) {
+        player.col = 0
+      }
+
+    }
+
+
+
+
+    window.onkeydown = move
+    window.onkeyup = dontmove
+
+  </script>
+</body>
+
+</html>
