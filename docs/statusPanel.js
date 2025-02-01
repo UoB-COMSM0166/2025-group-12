@@ -6,26 +6,26 @@ export default class StatusPanel{
         this.y = 20;
         this.width = 500;
         this.height = 300;
-        this.candisplay = false;
+        this.canDisplay = false;
     }
 
     update(){
         
     }
 
-    draw(){
-        if(this.candisplay === true){
-            this.game.p.rect(this.x, this.y, this.width, this.height);
-            this.game.p.push();
-            this.game.p.fill(0, 0, 0);
-            this.game.p.text("ATTACK", this.x + 5, this.y + 20);
-            this.game.p.text("SKILL", this.x + 5, this.y + 40);
-            this.game.p.text("......", this.x + 5, this.y + 60);
-            this.game.p.pop();
+    draw(p5){
+        if(this.canDisplay === true){
+            p5.rect(this.x, this.y, this.width, this.height);
+            p5.push();
+            p5.fill(0, 0, 0);
+            p5.text("ATTACK", this.x + 5, this.y + 20);
+            p5.text("SKILL", this.x + 5, this.y + 40);
+            p5.text("......", this.x + 5, this.y + 60);
+            p5.pop();
         }
     }
 
     setStatus(bool){
-        this.candisplay = bool;
+        this.canDisplay = bool;
     }
 }

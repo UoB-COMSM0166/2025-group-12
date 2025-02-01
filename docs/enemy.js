@@ -9,20 +9,20 @@ export default class Enemy extends Sprite{
         this.y = this.relatedTile.y + this.relatedTile.size / 2 - this.height / 2;
     }
 
-    draw() {
+    draw(p5) {
         this.statusPanel.draw();
-        this.game.p.push();
-        this.game.p.fill(255, 0, 0);
-        this.game.p.rect(this.x, this.y, this.width, this.height);
-        this.game.p.fill(0, 0, 0);
-        this.game.p.text("example ememy", this.x + 5, this.y + 20);
-        this.game.p.pop();
+        p5.push();
+        p5.fill(255, 0, 0);
+        p5.rect(this.x, this.y, this.width, this.height);
+        p5.fill(0, 0, 0);
+        p5.text("example ememy", this.x + 5, this.y + 20);
+        p5.pop();
     }
 
 
     mouseClicked() {
         if(this.showArea == false){
-            if(this.mouseOver()){
+            if(this.mouseOver(this.game.p5)){
                 this.showValidArea('green');
                 this.showArea = true;
                 this.statusPanel.setStatus(true);

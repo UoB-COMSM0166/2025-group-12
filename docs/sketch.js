@@ -3,13 +3,12 @@ import InputHandler from "./inputHandler.js";
 import { Sprite } from "./sprite.js"
 import Enemy from "./enemy.js";
 
-let game;
 class Game {
-    constructor(width, height, p) {
+    constructor(width, height, p5) {
+        this.p5 = p5;
         this.width = width;
         this.height = height;
-        this.p = p;
-        this.input = new InputHandler(this);
+        this.input = new InputHandler(this, this.p5);
         this.map = new Map(this);
         this.spriteList = [];
         this.spriteList[0] = new Sprite(this);
@@ -28,30 +27,32 @@ class Game {
         this.input.update();
     }
 
-    draw() {
-        this.map.draw();
+    draw(p5) {
+        this.map.draw(p5);
         this.spriteList.forEach(s =>{
-            s.draw();
+            s.draw(p5);
         });
         this.enemyList.forEach(e =>{
-            e.draw();
+            e.draw(p5);
         });
     }
 
 
 }
 
-
 const mainSketch = (p) => {
+    //main function here
+    let game = new Game(1920, 1080, p);
+    
     p.setup = () => {
         p.createCanvas(1920, 1080);
-        game = new Game(1920, 1080, p);
     }
     p.draw = () => {
         p.background(128);
         game.update();
-        game.draw();
+        game.draw(p);
     }
 }
 
+//create a p5.js instance
 const p = new p5(mainSketch);

@@ -14,14 +14,15 @@ export default class Map{
         })
     }
 
-    draw(){
+    draw(p5){
         this.tilesArray.forEach(row =>{
             row.forEach(cell => {
-                cell.draw();
+                cell.draw(p5);
             })
         })
     }
     
+    //fill the 2d array
     initTiles(){
         const startingX = 650;
         const startingY = 250;
