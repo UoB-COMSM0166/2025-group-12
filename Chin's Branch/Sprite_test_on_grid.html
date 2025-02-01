@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+    </main>
+    <script>
+        let cols, rows;
+        let spacing = 50;  // 棋盤格大小
+        let playerX = 5, playerY = 5;  // 玩家初始位置
+        let moveRange = 5;
+        let selectedX = -1, selectedY = -1;
+
+        function setup() {
+            createCanvas(800, 800);
+            rectMode(CENTER);
+            cols = width / spacing;
+            rows = height / spacing;
+        }
+
+        function draw() {
+            background(0);
+            updateMousePosition();
+            drawGrid();
+            drawPlayer();  // 繪製玩家
+        }
+
+        // 繪製棋盤
+        function drawGrid() {
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    let isoX = (i - j) * spacing / 2 + width / 2;
+                    let isoY = (i + j) * spacing / 4 + height / 4;
+
+                    let distance = Math.abs(selectedX - i) + Math.abs(selectedY - j);
+                    if (distance <= moveRange) {
+                        fill(0, 255, 0, 150); // 綠色標記可移動區域
+                    } else {
+                        fill(150, 200, 250); // 普通棋盤顏色
+                    }
+
+                    quad(
+                        isoX, isoY,
+                        isoX + spacing / 2, isoY + spacing / 4,
+                        isoX, isoY + spacing / 2,
+                        isoX - spacing / 2, isoY + spacing / 4
+                    );
+                }
+            }
+        }
+
+        // 繪製玩家
+        function drawPlayer() {
+            let isoX = (playerX - playerY) * spacing / 2 + width / 2;
+            let isoY = (playerX + playerY) * spacing / 4 + height / 4;
+
+            fill(255, 0, 0);
+            ellipse(isoX, isoY, spacing * 0.6, spacing * 0.6);
+        }
+
+        // 讀取滑鼠位置
+        function updateMousePosition() {
+            let gridX = Math.round((mouseX - width / 2) / (spacing / 2) + (mouseY - height / 4) / (spacing / 4)) / 2;
+            let gridY = Math.round((mouseY - height / 4) / (spacing / 4) - (mouseX - width / 2) / (spacing / 2)) / 2;
+
+            if (gridX >= 0 && gridX < cols && gridY >= 0 && gridY < rows) {
+                selectedX = gridX;
+                selectedY = gridY;
+            } else {
+                selectedX = -1;
+                selectedY = -1;
+            }
+        }
+
+        // 檢查是否可以移動到 (x, y)
+        function canMove(x, y) {
+            let distance = Math.abs(selectedX - x) + Math.abs(selectedY - y);
+            return distance <= moveRange;
+        }
+
+        // 玩家移動控制
+        function keyPressed() {
+            let newX = playerX;
+            let newY = playerY;
+
+            if (keyCode === LEFT_ARROW || key === 'a') newX--;
+            if (keyCode === RIGHT_ARROW || key === 'd') newX++;
+            if (keyCode === UP_ARROW || key === 'w') newY--;
+            if (keyCode === DOWN_ARROW || key === 's') newY++;
+
+            if (canMove(newX, newY) && newX >= 0 && newX < cols && newY >= 0 && newY < rows) {
+                playerX = newX;
+                playerY = newY;
+            }
+        }
+
+    </script>
+</body>
+
+</html>
