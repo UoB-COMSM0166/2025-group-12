@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+    </main>
+    <!--<script src="Interative_Grid_with_Mouse_location.js"></script>-->
+    <script>
+        let cols; let rows;
+        let spacing = 20;  // 創建的方格間距
+        let size = [];
+
+        // Code to run once at the start of the sketch.
+        function setup() {
+            // 設定畫布範圍為視窗寬度及視窗高度
+            // createCanvas(width, height)
+            // window.innerWidth = 視窗寬度、window.innerHeigh = 視窗高度
+            createCanvas(window.innerWidth, window.innerHeight);
+
+            rectMode(CENTER);  // 每個網格以中心點畫出 => rect(x,y,w,h)：(x,y)為中心點
+
+            // 設定地圖網格數目
+            cols = width / spacing;  // 計算出有幾欄  width = CreateCanvas的畫布寬度
+            rows = height / spacing;  // 計算出有幾列  height = CreateCanvas的畫布高度
+        }
+
+        // Code to run repeatedly.
+        function draw() {
+            background(220);
+
+            // 創建 2D Array：每一個 2D Array 的資料為 滑鼠的座標與方格中心點的距離
+            for (let i = 0; i < cols; i++) {
+                size[i] = [];  // 為每一列創建一個新的陣列
+
+                for (let j = 0; j < rows; j++) {
+                    // 每一個2D陣列的數值為，滑鼠的座標與方格中心點的距離
+                    //     (spacing/2 + i * spacing) 為方格中心的 x座標
+                    //     (spacing/2 + j * spacing) 為方格中心的 y座標
+                    size[i][j] = dist(mouseX, mouseY, spacing / 2 + i * spacing, spacing / 2 + j * spacing);
+//                    size[i][j] = dist(mouseX, mouseY, spacing / 2 + i * spacing, spacing / 2 + j * spacing) * scale;
+                    /*
+                    假設畫布 6×4 的網格，每個方格中心的座標為以下：
+                    ┌───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
+                    │  (50,50)  │ (150,50)  │ (250,50)  │ (350,50)  │ (450,50)  │ (550,50)  │
+                    ├───────────┼───────────├───────────┼───────────┼───────────┼───────────│
+                    │  (50,150) │ (150,150) │ (250,150) │ (350,150) │ (450,150) │ (550,150) │
+                    ├───────────┼───────────├───────────┼───────────┼───────────┼───────────│
+                    │  (50,250) │ (150,250) │ (250,250) │ (350,250) │ (450,250) │ (550,250) │
+                    ├───────────┼───────────├───────────┼───────────┼───────────┼───────────│
+                    │  (50,350) │ (150,350) │ (250,350) │ (350,350) │ (450,350) │ (550,350) │
+                    └───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘
+                    
+                    計算後的 2D Array 為：每個 size[i][j]存儲每個方格中心和滑鼠位置的距離，假設滑鼠位置為 (250,120)
+                    ┌───────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
+                    │  211.91   │  122.07   │   50.99   │  100.80   │  200.12   │  300.45   │
+                    ├───────────┼───────────├───────────┼───────────┼───────────┼───────────│
+                    │  111.80   │   50.99   │   30.22   │   80.55   │  180.87   │  280.33   │
+                    ├───────────┼───────────├───────────┼───────────┼───────────┼───────────│
+                    │    ...    │    ...    │    ...    │    ...    │    ...    │    ...    │
+                    ├───────────┼───────────├───────────┼───────────┼───────────┼───────────│
+                    │    ...    │    ...    │    ...    │    ...    │    ...    │    ...    │
+                    └───────────┴───────────┴───────────┴───────────┴───────────┴───────────┘
+                    */
+                }
+            }
+            
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    //noStroke();
+                    //fill(220);
+                    //  每一個滑鼠坐標中，都動態畫出一個對應的方形
+                    rect(i*spacing, j*spacing, spacing, spacing);  // 靜態網格：方格起始點為 (i*spacing,j*spacing)，方格長寬為（spacing, spacing）
+//                    rect(i * spacing, j * spacing, size[i][j], size[i][j]) ;  
+                    // 動態網格：方格起始點為 (i*spacing,j*spacing)
+                    //         方格長寬為 size[i][j] = dist(mouseX, mouseY, spacing / 2 + i * spacing, spacing / 2 + j * spacing);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
