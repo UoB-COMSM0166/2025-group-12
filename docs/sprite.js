@@ -1,6 +1,6 @@
 import StatusPanel from "./statusPanel.js";
 
-/* sprite is used in game industry for moving character
+/* sprite is used in game industry for moving character.
 passing game for later use.
 */
 export class Sprite {
@@ -67,7 +67,7 @@ export class Sprite {
             }    
     }
 
-    //called in inputHandler when mouse clicked
+    
     moveToNewTiles() {
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
@@ -100,7 +100,7 @@ export class Sprite {
     showStatusPanel(){
         this.statusPanel.draw();
     }
-
+    //called in inputHandler when mouse clicked
     mouseClicked(){
         if(this.showArea == false){
             if(this.mouseOver(this.game.p5)){
