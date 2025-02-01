@@ -1,6 +1,8 @@
 import StatusPanel from "./statusPanel.js";
 
-//main character
+/* sprite is used in game industry for moving character
+passing game for later use.
+*/
 export class Sprite {
     constructor(game) {
         this.game = game;
@@ -20,6 +22,7 @@ export class Sprite {
  
     }
 
+    //default function, update each frame, put all the movement here.
     update() {
         if(this.x != this.relatedTile.x + this.relatedTile.size / 2 - this.width / 2 || this.y != this.relatedTile.y + this.relatedTile.size / 2 - this.height / 2){
             this.x = this.lerp(this.x, this.relatedTile.x + this.relatedTile.size / 2 - this.width / 2, this.speed);
@@ -29,7 +32,7 @@ export class Sprite {
             this.relatedTile.canStand = false;
         }
     }
-
+    //draw the picture on the canvas
     draw(p5) {
         this.statusPanel.draw(p5);
         p5.push();
@@ -40,6 +43,7 @@ export class Sprite {
         p5.pop();
     }
 
+    //detecte if mouse is on the object
     mouseOver(p5) {
         if (p5.mouseX > this.x && p5.mouseX < this.x + this.width && p5.mouseY > this.y && p5.mouseY < this.y + this.height) {
             return true;
@@ -49,6 +53,7 @@ export class Sprite {
         }
     }
 
+    //method for showing area can move to
     showValidArea(color) {
             for (let j = 0; j < 8; j++) {
                 for (let i = 0; i < 8; i++) {
@@ -62,6 +67,7 @@ export class Sprite {
             }    
     }
 
+    //called in inputHandler when mouse clicked
     moveToNewTiles() {
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
