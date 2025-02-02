@@ -1,3 +1,54 @@
+## Meeting Agenda for Next Meeting (Update on February 2, 2025)
+
+- **Video Recording of the Paper Prototype**
+- **Minimum Viable Gameplay (MVG), Scenario Construction, and Defining the Minimum Viable Product (MVP)**
+    - **Use Case Diagram Analysis of Gameplay**
+        - What are the player actions? What are the victory conditions (restoration of degraded land) and failure conditions?
+    - **Reward Mechanism Design**
+        - Utilizing **eco-points** to restore land, unlock new plants and cards?
+        - Balancing card-based mechanics and resource management?
+    - **Detailed Implementation of the Resource and Adventure Systems**
+        - Should there be **technology points, eco-points, or a tech-tree system**?
+        - How should **natural disasters be anthropomorphized**? A list of enemy types and behavior patterns.
+    - **Detailed Design of Game Areas and Scenes**
+    - **Interaction Design for Game Characters**
+        - How to enable player interaction **without an in-game avatar**?
+- **Software Development**
+    - **Discussion of Current Implementations and Required Game Design Components**
+    - **Detailed Task Breakdown**
+    - **Establishing a Development Log**
+- **Further Refinement of the Game’s Worldbuilding**
+    - **Application of the Ink-Wash Art Style**
+        - Should all elements adopt the ink-wash aesthetic?
+        - Can a sample scene be designed as a prototype?
+    - **User Experience (UX) and User Interface (UI) Design**
+- **Tracking the Plant Attribute Database**
+- **Discussion on the Rotation System for the Project Manager (PM)**
+
+### (中文)
+
+1. Paper Prototype的影片拍攝
+2. 遊戲的**最小可行玩法**，構建實現場景，以及確定遊戲的最小產品實現
+    - Use Case Diagram 分析遊戲玩法
+        - 遊戲主角行為？遊戲的勝利條件（失地復綠）與失敗條件？
+    - 獎勵機制的設計：
+        - 使用生态点数修复土地，解锁新的植物和卡牌？
+        - 卡牌與資源管理的平衡性？
+    - 資源、冒險系統的更具體實現
+        - 科技點？生態點？科技樹系統？
+        - 災害如何擬人化的具體實現？敵方類型與行為模式列表
+3. 軟體開發：
+    - 討論目前已實現測試，以及需要的遊戲設計內容？
+    - 任務的具體拆分
+    - 開發日誌建立
+4. 世界觀的進一步具體化
+    - 水墨風格的具體應應用？是否所有元素都使用水墨風格？能否先設計一個場景？
+    - 使用者體驗（前端介面頁面）設計（UI）
+5. 植物屬性資料庫追蹤
+6. 討論PM輪值制度
+
+---
+
 # Meeting Record January 30, 2025
 
 - Evaluate the two groups' paper prototypes, identify similarities and differences, and determine which design elements should be integrated.
