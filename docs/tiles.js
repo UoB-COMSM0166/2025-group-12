@@ -5,12 +5,10 @@ export default class Tiles{
         this.y = y;
         this.size = size;
         this.color = 'white';
-        this.isMouseOver = false;
         this.canStand = true;
     }
     
     update(){
-        this.isMouseOver = this.mouseOver(this.game.p5);
     }
 
     draw(p5){
@@ -30,6 +28,15 @@ export default class Tiles{
         }
         else {
             return false;
+        }
+    }
+
+    highlight(p5){
+        if(this.mouseOver(p5)){
+            this.color = 'yellow';
+        }
+        else{
+            this.color = 'white';
         }
     }
 }

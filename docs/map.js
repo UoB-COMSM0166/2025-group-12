@@ -10,7 +10,8 @@ export default class Map{
         this.tilesArray.forEach(row =>{
             row.forEach(cell => {
                 cell.update();
-            })
+                //cell.highlight(this.game.p5);
+            });
         })
     }
 
@@ -18,7 +19,7 @@ export default class Map{
         this.tilesArray.forEach(row =>{
             row.forEach(cell => {
                 cell.draw(p5);
-            })
+            });
         })
     }
     
