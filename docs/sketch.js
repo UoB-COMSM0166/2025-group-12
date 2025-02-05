@@ -35,6 +35,9 @@ class Game {
         else if(this.scene === 'menu'){
             this.showMenu(p5);
         }
+        else if(this.scene === 'mainPage'){
+            this.showMainPage(p5);
+        }
         else if(this.scene === 'game'){
             this.map.draw(p5);
             this.spriteList.forEach(s =>{
@@ -50,13 +53,12 @@ class Game {
         p5.push();
         p5.textSize(32);
         p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.text("Loading", this.width / 2, this.height / 2 - 40);
-        p5.textSize(20);
-        p5.text("Click to start", this.width / 2, this.height / 2 + 20);
+        //p5.text("Loading", this.width / 2, this.height / 2 - 40);
+        //p5.textSize(20);
+        p5.text("Press any keys", this.width / 2, this.height / 2 + 20);
         p5.pop();
       }
-      
-      // 场景2：游戏界面
+
     showMenu(p5) {
         p5.push();
         p5.textSize(32);
@@ -64,21 +66,40 @@ class Game {
         p5.text("Menu", this.width / 2, this.height / 2);
         p5.pop();
       }
+
+    showMainPage(p5) {
+        p5.push();
+        p5.textSize(32);
+        p5.textAlign(p5.CENTER, p5.CENTER);
+        p5.text("Main page", this.width / 2, this.height / 2);
+        p5.pop();
+      }
 }
 
-const mainSketch = (p) => {
-    //main function here
-    let game = new Game(1920, 1080, p);
-    
-    p.setup = () => {
-        p.createCanvas(1920, 1080);
-    }
-    p.draw = () => {
-        p.background(128);
-        game.update();
-        game.draw(p);
-    }
-}
 
-//create a p5.js instance
-const p = new p5(mainSketch);
+window.addEventListener('load', function(){
+    const loading = document.getElementById('loading');
+    loading.style.display = 'none';
+    const mainSketch = (p) => {
+        //main function here
+        let img;
+        let game = new Game(1920, 1080, p);
+
+        p.preload = () => {
+            img = p.loadImage('tile.png');
+            p.img = img;
+        }
+        
+        p.setup = () => {
+            p.createCanvas(1920, 1080);
+        }
+        p.draw = () => {
+            p.background(128);
+            game.update();
+            game.draw(p);
+        }
+    }
+
+    //create a p5.js instance
+    const p = new p5(mainSketch);
+});

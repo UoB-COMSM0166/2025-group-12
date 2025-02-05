@@ -25,10 +25,10 @@ export default class Map{
     
     //fill the 2d array
     initTiles(){
-        const startingX = 650;
-        const startingY = 250;
+        const startingX = 0;
+        const startingY = 0;
         const size = 50;
-        const d = 70;
+        const d = 1;
         for (let j = 0; j < 8; j++) {
             for (let i = 0; i < 8; i++) {
                 let x = startingX + i * d;

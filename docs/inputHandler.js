@@ -8,12 +8,12 @@ export default class InputHandler {
             if (this.game.scene === "loading") {
                 this.game.scene = "menu";
             } else if (this.game.scene === "menu") {
-                this.game.scene = "game";
+                this.game.scene = "mainPage";
             }
-            // else if(this.game.scene === "game"){
-            //     this.game.scene = 'loading';
-            // }
-            console.log("asg");
+            else if(this.game.scene === "mainPage"){
+                this.game.scene = 'game';
+            }
+            else this.game.scene = 'loading';
         };
     }
 
