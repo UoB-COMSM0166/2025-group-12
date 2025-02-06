@@ -1,3 +1,92 @@
+# Meeting Record February 6, 2025
+
+This discussion primarily focused on analyzing current **user feedback**, finalizing the **visualization of all pre-level-1 game scenes** (addressing any remaining ambiguities), and prioritizing **artistic and narrative styles**.
+
+## **User Feedback Analysis**
+
+1. **Balance of Skill Combinations**
+    
+    Some users raised concerns regarding the **balance of combined skills**, specifically whether certain skill combinations could be overly powerful, leading to a lack of gameplay diversity.**⇒ Decision:** This issue will be tested and adjusted in the **game parameter tuning** phase to prevent imbalance.
+    
+2. **Issues with the Resource System**
+    
+    Users questioned why **seeds do not carry over between levels**, while **plants do**, which seems inconsistent.
+    
+    **Current Design:**
+    
+    - **Seed Acquisition Sources:** Seeds are obtained through **predefined level allocations** and **completion rewards**.
+    - **Fixed Seed Allocation:** Each level starts with a **fixed number of seeds**, but exceptional performance (e.g., achieving a high restoration rate of degraded land) increases the **rewarded seed quantity**, which can then be carried over to the next level.
+    - **Transplanting Mechanic:**
+        1. Transplanting reflects the game’s **continuity**, meaning that players performing well in one level can **store and replant** previously cultivated plants in future levels.
+        2. The incentive for **transplanting over germination** is that **transplanted plants are more efficient** than newly germinated ones.
+        3. The **transferable plant ratio** will be fine-tuned during **parameter adjustments** in later development.
+3. **What Happens if Resources Accumulate Excessively? What Is the Game’s Ultimate Goal?**
+    - As a **single-player game**, the **completion of the narrative progression** marks the end of the game.
+    - Alternative **side endings** may be considered in future expansions, but this will be discussed **after the MVP is completed**.
+    - Having **excessive resources in one level** does not guarantee a **smooth transition to the next level**, but it **may provide an advantage**.
+    - This aspect will also be fine-tuned in the **game parameter balancing phase**.
+4. **Gameplay Depth vs. Complexity**
+    
+    Users found mechanics like **“skill combinations” and “ecosystem interactions”** engaging but potentially **too complex for some players** due to the learning curve.**⇒ Solution:** Introduce a **simple and fundamental** strategy option where players can progress using a straightforward **resource accumulation** approach **without** extensive skill combinations.
+    
+
+## **Worldbuilding and Art Design**
+
+1. **Art Style**
+    - **Pixel art** will be used for **object creation**, while the **scene design** will follow a **post-apocalyptic aesthetic**.
+2. **Narrative & Real-World Integration**
+    - The worldbuilding will incorporate **real-world elements** to encourage **broader player engagement and thought expansion**.
+3. **Next Discussion Focus**
+    - Evaluate **2–3 possible object and scene design combinations** based on **feasibility and implementation complexity** in development.
+
+## **Paper Prototype Video**
+
+A full **pre-level-1 scene demonstration** will be created, covering:
+
+- **Game login → Map selection → First level initiation**
+- Player interactions, tutorial, gameplay mechanics, and object combinations.
+
+## **Updated Game Rules and Scene Adjustments**
+
+## **Minimum Viable Product (MVP) Scope**
+
+The **current MVP goal** is to **fully implement all game scenes** from **game login to the completion of Level 1**.
+
+### (中文)
+
+本次討論主要解析目前獲得的用戶回饋，**將第一關之前的場景的所有具體化呈現**（若尚存有模糊的部分，再行補充），以及美術與敘事風格的排序。
+
+1. 用戶反饋：
+    1. 組合技能的平衡性：有用戶反應技能組合是否會影像遊戲平衡，即組合技能過於強大導致遊戲玩法單一化
+        
+        ⇒ 經討論後，決定在後期**遊戲參數調整**上進行測試，避免次狀況
+        
+    2. 資源系統的問題：為什麼上一關的地圖中，種子無法保留至下一關，但植物可以？難免有些不合理
+        
+        ⇒ 目前遊戲中，種子的獲取來源為：關卡預設、通關獎勵。每一關初始預設的種子數量為固定的，但若通關表現良好，如：失地復綠比例極高，則在該關結算獎勵時，會進一步提高獎勵種子數量，這部分的獎勵是可以帶入下一關卡進行種植的
+        
+        ⇒ 移植的概念，是遊戲中「連續性」的展現，即上一關卡通關表現良好時，玩家可以透過移植的方法，將上一關的植物存儲至資源欄，之後進行使用，使用的誘因是，「移植」比「發芽」要有效率，若無法移植，每次遊戲開始時，皆需要從「零」開始發展。（可移植比例代後期遊戲參數調試決定）
+        
+    3. 若積累的資源特別多，會出現什麼情況？遊戲的結束後的最終目的是？
+        
+        ⇒ 首先，這是一個單機遊戲，因此當遊戲敘事進度完結後，即完成遊戲。（可以考慮安排其他方式的支線結局進行拓展，但待最小可行性產品完成之後再進行討論）
+        
+        ⇒ 若某一關卡，資源累積特別多，並不代表下一關會特別通順，但可能會有優勢，這部分也涉及遊戲參數調試。
+        
+    4. 玩法多元但複雜：「組合技」和「生態系」等玩法有助於提高可玩性，但對於部分玩家而言，學習成本可能略高
+        
+        ⇒ 這部分，可以透過設計一種「簡單且基本」的玩法解決，即有一種遊戲策略無需考慮過多的搭配組合，只需要單存進行資源累積即可完成
+        
+2. 世界觀故事、美術設計：
+    1. 以「像素風」進行物件建立，以「廢土風」進行場景設計
+    2. 世界觀中，可以納入一些現實元素，拓展玩家思維
+    3. 下次討論，2、3種「場景以及物件」設計的組合，在分析開法中實際上能夠實現的完成度
+3. Paper prototype影片：實現遊戲中第一關之前的所有場景，如：遊戲登入⇒選地圖⇒選地圖⇒第一關遊戲，具體涉及玩家互動、新手教程、遊戲玩法、物間之間的組合
+4. 新版遊戲規則、場景更新
+5. 目前最小可行性產品的範圍為：實現從遊戲登入至第一關結束間的所有場景
+
+---
+
 ## Meeting Agenda for Next Meeting (Update on February 2, 2025)
 
 - **Video Recording of the Paper Prototype**
