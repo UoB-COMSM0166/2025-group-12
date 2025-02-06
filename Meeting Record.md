@@ -24,7 +24,8 @@ This discussion primarily focused on analyzing current **user feedback**, finali
     - As a **single-player game**, the **completion of the narrative progression** marks the end of the game.
     - Alternative **side endings** may be considered in future expansions, but this will be discussed **after the MVP is completed**.
     - Having **excessive resources in one level** does not guarantee a **smooth transition to the next level**, but it **may provide an advantage**.
-    - This aspect will also be fine-tuned in the **game parameter balancing phase**.
+        - For instance, players cannot predict whether the next stage will feature plants that are better suited to the new environment. This aspect also involves **game parameter balancing** and can be controlled by **limiting the number of game element updates per level** to regulate inter-level influence
+        - This aspect will also be fine-tuned in the **game parameter balancing phase**.
 4. **Gameplay Depth vs. Complexity**
     
     Users found mechanics like **“skill combinations” and “ecosystem interactions”** engaging but potentially **too complex for some players** due to the learning curve.**⇒ Solution:** Introduce a **simple and fundamental** strategy option where players can progress using a straightforward **resource accumulation** approach **without** extensive skill combinations.
@@ -71,7 +72,7 @@ The **current MVP goal** is to **fully implement all game scenes** from **game l
         
         ⇒ 首先，這是一個單機遊戲，因此當遊戲敘事進度完結後，即完成遊戲。（可以考慮安排其他方式的支線結局進行拓展，但待最小可行性產品完成之後再進行討論）
         
-        ⇒ 若某一關卡，資源累積特別多，並不代表下一關會特別通順，但可能會有優勢，這部分也涉及遊戲參數調試。
+        ⇒ 若某一關卡，資源累積特別多，並不代表下一關會特別通順，但可能會有優勢，如：玩家無法預測下一階段的關卡是否存在更具適性的植物。（這部分也涉及遊戲參數調試，也可透過限制每一關的遊戲元素更新數量來控制關卡之間的互相影響）
         
     4. 玩法多元但複雜：「組合技」和「生態系」等玩法有助於提高可玩性，但對於部分玩家而言，學習成本可能略高
         
