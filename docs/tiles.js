@@ -27,8 +27,8 @@ export default class Tiles {
             this.y = this.matrix(this.sx, this.sy).y;
         }
 
-        if(this.y <= this.matrix(this.sx, this.sy).y - 20){
-            this.y = this.matrix(this.sx, this.sy).y - 20;
+        if(this.y <= this.matrix(this.sx, this.sy).y - 2){
+            this.y = this.matrix(this.sx, this.sy).y - 2;
         }
     }
 
@@ -50,9 +50,13 @@ export default class Tiles {
         if ((Math.abs((p5.mouseX-x0)/(this.width/2)) + Math.abs((p5.mouseY-y0)/(this.height/6))) <= 1){
             return true;
         }
-        else {
-            return false;
-        }
+        return false;
+        // if (p5.mouseX > this.x && p5.mouseX < this.x + this.width && p5.mouseY > this.y && p5.mouseY < this.y + this.height) {
+        //     return true;
+        // }
+        // else {
+        //     return false;
+        // }
         // console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).x);
         // console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).y);
         // const error = 0.005
@@ -77,8 +81,8 @@ export default class Tiles {
     }
 
     matrix(sx, sy) {
-        const offsetX = 850 - this.width;
-        const offsetY = 550;
+        //const offsetX = 850 - this.width;
+        //const offsetY = 550;
         let x, y;
         x = sx * 1 * this.width / 2 + sy * (-1) * this.height / 2;
         y = sx * 0.5 * this.width / 2 + sy * 0.5 * this.height / 2;
@@ -86,9 +90,9 @@ export default class Tiles {
     }
 
     inverseMatrix(sx, sy) {
-        const offsetX = 850 - this.width;
-        const offsetY = 550;
-        sx -=offsetX, sy -=offsetY;
+        //const offsetX = 850 - this.width;
+        //const offsetY = 550;
+        //sx -=offsetX, sy -=offsetY;
         let x, y;
         x = sx / this.width + sy * 2 / this.height;
         y = -sx / this.width + sy * 2 / this.height; 
