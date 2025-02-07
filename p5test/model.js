@@ -1,47 +1,37 @@
-export default class Tiles {
-    // static spriteWidth = 456;
-    // static spriteHeight = 497;
-    // static width = this.spriteWidth /5;
-    // static height = this.spriteHeight /5;
-    constructor(game, sx, sy) {
-        this.game = game;
-        this.p5 = this.game.p5;
+import Inventory from "./inventory.js";
+export default class model {
+    constructor(){
+        this.scene = 'menu';
+        this.board = new Board;
+        this.inventory = new Inventory();
+    }
+
+    setWidth(width){
+        this.width = width;
+    }
+
+    setScene(scene){
+        this.scene = scene;
+    }
+}
+
+
+class Tile {
+    constructor(sx, sy) {
         this.spriteWidth = 456;
         this.spriteHeight = 497;
-        this.width = this.spriteWidth / 5;
-        this.height = this.spriteHeight / 5;
+        this.width = this.spriteWidth / 4;
+        this.height = this.spriteHeight / 4;
         this.sx = sx;
         this.sy = sy;
-
+        this.offsetX = 1920/2 - this.width;
+        this.offsetY = 350;
         this.x = this.matrix(this.sx, this.sy).x;
         this.y = this.matrix(this.sx, this.sy).y;
         this.color = 'white';
         this.canStand = true;
-    }
-
-    update() {
-        if(this.mouseOver(this.p5)){
-            this.y -= 1;
-        }
-        else{
-            this.y = this.matrix(this.sx, this.sy).y
-        }
-
-        if(this.y <= this.matrix(this.sx, this.sy).y - 2){
-            this.y = this.matrix(this.sx, this.sy).y - 2;
-        }
-    }
-
-    draw(p5) {
-        p5.push();
-        p5.fill(this.color);
-
-        p5.image(p5.img, this.x, this.y, this.width, this.height, 0, 0, this.spriteWidth, this.spriteHeight);
-        p5.pop();
-    }
-
-    changeColor(color) {
-        this.color = color;
+        this.isHovered = false;
+        this.isPressed = false;
     }
 
     mouseOver(p5) {
@@ -52,8 +42,6 @@ export default class Tiles {
         // else {
         //     return false;
         // }
-        console.log(p5.mouseX);
-        console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).x);
         // console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).y);
         const error = 0.005
         if (this.inverseMatrix(p5.mouseX, p5.mouseY).x > this.sx&&
@@ -67,21 +55,10 @@ export default class Tiles {
         }
     }
 
-    highlight(p5) {
-        if (this.mouseOver(p5)) {
-            this.color = 'yellow';
-        }
-        else {
-            this.color = 'white';
-        }
-    }
-
     matrix(sx, sy) {
-        //const offsetX = 850 - this.width;
-        //const offsetY = 550;
         let x, y;
-        x = sx * 1 * this.width / 2 + sy * (-1) * this.height / 2;
-        y = sx * 0.5 * this.width / 2 + sy * 0.5 * this.height / 2;
+        x = sx * 1 * this.width / 2 + sy * (-1) * this.height / 2 + this.offsetX;
+        y = sx * 0.5 * this.width / 2 + sy * 0.5 * this.height / 2 + this.offsetY;
         return {x, y};
     }
 
@@ -93,5 +70,33 @@ export default class Tiles {
         x = sx / this.width + sy * 2 / this.height;
         y = -sx / this.width + sy * 2 / this.height; 
         return {x, y};
+    }
+}
+
+class Board{
+    constructor(){
+        this.tilesArray = new Array(8).fill(null).map(() => new Array(8).fill(null));
+        this.initTiles();
+    }
+
+    draw(p5){
+        this.tilesArray.forEach(row =>{
+            row.forEach(cell => {
+                cell.draw(p5);
+            });
+        })
+    }
+    
+    //fill the 2d array
+    initTiles(){
+        const size = 50;
+        const d = 1;
+        for (let j = 0; j < 8; j++) {
+            for (let i = 0; i < 8; i++) {
+                let x = i * d;
+                let y = j * d;
+                this.tilesArray[j][i] = new Tile(x, y, size);
+            }
+        }
     }
 }
