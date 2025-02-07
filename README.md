@@ -34,7 +34,11 @@ Zhenghao Yang, kj24716@bristol.ac.uk, saquantum
 ### Introduction
 
 - 5% ~250 words 
-- Describe your game, what is based on, what makes it novel? 
+- Describe your game, what is based on, what makes it novel?
+
+
+  Our game is turn-based chessboard strategic, focusing on the flexibility and diversity of game strategy, along with resource management. The elements of the game is stacked up gradually, making it easy to understand and learn but hard as the game stages advance since elements are interwined with each other, so player need to raise a good strategy to clear the game. The background story of our game is about reconstructing world of wasteland destroyed by natural disasters. Various vegetation, which grown up from seeds some turns after planting, is our 'chess' to fight against disasters. As plants they are unable to move around on the chessboard, but they can acquire various skills and become stronger once they are cultivated closely to each other to form an ecosystem. When a game stage is cleared, all living plants will be transfered to player's inventory and available for later stages, so player need to carefully plan all movements.
+
 
 ### Requirements 
 
