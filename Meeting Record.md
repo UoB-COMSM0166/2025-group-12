@@ -57,7 +57,7 @@ The **current MVP goal** is to **fully implement all game scenes** from **game l
 
 本次討論主要解析目前獲得的用戶回饋，**將第一關之前的場景的所有具體化呈現**（若尚存有模糊的部分，再行補充），以及美術與敘事風格的排序。
 
-![feedback](images/feedback.jpg)
+<img src="images/feedback.jpg" style="width:500px; height:auto;">
 
 1. 用戶反饋：
     1. 組合技能的平衡性：有用戶反應技能組合是否會影像遊戲平衡，即組合技能過於強大導致遊戲玩法單一化
