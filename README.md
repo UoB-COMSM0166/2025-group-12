@@ -54,7 +54,28 @@ Zhenghao Yang, kj24716@bristol.ac.uk, saquantum
 
 - 15% ~750 words
 
-- Describe implementation of your game, in particular highlighting the three areas of challenge in developing your game. 
+- Describe implementation of your game, in particular highlighting the three areas of challenge in developing your game.
+
+
+Epic:
+  Provide challenge to whom is interested in strategy games
+
+stories & criteria:
+  1. As a new player, I want to change difficulty of the game so that I can understand the game quickly.
+     Given I have no previous strategy game experience, when I play the starting several stages, then I can get use to the gameplay.
+  2. As a hard-core player, I want the game to be joyful and challengable so that I can enjoy the game.
+     Given I have cleared the story mode of the game and fully enjoyed, when I want some extra challenge, then the game provides an infinite mode and other game modes.
+  3. As a freshman in an art-related major, I want to understand how artistic concepts are projected into games so that I can expand the possibilities and scope of my artistic applications.
+  4. As an aesthetically conscious individual without an art background, I want to gain insights into specific art-related knowledge through gameplay experiences so that I can construct my own perspective on artistic systems.
+  5. As an art educator (advocate), I want to introduce the composition of various artistic style elements through multiple platforms so that my audience can concretely understand the practical applications of art.
+
+  6. As a natural plant lover, and I want to have a plant-centered game that provides in-depth and rich plant knowledge, as well as some of the actual plant functions. So I hope the game has a complete and detailed illustration function.
+     Given a extra plant illustrations, when players click each picture, 
+     then it will shows the plant prototype, family, genus, species, suitable planting environment, growth cycle, medicinal value, economic value.
+  7. As an environmental enthusiast, I want the game to simulate real-life planting experiences with diverse environments and climate systems, so that I can experience the challenges and excitement of randomness in plant cultivation.
+     Given a randomized weather system integrated into the game, when a tactical board game starts and a weather condition is randomly selected (e.g., sunny, rainy, windy, drought, frost), 
+     then the selected weather should provide corresponding buffs or debuffs that directly affect the growth attributes of plants in the current game session (e.g., growth speed, health, resilience, or yield).  
+
 
 ### Evaluation
 
