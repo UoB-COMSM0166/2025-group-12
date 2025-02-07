@@ -1,12 +1,12 @@
 import Controller from "./controller.js";
-import Model from "./model.js";
 import View from "./view.js";
 import Map from "./map.js";
+import { ModelList } from "./model.js";
 
 class Game{
     constructor(p5){
         this.p5 = p5;
-        this.model = new Model();
+        this.ModelList = new ModelList();
         this.controller = new Controller(this.model);
         this.view = new View(this.model, this.p5, this.controller);
         this.map = new Map();

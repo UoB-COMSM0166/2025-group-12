@@ -1,7 +1,6 @@
 export default class View {
-    constructor(model, p5, controller) {
-        console.log(p5);
-        this.model = model;
+    constructor(modelList, p5, controller) {
+        this.modelList = modelList;
         this.p5 = p5;
         console.log()
         this.controller = controller;
@@ -48,7 +47,9 @@ export default class View {
     }
 
     drawMenu() {
-        this.startButton.draw(this.p5);
+        this.modelList.menuModel.buttonList.forEach(element => {
+           element.draw(); 
+        });
     }
 
     drawBoard() {
@@ -101,7 +102,7 @@ class Button {
         let pressColor = p5.color(80, 130, 235);
         let buttonColor = this.isPressed ? pressColor : (this.isHovered ? hoverColor : baseColor);
 
-        // shaow
+        // shadow
         p5.drawingContext.shadowBlur = this.isHovered ? 15 : 5;
         p5.drawingContext.shadowColor = p5.color(0, 0, 0, 50);
 

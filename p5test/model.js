@@ -1,9 +1,25 @@
+const Scene = {
+    MENU: "MENU",
+    MAP: "MAP",
+    LEVEL: "LEVEL"
+};
+
 import Inventory from "./inventory.js";
-export default class model {
+import Button from "./button.js";
+
+export class ModelList {
     constructor(){
-        this.scene = 'menu';
-        this.board = new Board;
-        this.inventory = new Inventory();
+        this.menuModel = new MenuModel();
+    }
+}
+
+export default class Model {
+    constructor(){
+        //this.scene = 'menu';
+        this.buttonList = [];
+        //this.board = new Board;
+        //this.inventory = new Inventory();
+
     }
 
     setWidth(width){
@@ -15,6 +31,16 @@ export default class model {
     }
 }
 
+export class MenuModel extends Model {
+    constructor(){
+        super();
+        this.scene = 'menu';
+        this.addButton();
+    }
+    addButton(){
+        this.buttonList[0] = new Button(1920 / 2 - 100/2, 700, 100, 40, "New Game");
+    }
+}
 
 class Tile {
     constructor(sx, sy) {
