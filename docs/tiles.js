@@ -24,7 +24,7 @@ export default class Tiles {
             this.y -= 1;
         }
         else{
-            this.y = this.matrix(this.sx, this.sy).y
+            this.y = this.matrix(this.sx, this.sy).y;
         }
 
         if(this.y <= this.matrix(this.sx, this.sy).y - 20){
@@ -35,7 +35,7 @@ export default class Tiles {
     draw(p5) {
         p5.push();
         p5.fill(this.color);
-
+        //p5.rect(this.x, this.y, this.width, this.height);
         p5.image(p5.img, this.x, this.y, this.width, this.height, 0, 0, this.spriteWidth, this.spriteHeight);
         p5.pop();
     }
@@ -45,25 +45,26 @@ export default class Tiles {
     }
 
     mouseOver(p5) {
-        let temp = this.inverseMatrix(p5.mouseX, p5.mouseY);
-        // if (p5.mouseX > this.x && p5.mouseX < this.x + this.width && p5.mouseY > this.y && p5.mouseY < this.y + this.height) {
-        //     return true;
-        // }
-        // else {
-        //     return false;
-        // }
-        console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).x);
-        console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).y);
-        const error = 0.005
-        if (this.inverseMatrix(p5.mouseX, p5.mouseY).x > this.sx - error&&
-            this.inverseMatrix(p5.mouseX, p5.mouseY).x < this.sx + 1 + error&&
-            this.inverseMatrix(p5.mouseX, p5.mouseY).y > this.sy  - error&&
-            this.inverseMatrix(p5.mouseX, p5.mouseY).y < this.sy + 1 + error){
+        let x0 = this.x + this.width/2;
+        let y0 = this.y + this.height/3;
+        if ((Math.abs((p5.mouseX-x0)/(this.width/2)) + Math.abs((p5.mouseY-y0)/(this.height/6))) <= 1){
             return true;
         }
         else {
             return false;
         }
+        // console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).x);
+        // console.log(this.inverseMatrix(p5.mouseX, p5.mouseY).y);
+        // const error = 0.005
+        // if (this.inverseMatrix(p5.mouseX, p5.mouseY).x > this.sx - error&&
+        //     this.inverseMatrix(p5.mouseX, p5.mouseY).x < this.sx + 1 + error&&
+        //     this.inverseMatrix(p5.mouseX, p5.mouseY).y > this.sy  - error&&
+        //     this.inverseMatrix(p5.mouseX, p5.mouseY).y < this.sy + 1 + error){
+        //     return true;
+        // }
+        // else {
+        //     return false;
+        // }
     }
 
     highlight(p5) {
@@ -79,8 +80,8 @@ export default class Tiles {
         const offsetX = 850 - this.width;
         const offsetY = 550;
         let x, y;
-        x = sx * 1 * this.width / 2 + sy * (-1) * this.height / 2 + offsetX;
-        y = sx * 0.5 * this.width / 2 + sy * 0.5 * this.height / 2 + offsetY;
+        x = sx * 1 * this.width / 2 + sy * (-1) * this.height / 2;
+        y = sx * 0.5 * this.width / 2 + sy * 0.5 * this.height / 2;
         return {x, y};
     }
 

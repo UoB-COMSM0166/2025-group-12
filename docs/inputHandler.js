@@ -5,15 +5,15 @@ export default class InputHandler {
         this.p5.mouseClicked = () => {
             this.game.spriteList[0].mouseClicked();
             this.game.enemyList[0].mouseClicked();
-            if (this.game.scene === "loading") {
-                this.game.scene = "menu";
-            } else if (this.game.scene === "menu") {
-                this.game.scene = "mainPage";
-            }
-            else if(this.game.scene === "mainPage"){
-                this.game.scene = 'game';
-            }
-            else this.game.scene = 'loading';
+            // if (this.game.scene === "loading") {
+            //     this.game.scene = "menu";
+            // } else if (this.game.scene === "menu") {
+            //     this.game.scene = "mainPage";
+            // }
+            // else if(this.game.scene === "mainPage"){
+            //     this.game.scene = 'game';
+            // }
+            // else this.game.scene = 'loading';
         };
     }
 
