@@ -6,6 +6,19 @@ const Scene = {
 
 import Inventory from "./inventory.js";
 import Button from "./button.js";
+//controller and view will response to currentGameState
+class Game {
+    //possible feature to adjust resolution?
+    constructor(width, height){
+        this.width = width;
+        this.height = height;
+        this.gameStates = [new MainMenu(), new Map()];
+        this.currentGameState = this.gameStates[0];
+        this.currentGameState.enter();
+    }
+}
+
+class Contr
 
 export class ModelList {
     constructor(){

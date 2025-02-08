@@ -1,4 +1,4 @@
-import Tile from "./tile.js";
+import Tile from "./plant.js";
 export default class Map{
     constructor(game){
         this.game = game;

@@ -19,4 +19,6 @@ export default class TileView {
     resetColor() {
         this.tile.setColor('white');
     }
+
+    
 }

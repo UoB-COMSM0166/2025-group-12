@@ -7,6 +7,7 @@ export default class Button {
         this.label = label;
         this.isHovered = false;
         this.isPressed = false;
+        this.display = false;
     }
 
     draw(p5) {

@@ -1,18 +1,25 @@
 import Controller from "./controller.js";
 import View from "./view.js";
 import Map from "./map.js";
-import { ModelList } from "./model.js";
-
-class Game{
-    constructor(p5){
+import { MainMenu, HomePage, LevelPage } from "./gameState.js";
+class Game {
+    //possible feature to adjust resolution?
+    constructor(p5, width, height){
         this.p5 = p5;
-        this.ModelList = new ModelList();
-        this.controller = new Controller(this.model);
-        this.view = new View(this.model, this.p5, this.controller);
-        this.map = new Map();
+        this.width = width;
+        this.height = height;
+        this.gameStates = [new MainMenu(), new HomePage(), new LevelPage()];
+        this.view = new View(this, this.p5);
+        this.controller = new Controller(this, this.view);
+        this.currentGameState = this.gameStates[0];
+        //this.currentGameState.enter();
+    }
+
+    setGameState(state){
+        this.currentGameState = this.gameStates[state];
+        //this.currentGameState = enter();
     }
 }
-
 
 const mainSketch = (p) => {
     //main function here
@@ -30,8 +37,8 @@ const mainSketch = (p) => {
     }
     p.draw = () => {
         p.background(255);
-        game.view.paintComponent(p);
-        game.view.inputListener(p);
+        game.view.drawAll(p);
+        game.controller.inputListener(p);
     }
 }
 
