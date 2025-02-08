@@ -9,6 +9,7 @@ export default class View {
         this.game = game;
         this.p5 = p5;
     }
+    //called in the main function
     drawAll() {
         if (this.game.currentGameState === this.game.gameStates[gameStates.MAINMENU]) {
             this.drawMainMenu();

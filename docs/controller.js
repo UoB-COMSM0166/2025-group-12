@@ -1,3 +1,4 @@
+//enum
 const gameStates = {
     MAINMENU: 0,
     HOMEPAGE: 1,
@@ -11,19 +12,6 @@ export default class Controller{
         this.view = view;
     }
     
-    setWidth(){
-        this.game.setWidth(300);
-    }
-
-    setScene(commad){
-        //
-        this.game.setState(commad);
-    }
-
-    tilecontroller(){
-
-    }
-
     inputListener(p5) {
         p5.mousePressed = () => {
             if (this.game.currentGameState === this.game.gameStates[gameStates.MAINMENU]) {
@@ -43,7 +31,7 @@ export default class Controller{
                 }
             }
             else if(this.game.currentGameState === this.game.gameStates[gameStates.LEVELPAGE]){
-                console.log('aggag');
+                
             }
         }
     }
