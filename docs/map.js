@@ -1,4 +1,4 @@
-import Tiles from "./tiles.js";
+import Tile from "./plant.js";
 export default class Map{
     constructor(game){
         this.game = game;
@@ -33,7 +33,7 @@ export default class Map{
             for (let i = 0; i < 8; i++) {
                 let x = startingX + i * d;
                 let y = startingY + j * d;
-                this.tilesArray[j][i] = new Tiles(this.game, x, y, size);
+                this.tilesArray[j][i] = new Tile(x, y);
             }
         }
     }
