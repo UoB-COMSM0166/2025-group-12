@@ -1,3 +1,5 @@
+import Button from "./button.js";
+
 const gameStates = {
     MAINMENU: 0,
     HOMEPAGE: 1,
@@ -7,12 +9,15 @@ const gameStates = {
 class GameState {
     constructor(state){
         this.state = state;
+        this.buttonList = [];
     }
 }
 
 export class MainMenu extends GameState {
     constructor(){
         super('MAINMENU');
+        this.startButton = new Button(1920 / 2 - 100/2, 700, 100, 40, "New Game");
+        this.buttonList[0] = this.startButton;
     }
     enter(){
         
@@ -22,6 +27,10 @@ export class MainMenu extends GameState {
 export class HomePage extends GameState {
     constructor(){
         super('HOMEPAGE');
+        this.startlevelButton = new Button(1920 - 200, 900, 100, 40, "Start level");
+        this.mapButton = new Button(1920 / 2 - 100/2, 400, 500, 500, "Map buttom");
+        this.buttonList[0] = this.startlevelButton;
+        this.buttonList[1] = this.mapButton;
     }
     enter(){
         

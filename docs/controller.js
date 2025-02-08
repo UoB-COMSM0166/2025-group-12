@@ -26,17 +26,24 @@ export default class Controller{
 
     inputListener(p5) {
         p5.mousePressed = () => {
-            if (this.view.startButton.checkClick()) {
-                this.game.setGameState(gameStates.HOMEPAGE);
+            if (this.game.currentGameState === this.game.gameStates[gameStates.MAINMENU]) {
+                if (this.game.currentGameState.startButton.checkClick()) {
+                    this.game.setGameState(gameStates.HOMEPAGE);
+                }
             }
-            if (this.view.startlevelButton.checkClick()) {
-                this.game.setGameState(gameStates.LEVELPAGE);
+            else if(this.game.currentGameState === this.game.gameStates[gameStates.HOMEPAGE]){
+                if(this.game.currentGameState.mapButton.checkClick()) {
+                    this.game.currentGameState.startlevelButton.display = true;
+                }
+                else{
+                    this.game.currentGameState.startlevelButton.display = false;
+                }
+                if (this.game.currentGameState.startlevelButton.checkClick()) {
+                    this.game.setGameState(gameStates.LEVELPAGE);
+                }
             }
-            if(this.view.mapButton.checkClick()) {
-                this.view.startlevelButton.display = true;
-            }
-            else{
-                this.view.startlevelButton.display = false;
+            else if(this.game.currentGameState === this.game.gameStates[gameStates.LEVELPAGE]){
+                console.log('aggag');
             }
         }
     }

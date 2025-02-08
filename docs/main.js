@@ -12,7 +12,7 @@ class Game {
         this.view = new View(this, this.p5);
         this.controller = new Controller(this, this.view);
         this.currentGameState = this.gameStates[0];
-        //this.currentGameState.enter();
+       // this.currentGameState.enter();
     }
 
     setGameState(state){

@@ -42,7 +42,8 @@ export default class Button {
     checkClick() {
         if (this.isHovered) {
             this.isPressed = true;
-            setTimeout(() => this.isPressed = false, 100); // 模拟按下效果
+            //simulate the effect of pressing
+            setTimeout(() => this.isPressed = false, 100);
             return true;
         }
         return false;
