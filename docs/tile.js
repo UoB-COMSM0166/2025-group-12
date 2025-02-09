@@ -14,24 +14,17 @@ export class Tile {
         this.canStand = true;
         this.isHovered = false;
         this.isPressed = false;
+        this.item = [];
     }
 
     mouseOver(p5) {
-        if (p5.mouseX > this.x && p5.mouseX < this.x + this.width && p5.mouseY > this.y && p5.mouseY < this.y + this.height) {
+        let x0 = this.x + this.width/2;
+        let y0 = this.y + this.height/3;
+        //if mouse is in the diamond?
+        if ((Math.abs((p5.mouseX - x0)/(this.width/2)) + Math.abs((p5.mouseY-y0)/(this.height/6))) <= 1){
             return true;
         }
-        else {
-            return false;
-        }
-        if (this.inverseMatrix(p5.mouseX, p5.mouseY).x > this.sx&&
-            this.inverseMatrix(p5.mouseX, p5.mouseY).x < this.sx + 1&&
-            this.inverseMatrix(p5.mouseX, p5.mouseY).y > this.sy&&
-            this.inverseMatrix(p5.mouseX, p5.mouseY).y < this.sy + 1){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return false;
     }
 
     matrix(sx, sy) {

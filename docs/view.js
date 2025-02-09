@@ -25,6 +25,7 @@ export default class View {
     drawMainMenu() {
         this.game.currentGameState.buttonList.forEach(element => {
             element.draw(this.p5);
+
         });
     }
 
@@ -39,6 +40,9 @@ export default class View {
                 this.p5.push();
                 this.p5.image(this.p5.img, cell.x, cell.y, cell.width, cell.height,
                     0, 0, cell.spriteWidth, cell.spriteHeight);
+                if(cell.item[0]){
+                    this.p5.rect(cell.item[0].x, cell.item[0].y, cell.item[0].width, cell.item[0].height);
+                }
                 this.p5.pop();
             });
         });
@@ -50,10 +54,17 @@ export default class View {
         if(this.game.currentGameState.startlevelButton.display === true){
             this.game.currentGameState.startlevelButton.draw(this.p5);
         }
-        this.drawInventory();
+        //this.drawInventory();
     }
 
     drawInventory(){
-        this.p5.rect(1700, 200, 200, 700);
+        this.p5.rect(this.game.inventory.x, this.game.inventory.y, this.game.inventory.width, this.game.inventory.height);
+        this.game.inventory.plantList.forEach(element => {
+            element.draw(this.p5);
+        });
+    }
+
+    drawTile(tile){
+        this.p5.image(this.p5.img, tile.x, tile.y, tile.width)
     }
 }

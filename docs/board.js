@@ -10,7 +10,7 @@ export class Board{
             row.forEach(cell => {
                 cell.draw(p5);
             });
-        })
+        });
     }
     
     //fill the 2d array

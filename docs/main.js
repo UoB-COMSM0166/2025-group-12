@@ -1,7 +1,7 @@
 import Controller from "./controller.js";
 import View from "./view.js";
-import Map from "./map.js";
 import { MainMenu, HomePage, LevelPage } from "./gameState.js";
+import Inventory from "./inventory.js";
 class Game {
     //possible feature to adjust resolution?
     constructor(p5, width, height){
@@ -10,8 +10,9 @@ class Game {
         this.height = height;
         this.gameStates = [new MainMenu(), new HomePage(), new LevelPage()];
         this.view = new View(this, this.p5);
-        this.controller = new Controller(this, this.view);
-        this.currentGameState = this.gameStates[0];
+        this.controller = new Controller(this.p5, this, this.view);
+        this.currentGameState = this.gameStates[2];
+        this.inventory = new Inventory();
        // this.currentGameState.enter();
     }
 
@@ -23,7 +24,7 @@ class Game {
 
 const mainSketch = (p) => {
     //main function here
-    let game = new Game(p);
+    let game = new Game(p, 1920, 1080);
 
     p.preload = () => {
         let img = p.loadImage('tile.png');

@@ -1,11 +1,8 @@
-export default class Plant {
-    constructor(x, y) {
-        this.spriteWidth = 456;
-        this.spriteHeight = 497;
-        this.width = this.spriteWidth / 5;
-        this.height = this.spriteHeight / 5;
+export class Plant {
+    constructor(x, y){
         this.x = x;
         this.y = y;
+        this.width = 80;
+        this.height = 80;
     }
-    
 }

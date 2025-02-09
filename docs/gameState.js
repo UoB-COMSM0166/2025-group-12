@@ -2,6 +2,7 @@
 
 import Button from "./button.js";
 import { Board } from "./board.js";
+
 const gameStates = {
     MAINMENU: 0,
     HOMEPAGE: 1,
@@ -19,6 +20,7 @@ export class MainMenu extends GameState {
     constructor(){
         super('MAINMENU');
         this.startButton = new Button(1920 / 2 - 100/2, 700, 100, 40, "New Game");
+        console.log(this.startButton);
         this.buttonList[0] = this.startButton;
     }
     enter(){
@@ -44,6 +46,8 @@ export class LevelPage extends GameState {
     constructor(){
         super('LEVELAPGE');
         this.board = new Board();
+        this.plantList = [];
+        this.canPlant = false;
     }
     enter(){
         
