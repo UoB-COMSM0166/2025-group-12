@@ -2,8 +2,8 @@ export class Tile {
     constructor(sx, sy) {
         this.spriteWidth = 456;
         this.spriteHeight = 497;
-        this.width = this.spriteWidth / 4;
-        this.height = this.spriteHeight / 4;
+        this.width = this.spriteWidth / 3;
+        this.height = this.spriteHeight / 3;
         this.sx = sx;
         this.sy = sy;
         this.offsetX = 1920/2 - this.width;

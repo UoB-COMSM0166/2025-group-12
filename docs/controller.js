@@ -36,14 +36,10 @@ export default class Controller {
                 this.game.inventory.plantList.forEach(element => {
                     if(element.checkClick()){
                         this.game.currentGameState.canPlant = true;
-                        this.p5.push();
-                        this.p5.fill(255);
-                        this.p5.textSize(18);
-                        this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
-                        this.p5.text("canPlant", 1000, 500);
-                        this.p5.pop();
                     }
-
+                    else{
+                        this.game.currentGameState.canPlant = false;
+                    }
                 });
                 
                 if(this.game.currentGameState.canPlant === true){
@@ -60,6 +56,10 @@ export default class Controller {
                     
                 }
 
+                if(this.game.currentGameState.roundButton.checkClick() && this.game.currentGameState.round < this.game.currentGameState.maxRound){
+                    this.game.currentGameState.round += 1;
+                    this.game.currentGameState.roundButton.label = "Round " + this.game.currentGameState.round  + " / " + this.game.currentGameState.maxRound;
+                }
             }
         }
     }

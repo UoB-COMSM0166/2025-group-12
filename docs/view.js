@@ -14,10 +14,10 @@ export default class View {
         if (this.game.currentGameState === this.game.gameStates[gameStates.MAINMENU]) {
             this.drawMainMenu();
         }
-        else if(this.game.currentGameState === this.game.gameStates[gameStates.HOMEPAGE]){
+        else if (this.game.currentGameState === this.game.gameStates[gameStates.HOMEPAGE]) {
             this.drawHomePage();
         }
-        else if(this.game.currentGameState === this.game.gameStates[gameStates.LEVELPAGE]){
+        else if (this.game.currentGameState === this.game.gameStates[gameStates.LEVELPAGE]) {
             this.drawLevelPage();
         }
     }
@@ -32,6 +32,7 @@ export default class View {
     drawLevelPage() {
         this.drawBoard();
         this.drawInventory();
+        this.drawRound();
     }
 
     drawBoard() {
@@ -40,7 +41,7 @@ export default class View {
                 this.p5.push();
                 this.p5.image(this.p5.img, cell.x, cell.y, cell.width, cell.height,
                     0, 0, cell.spriteWidth, cell.spriteHeight);
-                if(cell.item[0]){
+                if (cell.item[0]) {
                     this.p5.rect(cell.item[0].x, cell.item[0].y, cell.item[0].width, cell.item[0].height);
                 }
                 this.p5.pop();
@@ -48,23 +49,27 @@ export default class View {
         });
     }
 
-    drawHomePage(){
+    drawHomePage() {
         this.p5.image(this.p5.map, 0, 0, 1920, 1080);
         this.game.currentGameState.mapButton.draw(this.p5);
-        if(this.game.currentGameState.startlevelButton.display === true){
+        if (this.game.currentGameState.startlevelButton.display === true) {
             this.game.currentGameState.startlevelButton.draw(this.p5);
         }
         //this.drawInventory();
     }
 
-    drawInventory(){
+    drawInventory() {
         this.p5.rect(this.game.inventory.x, this.game.inventory.y, this.game.inventory.width, this.game.inventory.height);
         this.game.inventory.plantList.forEach(element => {
             element.draw(this.p5);
         });
     }
 
-    drawTile(tile){
+    drawTile(tile) {
         this.p5.image(this.p5.img, tile.x, tile.y, tile.width)
+    }
+
+    drawRound() {
+        this.game.currentGameState.roundButton.draw(this.p5);
     }
 }
