@@ -36,17 +36,30 @@ export class PlayBoard {
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
         this.tmpInventoryItems = null;
+
+        // round counter
+        this.round = 1;
+        this.maxRound = 10;
     }
 
     /* public methods */
 
     setup(p5) {
-        p5.createCanvas(this.canvasX, this.canvasY);
-
         let escapeButton = new Button(10, 10, 100, 50, "Escape");
         escapeButton.onClick = () => {this.gameState.setState(stateCode.STANDBY);};
         this.buttons.push(escapeButton);
-    }
+
+        // round button
+        let roundButton = new Button(this.canvasX/2 - 100, 10, 200, 50, `round ${this.round} in ${this.maxRound}`);
+        roundButton.onClick = () => {
+            this.round++;
+            roundButton.text = `round ${this.round} in ${this.maxRound}`;
+            if(this.round === this.maxRound){
+                this.gameState.setState(stateCode.STANDBY);
+            }
+        }
+        this.buttons.push(roundButton);
+    }flag
 
     handleScroll(event) {
         PlayBoard.inventory.handleScroll(event);
@@ -56,15 +69,20 @@ export class PlayBoard {
         // clicked inventory, then click a cell
         if(PlayBoard.inventory.selectedItem !== null){
             let index = this.mouse2CellIndex(p5);
+            let clickedCell = false;
             // if a cell is clicked, update this.cellColors.
             if (index[0] !== -1) {
                 let row = index[0];
                 let col = index[1];
                 this.cellColors.set(`${row},${col}`, PlayBoard.inventory.selectedItem);
                 console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
+                clickedCell = true;
             }
             // clear inventory's selected item
-            PlayBoard.inventory.itemDecreament();
+            if(clickedCell){
+                PlayBoard.inventory.itemDecreament();
+                return;
+            }
         }
         // handle inventory clicks later to prevent unintentional issues
         PlayBoard.inventory.handleClick(p5);

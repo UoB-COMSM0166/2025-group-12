@@ -6,9 +6,6 @@ new p5((p) => {
 
     p.preload = preloader;
 
-    // record mouse status to prevent redundant clicks
-    let prevMousePressed = false;
-
     let controller = new Controller();
 
     p.setup = () => {
@@ -21,19 +18,13 @@ new p5((p) => {
         controller.scrollListener(event);
     }
 
+    p.mouseClicked = () => {
+        controller.clickListener(p);
+    }
     p.draw = () => {
         p.background(100, 100, 100);
 
         // replace following tmp view handling later
         controller.view(p);
-
-        // handle mouse actions
-        if (p.mouseIsPressed && !prevMousePressed) {
-             controller.clickListener(p);
-        }
-        
-
-        // set mouse status to prevent redundant clicks
-        prevMousePressed = p.mouseIsPressed;
     };
 });
