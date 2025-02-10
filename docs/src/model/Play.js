@@ -62,7 +62,7 @@ export class PlayBoard {
             // clear inventory's selected item
             PlayBoard.inventory.selectedItem = null;
         }
-        // handle select item later to prevent redundant selection
+        // handle inventory clicks later to prevent unintentional issues
         PlayBoard.inventory.handleClick(p5);
 
         // click any button
@@ -70,7 +70,7 @@ export class PlayBoard {
             button.mouseClick(p5);
         }
 
-        // click any grid cell
+        // click any grid cell to display info box
         this.clickCells(p5);
     }
 

@@ -17,6 +17,10 @@ new p5((p) => {
         controller.setup(p);
     };
 
+    p.mouseWheel = (event) => {
+        controller.scrollListener(event);
+    }
+
     p.draw = () => {
         p.background(100, 100, 100);
 
@@ -27,9 +31,7 @@ new p5((p) => {
         if (p.mouseIsPressed && !prevMousePressed) {
              controller.clickListener(p);
         }
-        p.mouseWheel = (event) => {
-            controller.scrollListener(event);
-        }
+        
 
         // set mouse status to prevent redundant clicks
         prevMousePressed = p.mouseIsPressed;
