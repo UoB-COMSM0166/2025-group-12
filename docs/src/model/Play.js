@@ -32,6 +32,10 @@ export class PlayBoard {
 
         // mimic plants on grid cells
         this.cellColors = new Map();
+
+        // to store the items at the start of each stage,
+        // so when you quit we can reset inventory
+        this.tmpInventoryItems = null;
     }
 
     /* public methods */
@@ -40,7 +44,7 @@ export class PlayBoard {
         p5.createCanvas(this.canvasX, this.canvasY);
 
         let escapeButton = new Button(10, 10, 100, 50, "Escape");
-        escapeButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
+        escapeButton.onClick = () => {this.gameState.setState(stateCode.STANDBY);};
         this.buttons.push(escapeButton);
     }
 
@@ -60,7 +64,7 @@ export class PlayBoard {
                 console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
             }
             // clear inventory's selected item
-            PlayBoard.inventory.selectedItem = null;
+            PlayBoard.inventory.itemDecreament();
         }
         // handle inventory clicks later to prevent unintentional issues
         PlayBoard.inventory.handleClick(p5);
@@ -116,6 +120,12 @@ export class PlayBoard {
 
     }
 
+    resetBoard(){
+        this.selectedCell = [];
+        this.cellColors = new Map();
+        this.tmpInventoryItems = null;
+    }
+
     /* below can be treated as black box */
 
     drawGrid(p5){
@@ -166,9 +176,9 @@ export class PlayBoard {
     mouse2CellIndex(p5){
         // edges of the grid under old grid-centered coordinates
         let leftEdge   =-(this.gridSize * this.cellWidth) / 2;
-        let rightEdge  =(this.gridSize * this.cellWidth) / 2;
+        let rightEdge  = (this.gridSize * this.cellWidth) / 2;
         let topEdge    =-(this.gridSize * this.cellHeight) / 2;
-        let bottomEdge =(this.gridSize * this.cellHeight) / 2;
+        let bottomEdge = (this.gridSize * this.cellHeight) / 2;
 
         // mouse position under old grid-centered coordinates
         let oldMouseX = this.oldCoorX(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);

@@ -73,4 +73,36 @@ export class Inventory {
         console.log("cleared item");
     }
 
+    // invoke this function when an item from inventory is placed to playing board
+    itemDecreament(){
+        if(this.selectedItem === null || !this.items.has(this.selectedItem)){
+            return;
+        }
+        
+        // update data
+        let value  = this.items.get(this.selectedItem) - 1;
+        if(value == 0){
+            this.items.delete(this.selectedItem);    
+        }else{
+            this.items.set(this.selectedItem, value);
+        }
+        this.selectedItem = null;
+    }
+
+    // store inventory items
+    saveInventory(){
+        let tmpItems = new Map();
+        for (let [key, value] of this.items.entries()) {
+            tmpItems.set(key, value);
+        }
+        return tmpItems;
+    }
+
+    // load saved inventory items
+    loadInventory(tmpItems){
+        this.items = new Map();
+        for (let [key, value] of tmpItems.entries()) {
+            this.items.set(key, value);
+        }
+    }
 }
