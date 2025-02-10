@@ -25,7 +25,10 @@ new p5((p) => {
 
         // handle mouse actions
         if (p.mouseIsPressed && !prevMousePressed) {
-             controller.actionListener(p);
+             controller.clickListener(p);
+        }
+        p.mouseWheel = (event) => {
+            controller.scrollListener(event);
         }
 
         // set mouse status to prevent redundant clicks

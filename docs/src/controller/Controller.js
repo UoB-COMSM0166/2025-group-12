@@ -21,10 +21,18 @@ export class Controller {
         }
     }
 
-    actionListener(p5) {
+    clickListener(p5) {
         let currentMenu = this.menus[this.gameState.getState()];
         if (currentMenu && currentMenu.handleClick) {
             currentMenu.handleClick(p5);
+        }
+
+    }
+
+    scrollListener(event){
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleScroll) {
+            currentMenu.handleScroll(event);
         }
     }
 

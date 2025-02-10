@@ -29,7 +29,9 @@ export class PlayBoard {
 
         // information block
         this.selectedCell = [];
-        this.cellColors = {};
+
+        // mimic plants on grid cells
+        this.cellColors = new Map();
     }
 
     /* public methods */
@@ -42,55 +44,76 @@ export class PlayBoard {
         this.buttons.push(escapeButton);
     }
 
+    handleScroll(event) {
+        PlayBoard.inventory.handleScroll(event);
+    }
+
     handleClick(p5) {
-
-        let centeredMouseX = p5.mouseX - this.canvasX / 2;
-        let centeredMouseY = p5.mouseY - this.canvasY / 2;
-
-        PlayBoard.inventory.handleClick(p5, this.canvasX, this.canvasY);
-
-        if (PlayBoard.inventory.selectedItem) {
-            let col = Math.floor((centeredMouseX + (this.gridSize * this.cellWidth) / 2) / this.cellWidth);
-            let row = this.gridSize - 1 - Math.floor((centeredMouseY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
-
-            this.cellColors[`${row},${col}`] = PlayBoard.inventory.selectedItem.color;
+        // clicked inventory, then click a cell
+        if(PlayBoard.inventory.selectedItem !== null){
+            let index = this.mouse2CellIndex(p5);
+            // if a cell is clicked, update this.cellColors.
+            if (index[0] !== -1) {
+                let row = index[0];
+                let col = index[1];
+                this.cellColors.set(`${row},${col}`, PlayBoard.inventory.selectedItem);
+                console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
+            }
+            // clear inventory's selected item
             PlayBoard.inventory.selectedItem = null;
         }
+        // handle select item later to prevent redundant selection
+        PlayBoard.inventory.handleClick(p5);
 
+        // click any button
         for (let button of this.buttons) {
             button.mouseClick(p5);
         }
+
+        // click any grid cell
         this.clickCells(p5);
     }
 
     draw(p5) {
         p5.background(200);
+
+        // draw stage grid
         this.drawGrid(p5);
 
+        // all buttons
         for (let button of this.buttons) {
             button.draw(p5);
         }
 
+        // left bottom corner info box
         if (this.selectedCell.length !== 0) {
             this.drawInfoBox(p5);
         }
 
         // Draw placed cell colors
-        for (let key in this.cellColors) {
+        for (let [key, value] of this.cellColors.entries()) {
             let [row, col] = key.split(",").map(Number);
-            let x = (col * this.cellWidth) - (this.gridSize * this.cellWidth) / 2;
-            let y = (row * this.cellHeight) - (this.gridSize * this.cellHeight) / 2;
+            let x = -(this.gridSize * this.cellWidth / 2) + col * this.cellWidth;
+            let y = -(this.gridSize * this.cellHeight / 2) + row * this.cellHeight;
 
-            p5.fill(this.cellColors[key]);
-            p5.rect(x + this.canvasX / 2, y + this.canvasY / 2, this.cellWidth, this.cellHeight);
+            // Transform four corners of the cell
+            let x1 = this.newCoorX(x, y) + this.canvasX/2;
+            let y1 = this.newCoorY(x, y) + this.canvasY/2;
+            let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX/2;
+            let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY/2;
+            let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX/2;
+            let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY/2;
+            let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX/2;
+            let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY/2;
+
+            p5.fill(value.color);
+            p5.noStroke();
+            p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
         }
 
-        // Draw inventory
-        if (this.gameState.getState() === stateCode.STANDBY || this.gameState.getState() === stateCode.PLAY) {
-            PlayBoard.inventory.draw(p5, this.canvasX, this.canvasY);
-        }
+        // draw inventory
+        PlayBoard.inventory.draw(p5, this.canvasX, this.canvasY);
 
-        this.buttons.forEach(button => button.draw(p5));
     }
 
     /* below can be treated as black box */

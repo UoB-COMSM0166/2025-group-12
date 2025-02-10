@@ -1,6 +1,7 @@
 import { Tree } from "../items/Tree.js";
 import { Bush } from "../items/Bush.js";
 import { Grass } from "../items/Grass.js";
+import {CanvasSize} from "../CanvasSize.js";
 
 export class Inventory {
     constructor() {
@@ -9,62 +10,67 @@ export class Inventory {
         this.items.set(new Bush(),1);
         this.items.set(new Grass(),1);
         this.selectedItem = null;
+
+        // inventory and item parameters
+        this.padding = 10;
+        this.itemHeight = 40;
+        this.inventoryWidth = 120;
+        this.inventoryHeight = this.items.size * this.itemHeight + this.padding * 2;
+        this.inventoryX = CanvasSize.getSize()[0] - this.inventoryWidth - this.padding;
+        this.inventoryY = 20;
+        this.itemX = this.inventoryX + this.padding;
+        this.itemWidth = this.inventoryWidth - this.padding * 2;
     }
 
-    draw(p5, canvasX, canvasY) {
-        let padding = 10;
-
-        let itemHeight = 40;
-
-        let inventoryWidth = 120;
-        let inventoryHeight = this.items.size * itemHeight + padding * 2;
-        let inventoryX = canvasX - inventoryWidth - padding;
-        let inventoryY = 20;
-
-        let itemX = inventoryX + padding;
-        let itemWidth = inventoryWidth - padding * 2;
-
+    draw(p5) {
         // Inventory background
         p5.fill(100);
-        p5.rect(inventoryX, inventoryY, inventoryWidth, inventoryHeight, 10);
+        p5.rect(this.inventoryX, this.inventoryY, this.inventoryWidth, this.inventoryHeight, 10);
 
         // Inventory title text
         p5.fill(255);
         p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.text("Inventory", inventoryX + inventoryWidth / 2, inventoryY + padding);
+        p5.text("Inventory", this.inventoryX + this.inventoryWidth / 2, this.inventoryY + this.padding);
 
+        // loop inventory items
         let index = 0;
         for (let [item] of this.items) {
-            let itemY = inventoryY + padding * 2 + index * itemHeight;
+            let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
 
-            // Item's background block
+            // draw an item of inventory
             p5.fill(item.color);
-            p5.rect(itemX, itemY, itemWidth, itemHeight - 5, 5);
-
-            // Draw item name
+            p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - 5, 5);
             p5.fill(0);
             p5.textSize(14);
             p5.textAlign(p5.CENTER, p5.CENTER);
-            p5.text(item.name, inventoryX + inventoryWidth / 2, itemY + (itemHeight - 5) / 2);
+            p5.text(item.name, this.inventoryX + this.inventoryWidth / 2, itemY + (this.itemHeight - 5) / 2);
 
             index++;
         }
     }
 
-    handleClick(p5, canvasX, canvasY) {
-        let inventoryX = canvasX - 120;
-        let inventoryY = 50;
-        let itemHeight = 40;
+    handleScroll(event) {
+        // placeholder
+    }
 
-        for (let i = 0; i < this.items.length; i++) {
-            let itemY = inventoryY + 20 + i * itemHeight;
-            if (p5.mouseX >= inventoryX + 10 && p5.mouseX <= inventoryX + 90 &&
-                p5.mouseY >= itemY && p5.mouseY <= itemY + 30) {
-                this.selectedItem = this.items[i];
+    handleClick(p5) {
+        // clear item when clicked somewhere else
+        this.selectedItem = null;
+
+        // record when an inventory item is clicked
+        let index = 0;
+        for (let [item] of this.items) {
+            let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
+            if (p5.mouseX >= this.itemX && p5.mouseX <= this.itemX + this.itemWidth &&
+                p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - 5)) {
+                console.log(`selected item ${index}`);
+                this.selectedItem = item;
                 return;
             }
+            index++;
         }
 
-        this.selectedItem = null;
+        console.log("cleared item");
     }
+
 }
