@@ -2,6 +2,10 @@ import {CanvasSize} from "../CanvasSize.js";
 import {Button} from "../items/Button.js";
 import {stateCode} from "./GameState.js";
 import {Inventory} from "./Inventory.js";
+import {BoardCells} from "./BoardCells.js";
+import {Steppe} from "../items/Steppe.js";
+import {PlayerBase} from "../items/PlayerBase.js";
+import {Mountain} from "../items/Mountain.js";
 
 export class PlayBoard {
 
@@ -27,11 +31,9 @@ export class PlayBoard {
 
         this.buttons = [];
 
-        // information block
+        // board objects array and information block
+        this.boardObjects = new BoardCells(this.gridSize);
         this.selectedCell = [];
-
-        // mimic plants on grid cells
-        this.cellColors = new Map();
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
@@ -50,15 +52,18 @@ export class PlayBoard {
         this.buttons.push(escapeButton);
 
         // round button
-        let roundButton = new Button(this.canvasX/2 - 100, 10, 200, 50, `round ${this.round} in ${this.maxRound}`);
+        let roundButton = new Button(this.canvasX/2 - 100, 10, 200, 50, this.getRoundButtonText());
         roundButton.onClick = () => {
             this.round++;
-            roundButton.text = `round ${this.round} in ${this.maxRound}`;
+            roundButton.text = this.getRoundButtonText();
             if(this.round === this.maxRound){
                 this.gameState.setState(stateCode.STANDBY);
             }
         }
         this.buttons.push(roundButton);
+
+        // setup stage terrain
+        this.setStageTerrain();
     }
 
     handleScroll(event) {
@@ -74,9 +79,10 @@ export class PlayBoard {
             if (index[0] !== -1) {
                 let row = index[0];
                 let col = index[1];
-                this.cellColors.set(`${row},${col}`, PlayBoard.inventory.selectedItem);
-                console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
-                clickedCell = true;
+                if(this.boardObjects.plantCell(row, col, PlayBoard.inventory.selectedItem)){
+                    console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
+                    clickedCell = true;
+                }
             }
             // clear inventory's selected item
             if(clickedCell){
@@ -112,25 +118,28 @@ export class PlayBoard {
             this.drawInfoBox(p5);
         }
 
-        // Draw placed cell colors
-        for (let [key, value] of this.cellColors.entries()) {
-            let [row, col] = key.split(",").map(Number);
-            let x = -(this.gridSize * this.cellWidth / 2) + col * this.cellWidth;
-            let y = -(this.gridSize * this.cellHeight / 2) + row * this.cellHeight;
-
-            // Transform four corners of the cell
-            let x1 = this.newCoorX(x, y) + this.canvasX/2;
-            let y1 = this.newCoorY(x, y) + this.canvasY/2;
-            let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX/2;
-            let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY/2;
-            let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX/2;
-            let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY/2;
-            let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX/2;
-            let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY/2;
-
-            p5.fill(value.color);
-            p5.noStroke();
-            p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+        // draw plants according to board objects
+        for(let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let cell = this.boardObjects.getCell(i, j);
+                let plant = cell.plant;
+                if(plant !== null){
+                    let x = -(this.gridSize * this.cellWidth / 2) + cell.y * this.cellWidth;
+                    let y = -(this.gridSize * this.cellHeight / 2) + cell.x * this.cellHeight;
+                    // Transform four corners of the cell
+                    let x1 = this.newCoorX(x, y) + this.canvasX/2;
+                    let y1 = this.newCoorY(x, y) + this.canvasY/2;
+                    let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX/2;
+                    let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY/2;
+                    let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX/2;
+                    let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY/2;
+                    let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX/2;
+                    let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY/2;
+                    p5.fill(plant.color);
+                    p5.noStroke();
+                    p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+                }
+            }
         }
 
         // draw inventory
@@ -139,8 +148,23 @@ export class PlayBoard {
     }
 
     resetBoard(){
+        // reset round and button
+        this.round = 1;
+        for (let button of this.buttons) {
+            if (button.text.startsWith("round")) {
+                button.text = this.getRoundButtonText();
+                break;
+            }
+        }
+
+        // reset inventory indicator
         this.selectedCell = [];
-        this.cellColors = new Map();
+
+        // reset board cells
+        this.boardObjects = new BoardCells(this.gridSize);
+        this.setStageTerrain();
+
+        // reset tmp inventory
         this.tmpInventoryItems = null;
     }
 
@@ -215,7 +239,7 @@ export class PlayBoard {
 
     drawInfoBox(p5) {
         let boxWidth = 200;
-        let boxHeight = 60;
+        let boxHeight = 100;
         let boxX = 10;
         let boxY = this.canvasY - boxHeight - 10;
 
@@ -225,9 +249,10 @@ export class PlayBoard {
 
         p5.fill(255);
         p5.textSize(18);
-        p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.text(`Row: ${this.selectedCell[0]}, Col: ${this.selectedCell[1]}`,
-            boxX + boxWidth / 2, boxY + boxHeight / 2);
+        p5.textAlign(p5.LEFT, p5.TOP);
+        p5.textWrap(p5.WORD);
+        let info = this.boardObjects.getCellString(this.selectedCell[0], this.selectedCell[1]);
+        p5.text(info, boxX + 10, boxY + 10, boxWidth - 20);
     }
 
     // the coordinate transformation is
@@ -249,6 +274,22 @@ export class PlayBoard {
 
     oldCoorY(newX, newY) {
         return ((newX * Math.cos(this.span + this.rot)) - (newY / this.Hy) * Math.sin(this.span + this.rot)) / this.Sy;
+    }
+
+    getRoundButtonText() {
+        return `round ${this.round} in ${this.maxRound}`;
+    }
+
+    setStageTerrain(){
+        for(let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                this.boardObjects.setCell(i, j, new Steppe());
+            }
+        }
+
+        this.boardObjects.setCell(4,4, new PlayerBase());
+        this.boardObjects.setCell(4,5, new Mountain());
+        this.boardObjects.setCell(5,5, new Mountain());
     }
 
 }
