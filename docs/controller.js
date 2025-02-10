@@ -16,6 +16,8 @@ export default class Controller {
 
     inputListener() {
         this.p5.mousePressed = () => {
+
+            let nextMode = this.game.currentGameState.mode;
             if (this.game.currentGameState === this.game.gameStates[gameStates.MAINMENU]) {
                 if (this.game.currentGameState.startButton.checkClick()) {
                     this.game.setGameState(gameStates.HOMEPAGE);
@@ -33,34 +35,62 @@ export default class Controller {
                 }
             }
             else if (this.game.currentGameState === this.game.gameStates[gameStates.LEVELPAGE]) {
-                this.game.inventory.plantList.forEach(element => {
-                    if(element.checkClick()){
-                        this.game.currentGameState.canPlant = true;
-                    }
-                    else{
-                        this.game.currentGameState.canPlant = false;
+                this.game.inventory.plantButtonList.forEach(element => {
+                    if (element.checkClick()) {
+                        this.game.currentGameState.mode = 'plant';
                     }
                 });
-                
-                if(this.game.currentGameState.canPlant === true){
+
+                if (this.game.currentGameState.mode === 'plant') {
                     this.game.currentGameState.board.tilesArray.forEach(row => {
                         row.forEach(cell => {
                             if (cell.mouseOver(this.p5)) {
+                                //create a new plant 
                                 this.game.currentGameState.plantList.push(new Plant(cell.x, cell.y));
-                                cell.item.push(this.game.currentGameState.plantList[this.game.currentGameState.plantList.length -1]);
-                                this.game.currentGameState.canPlant = false;
+                                cell.item.push(this.game.currentGameState.plantList[this.game.currentGameState.plantList.length - 1]);
+                                cell.panel.plant = this.game.currentGameState.plantList[this.game.currentGameState.plantList.length - 1];
+                                //prevent mouse click confilct, better ways can be found
+                                setTimeout(() => {
+                                    this.game.currentGameState.mode = 'view';
+                                }, 100);
+
+                                //decrease the number in the inventory
+                                this.game.inventory.plantNum -= 1;
+                                this.game.inventory.plantButtonList[0].label = 'tree \n Left: ' + this.game.inventory.plantNum;
                             }
                             console.log(cell.item[0]);
                         });
                     });
-                    
-                }
 
-                if(this.game.currentGameState.roundButton.checkClick() && this.game.currentGameState.round < this.game.currentGameState.maxRound){
+                }
+                //show panel
+                this.game.currentGameState.board.tilesArray.forEach(row => {
+                    row.forEach(cell => {
+                        if (this.game.currentGameState.mode === 'view') {
+                            if (cell.mouseOver(this.p5)) {
+                                cell.displayPanel = true;
+                            }
+                            else {
+                                cell.displayPanel = false;
+                            }
+                        }
+                        else{
+                            cell.displayPanel = false;
+                        }
+
+                    });
+                });
+
+
+                if (this.game.currentGameState.roundButton.checkClick() && this.game.currentGameState.round < this.game.currentGameState.maxRound) {
                     this.game.currentGameState.round += 1;
-                    this.game.currentGameState.roundButton.label = "Round " + this.game.currentGameState.round  + " / " + this.game.currentGameState.maxRound;
+                    this.game.currentGameState.roundButton.label = "Round " + this.game.currentGameState.round + " / " + this.game.currentGameState.maxRound;
                 }
             }
         }
+    }
+
+    update() {
+        if (this.game.currentGameState.board);
     }
 }

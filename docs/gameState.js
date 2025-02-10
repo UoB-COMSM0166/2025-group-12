@@ -47,7 +47,7 @@ export class LevelPage extends GameState {
         super('LEVELAPGE');
         this.board = new Board();
         this.plantList = [];
-        this.canPlant = false;
+        this.mode = 'view';
         this.round = 1;
         this.maxRound = 10;
         this.roundButton = new Button(1000, 20, 300, 200, "Round " + this.round  + " / " + this.maxRound);

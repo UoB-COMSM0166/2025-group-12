@@ -10,6 +10,9 @@ export default class Button {
         this.display = false;
     }
 
+    update(){
+        
+    }
     draw(p5) {
         p5.push();
         // check if the mouse is over

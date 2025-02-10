@@ -6,7 +6,11 @@ export default class Inventory {
         this.y = 200;
         this.width = 200;
         this.height = 700;
-        this.plantList = [new PlantButton(this.x + 10, this.y + 10, 200, 100, 'tree')];
+        this.plantNum = 1;
+        this.seedNum = 1;
+        this.plantList = [];
+        this.plantButtonList = [new PlantButton(this.x + 10, this.y + 10, 180, 100, 'tree \n Left: ' + this.plantNum)];
+
     }
 
 }

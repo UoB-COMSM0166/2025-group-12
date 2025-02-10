@@ -1,3 +1,5 @@
+import { Panel } from "./panel.js";
+
 export class Tile {
     constructor(sx, sy) {
         this.spriteWidth = 456;
@@ -15,6 +17,8 @@ export class Tile {
         this.isHovered = false;
         this.isPressed = false;
         this.item = [];
+        this.displayPanel = false;
+        this.panel = new Panel(this);
     }
 
     mouseOver(p5) {
