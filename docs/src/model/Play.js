@@ -35,7 +35,7 @@ export class PlayBoard {
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
-        this.tmpInventoryItems = null;
+        this.tmpInventoryItems = new Map();
 
         // round counter
         this.round = 1;
@@ -59,7 +59,7 @@ export class PlayBoard {
             }
         }
         this.buttons.push(roundButton);
-    }flag
+    }
 
     handleScroll(event) {
         PlayBoard.inventory.handleScroll(event);
@@ -80,7 +80,7 @@ export class PlayBoard {
             }
             // clear inventory's selected item
             if(clickedCell){
-                PlayBoard.inventory.itemDecreament();
+                PlayBoard.inventory.itemDecrement();
                 return;
             }
         }

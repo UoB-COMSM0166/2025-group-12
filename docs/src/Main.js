@@ -24,7 +24,13 @@ new p5((p) => {
     p.draw = () => {
         p.background(100, 100, 100);
 
+        // when game state changes, load or save data accordingly
+        controller.setData(controller.gameState.getState());
+
         // replace following tmp view handling later
         controller.view(p);
+
+        // keep a copy of current state
+        controller.saveState = controller.gameState.getState();
     };
 });

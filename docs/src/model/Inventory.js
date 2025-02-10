@@ -30,6 +30,7 @@ export class Inventory {
         // Inventory title text
         p5.fill(255);
         p5.textAlign(p5.CENTER, p5.CENTER);
+        p5.textSize(14);
         p5.text("Inventory", this.inventoryX + this.inventoryWidth / 2, this.inventoryY + this.padding);
 
         // loop inventory items
@@ -69,19 +70,18 @@ export class Inventory {
             }
             index++;
         }
-
         console.log("cleared item");
     }
 
     // invoke this function when an item from inventory is placed to playing board
-    itemDecreament(){
+    itemDecrement(){
         if(this.selectedItem === null || !this.items.has(this.selectedItem)){
             return;
         }
         
         // update data
         let value  = this.items.get(this.selectedItem) - 1;
-        if(value == 0){
+        if(value === 0){
             this.items.delete(this.selectedItem);    
         }else{
             this.items.set(this.selectedItem, value);

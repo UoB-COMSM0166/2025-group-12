@@ -38,22 +38,23 @@ export class Controller {
     }
 
     view(p5) {
-        this.setData(this.gameState.getState());
         let currentMenu = this.menus[this.gameState.getState()];
         if (currentMenu && currentMenu.draw) {
             currentMenu.draw(p5);
         }
-        this.saveState = this.gameState.getState();
     }
 
     setData(newState){
             // if we go to PLAY from STANDBY, save inventory
-            if(this.saveState == stateCode.STANDBY && newState == stateCode.PLAY){
+            if(this.saveState === stateCode.STANDBY && newState === stateCode.PLAY){
                 this.menus[stateCode.PLAY].tmpInventoryItems = PlayBoard.inventory.saveInventory();
             }
 
             // if we quit PLAY to STANDBY, reset PlayBoard and inventory
-            if(this.saveState == stateCode.PLAY && newState == stateCode.STANDBY){
+            if(this.saveState === stateCode.PLAY && newState === stateCode.STANDBY){
+                // reset inventory
+                PlayBoard.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
+                // reset board later, since it also clears tmp inventory items
                 this.menus[stateCode.PLAY].resetBoard();
             }
             // if a game stage is cleared, we shift from PLAY to FINISH, then go to STANDBY
