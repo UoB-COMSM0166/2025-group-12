@@ -4,13 +4,14 @@ import {preloader} from "./Preloader.js";
 
 new p5((p) => {
 
-    p.preload = preloader;
-
-    let controller = new Controller();
+    let controller;
+    let images;
+    p.preload = async () => { images = await preloader(p);};
 
     p.setup = () => {
         let canvasSize = CanvasSize.getSize();
         p.createCanvas(canvasSize[0], canvasSize[1]);
+        controller = new Controller(images);
         controller.setup(p);
     };
 

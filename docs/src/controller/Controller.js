@@ -4,8 +4,8 @@ import {StandbyMenu} from "../model/Standby.js";
 import {PlayBoard} from "../model/Play.js";
 
 export class Controller {
-    constructor() {
-        this.gameState = new GameState();
+    constructor(images) {
+        this.gameState = new GameState(images);
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
             [stateCode.STANDBY]: new StandbyMenu(this.gameState),

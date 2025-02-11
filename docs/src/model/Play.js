@@ -35,9 +35,9 @@ export class PlayBoard {
         // so when you quit we can reset inventory
         this.tmpInventoryItems = new Map();
 
-        // round counter
-        this.round = 1;
-        this.maxRound = 10;
+        // turn counter
+        this.turn = 1;
+        this.maxTurn = 10;
     }
 
     /* public methods */
@@ -47,16 +47,15 @@ export class PlayBoard {
         escapeButton.onClick = () => {this.gameState.setState(stateCode.STANDBY);};
         this.buttons.push(escapeButton);
 
-        // round button
-        let roundButton = new Button(this.canvasX/2 - 100, 10, 200, 50, this.getRoundButtonText());
-        roundButton.onClick = () => {
-            this.round++;
-            roundButton.text = this.getRoundButtonText();
-            if(this.round === this.maxRound){
+        // turn button
+        let turnButton = new Button(this.canvasX/2 - 100, 10, 200, 50, this.getTurnButtonText());
+        turnButton.onClick = () => {
+            this.endTurnActivity(p5).then(() => {this.turn++;turnButton.text = this.getTurnButtonText();});
+            if(this.turn === this.maxTurn){
                 this.gameState.setState(stateCode.STANDBY);
             }
         }
-        this.buttons.push(roundButton);
+        this.buttons.push(turnButton);
 
         // setup stage terrain
         this.setStageTerrain();
@@ -116,6 +115,10 @@ export class PlayBoard {
             this.drawInfoBox(p5);
         }
 
+        // placeholder
+        // draw terrains before plants,
+        // so plants are cascaded above terrain
+
         // draw plants according to board objects
         for(let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
@@ -124,18 +127,18 @@ export class PlayBoard {
                 if(plant !== null){
                     let x = -(this.gridSize * this.cellWidth / 2) + cell.y * this.cellWidth;
                     let y = -(this.gridSize * this.cellHeight / 2) + cell.x * this.cellHeight;
-                    // Transform four corners of the cell
-                    let x1 = this.newCoorX(x, y) + this.canvasX/2;
-                    let y1 = this.newCoorY(x, y) + this.canvasY/2;
+
                     let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX/2;
                     let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY/2;
-                    let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX/2;
-                    let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY/2;
                     let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX/2;
                     let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY/2;
-                    p5.fill(plant.color);
-                    p5.noStroke();
-                    p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+
+                    let avgX = (x2 + x4) / 2;
+                    let avgY = (y2 + y4) / 2;
+
+                    let img = this.gameState.images.get(`${cell.plant.name}`);
+                    let imgSize = 40; // temporary parameter
+                    p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                 }
             }
         }
@@ -146,8 +149,8 @@ export class PlayBoard {
 
     // set stage terrain at setup phase
     setStage(){
-        this.gameState.inventory.pushItem2Inventory("Tree", 2);
-        this.gameState.inventory.pushItem2Inventory("Bush", 1);
+        this.gameState.inventory.pushItem2Inventory("Tree", 3);
+        this.gameState.inventory.pushItem2Inventory("Bush", 3);
         this.gameState.inventory.pushItem2Inventory("Grass", 3);
         // update inventory height
         this.gameState.inventory.updateInventoryHeight();
@@ -155,11 +158,11 @@ export class PlayBoard {
 
     // when clear or quit, invoke this function to reset board
     resetBoard(){
-        // reset round and button
-        this.round = 1;
+        // reset turn and button
+        this.turn = 1;
         for (let button of this.buttons) {
-            if (button.text.startsWith("round")) {
-                button.text = this.getRoundButtonText();
+            if (button.text.startsWith("turn")) {
+                button.text = this.getTurnButtonText();
                 break;
             }
         }
@@ -178,7 +181,7 @@ export class PlayBoard {
     /* below can be treated as black box */
 
     drawGrid(p5){
-        p5.fill(100);
+
         p5.stroke(0);
         p5.strokeWeight(2);
 
@@ -195,6 +198,12 @@ export class PlayBoard {
             let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY / 2;
             let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX / 2;
             let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY / 2;
+
+            if(this.boardObjects.getCell(j, i).isEcoSphere){
+                p5.fill("green");
+            }else{
+                p5.fill(100);
+            }
 
             p5.quad(x1,y1,x2,y2,x3, y3, x4, y4);
         }
@@ -250,6 +259,23 @@ export class PlayBoard {
         p5.text(info, boxX + 10, boxY + 10, boxWidth - 20);
     }
 
+    // this involves end turn enemy activity.
+    // use async to wait until all actions performed,
+    // then go back to set turn counter.
+    async endTurnActivity(p5){
+        // mimics enemy attacks, reduce health by 1 to all on-field plants
+        let cells = this.boardObjects.getAllCellsWithPlant();
+        for (let cell of cells) {
+            let newHealth = cell.plant.health - 1;
+            if(newHealth !== 0){
+                cell.plant.health--;
+            }else{
+                // remove the plant from board
+                this.boardObjects.removePlant(cell.x, cell.y);
+            }
+        }
+    }
+
     // the coordinate transformation is
     // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) ) ( x )
     // (  ) = (                                   ) (   )
@@ -271,8 +297,8 @@ export class PlayBoard {
         return (1/(this.Sx * this.Sy * Math.sin(this.span))) * (this.Sx*Math.sin(this.rot)*newX - this.Sx*Math.cos(this.rot) * newY);
     }
 
-    getRoundButtonText() {
-        return `round ${this.round} in ${this.maxRound}`;
+    getTurnButtonText() {
+        return `turn ${this.turn} in ${this.maxTurn}`;
     }
 
     setStageTerrain(){
