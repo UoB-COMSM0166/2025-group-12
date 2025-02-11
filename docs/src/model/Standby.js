@@ -1,6 +1,5 @@
 import { Button } from "../items/Button.js";
 import { stateCode } from "./GameState.js";
-import {CanvasSize} from "../CanvasSize.js";
 
 export class StandbyMenu {
     constructor(gameState) {
@@ -31,8 +30,6 @@ export class StandbyMenu {
         for (let button of this.buttons) {
             button.draw(p5);
         }
-
-        this.gameState.inventory.draw(p5, CanvasSize.getSize()[0], CanvasSize.getSize()[1]);
     }
 }
 

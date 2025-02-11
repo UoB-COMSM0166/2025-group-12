@@ -1,5 +1,3 @@
-import {Inventory} from "./Inventory.js";
-
 export const stateCode = {
     MENU: 1,
     STANDBY: 2,
@@ -10,7 +8,6 @@ export const stateCode = {
 export class GameState {
     constructor() {
         this.state = stateCode.MENU; // default
-        this.inventory = new Inventory();
     }
 
     setState(newState) {

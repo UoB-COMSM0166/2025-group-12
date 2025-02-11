@@ -1,3 +1,48 @@
+## Meeting Agenda for Next Meeting (Update on February 11, 2025)
+
+### **Video Recording of the Paper Prototype**
+
+- What core mechanics should be included? (Game start → First level flow → Turn-based combat → Resource management)
+- Should **narration** or **subtitles** be included?
+- **Responsible team members for video recording and editing**
+
+### **Cross-Team Communication**
+
+- **Synchronization Plan between Development and Art Teams**
+    - Annotations and textual explanations for the development process
+    - How should art assets align with the game's data structure?
+    - UI design specifications, including dimensions and asset naming conventions
+- **Art Design Updates**
+    - Which art elements should be prioritized for production?
+    - Are complete scene and character assets available?
+
+### **Discussion on the Proposal Before Reading Week: Ensuring MVP Feasibility**
+
+- Can the turn-based combat system function properly?
+- Is the card system fully operational?
+- Is there an initial implementation of the game UI?
+
+### (中文)
+
+- **Video Recording of the Paper Prototype**
+    - 需包含哪些核心機制？（遊戲開始→第一關流程→回合戰鬥→資源管理）
+    - 是否需要 **旁白解說** 或 **字幕說明**？
+    - **影片拍攝與剪輯負責人**
+- 跨組別溝通
+    - **開發組與美術組的同步計畫**
+        - 開發過程的註解，文字解釋
+        - 美術資源如何匹配遊戲數據結構？
+        - UI 設計的尺寸規格、資源命名規則
+    - **美術設計更新**
+        - 目前優先製作的美術元素
+        - 是否已有完整的場景與角色素材？
+- 討論Reading Week 之前的 proposal：以 MVP 能實現為前提
+    - 回合制戰鬥是否能實際運作？
+    - 卡牌系統是否可以操作？
+    - 遊戲 UI 是否有初步實作？
+
+---
+
 # Meeting Record February 6, 2025
 
 This discussion primarily focused on analyzing current **user feedback**, finalizing the **visualization of all pre-level-1 game scenes** (addressing any remaining ambiguities), and prioritizing **artistic and narrative styles**.

@@ -1,9 +1,6 @@
-import {itemTypes} from "./ItemTypes.js";
-
 export class Grass {
     constructor() {
         this.name = "Grass";
         this.color = "blue";
-        this.type = itemTypes.PLANT;
     }
 }
