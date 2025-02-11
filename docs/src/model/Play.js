@@ -16,8 +16,8 @@ export class PlayBoard {
         // transformation parameters
         this.Sx = 0.5;
         this.Sy = 0.5;
-        this.rot = Math.PI/6;
-        this.span = 2*Math.PI/3;
+        this.rot = Math.PI / 6;
+        this.span = 2 * Math.PI / 3;
         this.Hy = 1;
 
         // grid parameters
@@ -233,11 +233,13 @@ export class PlayBoard {
         let oldMouseX = this.oldCoorX(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
         let oldMouseY = this.oldCoorY(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
 
+        console.log(`(mouseX,mouseY) = (${oldMouseX}, ${oldMouseY})`);
+
         // Check if click is within the grid
         if (oldMouseX >= leftEdge && oldMouseX <= rightEdge
             && oldMouseY >= topEdge && oldMouseY <= bottomEdge) {
-            let row = this.gridSize - 1 - Math.floor((oldMouseX + (this.gridSize * this.cellWidth) / 2) / this.cellWidth);
-            let col = this.gridSize - 1 - Math.floor((oldMouseY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
+            let col = Math.floor((oldMouseX + (this.gridSize * this.cellWidth) / 2) / this.cellWidth);
+            let row = this.gridSize - 1 - Math.floor((oldMouseY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
             return [row, col];
         }else{
             return [-1];
@@ -263,9 +265,9 @@ export class PlayBoard {
     }
 
     // the coordinate transformation is
-    // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) )   ( x )
-    // (  ) = (                                   ) = (   )
-    // (y')   ( Sx * sin(rot)  Sy * sin(rot+span) )   ( y )
+    // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) ) ( x )
+    // (  ) = (                                   ) (   )
+    // (y')   ( Sx * sin(rot)  Sy * sin(rot+span) ) ( y )
 
     newCoorX(x, y) {
         return x * this.Sx * Math.cos(this.rot) + y * this.Sy * Math.cos(this.span + this.rot);
@@ -276,11 +278,11 @@ export class PlayBoard {
     }
 
     oldCoorX(newX, newY) {
-        return (newX * Math.cos(this.rot) - (newY / this.Hy) * Math.sin(this.rot)) / this.Sx;
+        return (1/(this.Sx * this.Sy * Math.sin(this.span))) * (this.Sy*Math.sin(this.rot+this.span)*newX - this.Sy*Math.cos(this.rot+this.span) * newY);
     }
 
     oldCoorY(newX, newY) {
-        return ((newX * Math.cos(this.span + this.rot)) - (newY / this.Hy) * Math.sin(this.span + this.rot)) / this.Sy;
+        return (1/(this.Sx * this.Sy * Math.sin(this.span))) * (this.Sx*Math.sin(this.rot)*newX - this.Sx*Math.cos(this.rot) * newY);
     }
 
     getRoundButtonText() {
@@ -293,7 +295,6 @@ export class PlayBoard {
                 this.boardObjects.setCell(i, j, new Steppe());
             }
         }
-
         this.boardObjects.setCell(4,4, new PlayerBase());
         this.boardObjects.setCell(4,5, new Mountain());
         this.boardObjects.setCell(5,5, new Mountain());
