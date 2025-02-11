@@ -45,15 +45,16 @@ export class Controller {
     }
 
     setData(newState){
-            // if we go to PLAY from STANDBY, save inventory
+            // if we go to PLAY from STANDBY, save inventory then push stage items
             if(this.saveState === stateCode.STANDBY && newState === stateCode.PLAY){
-                this.menus[stateCode.PLAY].tmpInventoryItems = PlayBoard.inventory.saveInventory();
+                this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
+                this.menus[stateCode.PLAY].setStage();
             }
 
             // if we quit PLAY to STANDBY, reset PlayBoard and inventory
             if(this.saveState === stateCode.PLAY && newState === stateCode.STANDBY){
                 // reset inventory
-                PlayBoard.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
+                this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
                 // reset board later, since it also clears tmp inventory items
                 this.menus[stateCode.PLAY].resetBoard();
             }

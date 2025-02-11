@@ -71,7 +71,7 @@ class Cells{
     set terrain(terrain){
 
         if(terrain.type !== itemTypes.TERRAIN){
-            console.log(`failed to set cell at (${x},${y}) since the input is not terrain.`);
+            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not terrain.`);
             return;
         }
 
@@ -81,7 +81,7 @@ class Cells{
     set plant(plant){
 
         if(plant.type !== itemTypes.PLANT){
-            console.log(`failed to plant cell at (${x},${y}) since the input is not plant.`);
+            console.log(`failed to plant cell at (${this.x},${this.y}) since the input is not plant.`);
             return;
         }
 

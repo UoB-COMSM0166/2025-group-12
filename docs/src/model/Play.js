@@ -1,7 +1,6 @@
 import {CanvasSize} from "../CanvasSize.js";
 import {Button} from "../items/Button.js";
 import {stateCode} from "./GameState.js";
-import {Inventory} from "./Inventory.js";
 import {BoardCells} from "./BoardCells.js";
 import {Steppe} from "../items/Steppe.js";
 import {PlayerBase} from "../items/PlayerBase.js";
@@ -9,11 +8,8 @@ import {Mountain} from "../items/Mountain.js";
 
 export class PlayBoard {
 
-    static inventory = new Inventory();
-
     constructor(gameState) {
         this.gameState = gameState;
-
         this.canvasX = CanvasSize.getSize()[0];
         this.canvasY = CanvasSize.getSize()[1];
 
@@ -67,31 +63,33 @@ export class PlayBoard {
     }
 
     handleScroll(event) {
-        PlayBoard.inventory.handleScroll(event);
+        this.gameState.inventory.handleScroll(event);
     }
 
     handleClick(p5) {
         // clicked inventory, then click a cell
-        if(PlayBoard.inventory.selectedItem !== null){
+        if(this.gameState.inventory.selectedItem !== null){
             let index = this.mouse2CellIndex(p5);
             let clickedCell = false;
             // if a cell is clicked, update this.cellColors.
             if (index[0] !== -1) {
                 let row = index[0];
                 let col = index[1];
-                if(this.boardObjects.plantCell(row, col, PlayBoard.inventory.selectedItem)){
-                    console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
+                if(this.boardObjects.plantCell(row, col, this.gameState.inventory.createItem(this.gameState.inventory.selectedItem))){
+                    console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${row}, col ${col}`);
                     clickedCell = true;
                 }
             }
             // clear inventory's selected item
             if(clickedCell){
-                PlayBoard.inventory.itemDecrement();
+                this.gameState.inventory.itemDecrement();
+                // update inventory height
+                this.gameState.inventory.updateInventoryHeight();
                 return;
             }
         }
         // handle inventory clicks later to prevent unintentional issues
-        PlayBoard.inventory.handleClick(p5);
+        this.gameState.inventory.handleClick(p5);
 
         // click any button
         for (let button of this.buttons) {
@@ -143,10 +141,19 @@ export class PlayBoard {
         }
 
         // draw inventory
-        PlayBoard.inventory.draw(p5, this.canvasX, this.canvasY);
-
+        this.gameState.inventory.draw(p5, this.canvasX, this.canvasY);
     }
 
+    // set stage terrain at setup phase
+    setStage(){
+        this.gameState.inventory.pushItem2Inventory("Tree", 2);
+        this.gameState.inventory.pushItem2Inventory("Bush", 1);
+        this.gameState.inventory.pushItem2Inventory("Grass", 3);
+        // update inventory height
+        this.gameState.inventory.updateInventoryHeight();
+    }
+
+    // when clear or quit, invoke this function to reset board
     resetBoard(){
         // reset round and button
         this.round = 1;
