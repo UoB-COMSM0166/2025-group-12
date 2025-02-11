@@ -16,8 +16,8 @@ export class PlayBoard {
         // transformation parameters
         this.Sx = 0.5;
         this.Sy = 0.5;
-        this.rot = Math.PI/4;
-        this.span = Math.PI/2;
+        this.rot = Math.PI/6;
+        this.span = 2*Math.PI/3;
         this.Hy = 1;
 
         // grid parameters
