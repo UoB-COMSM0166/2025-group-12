@@ -178,38 +178,26 @@ export class PlayBoard {
     /* below can be treated as black box */
 
     drawGrid(p5){
+        p5.fill(100);
         p5.stroke(0);
         p5.strokeWeight(2);
 
-        for (let i = 0; i <= this.gridSize; i++) {
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
             let x = -(this.gridSize * this.cellWidth / 2) + i * this.cellWidth;
-            let y = -(this.gridSize * this.cellHeight / 2) + i * this.cellHeight;
+            let y = -(this.gridSize * this.cellHeight / 2) + j * this.cellHeight;
 
-            // transformed top end of vertical line
-            let x1 = this.newCoorX(x, -this.gridSize * this.cellHeight / 2);
-            let y1 = this.newCoorY(x, -this.gridSize * this.cellHeight / 2);
-            // transformed bottom end of vertical line
-            let x2 = this.newCoorX(x, this.gridSize * this.cellHeight / 2);
-            let y2 = this.newCoorY(x, this.gridSize * this.cellHeight / 2);
-            // transformed left end of horizontal line
-            let x3 = this.newCoorX(-this.gridSize * this.cellWidth / 2, y);
-            let y3 = this.newCoorY(-this.gridSize * this.cellWidth / 2, y);
-            // transformed right end of horizontal line
-            let x4 = this.newCoorX(this.gridSize * this.cellWidth / 2, y);
-            let y4 = this.newCoorY(this.gridSize * this.cellWidth / 2, y);
+            let x1 = this.newCoorX(x, y) + this.canvasX / 2;
+            let y1 = this.newCoorY(x, y) + this.canvasY / 2;
+            let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX / 2;
+            let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY / 2;
+            let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX / 2;
+            let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY / 2;
+            let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX / 2;
+            let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY / 2;
 
-            // center the grid cells
-            x1 += this.canvasX / 2;
-            y1 += this.canvasY / 2;
-            x2 += this.canvasX / 2;
-            y2 += this.canvasY / 2;
-            x3 += this.canvasX / 2;
-            y3 += this.canvasY / 2;
-            x4 += this.canvasX / 2;
-            y4 += this.canvasY / 2;
-
-            p5.line(x1, y1, x2, y2);
-            p5.line(x3, y3, x4, y4);
+            p5.quad(x1,y1,x2,y2,x3, y3, x4, y4);
+        }
         }
     }
 
@@ -232,8 +220,6 @@ export class PlayBoard {
         // mouse position under old grid-centered coordinates
         let oldMouseX = this.oldCoorX(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
         let oldMouseY = this.oldCoorY(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
-
-        console.log(`(mouseX,mouseY) = (${oldMouseX}, ${oldMouseY})`);
 
         // Check if click is within the grid
         if (oldMouseX >= leftEdge && oldMouseX <= rightEdge
