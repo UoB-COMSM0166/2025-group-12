@@ -76,7 +76,17 @@ class Node {
     }
 }
 
-function aStarSearch(graph, start, goal) {
+/* 
+usage:
+function receive 4 parameters, an object contains one 2d array, a start object contains coordinate [x, y], 
+a target object contains coordinate[x, y], a step.
+reuturn an array contains all the coordinate in object
+*/
+
+function aStarSearch(graph, startIn, goalIn, step) {
+    //let graph = new Graph(graphIn);
+    let start = new Node(startIn.x, startIn.y);
+    let goal = new Node(goalIn.x, goalIn.y);
     let frontier = new PriorityQueue();
     frontier.enqueue(start, 0);
 
@@ -89,9 +99,7 @@ function aStarSearch(graph, start, goal) {
     cameFrom.set(startKey, null);
     costSoFar.set(startKey, 0);
 
-    let counter = 0;
     while (!frontier.isEmpty()) {
-        counter++;
         let current = frontier.dequeue();
         let currentKey = current.hash();
         if (current.isEqual(goal)) {
@@ -110,12 +118,10 @@ function aStarSearch(graph, start, goal) {
             }
         }
     }
-    console.log(counter);
-
-    return reconstructPath(cameFrom, startKey, goalKey);
+    return reconstructPath(cameFrom, startKey, goalKey, step);
 }
 
-function reconstructPath(cameFrom, startKey, goalKey) {
+function reconstructPath(cameFrom, startKey, goalKey, step) {
     if (!cameFrom.has(goalKey)) {
         return [];
     }
@@ -127,11 +133,31 @@ function reconstructPath(cameFrom, startKey, goalKey) {
         currentKey = cameFrom.get(currentKey);
     }
 
-    // transform string 'x,y' to [x, y] (x, y are numbers)
-    path.push(new Node(...startKey.split(',').map(Number)));
+    // transform string 'x,y' to [x, y] (x, y are numbers) comment out if start is not needed
+    // path.push(new Node(...startKey.split(',').map(Number)));
     path.reverse();
+    if(step > path.length){
+        return [];
+    }
+    path.splice(step, path.length-step);
     return path;
 }
+
+class TestObj{
+    constructor(x, y){
+        this.x = x;
+        this.y = y;
+        this.width = 100;
+    }
+    ashgio(){
+
+    }
+
+    asdgjaosid(){
+
+    }
+}
+
 // test
 let grid = [
     [0, 0, 0, 0, 1],
@@ -141,11 +167,13 @@ let grid = [
     [0, 0, 0, 0, 0]
 ];
 
+let test1 = new TestObj(0, 0);
 let graph = new Graph(grid);
-
 let start = new Node(0, 0);
-let goal = new Node(4, 4);
 
-let path = aStarSearch(graph, start, goal);
+let goal = new TestObj(4, 4);
+
+let path = aStarSearch(graph, test1, goal, 1);
 console.log(path);
 console.log("PATH:", path.map(n => `(${n.x}, ${n.y})`).join(" -> "));
+
