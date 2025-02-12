@@ -23,7 +23,7 @@ export class Button {
         // rectangle shape of button
         p5.noStroke();
         p5.fill(buttonColor);
-        p5.rect(this.x, this.y, this.width, this.height, 10);
+        p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
         // inner text
         p5.fill(255);
         p5.textSize(18);

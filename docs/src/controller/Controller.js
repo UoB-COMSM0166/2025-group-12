@@ -23,6 +23,9 @@ export class Controller {
     }
 
     clickListener(p5) {
+        if(this.gameState.playerCanClick === false){
+            return;
+        }
         let currentMenu = this.menus[this.gameState.getState()];
         if (currentMenu && currentMenu.handleClick) {
             currentMenu.handleClick(p5);

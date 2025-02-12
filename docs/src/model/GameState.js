@@ -12,6 +12,7 @@ export class GameState {
         this.state = stateCode.MENU; // default
         this.inventory = new Inventory();
         this.images = images; // store images so all menus can retrieve
+        this.playerCanClick = true; // set this to false during end turn enemy activity
     }
 
     setState(newState) {
@@ -25,6 +26,10 @@ export class GameState {
 
     getState() {
         return this.state;
+    }
+
+    togglePlayerCanClick(){
+        this.playerCanClick = !this.playerCanClick;
     }
 }
 

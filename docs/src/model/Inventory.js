@@ -1,7 +1,8 @@
 import { Tree } from "../items/Tree.js";
 import { Bush } from "../items/Bush.js";
 import { Grass } from "../items/Grass.js";
-import {CanvasSize} from "../CanvasSize.js";
+import { CanvasSize } from "../CanvasSize.js";
+import { myutil } from "../../lib/myutil.js"
 
 export class Inventory {
     constructor() {
@@ -9,17 +10,17 @@ export class Inventory {
         this.selectedItem = null; // a String
 
         // inventory and item parameters
-        this.padding = 10;
-        this.itemHeight = 40;
-        this.inventoryWidth = 120;
+        [this.padding, this.itemHeight] = myutil.relative2absolute(0.01, 0.06);
+        [this.inventoryWidth, this.inventoryY] = myutil.relative2absolute(0.1, 0.03);
+        this.itemInter = myutil.relative2absolute(0.01, 0.01)[1];
         this.inventoryHeight = this.items.size * this.itemHeight + this.padding * 2;
         this.inventoryX = CanvasSize.getSize()[0] - this.inventoryWidth - this.padding;
-        this.inventoryY = 20;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
     }
 
     draw(p5) {
+        p5.noStroke();
         // Inventory background
         p5.fill(100);
         p5.rect(this.inventoryX, this.inventoryY, this.inventoryWidth, this.inventoryHeight, 10);
@@ -37,12 +38,12 @@ export class Inventory {
             let tmpItem = this.createItem(key);
             // draw an item of inventory
             p5.fill(tmpItem.color);
-            p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - 5, 5);
+            p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - this.itemInter, this.itemInter);
             p5.fill(0);
             p5.textSize(14);
             p5.textAlign(p5.CENTER, p5.CENTER);
-            p5.text(tmpItem.name, this.inventoryX + this.itemWidth / 2 + this.padding, itemY + (this.itemHeight - 5) / 2);
-            p5.text(value, this.inventoryX + this.inventoryWidth - (this.inventoryWidth - (this.itemWidth + this.padding) ) / 2, itemY + (this.itemHeight - 5) / 2);
+            p5.text(tmpItem.name, this.inventoryX + this.itemWidth / 2 + this.padding, itemY + (this.itemHeight - this.itemInter) / 2);
+            p5.text(value, this.inventoryX + this.inventoryWidth - (this.inventoryWidth - (this.itemWidth + this.padding) ) / 2, itemY + (this.itemHeight - this.itemInter) / 2);
             index++;
         }
     }
@@ -60,7 +61,7 @@ export class Inventory {
         for (let [key, value] of this.items.entries()) {
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
             if (p5.mouseX >= this.itemX && p5.mouseX <= this.itemX + this.itemWidth &&
-                p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - 5)) {
+                p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - this.itemInter)) {
                 console.log(`selected item ${index}`);
                 this.selectedItem = key;
                 return;

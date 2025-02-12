@@ -23,7 +23,7 @@ new p5((p) => {
         controller.clickListener(p);
     }
     p.draw = () => {
-        p.background(100, 100, 100);
+        p.background(100);
 
         // when game state changes, load or save data accordingly
         controller.setData(controller.gameState.getState());

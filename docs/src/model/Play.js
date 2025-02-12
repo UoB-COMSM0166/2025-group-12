@@ -1,17 +1,20 @@
-import {CanvasSize} from "../CanvasSize.js";
-import {Button} from "../items/Button.js";
-import {stateCode} from "./GameState.js";
-import {BoardCells} from "./BoardCells.js";
-import {Steppe} from "../items/Steppe.js";
-import {PlayerBase} from "../items/PlayerBase.js";
-import {Mountain} from "../items/Mountain.js";
+import { CanvasSize } from "../CanvasSize.js";
+import { myutil } from "../../lib/myutil.js";
+import { Button } from "../items/Button.js";
+import { stateCode } from "./GameState.js";
+import { BoardCells } from "./BoardCells.js";
+import { Steppe } from "../items/Steppe.js";
+import { PlayerBase } from "../items/PlayerBase.js";
+import { Mountain } from "../items/Mountain.js";
+import { Storm } from "../items/Storm.js";
+
 
 export class PlayBoard {
 
     constructor(gameState) {
         this.gameState = gameState;
-        this.canvasX = CanvasSize.getSize()[0];
-        this.canvasY = CanvasSize.getSize()[1];
+        this.canvasWidth = CanvasSize.getSize()[0];
+        this.canvasHeight = CanvasSize.getSize()[1];
 
         // transformation parameters
         this.Sx = 0.5;
@@ -22,10 +25,12 @@ export class PlayBoard {
 
         // grid parameters
         this.gridSize = 8;
-        this.cellWidth = 80;
-        this.cellHeight = 80;
+        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1/16, 1/9);
 
         this.buttons = [];
+
+        // store all enemies
+        this.enemies = [];
 
         // board objects array and information block
         this.boardObjects = new BoardCells(this.gridSize);
@@ -43,18 +48,17 @@ export class PlayBoard {
     /* public methods */
 
     setup(p5) {
-        let escapeButton = new Button(10, 10, 100, 50, "Escape");
+        let [escX, escY] = myutil.relative2absolute(0.01, 0.01);
+        let [escWidth, escHeight] = myutil.relative2absolute(0.09, 0.07);
+        let escapeButton = new Button(escX, escY, escWidth, escHeight, "Escape");
         escapeButton.onClick = () => {this.gameState.setState(stateCode.STANDBY);};
         this.buttons.push(escapeButton);
 
         // turn button
-        let turnButton = new Button(this.canvasX/2 - 100, 10, 200, 50, this.getTurnButtonText());
-        turnButton.onClick = () => {
-            this.endTurnActivity(p5).then(() => {this.turn++;turnButton.text = this.getTurnButtonText();});
-            if(this.turn === this.maxTurn){
-                this.gameState.setState(stateCode.STANDBY);
-            }
-        }
+        let [turnWidth, turnHeight] = myutil.relative2absolute(5/32, 0.07);
+        let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
+        let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
+        turnButton.onClick = () => {this.endTurnActivity(p5);}
         this.buttons.push(turnButton);
 
         // setup stage terrain
@@ -119,6 +123,14 @@ export class PlayBoard {
         // draw terrains before plants,
         // so plants are cascaded above terrain
 
+        // draww all enemy according to this.enemy.
+        for(let enemy of this.enemies){
+            let img = this.gameState.images.get(`${enemy.name}`);
+            let imgSize = myutil.relative2absolute(1/32, 0)[0];
+            p5.image(img, enemy.x, enemy.y, imgSize, imgSize);
+            enemy.drawHealthBar(p5, enemy.x, enemy.y - 10, 40, 5);
+        }
+
         // draw plants according to board objects
         for(let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
@@ -128,23 +140,24 @@ export class PlayBoard {
                     let x = -(this.gridSize * this.cellWidth / 2) + cell.y * this.cellWidth;
                     let y = -(this.gridSize * this.cellHeight / 2) + cell.x * this.cellHeight;
 
-                    let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX/2;
-                    let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY/2;
-                    let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX/2;
-                    let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY/2;
+                    let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasWidth/2;
+                    let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasHeight/2;
+                    let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasWidth/2;
+                    let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasHeight/2;
 
                     let avgX = (x2 + x4) / 2;
                     let avgY = (y2 + y4) / 2;
 
                     let img = this.gameState.images.get(`${cell.plant.name}`);
-                    let imgSize = 40; // temporary parameter
+                    let imgSize = myutil.relative2absolute(1/32, 0)[0];
                     p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+                    plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
                 }
             }
         }
 
         // draw inventory
-        this.gameState.inventory.draw(p5, this.canvasX, this.canvasY);
+        this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
     }
 
     // set stage terrain at setup phase
@@ -190,14 +203,14 @@ export class PlayBoard {
             let x = -(this.gridSize * this.cellWidth / 2) + i * this.cellWidth;
             let y = -(this.gridSize * this.cellHeight / 2) + j * this.cellHeight;
 
-            let x1 = this.newCoorX(x, y) + this.canvasX / 2;
-            let y1 = this.newCoorY(x, y) + this.canvasY / 2;
-            let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX / 2;
-            let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY / 2;
-            let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX / 2;
-            let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY / 2;
-            let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX / 2;
-            let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY / 2;
+            let x1 = this.newCoorX(x, y) + this.canvasWidth / 2;
+            let y1 = this.newCoorY(x, y) + this.canvasHeight / 2;
+            let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasWidth / 2;
+            let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasHeight / 2;
+            let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasWidth / 2;
+            let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasHeight / 2;
+            let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasWidth / 2;
+            let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasHeight / 2;
 
             if(this.boardObjects.getCell(j, i).isEcoSphere){
                 p5.fill("green");
@@ -205,7 +218,7 @@ export class PlayBoard {
                 p5.fill(100);
             }
 
-            p5.quad(x1,y1,x2,y2,x3, y3, x4, y4);
+            p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
         }
         }
     }
@@ -227,8 +240,8 @@ export class PlayBoard {
         let bottomEdge = (this.gridSize * this.cellHeight) / 2;
 
         // mouse position under old grid-centered coordinates
-        let oldMouseX = this.oldCoorX(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
-        let oldMouseY = this.oldCoorY(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
+        let oldMouseX = this.oldCoorX(p5.mouseX - this.canvasWidth / 2, p5.mouseY - this.canvasHeight / 2);
+        let oldMouseY = this.oldCoorY(p5.mouseX - this.canvasWidth / 2, p5.mouseY - this.canvasHeight / 2);
 
         // Check if click is within the grid
         if (oldMouseX >= leftEdge && oldMouseX <= rightEdge
@@ -242,37 +255,58 @@ export class PlayBoard {
     }
 
     drawInfoBox(p5) {
-        let boxWidth = 200;
-        let boxHeight = 100;
-        let boxX = 10;
-        let boxY = this.canvasY - boxHeight - 10;
+
+        let [boxWidth, boxHeight] = myutil.relative2absolute(5/32, 5/36);
+        let boxX = myutil.relative2absolute(1/128, 0)[0];
+        let [paddingX, paddingY] = myutil.relative2absolute(1/128, 1/72);
+        let boxY = this.canvasHeight - boxHeight - paddingY;
 
         p5.fill(50);
         p5.noStroke();
-        p5.rect(boxX, boxY, boxWidth, boxHeight, 10);
+        p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundedness
 
         p5.fill(255);
         p5.textSize(18);
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
         let info = this.boardObjects.getCellString(this.selectedCell[0], this.selectedCell[1]);
-        p5.text(info, boxX + 10, boxY + 10, boxWidth - 20);
+        p5.text(info, boxX + paddingX, boxY + paddingY, boxWidth - paddingX * 2);
     }
 
     // this involves end turn enemy activity.
-    // use async to wait until all actions performed,
-    // then go back to set turn counter.
-    async endTurnActivity(p5){
-        // mimics enemy attacks, reduce health by 1 to all on-field plants
+    endTurnActivity(p5){
+        this.gameState.togglePlayerCanClick();
+        this.enemyMovements(p5);
+        this.gameState.togglePlayerCanClick();
+
+        // a safelock to remove dead plants
         let cells = this.boardObjects.getAllCellsWithPlant();
         for (let cell of cells) {
-            let newHealth = cell.plant.health - 1;
-            if(newHealth !== 0){
-                cell.plant.health--;
-            }else{
-                // remove the plant from board
+            if(cell.plant.status === false){
                 this.boardObjects.removePlant(cell.x, cell.y);
             }
+        }
+
+        this.turn++;
+        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
+        if(this.turn === this.maxTurn){
+            this.gameState.setState(stateCode.STANDBY);
+        }
+    }
+
+    enemyMovements(p5){
+        for(let enemy of this.enemies){
+            if(enemy.name === "Storm"){
+                if(enemy.countdown > 0){
+                    enemy.countdown--;
+                }else{
+                    // the storm blows!
+
+                }
+            }
+        }
+        if(this.turn === 1){
+            this.enemies.push(new Storm(100, 100, 'd'));
         }
     }
 

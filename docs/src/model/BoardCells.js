@@ -67,7 +67,19 @@ export class BoardCells{
         let cells = [];
         for(let i = 0; i < this.size; i++){
             for(let j = 0; j < this.size; j++){
-                if(this.boardObjects[i][j].plant !== null){
+                if(this.getCell(i, j).plant !== null){
+                    cells.push(this.getCell(i, j));
+                }
+            }
+        }
+        return cells;
+    }
+
+    getAllCellsWithEnemy(){
+        let cells = [];
+        for(let i = 0; i < this.size; i++){
+            for(let j = 0; j < this.size; j++){
+                if(this.getCell(i, j).plant !== null){
                     cells.push(this.getCell(i, j));
                 }
             }
@@ -186,6 +198,7 @@ class Cell{
         this.y = y;
         this._terrain = terrain;
         this._plant = null;
+        this._enemy = null;
         this.isEcoSphere = false;
     }
 
@@ -217,6 +230,20 @@ class Cell{
 
     get terrain(){
         return this._terrain;
+    }
+
+    set enemy(enemy){
+
+        if(enemy.type !== itemTypes.ENEMY){
+            console.log(`failed to set enemy at (${this.x},${this.y}) since the input is not enemy.`);
+            return;
+        }
+
+        this._enemy = enemy;
+    }
+
+    get enemy(){
+        return this._enemy;
     }
 
     removePlant(){
