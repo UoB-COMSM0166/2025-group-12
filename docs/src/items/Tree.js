@@ -1,5 +1,6 @@
 import {itemTypes, plantTypes} from "./ItemTypes.js";
-import { Plant } from "./Plant.js";
+import {Plant} from "./Plant.js";
+import {PlayBoard} from "../model/Play.js";
 
 export class Tree extends Plant {
     constructor() {
@@ -14,14 +15,12 @@ export class Tree extends Plant {
 
         // passive: only lose 1 health when attacked by storm.
         // active: can recharge a nearby plant's health by 1. with bush and grass.
-        // eco: seeds planted in the ecosystem grow faster. with bush and grass.
-
-        this.passive = null;
-        this.active = null;
-        this.eco = null;
+        // extend: when a bush is placed next to it, passive ability extends.
+        this.hasActive = false;
+        this.hasExtended = false;
     }
 
-    drawHealthBar(p5, x, y, width, height){
+    drawHealthBar(p5, x, y, width, height) {
         p5.stroke(0);
         p5.strokeWeight(2);
         p5.fill(255, 255, 255, 0);
@@ -33,10 +32,38 @@ export class Tree extends Plant {
         p5.fill("green");
         p5.rect(x, y, width * p, height);
 
-        for(let i = 1; i < this.maxHealth; i++){
+        for (let i = 1; i < this.maxHealth; i++) {
             p5.stroke(0);
             p5.strokeWeight(1);
             p5.line(x + i * width / this.maxHealth, y, x + i * width / this.maxHealth, y + height);
         }
+    }
+
+    reevaluateSkills(playBoard, cell) {
+        if (!(playBoard instanceof PlayBoard)) {
+            console.log('reevaluateSkills of Tree has received invalid PlayBoard.');
+        }
+        if (cell.plant !== this) {
+            console.log("reevaluateSkills of Tree has received wrong cell.");
+        }
+
+        let adjacentCells = playBoard.boardObjects.getAdjacent4Cells(cell.x, cell.y);
+        // when a bush is next to this tree, it gains extended passive skill.
+        for (let adCell of adjacentCells) {
+            if (adCell.plant !== null && adCell.plant.name === "Bush") {
+                this.hasExtended = true;
+                break;
+            }
+        }
+        // when a bush and a grass is next to this tree, it gains active.
+        if (this.hasExtended) {
+            for (let adCell of adjacentCells) {
+                if (adCell.plant !== null && adCell.plant.name === "Grass") {
+                    this.hasActive = true;
+                    break;
+                }
+            }
+        }
+
     }
 }

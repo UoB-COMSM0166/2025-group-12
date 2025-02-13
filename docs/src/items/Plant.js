@@ -2,10 +2,6 @@ import { itemTypes, plantTypes } from "./ItemTypes.js";
 import { plantEnemyInteractions } from "./PlantEnemyInter.js";
 export class Plant{
     constructor(){
-        this.x;
-        this.y;
-        this.width;
-        this.height;
         this.type = itemTypes.PLANT;
     }
 

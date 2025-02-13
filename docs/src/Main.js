@@ -26,7 +26,7 @@ new p5((p) => {
         p.background(100);
 
         // when game state changes, load or save data accordingly
-        controller.setData(controller.gameState.getState());
+        controller.setData(p, controller.gameState.getState());
 
         // replace following tmp view handling later
         controller.view(p);

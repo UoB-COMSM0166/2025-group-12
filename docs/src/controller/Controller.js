@@ -47,7 +47,7 @@ export class Controller {
         }
     }
 
-    setData(newState) {
+    setData(p5, newState) {
         // if PLAY is in enemy movement, only call enemy movement
         if(newState === stateCode.PLAY && this.gameState.playerCanClick === false) {
             this.menus[stateCode.PLAY].enemyMovements(p5);
@@ -56,7 +56,7 @@ export class Controller {
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === stateCode.STANDBY && newState === stateCode.PLAY) {
             this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
-            this.menus[stateCode.PLAY].setStage();
+            this.menus[stateCode.PLAY].setStageInventory();
         }
 
         // if we quit PLAY to STANDBY, reset PlayBoard and inventory

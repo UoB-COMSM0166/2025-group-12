@@ -1,5 +1,6 @@
 import { itemTypes, plantTypes } from "./ItemTypes.js";
 import { Plant } from "./Plant.js";
+import {PlayBoard} from "../model/Play.js";
 
 export class Bush extends Plant {
     constructor() {
@@ -13,10 +14,6 @@ export class Bush extends Plant {
         this.status = true;
 
         // passive: nearby tree's defense extends to 9 cells.
-
-        this.passive = null;
-        this.active = null;
-        this.eco = null;
     }
 
     drawHealthBar(p5, x, y, width, height){
@@ -36,5 +33,9 @@ export class Bush extends Plant {
             p5.strokeWeight(1);
             p5.line(x + i * width / this.maxHealth, y, x + i * width / this.maxHealth, y + height);
         }
+    }
+
+    reevaluateSkills(playBoard, cell){
+        // do nothing for Bush.
     }
 }

@@ -60,7 +60,9 @@ export class PlayBoard {
         let [turnWidth, turnHeight] = myutil.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
-        turnButton.onClick = () => {this.gameState.togglePlayerCanClick();}
+        turnButton.onClick = () => {
+            this.gameState.togglePlayerCanClick();
+        }
         this.buttons.push(turnButton);
 
         // setup stage terrain
@@ -76,7 +78,7 @@ export class PlayBoard {
         if (this.gameState.inventory.selectedItem !== null) {
             let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
             let clickedCell = false;
-            // if a cell is clicked, update this.cellColors.
+
             if (index[0] !== -1) {
                 let row = index[0];
                 let col = index[1];
@@ -85,6 +87,10 @@ export class PlayBoard {
                 }
                 if (this.boardObjects.plantCell(row, col, this.gameState.inventory.createItem(this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${row}, col ${col}`);
+
+                    // set plant's skill
+                    this.reevaluatePlantSkills(p5);
+
                     clickedCell = true;
                 }
             }
@@ -132,10 +138,8 @@ export class PlayBoard {
         for (let enemy of this.enemies) {
             let img = this.gameState.images.get(`${enemy.name}`);
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-            enemy.width = imgSize;
-            enemy.height = imgSize;
-            p5.image(img, enemy.x - imgSize / 2, enemy.y - 2 * imgSize / 5, imgSize, imgSize);
-            enemy.drawHealthBar(p5, enemy.x - 21, enemy.y - 25, 40, 5);
+            p5.image(img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
+            enemy.drawHealthBar(p5, enemy.x - 20, enemy.y - 50, 40, 5);
         }
 
         // draw plants according to board objects
@@ -145,13 +149,10 @@ export class PlayBoard {
                 let plant = cell.plant;
                 if (plant !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
-                    plant.x = avgX, plant.y = avgY;
                     let img = this.gameState.images.get(`${cell.plant.name}`);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-                    plant.width = imgSize, plant.height = imgSize;
                     p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
-                    plant.checkCollision(this.enemies);
                 }
             }
         }
@@ -160,10 +161,18 @@ export class PlayBoard {
         this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
     }
 
-    /* below can be treated as black box */
+    /* ----------------------------------- */
+    /* ----------------------------------- */
+    /* ----------------------------------- */
+    /* ----------------------------------- */
+    /* below can be treated as black boxes */
+    /* ----------------------------------- */
+    /* ----------------------------------- */
+    /* ----------------------------------- */
+    /* ----------------------------------- */
 
-    // set stage terrain at setup phase
-    setStage() {
+    // set stage inventory at entering, called by controller
+    setStageInventory() {
         this.gameState.inventory.pushItem2Inventory("Tree", 3);
         this.gameState.inventory.pushItem2Inventory("Bush", 3);
         this.gameState.inventory.pushItem2Inventory("Grass", 3);
@@ -171,7 +180,20 @@ export class PlayBoard {
         this.gameState.inventory.updateInventoryHeight();
     }
 
+    // set stage terrain, called when the stage is loaded or reset
+    setStageTerrain() {
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                this.boardObjects.setCell(i, j, new Steppe());
+            }
+        }
+        this.boardObjects.setCell(4, 4, new PlayerBase());
+        this.boardObjects.setCell(4, 5, new Mountain());
+        this.boardObjects.setCell(5, 5, new Mountain());
+    }
+
     // when clear or quit, invoke this function to reset board
+    // called by controller
     resetBoard() {
         // reset turn and button
         this.turn = 1;
@@ -185,28 +207,17 @@ export class PlayBoard {
 
         // reset board cells
         this.boardObjects = new BoardCells(this.gridSize);
+
+        // reset terrain
         this.setStageTerrain();
 
         // reset tmp inventory
         this.tmpInventoryItems = null;
     }
 
-    setStageTerrain() {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe());
-            }
-        }
-        this.boardObjects.setCell(4, 4, new PlayerBase());
-        this.boardObjects.setCell(4, 5, new Mountain());
-        this.boardObjects.setCell(5, 5, new Mountain());
-    }
-
     drawGrid(p5) {
-
         p5.stroke(0);
         p5.strokeWeight(2);
-
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
 
@@ -222,6 +233,7 @@ export class PlayBoard {
         }
     }
 
+    // set the clicked cell to draw info box
     clickCells(p5) {
         let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
         if (index[0] === -1) {
@@ -231,6 +243,7 @@ export class PlayBoard {
         }
     }
 
+    // convert canvas position into cell index
     pos2CellIndex(x, y) {
         // edges of the grid under old grid-centered coordinates
         let leftEdge = -(this.gridSize * this.cellWidth) / 2;
@@ -253,6 +266,7 @@ export class PlayBoard {
         }
     }
 
+    // convert cell index into canvas position
     CellIndex2Pos(p5, i, j, mode) {
         let x = -(this.gridSize * this.cellWidth / 2) + j * this.cellWidth;
         let y = -(this.gridSize * this.cellHeight / 2) + i * this.cellHeight;
@@ -280,8 +294,8 @@ export class PlayBoard {
         }
     }
 
+    // left bottom info box
     drawInfoBox(p5) {
-
         let [boxWidth, boxHeight] = myutil.relative2absolute(5 / 32, 5 / 36);
         let boxX = myutil.relative2absolute(1 / 128, 0)[0];
         let [paddingX, paddingY] = myutil.relative2absolute(1 / 128, 1 / 72);
@@ -299,90 +313,40 @@ export class PlayBoard {
         p5.text(info, boxX + paddingX, boxY + paddingY, boxWidth - paddingX * 2);
     }
 
+    // end turn enemy activities
     enemyMovements(p5) {
         let updating = false;
 
         for (let enemy of this.enemies) {
-            if (enemy.name === "Storm" && enemy.status === true) {
-                if(enemy.isMoving === true){
-                    updating = true;
-                    let [dx, dy] = enemy.direction;
-                    let oldX = this.oldCoorX(enemy.x, enemy.y) + 5*dx;
-                    let oldY = this.oldCoorY(enemy.x, enemy.y) + 5*dy;
-                    let newX = this.newCoorX(oldX, oldY);
-                    let newY = this.newCoorY(oldX, oldY);
-                    console.log(oldX, oldY, newX, newY);
-                    enemy.x = newX;
-                    enemy.y = newY;
-
-                    // call interaction when storm overlays with plant (cell level)
-                    let index = this.pos2CellIndex(enemy.x, enemy.y);
-
-                    if(index[0] !== -1){
-                        let cell = this.boardObjects.getCell(index[0], index[1]);
-                        if(cell.plant !== null && cell.plant.status === true){
-                            plantEnemyInteractions.plantAttackedByStorm(this, cell.plant, enemy);
-                        }
-                    }
-
-                    // if the storm goes out of the grid, it dies anyway.
-                    if(index[0] === -1){
-                        enemy.status = false;
-                        let index = this.enemies.findIndex(e => e===enemy);
-                        this.enemies.splice(index, 1);
-                    }
-                    continue;
-                }
-                if (enemy.countdown > 0) {
-                    enemy.countdown--;
-                }
-                if(enemy.countdown === 0){
-                    // the storm blows!
-                    if(enemy.cell){
-                        enemy.cell.enemy = null;
-                        enemy.cell = null;
-                    }
-                    enemy.isMoving = true;
-                    updating = true;
-                }
+            if (enemy.enemyMovements(p5, this) === true) {
+                updating = true;
             }
-            // delete all not needed enemies
-            if(!enemy.status){
+            // delete dead enemy
+            if (!enemy.status) {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
             }
         }
 
         // still updating?
-        if(updating){
+        if (updating) {
             return;
         }
-        // if all enemies are updated:
 
+        // if all enemies are updated:
         // 1. set new enemies according to turn counter
         if (this.turn === 1) {
-            let [avgX, avgY] = this.CellIndex2Pos(p5, 1, 1, p5.CENTER);
-            let storm = new Storm(avgX, avgY, 'd');
-            this.enemies.push(storm);
-            this.boardObjects.getCell(1, 1).enemy = storm;
-            storm.cell = this.boardObjects.getCell(1, 1);
-        }else if (this.turn === 2) {
-            let [avgX, avgY] = this.CellIndex2Pos(p5, 2, 2, p5.CENTER);
-            let storm = new Storm(avgX, avgY, 'u');
-            this.enemies.push(storm);
-            this.boardObjects.getCell(2, 2).enemy = storm;
-            storm.cell = this.boardObjects.getCell(2, 2);
-        }else if (this.turn === 3) {
-            let [avgX, avgY] = this.CellIndex2Pos(p5, 3, 3, p5.CENTER);
-            let storm = new Storm(avgX, avgY, 'r');
-            this.enemies.push(storm);
-            this.boardObjects.getCell(3, 3).enemy = storm;
-            storm.cell = this.boardObjects.getCell(3, 3);
+            Storm.createNewStorm(p5, this, 1, 1, 'd');
+        } else if (this.turn === 2) {
+            Storm.createNewStorm(p5, this, 2, 2, 'u');
+        } else if (this.turn === 3) {
+            Storm.createNewStorm(p5, this, 3, 3, 'r');
         }
 
         // 2. set status
         this.endTurnActivity(p5);
     }
 
+    // miscellaneous end turn settings
     endTurnActivity(p5) {
         // a safe-lock to remove all dead plants
         let cells = this.boardObjects.getAllCellsWithPlant();
@@ -391,6 +355,9 @@ export class PlayBoard {
                 this.boardObjects.removePlant(cell.x, cell.y);
             }
         }
+
+        // reevaluate plants' skills
+        this.reevaluatePlantSkills();
 
         // set turn and counter
         this.turn++;
@@ -401,6 +368,15 @@ export class PlayBoard {
 
         // set action listener active
         this.gameState.togglePlayerCanClick();
+    }
+
+    // when a new plant is placed, or at the end of a turn,
+    // we need to verify all plant's skill status.
+    reevaluatePlantSkills(p5) {
+        let cells = this.boardObjects.getAllCellsWithPlant();
+        for (let cell of cells) {
+           cell.plant.reevaluateSkills(this, cell);
+        }
     }
 
     // the coordinate transformation is

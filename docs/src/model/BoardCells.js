@@ -44,6 +44,9 @@ export class BoardCells {
     }
 
     getCell(x, y) {
+        if(x < 0 || x >= this.size || y < 0 || y >= this.size) {
+            return null;
+        }
         return this.boardObjects[x][y];
     }
 
