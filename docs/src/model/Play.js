@@ -31,6 +31,8 @@ export class PlayBoard {
 
         // store all enemies
         this.enemies = new Set();
+        // temporarily save enemies to delete
+        this.toDelete = [];
 
         // board objects array and information block
         this.boardObjects = new BoardCells(this.gridSize);
@@ -242,7 +244,7 @@ export class PlayBoard {
         if (oldX >= leftEdge && oldX <= rightEdge
             && oldY >= topEdge && oldY <= bottomEdge) {
             let col = Math.floor((oldX + (this.gridSize * this.cellWidth) / 2) / this.cellWidth);
-            let row = this.gridSize - 1 - Math.floor((oldY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
+            let row = Math.floor((oldY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
             return [row, col];
         } else {
             return [-1];
@@ -295,45 +297,26 @@ export class PlayBoard {
         p5.text(info, boxX + paddingX, boxY + paddingY, boxWidth - paddingX * 2);
     }
 
-    // this involves end turn enemy activity.
-    endTurnActivity(p5) {
-        // a safe-lock to remove dead plants
-        let cells = this.boardObjects.getAllCellsWithPlant();
-        for (let cell of cells) {
-            if (cell.plant.status === false) {
-                this.boardObjects.removePlant(cell.x, cell.y);
-            }
-        }
-
-        this.turn++;
-        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
-        if (this.turn === this.maxTurn) {
-            this.gameState.setState(stateCode.FINISH);
-        }
-        this.gameState.togglePlayerCanClick();
-    }
-
     enemyMovements(p5) {
-        let flag = false;
-        let toDelete = [];
+        let updating = false;
+
 
         for (let enemy of this.enemies) {
-            if (enemy.name === "Storm") {
+            if (enemy.name === "Storm" && enemy.status === true) {
                 if(enemy.isMoving === true){
-                    flag = true;
+                    updating = true;
                     let [dx, dy] = enemy.direction;
-                    let oldX = this.oldCoorX(enemy.x, enemy.y) + dx;
-                    let oldY = this.oldCoorY(enemy.x, enemy.y) + dy;
+                    let oldX = this.oldCoorX(enemy.x, enemy.y) + 5*dx;
+                    let oldY = this.oldCoorY(enemy.x, enemy.y) + 5*dy;
                     let newX = this.newCoorX(oldX, oldY);
                     let newY = this.newCoorY(oldX, oldY);
-                    console.log(`${newX-enemy.x}, ${newY-enemy.y}`);
                     enemy.x = newX;
                     enemy.y = newY;
                     // if the storm goes out of the grid, it dies anyway.
                     let index = this.pos2CellIndex(enemy.x, enemy.y);
                     if(index[0] === -1){
                         enemy.status = false;
-                        toDelete.push(enemy);
+                        this.toDelete.push(enemy);
                     }
                     continue;
                 }
@@ -342,43 +325,70 @@ export class PlayBoard {
                 }
                 if(enemy.countdown === 0){
                     // the storm blows!
-                    console.log("storm blow?")
                     if(enemy.cell){
                         enemy.cell.enemy = null;
                         enemy.cell = null;
                     }
                     enemy.isMoving = true;
-                    flag = true;
+                    updating = true;
                 }
             }
         }
+
         // still updating?
-        if(flag){
+        if(updating){
             return;
         }
 
-        for (let enemy of toDelete) {
+        // if all enemies are updated:
+        // 1. delete dead enemy
+        for (let enemy of this.toDelete) {
             this.enemies.delete(enemy);
         }
 
+        // 2. set new enemies according to turn counter
         if (this.turn === 1) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 1, 1, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'd');
             this.enemies.add(storm);
             this.boardObjects.getCell(1, 1).enemy = storm;
             storm.cell = this.boardObjects.getCell(1, 1);
-
-            let oldX = this.oldCoorX(storm.x - this.canvasWidth / 2, storm.y - this.canvasHeight / 2);
-            let oldY = this.oldCoorY(storm.x - this.canvasWidth / 2, storm.y - this.canvasHeight / 2);
-            let newX = this.newCoorX(oldX, oldY) + this.canvasWidth / 2;
-            let newY = this.newCoorY(oldX, oldY) + this.canvasHeight / 2;
-
-            console.log(`${newX-storm.x}, ${newY-storm.y}`);
-
+        }else if (this.turn === 2) {
+            let [avgX, avgY] = this.CellIndex2Pos(p5, 2, 2, p5.CENTER);
+            let storm = new Storm(avgX, avgY, 'u');
+            this.enemies.add(storm);
+            this.boardObjects.getCell(2, 2).enemy = storm;
+            storm.cell = this.boardObjects.getCell(2, 2);
+        }else if (this.turn === 3) {
+            let [avgX, avgY] = this.CellIndex2Pos(p5, 3, 3, p5.CENTER);
+            let storm = new Storm(avgX, avgY, 'r');
+            this.enemies.add(storm);
+            this.boardObjects.getCell(3, 3).enemy = storm;
+            storm.cell = this.boardObjects.getCell(3, 3);
         }
 
-        // if all enemies are updated, set status
-            this.endTurnActivity(p5);
+        // 2. set status
+        this.endTurnActivity(p5);
+    }
+
+    endTurnActivity(p5) {
+        // a safe-lock to remove all dead plants
+        let cells = this.boardObjects.getAllCellsWithPlant();
+        for (let cell of cells) {
+            if (cell.plant.status === false) {
+                this.boardObjects.removePlant(cell.x, cell.y);
+            }
+        }
+
+        // set turn and counter
+        this.turn++;
+        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
+        if (this.turn === this.maxTurn) {
+            this.gameState.setState(stateCode.FINISH);
+        }
+
+        // set action listener active
+        this.gameState.togglePlayerCanClick();
     }
 
     // the coordinate transformation is
@@ -399,7 +409,7 @@ export class PlayBoard {
     }
 
     oldCoorY(newX, newY) {
-        return (1 / (this.Sx * this.Sy * Math.sin(this.span))) * (this.Sx * Math.sin(this.rot) * newX - this.Sx * Math.cos(this.rot) * newY);
+        return -(1 / (this.Sx * this.Sy * Math.sin(this.span))) * (this.Sx * Math.sin(this.rot) * newX - this.Sx * Math.cos(this.rot) * newY);
     }
 
     getTurnButtonText() {
