@@ -1,13 +1,14 @@
-import {CanvasSize} from "../CanvasSize.js";
-import {myutil} from "../../lib/myutil.js";
-import {Button} from "../items/Button.js";
-import {stateCode} from "./GameState.js";
-import {BoardCells} from "./BoardCells.js";
-import {Steppe} from "../items/Steppe.js";
-import {PlayerBase} from "../items/PlayerBase.js";
-import {Mountain} from "../items/Mountain.js";
-import {Storm} from "../items/Storm.js";
-import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
+import { CanvasSize } from "../CanvasSize.js";
+import { myutil } from "../../lib/myutil.js";
+import { Button } from "../items/Button.js";
+import { stateCode } from "./GameState.js";
+import { BoardCells } from "./BoardCells.js";
+import { Steppe } from "../items/Steppe.js";
+import { PlayerBase } from "../items/PlayerBase.js";
+import { Mountain } from "../items/Mountain.js";
+import { Storm } from "../items/Storm.js";
+import { plantEnemyInteractions } from "../items/PlantEnemyInter.js";
+import { Mob } from "../items/Mob.js";
 
 export class PlayBoard {
 
@@ -60,7 +61,7 @@ export class PlayBoard {
         let [turnWidth, turnHeight] = myutil.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
-        turnButton.onClick = () => {this.gameState.togglePlayerCanClick();}
+        turnButton.onClick = () => { this.gameState.togglePlayerCanClick(); }
         this.buttons.push(turnButton);
 
         // setup stage terrain
@@ -145,13 +146,14 @@ export class PlayBoard {
                 let plant = cell.plant;
                 if (plant !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
-                    plant.x = avgX, plant.y = avgY;
+                    plant.x = avgX;
+                    plant.y = avgY;
                     let img = this.gameState.images.get(`${cell.plant.name}`);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     plant.width = imgSize, plant.height = imgSize;
                     p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
-                    plant.checkCollision(this.enemies);
+                    this.checkCollision(plant);
                 }
             }
         }
@@ -304,31 +306,30 @@ export class PlayBoard {
 
         for (let enemy of this.enemies) {
             if (enemy.name === "Storm" && enemy.status === true) {
-                if(enemy.isMoving === true){
+                if (enemy.isMoving === true) {
                     updating = true;
                     let [dx, dy] = enemy.direction;
-                    let oldX = this.oldCoorX(enemy.x, enemy.y) + 5*dx;
-                    let oldY = this.oldCoorY(enemy.x, enemy.y) + 5*dy;
+                    let oldX = this.oldCoorX(enemy.x, enemy.y) + 5 * dx;
+                    let oldY = this.oldCoorY(enemy.x, enemy.y) + 5 * dy;
                     let newX = this.newCoorX(oldX, oldY);
                     let newY = this.newCoorY(oldX, oldY);
-                    console.log(oldX, oldY, newX, newY);
                     enemy.x = newX;
                     enemy.y = newY;
 
                     // call interaction when storm overlays with plant (cell level)
                     let index = this.pos2CellIndex(enemy.x, enemy.y);
 
-                    if(index[0] !== -1){
+                    if (index[0] !== -1) {
                         let cell = this.boardObjects.getCell(index[0], index[1]);
-                        if(cell.plant !== null && cell.plant.status === true){
+                        if (cell.plant !== null && cell.plant.status === true) {
                             plantEnemyInteractions.plantAttackedByStorm(this, cell.plant, enemy);
                         }
                     }
 
                     // if the storm goes out of the grid, it dies anyway.
-                    if(index[0] === -1){
+                    if (index[0] === -1) {
                         enemy.status = false;
-                        let index = this.enemies.findIndex(e => e===enemy);
+                        let index = this.enemies.findIndex(e => e === enemy);
                         this.enemies.splice(index, 1);
                     }
                     continue;
@@ -336,9 +337,9 @@ export class PlayBoard {
                 if (enemy.countdown > 0) {
                     enemy.countdown--;
                 }
-                if(enemy.countdown === 0){
+                if (enemy.countdown === 0) {
                     // the storm blows!
-                    if(enemy.cell){
+                    if (enemy.cell) {
                         enemy.cell.enemy = null;
                         enemy.cell = null;
                     }
@@ -347,13 +348,13 @@ export class PlayBoard {
                 }
             }
             // delete all not needed enemies
-            if(!enemy.status){
+            if (!enemy.status) {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
             }
         }
 
         // still updating?
-        if(updating){
+        if (updating) {
             return;
         }
         // if all enemies are updated:
@@ -362,16 +363,23 @@ export class PlayBoard {
         if (this.turn === 1) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 1, 1, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'd');
+            let [avgX1, avgY1] = this.CellIndex2Pos(p5, 3, 3, p5.CENTER);
+            console.log(avgY1);
+            let mob = new Mob(avgX1, avgY1);
+            console.log(mob);
             this.enemies.push(storm);
+            this.enemies.push(mob);
             this.boardObjects.getCell(1, 1).enemy = storm;
+            this.boardObjects.getCell(3, 3).enemy = mob;
             storm.cell = this.boardObjects.getCell(1, 1);
-        }else if (this.turn === 2) {
+            mob.cell = this.boardObjects.getCell(3, 3);
+        } else if (this.turn === 2) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 2, 2, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'u');
             this.enemies.push(storm);
             this.boardObjects.getCell(2, 2).enemy = storm;
             storm.cell = this.boardObjects.getCell(2, 2);
-        }else if (this.turn === 3) {
+        } else if (this.turn === 3) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 3, 3, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'r');
             this.enemies.push(storm);
@@ -426,6 +434,18 @@ export class PlayBoard {
 
     getTurnButtonText() {
         return `turn ${this.turn} in ${this.maxTurn}`;
+    }
+
+    checkCollision(plant) {
+        this.enemies.forEach(element => {
+            if (this.pos2CellIndex(element.x, element.y) === this.pos2CellIndex(plant.x, plant.y)) {
+                plantEnemyInteractions.plantAttackedByStorm(this, enemy);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
     }
 
 }

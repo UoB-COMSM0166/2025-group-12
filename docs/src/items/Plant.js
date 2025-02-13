@@ -12,11 +12,8 @@ export class Plant{
     checkCollision(enemies){
         for(let enemy of enemies){
             if (
-                // reduce the hit box to half of the size to avoid misCollision
-                enemy.x < this.x + this.width/2 &&
-                enemy.x + enemy.width/2 > this.x &&
-                enemy.y < this.y + this.height/2 &&
-                enemy.y + enemy.height/2 > this.y
+                // reduce the hitbox to half of the size to avoid misCollision
+                enemy.x === this.x
             ){
                 plantEnemyInteractions.plantAttackedByStorm(this, enemy);
                 console.log('trigger');
