@@ -5,7 +5,7 @@ import {PlayBoard} from "../model/Play.js";
 
 export class Storm extends Enemy {
     constructor(x, y, direction) {
-        super();
+        super(x, y);
         this.name = "Storm";
 
         this.health = 3;
@@ -25,8 +25,6 @@ export class Storm extends Enemy {
             return;
         }
 
-        this.x = x;
-        this.y = y;
         this.cell = null;
         this.countdown = 1;
         this.isMoving = false;

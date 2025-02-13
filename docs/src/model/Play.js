@@ -1,13 +1,14 @@
-import {CanvasSize} from "../CanvasSize.js";
-import {myutil} from "../../lib/myutil.js";
-import {Button} from "../items/Button.js";
-import {stateCode} from "./GameState.js";
-import {BoardCells} from "./BoardCells.js";
-import {Steppe} from "../items/Steppe.js";
-import {PlayerBase} from "../items/PlayerBase.js";
-import {Mountain} from "../items/Mountain.js";
-import {Storm} from "../items/Storm.js";
-import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
+import { CanvasSize } from "../CanvasSize.js";
+import { myutil } from "../../lib/myutil.js";
+import { Button } from "../items/Button.js";
+import { stateCode } from "./GameState.js";
+import { BoardCells } from "./BoardCells.js";
+import { Steppe } from "../items/Steppe.js";
+import { PlayerBase } from "../items/PlayerBase.js";
+import { Mountain } from "../items/Mountain.js";
+import { Storm } from "../items/Storm.js";
+import { plantEnemyInteractions } from "../items/PlantEnemyInter.js";
+import { Mob } from "../items/Mob.js";
 
 export class PlayBoard {
 
@@ -60,9 +61,7 @@ export class PlayBoard {
         let [turnWidth, turnHeight] = myutil.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
-        turnButton.onClick = () => {
-            this.gameState.togglePlayerCanClick();
-        }
+        turnButton.onClick = () => {this.gameState.togglePlayerCanClick();}
         this.buttons.push(turnButton);
 
         // setup stage terrain
@@ -402,6 +401,18 @@ export class PlayBoard {
 
     getTurnButtonText() {
         return `turn ${this.turn} in ${this.maxTurn}`;
+    }
+
+    checkCollision(plant) {
+        this.enemies.forEach(element => {
+            if (this.pos2CellIndex(element.x, element.y) === this.pos2CellIndex(plant.x, plant.y)) {
+                plantEnemyInteractions.plantAttackedByStorm(this, enemy);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
     }
 
 }

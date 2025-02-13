@@ -5,18 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/Mob.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/items/Mob.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Preloader.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Preloader.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/Controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Bush.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Bush.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Enemy.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Enemy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Grass.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Grass.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Plant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Plant.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/PlantEnemyInter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/PlantEnemyInter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Storm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Storm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Tree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Tree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/BoardCells.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/BoardCells.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Play.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Play.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,21 +29,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/Users/Desktop/2025-group-12/docs&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JavaScript Debug.index.html.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging main",
+    "last_opened_file_path": "E:/Users/Desktop/2025-group-12/docs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/docs/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
@@ -76,7 +70,7 @@
       <option name="presentableId" value="Default" />
       <updated>1739392835450</updated>
       <workItem from="1739392837038" duration="10189000" />
-      <workItem from="1739461759614" duration="20156000" />
+      <workItem from="1739461759614" duration="20858000" />
     </task>
     <servers />
   </component>
