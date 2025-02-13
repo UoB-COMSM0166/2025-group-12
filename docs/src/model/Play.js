@@ -7,7 +7,7 @@ import { Steppe } from "../items/Steppe.js";
 import { PlayerBase } from "../items/PlayerBase.js";
 import { Mountain } from "../items/Mountain.js";
 import { Storm } from "../items/Storm.js";
-
+import { aStarSearch } from "./Astar.js";
 
 export class PlayBoard {
 
@@ -344,6 +344,11 @@ export class PlayBoard {
         this.boardObjects.setCell(4,4, new PlayerBase());
         this.boardObjects.setCell(4,5, new Mountain());
         this.boardObjects.setCell(5,5, new Mountain());
+        /*
+        example usage
+        let test = aStarSearch(this.boardObjects.boardObjects, this.boardObjects.boardObjects[0][0], this.boardObjects.boardObjects[5][5], 11);
+        console.log(test);
+        */
     }
 
 }
