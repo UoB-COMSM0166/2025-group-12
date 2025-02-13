@@ -134,6 +134,8 @@ export class PlayBoard {
         for (let enemy of this.enemies) {
             let img = this.gameState.images.get(`${enemy.name}`);
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+            enemy.width = imgSize;
+            enemy.height = imgSize;
             p5.image(img, enemy.x - imgSize / 2, enemy.y - 2 * imgSize / 5, imgSize, imgSize);
             enemy.drawHealthBar(p5, enemy.x - 21, enemy.y - 25, 40, 5);
         }
@@ -145,11 +147,13 @@ export class PlayBoard {
                 let plant = cell.plant;
                 if (plant !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
-
+                    plant.x = avgX, plant.y = avgY;
                     let img = this.gameState.images.get(`${cell.plant.name}`);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+                    plant.width = imgSize, plant.height = imgSize;
                     p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
+                    plant.checkCollision(this.enemies);
                 }
             }
         }
@@ -310,6 +314,7 @@ export class PlayBoard {
                     let oldY = this.oldCoorY(enemy.x, enemy.y) + 5*dy;
                     let newX = this.newCoorX(oldX, oldY);
                     let newY = this.newCoorY(oldX, oldY);
+                    console.log(oldX, oldY, newX, newY);
                     enemy.x = newX;
                     enemy.y = newY;
                     // if the storm goes out of the grid, it dies anyway.
@@ -339,11 +344,12 @@ export class PlayBoard {
         if(updating){
             return;
         }
-
         // if all enemies are updated:
         // 1. delete dead enemy
-        for (let enemy of this.toDelete) {
-            this.enemies.delete(enemy);
+        for (let enemy of this.enemies) {
+            if(enemy.status === false){
+                this.enemies.delete(enemy);
+            }
         }
 
         // 2. set new enemies according to turn counter
