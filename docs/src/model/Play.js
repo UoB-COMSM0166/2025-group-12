@@ -346,6 +346,10 @@ export class PlayBoard {
                     updating = true;
                 }
             }
+            // delete all not needed enemies
+            if(!enemy.status){
+                this.enemies.splice(this.enemies.indexOf(enemy), 1);
+            }
         }
 
         // still updating?
