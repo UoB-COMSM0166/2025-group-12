@@ -1,11 +1,5 @@
 # 2025-group-12
-2025 COMSM0166 group 12 
 
-todo: 
-1. (All) a consistent version of plant skills for stage 1.
-2. (ART) stage 1 -- plant & enemy: icon and animation
-3. (DEV) change game resolution. need a tool function to calculate relative position & size
-4. (DEV) plant & plant interactions (passive active ecosystem skills), plant & enemy interactions (enemy AI, damage calculation)
 
 [Kaban](https://succulent-fedora-3cf.notion.site/18c028ddf64e809da9e4f3fcc03ee99d?v=18c028ddf64e80aaa882000ce3420299)
 
