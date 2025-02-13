@@ -25,7 +25,9 @@ export class Storm extends Enemy {
 
         this.x = x;
         this.y = y;
+        this.cell = null;
         this.countdown = 1;
+        this.isMoving = false;
     }
 
     drawHealthBar(p5, x, y, width, height){

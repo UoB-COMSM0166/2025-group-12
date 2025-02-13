@@ -109,6 +109,7 @@ export class Inventory {
         // if the item is already in inventory:
         if(this.items.has(name)){
             this.items.set(name, this.items.get(name) + number);
+            return;
         }
         // if the item is not in inventory:
         if(this.createItem(name) !== null){
