@@ -7,7 +7,7 @@ import {Steppe} from "../items/Steppe.js";
 import {PlayerBase} from "../items/PlayerBase.js";
 import {Mountain} from "../items/Mountain.js";
 import {Storm} from "../items/Storm.js";
-
+import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
 
 export class PlayBoard {
 
@@ -30,9 +30,7 @@ export class PlayBoard {
         this.buttons = [];
 
         // store all enemies
-        this.enemies = new Set();
-        // temporarily save enemies to delete
-        this.toDelete = [];
+        this.enemies = [];
 
         // board objects array and information block
         this.boardObjects = new BoardCells(this.gridSize);
@@ -183,7 +181,7 @@ export class PlayBoard {
         this.selectedCell = [];
 
         // clear enemies
-        this.enemies = new Set();
+        this.enemies = [];
 
         // reset board cells
         this.boardObjects = new BoardCells(this.gridSize);
@@ -291,7 +289,7 @@ export class PlayBoard {
 
         p5.fill(50);
         p5.noStroke();
-        p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundedness
+        p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundness
 
         p5.fill(255);
         p5.textSize(18);
@@ -303,7 +301,6 @@ export class PlayBoard {
 
     enemyMovements(p5) {
         let updating = false;
-
 
         for (let enemy of this.enemies) {
             if (enemy.name === "Storm" && enemy.status === true) {
@@ -317,11 +314,22 @@ export class PlayBoard {
                     console.log(oldX, oldY, newX, newY);
                     enemy.x = newX;
                     enemy.y = newY;
-                    // if the storm goes out of the grid, it dies anyway.
+
+                    // call interaction when storm overlays with plant (cell level)
                     let index = this.pos2CellIndex(enemy.x, enemy.y);
+
+                    if(index[0] !== -1){
+                        let cell = this.boardObjects.getCell(index[0], index[1]);
+                        if(cell.plant !== null && cell.plant.status === true){
+                            plantEnemyInteractions.plantAttackedByStorm(this, cell.plant, enemy);
+                        }
+                    }
+
+                    // if the storm goes out of the grid, it dies anyway.
                     if(index[0] === -1){
                         enemy.status = false;
-                        this.toDelete.push(enemy);
+                        let index = this.enemies.findIndex(e => e===enemy);
+                        this.enemies.splice(index, 1);
                     }
                     continue;
                 }
@@ -345,30 +353,24 @@ export class PlayBoard {
             return;
         }
         // if all enemies are updated:
-        // 1. delete dead enemy
-        for (let enemy of this.enemies) {
-            if(enemy.status === false){
-                this.enemies.delete(enemy);
-            }
-        }
 
-        // 2. set new enemies according to turn counter
+        // 1. set new enemies according to turn counter
         if (this.turn === 1) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 1, 1, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'd');
-            this.enemies.add(storm);
+            this.enemies.push(storm);
             this.boardObjects.getCell(1, 1).enemy = storm;
             storm.cell = this.boardObjects.getCell(1, 1);
         }else if (this.turn === 2) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 2, 2, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'u');
-            this.enemies.add(storm);
+            this.enemies.push(storm);
             this.boardObjects.getCell(2, 2).enemy = storm;
             storm.cell = this.boardObjects.getCell(2, 2);
         }else if (this.turn === 3) {
             let [avgX, avgY] = this.CellIndex2Pos(p5, 3, 3, p5.CENTER);
             let storm = new Storm(avgX, avgY, 'r');
-            this.enemies.add(storm);
+            this.enemies.push(storm);
             this.boardObjects.getCell(3, 3).enemy = storm;
             storm.cell = this.boardObjects.getCell(3, 3);
         }

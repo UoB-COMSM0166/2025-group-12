@@ -40,23 +40,7 @@ export class BoardCells {
 
     removePlant(x, y) {
         this.getCell(x, y).removePlant();
-
-        // when a plant is removed, an existing ecosystem may get destroyed.
-        // 1. remove all ecosystem markers
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                this.getCell(i, j).isEcoSphere = false;
-            }
-        }
-        // 2. loop through all remaining plants and try to reconstruct ecosystem
-        let remainingPlants = this.getAllCellsWithPlant();
-        for (let cell of remainingPlants) {
-            let components = new Map();
-            components.set(cell.plant.name, cell);
-            if (this.findEcoSphereDFS(cell.x, cell.y, components)) {
-                this.setEcoSphereDFS(cell.x, cell.y);
-            }
-        }
+        this.reconstructEcosystem();
     }
 
     getCell(x, y) {
@@ -162,6 +146,25 @@ export class BoardCells {
         }
     }
 
+    reconstructEcosystem(){
+        // when a plant is removed, an existing ecosystem may get destroyed.
+        // 1. remove all ecosystem markers
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                this.getCell(i, j).isEcoSphere = false;
+            }
+        }
+        // 2. loop through all remaining plants and try to reconstruct ecosystem
+        let remainingPlants = this.getAllCellsWithPlant();
+        for (let cell of remainingPlants) {
+            let components = new Map();
+            components.set(cell.plant.name, cell);
+            if (this.findEcoSphereDFS(cell.x, cell.y, components)) {
+                this.setEcoSphereDFS(cell.x, cell.y);
+            }
+        }
+    }
+
     getAdjacent8Cells(x, y) {
         let cells = [];
         for (let i = -1; i <= 1; i++) {
@@ -222,12 +225,6 @@ class Cell {
     }
 
     set plant(plant) {
-
-        if (plant.type !== itemTypes.PLANT) {
-            console.log(`failed to plant cell at (${this.x},${this.y}) since the input is not plant.`);
-            return;
-        }
-
         this._plant = plant;
     }
 
