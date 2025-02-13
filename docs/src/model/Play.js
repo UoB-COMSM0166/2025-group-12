@@ -179,7 +179,7 @@ export class PlayBoard {
         this.selectedCell = [];
 
         // clear enemies
-        this.enemies = [];
+        this.enemies = new Set();
 
         // reset board cells
         this.boardObjects = new BoardCells(this.gridSize);
