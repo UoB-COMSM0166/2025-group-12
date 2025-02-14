@@ -79,6 +79,9 @@ export class PlayBoard {
         if(this.selectedCell !== null) {
             if(this.clickInfoBoxArrow(p5)){
                 return;
+            }else{
+                // reset the info status to prevent unintentional bugs
+                this.infoStatus = 't';
             }
         }
 
