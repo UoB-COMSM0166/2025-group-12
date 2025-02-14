@@ -1,5 +1,5 @@
 import { Button } from "../items/Button.js";
-import { stateCode } from "./GameState.js";
+import { stateCode,stageCode } from "./GameState.js";
 import { CanvasSize } from "../CanvasSize.js";
 import { myutil } from "../../lib/myutil.js";
 
@@ -16,11 +16,11 @@ export class StandbyMenu {
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
         let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Stage 1");
-        stage1Button.onClick = () => this.gameState.setState(stateCode.PLAY);
+        stage1Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStage = stageCode.STAGE1};
 
         let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Stage 2");
-        stage2Button.onClick = () => {console.log("placeholder2")};
-
+        stage2Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStage = stageCode.STAGE2};
+        
         let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Stage 3");
         stage3Button.onClick = () => {console.log("placeholder3")};
 

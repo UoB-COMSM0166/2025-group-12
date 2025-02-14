@@ -24,6 +24,9 @@ new p5((p) => {
     }
     p.draw = () => {
         p.background(100);
+        
+        // create play stage
+        controller.setPlayStage(p);
 
         // when game state changes, load or save data accordingly
         controller.setData(p, controller.gameState.getState());

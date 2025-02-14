@@ -1,22 +1,25 @@
-import {stateCode, GameState} from "../model/GameState.js";
-import {StartMenu} from "../model/Menu.js";
-import {StandbyMenu} from "../model/Standby.js";
-import {PlayBoard} from "../model/Play.js";
+import { stateCode, stageCode, GameState } from "../model/GameState.js";
+import { StartMenu } from "../model/Menu.js";
+import { StandbyMenu } from "../model/Standby.js";
+import { Stage1PlayBoard } from "../model/stages/Stage1.js";
+import { Stage2PlayBoard } from "../model/stages/Stage2.js";
 
 export class Controller {
     constructor(images) {
         this.gameState = new GameState(images);
+
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
             [stateCode.STANDBY]: new StandbyMenu(this.gameState),
-            [stateCode.PLAY]: new PlayBoard(this.gameState)
+            [stateCode.PLAY]: null
         };
+
         this.saveState = stateCode.MENU; // default
     }
 
     setup(p5) {
         for (let menu of Object.values(this.menus)) {
-            if (menu.setup) {
+            if (menu && menu.setup) {
                 menu.setup(p5);
             }
         }
@@ -30,7 +33,6 @@ export class Controller {
         if (currentMenu && currentMenu.handleClick) {
             currentMenu.handleClick(p5);
         }
-
     }
 
     scrollListener(event) {
@@ -47,9 +49,17 @@ export class Controller {
         }
     }
 
+    setPlayStage(p5){
+        if (this.gameState.getState() === stateCode.PLAY
+            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStage)) {
+            this.menus[stateCode.PLAY] = this.newGameStage(this.gameState.currentStage);
+            this.menus[stateCode.PLAY].setup(p5);
+        }
+    }
+
     setData(p5, newState) {
         // if PLAY is in enemy movement, only call enemy movement
-        if(newState === stateCode.PLAY && this.gameState.playerCanClick === false) {
+        if (newState === stateCode.PLAY && this.gameState.playerCanClick === false) {
             this.menus[stateCode.PLAY].enemyMovements(p5);
         }
 
@@ -78,6 +88,16 @@ export class Controller {
 
         }
 
+    }
+
+    newGameStage(newStage) {
+        if (newStage === stageCode.STAGE1) {
+            return new Stage1PlayBoard(this.gameState);
+        }
+        if (newStage === stageCode.STAGE2) {
+            return new Stage2PlayBoard(this.gameState);
+        }
+        return null;
     }
 }
 

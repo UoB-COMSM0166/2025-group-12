@@ -7,9 +7,19 @@ export const stateCode = {
     FINISH: 8
 };
 
+export const stageCode = {
+    NOSTAGE: 0,
+    STAGE1: 1,
+    STAGE2: 2,
+    STAGE3: 3,
+    STAGE4: 4,
+    STAGE5: 5
+}
+
 export class GameState {
     constructor(images) {
         this.state = stateCode.MENU; // default
+        this.currentStage = stageCode.NOSTAGE; // no stage is selected
         this.inventory = new Inventory();
         this.images = images; // store images so all menus can retrieve
         this.playerCanClick = true; // set this to false during end turn enemy activity

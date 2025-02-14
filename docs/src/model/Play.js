@@ -1,19 +1,14 @@
 import { CanvasSize } from "../CanvasSize.js";
 import { myutil } from "../../lib/myutil.js";
 import { Button } from "../items/Button.js";
-import { stateCode } from "./GameState.js";
+import { stateCode,stageCode } from "./GameState.js";
 import { BoardCells } from "./BoardCells.js";
-import { Steppe } from "../items/Steppe.js";
-import { PlayerBase } from "../items/PlayerBase.js";
-import { Mountain } from "../items/Mountain.js";
-import { Storm } from "../items/Storm.js";
-import { plantEnemyInteractions } from "../items/PlantEnemyInter.js";
-import { Mob } from "../items/Mob.js";
 
 export class PlayBoard {
 
     constructor(gameState) {
         this.gameState = gameState;
+        this.stageCode = stageCode.NOSTAGE;
         this.canvasWidth = CanvasSize.getSize()[0];
         this.canvasHeight = CanvasSize.getSize()[1];
 
@@ -76,7 +71,7 @@ export class PlayBoard {
     handleClick(p5) {
 
         // clicked info box arrows when they exist
-        if(this.selectedCell !== null) {
+        if(this.selectedCell.length !== 0) {
             if(this.clickInfoBoxArrow(p5)){
                 return;
             }else{
@@ -147,10 +142,6 @@ export class PlayBoard {
             this.drawInfoBox(p5);
         }
 
-        // placeholder
-        // draw terrains before plants,
-        // so plants are cascaded above terrain
-
         // draw all enemies according to this.enemy
         for (let enemy of this.enemies) {
             let img = this.gameState.images.get(`${enemy.name}`);
@@ -190,23 +181,12 @@ export class PlayBoard {
 
     // set stage inventory at entering, called by controller
     setStageInventory() {
-        this.gameState.inventory.pushItem2Inventory("Tree", 3);
-        this.gameState.inventory.pushItem2Inventory("Bush", 3);
-        this.gameState.inventory.pushItem2Inventory("Grass", 3);
-        // update inventory height
-        this.gameState.inventory.updateInventoryHeight();
+        console.log("setStageInventory is not overridden!");
     }
 
     // set stage terrain, called when the stage is loaded or reset
     setStageTerrain() {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe());
-            }
-        }
-        this.boardObjects.setCell(4, 4, new PlayerBase());
-        this.boardObjects.setCell(4, 5, new Mountain());
-        this.boardObjects.setCell(5, 5, new Mountain());
+        console.log("setStageTerrain is not overridden!");
     }
 
     // when clear or quit, invoke this function to reset board
@@ -456,13 +436,7 @@ export class PlayBoard {
 
         // if all enemies are updated:
         // 1. set new enemies according to turn counter
-        if (this.turn === 1) {
-            Storm.createNewStorm(p5, this, 1, 1, 'd');
-        } else if (this.turn === 2) {
-            Storm.createNewStorm(p5, this, 2, 2, 'u');
-        } else if (this.turn === 3) {
-            Storm.createNewStorm(p5, this, 3, 3, 'r');
-        }
+        this.nextTurnEnemies(p5);
 
         // 2. set status
         this.endTurnActivity(p5);
@@ -490,6 +464,10 @@ export class PlayBoard {
 
         // set action listener active
         this.gameState.togglePlayerCanClick();
+    }
+
+    nextTurnEnemies(p5){
+        console.log("nextTurnEnemies is not overridden!");
     }
 
     // when a new plant is placed, or at the end of a turn,
@@ -524,18 +502,6 @@ export class PlayBoard {
 
     getTurnButtonText() {
         return `turn ${this.turn} in ${this.maxTurn}`;
-    }
-
-    checkCollision(plant) {
-        this.enemies.forEach(element => {
-            if (this.pos2CellIndex(element.x, element.y) === this.pos2CellIndex(plant.x, plant.y)) {
-                plantEnemyInteractions.plantAttackedByStorm(this, enemy);
-                return true;
-            }
-            else {
-                return false;
-            }
-        });
     }
 
 }
