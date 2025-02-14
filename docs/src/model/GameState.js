@@ -17,11 +17,10 @@ export const stageCode = {
 }
 
 export class GameState {
-    constructor(images) {
+    constructor() {
         this.state = stateCode.MENU; // default
         this.currentStage = stageCode.NOSTAGE; // no stage is selected
         this.inventory = new Inventory();
-        this.images = images; // store images so all menus can retrieve
         this.playerCanClick = true; // set this to false during end turn enemy activity
     }
 

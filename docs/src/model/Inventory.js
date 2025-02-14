@@ -1,8 +1,9 @@
-import { Tree } from "../items/Tree.js";
-import { Bush } from "../items/Bush.js";
-import { Grass } from "../items/Grass.js";
+import { Tree, TreeSeed } from "../items/Tree.js";
+import { Bush, BushSeed } from "../items/Bush.js";
+import { Grass, GrassSeed } from "../items/Grass.js";
 import { CanvasSize } from "../CanvasSize.js";
 import { myutil } from "../../lib/myutil.js"
+import {Seed} from "../items/Seed.js";
 
 export class Inventory {
     constructor() {
@@ -35,7 +36,7 @@ export class Inventory {
         let index = 0;
         for (let [key, value] of this.items.entries()) {
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
-            let tmpItem = this.createItem(key);
+            let tmpItem = this.createItem(p5, key);
             // draw an item of inventory
             p5.fill(tmpItem.color);
             p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - this.itemInter, this.itemInter);
@@ -88,31 +89,37 @@ export class Inventory {
     }
 
     // return a new item according to name
-    createItem(name){
+    createItem(p5, name){
         if(!name instanceof String){
             console.log("input of createItem is not a String?");
             return null;
         }
         if(name === "Tree"){
-            return new Tree();
-        }else if(name === "Bush"){
-            return new Bush();
+            return new Tree(p5);
+        }else if(name === "TreeSeed"){
+            return new TreeSeed(p5);
+        } else if(name === "Bush"){
+            return new Bush(p5);
+        }else if(name === "BushSeed"){
+            return new BushSeed(p5);
         }else if (name === "Grass"){
-            return new Grass();
+            return new Grass(p5);
+        }else if(name === "GrassSeed"){
+            return new GrassSeed(p5);
         }else{
             console.log("input of createItem is not a unknown?");
             return null;
         }
     }
 
-    pushItem2Inventory(name, number){
+    pushItem2Inventory(p5, name, number){
         // if the item is already in inventory:
         if(this.items.has(name)){
             this.items.set(name, this.items.get(name) + number);
             return;
         }
         // if the item is not in inventory:
-        if(this.createItem(name) !== null){
+        if(this.createItem(p5, name) !== null){
             this.items.set(name, number);
         }
         // if the item is invalid:

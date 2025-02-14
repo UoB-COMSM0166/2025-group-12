@@ -3,6 +3,8 @@ import { myutil } from "../../lib/myutil.js";
 import { Button } from "../items/Button.js";
 import { stateCode,stageCode } from "./GameState.js";
 import { BoardCells } from "./BoardCells.js";
+import { Seed } from "../items/Seed.js";
+import { Plant } from "../items/Plant.js";
 
 export class PlayBoard {
 
@@ -91,7 +93,7 @@ export class PlayBoard {
                 if (this.boardObjects.getCell(row, col).plant !== null) {
                     return; // prevent repetitive planting one cell
                 }
-                if (this.boardObjects.plantCell(row, col, this.gameState.inventory.createItem(this.gameState.inventory.selectedItem))) {
+                if (this.boardObjects.plantCell(row, col, this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${row}, col ${col}`);
 
                     // set plant's skill
@@ -144,9 +146,8 @@ export class PlayBoard {
 
         // draw all enemies according to this.enemy
         for (let enemy of this.enemies) {
-            let img = this.gameState.images.get(`${enemy.name}`);
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-            p5.image(img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
+            p5.image(enemy.img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
             enemy.drawHealthBar(p5, enemy.x - 20, enemy.y - 50, 40, 5);
         }
 
@@ -157,9 +158,8 @@ export class PlayBoard {
                 let plant = cell.plant;
                 if (plant !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
-                    let img = this.gameState.images.get(`${cell.plant.name}`);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-                    p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+                    p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
                 }
             }
@@ -180,7 +180,7 @@ export class PlayBoard {
     /* ----------------------------------- */
 
     // set stage inventory at entering, called by controller
-    setStageInventory() {
+    setStageInventory(p5) {
         console.log("setStageInventory is not overridden!");
     }
 
@@ -218,8 +218,7 @@ export class PlayBoard {
     drawGrid(p5) {
         p5.stroke(0);
         p5.strokeWeight(2);
-        let img = this.gameState.images.get("ground");
-        let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+        let img = p5.images.get("ground");
 
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
@@ -411,27 +410,20 @@ export class PlayBoard {
         p5.text(info, boxX + paddingX, boxY + paddingY + 24, boxWidth - paddingX * 2);
 
         let arrowSize = myutil.relative2absolute(0.02)[0];
-        p5.image(this.gameState.images.get("leftarrow"), boxX + boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
-        p5.image(this.gameState.images.get("rightarrow"), boxX + 2*boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
+        p5.image(p5.images.get("leftarrow"), boxX + boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
+        p5.image(p5.images.get("rightarrow"), boxX + 2*boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
     }
 
     // end turn enemy activities
     enemyMovements(p5) {
-        let updating = false;
-
         for (let enemy of this.enemies) {
             if (enemy.enemyMovements(p5, this) === true) {
-                updating = true;
+                return; // enemies will move one after one instead of moving simultaneously
             }
             // delete dead enemy
             if (!enemy.status) {
                 this.enemies.splice(this.enemies.indexOf(enemy), 1);
             }
-        }
-
-        // still updating?
-        if (updating) {
-            return;
         }
 
         // if all enemies are updated:
@@ -460,6 +452,18 @@ export class PlayBoard {
         this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
         if (this.turn === this.maxTurn) {
             this.gameState.setState(stateCode.FINISH);
+        }
+
+        // update seed status
+        let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
+        for (let cws of cellsWithSeed) {
+            let grown = cws.seed.grow();
+            if(grown instanceof Seed){
+                cws.seed = grown;
+            }else if(grown instanceof Plant){
+                cws.removeSeed();
+                cws.plant = grown;
+            }
         }
 
         // set action listener active

@@ -4,9 +4,10 @@ import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {PlayBoard} from "../model/Play.js";
 
 export class Storm extends Enemy {
-    constructor(x, y, direction) {
+    constructor(p5, x, y, direction) {
         super(x, y);
         this.name = "Storm";
+        this.img = p5.images.get(`${this.name}`);
 
         this.health = 3;
         this.maxHealth = 3;
@@ -51,7 +52,7 @@ export class Storm extends Enemy {
 
     static createNewStorm(p5, playBoard, i, j, direction) {
         let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);
-        let storm = new Storm(avgX, avgY, direction);
+        let storm = new Storm(p5, avgX, avgY, direction);
         playBoard.enemies.push(storm);
         playBoard.boardObjects.getCell(i, j).enemy = storm;
         storm.cell = playBoard.boardObjects.getCell(i, j);
@@ -66,7 +67,6 @@ export class Storm extends Enemy {
             return false;
         }
         if (this.isMoving === true) {
-
             this.moveAndInvokeStorm(playBoard);
             return true;
         }
@@ -80,9 +80,9 @@ export class Storm extends Enemy {
                 this.cell = null;
             }
             this.isMoving = true;
+            this.moveAndInvokeStorm(playBoard);
             return true;
         }
-
     }
 
     moveAndInvokeStorm(playBoard) {
@@ -103,15 +103,19 @@ export class Storm extends Enemy {
         let index = playBoard.pos2CellIndex(this.x, this.y);
         // if the storm is within grids, look up current cell and 3 cells ahead.
         if (index[0] !== -1) {
-            // if there is an extended tree ahead, check first
-            let dz = this.direction[0] === 0 ? [0, 1] : [1, 0];
-            for (let k = -1; k <= 1; k++) {
-                let aheadCell = playBoard.boardObjects.getCell(index[0] + this.direction[1] + dz[0] * k, index[1] + this.direction[0] + dz[1] * k);
-                if (aheadCell !== null && aheadCell.plant !== null && aheadCell.plant.name === "Tree") {
-                    if (aheadCell.plant.hasExtended === true && aheadCell.plant.status === true) {
-                        plantEnemyInteractions.plantAttackedByStorm(playBoard, aheadCell.plant, this);
+            // first check if there is an extended tree nearby
+            let cells = playBoard.boardObjects.getAdjacent4Cells(index[0], index[1]);
+            let trees = [];
+            for (let adCell of cells) {
+                if (adCell !== null && adCell.plant !== null && adCell.plant.name === "Tree") {
+                    if (adCell.plant.hasExtended === true && adCell.plant.status === true) {
+                        trees.push(adCell.plant);
                     }
                 }
+            }
+            if(trees.length > 0) {
+                let luckyTree = trees[Math.floor(Math.random() * trees.length)];
+                plantEnemyInteractions.plantAttackedByStorm(playBoard, luckyTree, this);
             }
 
             // then look up current cell

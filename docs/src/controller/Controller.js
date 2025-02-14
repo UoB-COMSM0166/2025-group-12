@@ -5,8 +5,8 @@ import { Stage1PlayBoard } from "../model/stages/Stage1.js";
 import { Stage2PlayBoard } from "../model/stages/Stage2.js";
 
 export class Controller {
-    constructor(images) {
-        this.gameState = new GameState(images);
+    constructor() {
+        this.gameState = new GameState();
 
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
@@ -66,7 +66,7 @@ export class Controller {
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === stateCode.STANDBY && newState === stateCode.PLAY) {
             this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
-            this.menus[stateCode.PLAY].setStageInventory();
+            this.menus[stateCode.PLAY].setStageInventory(p5);
         }
 
         // if we quit PLAY to STANDBY, reset PlayBoard and inventory

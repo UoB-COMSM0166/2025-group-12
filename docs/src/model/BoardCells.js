@@ -62,6 +62,18 @@ export class BoardCells {
         return cells;
     }
 
+    getAllCellsWithSeed() {
+        let cells = [];
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                if (this.getCell(i, j).seed !== null) {
+                    cells.push(this.getCell(i, j));
+                }
+            }
+        }
+        return cells;
+    }
+
     getAllCellsWithEnemy() {
         let cells = [];
         for (let i = 0; i < this.size; i++) {
@@ -211,6 +223,7 @@ class Cell {
         this.y = y;
         this._terrain = terrain;
         this._plant = null;
+        this._seed = null;
         this._enemy = null;
         this.isEcoSphere = false;
     }
@@ -229,6 +242,7 @@ class Cell {
         return this._terrain;
     }
 
+    // to remove a plant from a cell, use removePlant below.
     set plant(plant) {
         if (plant.type !== itemTypes.PLANT) {
             console.log(`failed to set cell at (${this.x},${this.y}) since the input is not plant.`);
@@ -243,6 +257,22 @@ class Cell {
 
     removePlant() {
         this._plant = null;
+    }
+
+    set seed(seed){
+        if (seed.type !== itemTypes.SEED) {
+            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);
+            return;
+        }
+        this._seed = seed;
+    }
+
+    get seed() {
+        return this._seed;
+    }
+
+    removeSeed(){
+        this._seed = null;
     }
 
     set enemy(enemy) {
@@ -264,6 +294,11 @@ class Cell {
     isCompatible(plant) {
         if(this.enemy !== null){
             console.log("an enemy is on this cell, you cant place plant here!");
+            return false;
+        }
+
+        if(this.seed !== null){
+            console.log("an seed is already on this cell, you cant place plant here!");
             return false;
         }
 

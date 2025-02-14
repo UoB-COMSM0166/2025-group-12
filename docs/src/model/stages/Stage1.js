@@ -24,10 +24,10 @@ export class Stage1PlayBoard extends PlayBoard {
     }
 
     // set stage inventory at entering, called by controller
-    setStageInventory() {
-        this.gameState.inventory.pushItem2Inventory("Tree", 3);
-        this.gameState.inventory.pushItem2Inventory("Bush", 3);
-        this.gameState.inventory.pushItem2Inventory("Grass", 3);
+    setStageInventory(p5) {
+        this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
+        this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
+        this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
         // update inventory height
         this.gameState.inventory.updateInventoryHeight();
     }

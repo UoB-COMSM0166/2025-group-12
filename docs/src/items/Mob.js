@@ -5,6 +5,7 @@ export class Mob extends Enemy{
     constructor(x, y){
         super(x, y);
         this.name = "Mob";
+        this.img = p5.images.get(`${this.name}`);
 
         this.health = 3;
         this.maxHealth = 3;

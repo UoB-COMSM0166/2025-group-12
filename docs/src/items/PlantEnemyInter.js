@@ -38,19 +38,18 @@ export class plantEnemyInteractions {
             }
             storm.health = 0;
             storm.status = false;
-            return;
-        }
-
-        // other plants attacked by a storm, one of them dies first, or they die simultaneously
-        while (plant.health > 0 && storm.health > 0) {
-            plant.health--;
-            storm.health--;
-        }
-        if (plant.health === 0) {
-            plant.status = false;
-        }
-        if (storm.health === 0) {
-            storm.status = false;
+        }else{
+            // other plants attacked by a storm, one of them dies first, or they die simultaneously
+            while (plant.health > 0 && storm.health > 0) {
+                plant.health--;
+                storm.health--;
+            }
+            if (plant.health === 0) {
+                plant.status = false;
+            }
+            if (storm.health === 0) {
+                storm.status = false;
+            }
         }
 
         if(plant.status === false){
