@@ -5,8 +5,8 @@ import { Stage1PlayBoard } from "../model/stages/Stage1.js";
 import { Stage2PlayBoard } from "../model/stages/Stage2.js";
 
 export class Controller {
-    constructor() {
-        this.gameState = new GameState();
+    constructor(p5) {
+        this.gameState = new GameState(p5);
 
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),

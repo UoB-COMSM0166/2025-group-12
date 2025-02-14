@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/items/Seed.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Preloader.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Preloader.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/Controller.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Bush.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Bush.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Grass.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Grass.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/ItemTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/ItemTypes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Mob.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Mob.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Plant.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Plant.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/PlantEnemyInter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/PlantEnemyInter.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Storm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Storm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Tree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Tree.js" afterDir="false" />
@@ -23,7 +18,6 @@
       <change beforePath="$PROJECT_DIR$/src/model/Inventory.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Inventory.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Play.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Play.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/stages/Stage1.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/stages/Stage1.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/stages/Stage2.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/stages/Stage2.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +90,7 @@
       <workItem from="1739528590612" duration="5850000" />
       <workItem from="1739541289614" duration="1527000" />
       <workItem from="1739543415801" duration="247000" />
-      <workItem from="1739561383040" duration="7524000" />
+      <workItem from="1739561383040" duration="11082000" />
     </task>
     <servers />
   </component>

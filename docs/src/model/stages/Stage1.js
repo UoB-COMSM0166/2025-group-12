@@ -28,6 +28,9 @@ export class Stage1PlayBoard extends PlayBoard {
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
         this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
         this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
+        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 1);
+        this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
+        this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 3);
         // update inventory height
         this.gameState.inventory.updateInventoryHeight();
     }

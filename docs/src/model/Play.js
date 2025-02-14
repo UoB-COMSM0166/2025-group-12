@@ -156,11 +156,17 @@ export class PlayBoard {
             for (let j = 0; j < this.gridSize; j++) {
                 let cell = this.boardObjects.getCell(i, j);
                 let plant = cell.plant;
+                let seed = cell.seed;
                 if (plant !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
+                }
+                if(seed !== null){
+                    let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
+                    let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+                    p5.image(seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                 }
             }
         }
@@ -457,7 +463,7 @@ export class PlayBoard {
         // update seed status
         let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
         for (let cws of cellsWithSeed) {
-            let grown = cws.seed.grow();
+            let grown = cws.seed.grow(p5);
             if(grown instanceof Seed){
                 cws.seed = grown;
             }else if(grown instanceof Plant){

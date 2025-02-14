@@ -3,12 +3,15 @@ import { Bush, BushSeed } from "../items/Bush.js";
 import { Grass, GrassSeed } from "../items/Grass.js";
 import { CanvasSize } from "../CanvasSize.js";
 import { myutil } from "../../lib/myutil.js"
-import {Seed} from "../items/Seed.js";
+import { itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
 
 export class Inventory {
-    constructor() {
+    constructor(p5) {
         this.items = new Map(); // <String name, int count>
         this.selectedItem = null; // a String
+
+        // for fast lookup when creating item
+        this.itemPrototypes = this.initPrototypes(p5);
 
         // inventory and item parameters
         [this.padding, this.itemHeight] = myutil.relative2absolute(0.01, 0.06);
@@ -90,22 +93,30 @@ export class Inventory {
 
     // return a new item according to name
     createItem(p5, name){
-        if(!name instanceof String){
-            console.log("input of createItem is not a String?");
+        // fetch an instance from item prototypes
+        let item = this.itemPrototypes.get(name);
+        if(item === null){
+            console.log("input of createItem is not a unknown?");
             return null;
         }
-        if(name === "Tree"){
-            return new Tree(p5);
-        }else if(name === "TreeSeed"){
-            return new TreeSeed(p5);
-        } else if(name === "Bush"){
-            return new Bush(p5);
-        }else if(name === "BushSeed"){
-            return new BushSeed(p5);
-        }else if (name === "Grass"){
-            return new Grass(p5);
-        }else if(name === "GrassSeed"){
-            return new GrassSeed(p5);
+
+        // item is either a plant or seed
+        if(item.type === itemTypes.PLANT){
+            if(item.plantType === plantTypes.TREE){
+                return new Tree(p5);
+            }else if(item.plantType === plantTypes.BUSH){
+                return new Bush(p5);
+            }else if(item.plantType === plantTypes.GRASS){
+                return new Grass(p5);
+            }
+        }else if(item.type === itemTypes.SEED){
+            if(item.seedType === seedTypes.TREE){
+                return new TreeSeed(p5);
+            }else if(item.seedType === seedTypes.BUSH){
+                return new BushSeed(p5);
+            }else if(item.seedType === seedTypes.GRASS){
+                return new GrassSeed(p5);
+            }
         }else{
             console.log("input of createItem is not a unknown?");
             return null;
@@ -124,6 +135,17 @@ export class Inventory {
         }
         // if the item is invalid:
         // do nothing. createItem has printed error info.
+    }
+
+    initPrototypes(p5){
+        return  new Map([
+            ["Tree", new Tree(p5)],
+            ["Bush", new Bush(p5)],
+            ["Grass", new Grass(p5)],
+            ["TreeSeed", new TreeSeed(p5)],
+            ["BushSeed", new BushSeed(p5)],
+            ["GrassSeed", new GrassSeed(p5)]
+        ]);
     }
 
     // store inventory items

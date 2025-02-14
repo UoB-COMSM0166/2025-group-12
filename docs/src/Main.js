@@ -10,7 +10,7 @@ new p5((p) => {
     p.setup = () => {
         let canvasSize = CanvasSize.getSize();
         p.createCanvas(canvasSize[0], canvasSize[1]);
-        controller = new Controller();
+        controller = new Controller(p);
         controller.setup(p);
     };
 

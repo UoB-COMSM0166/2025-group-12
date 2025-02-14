@@ -1,4 +1,6 @@
 import {itemTypes} from "../items/ItemTypes.js";
+import {Plant} from "../items/Plant.js";
+import {Seed} from "../items/Seed.js";
 
 export class BoardCells {
     constructor(size) {
@@ -15,13 +17,25 @@ export class BoardCells {
     }
 
     // plant on a cell
-    plantCell(x, y, plant) {
+    plantCell(x, y, item) {
         let cell = this.getCell(x, y);
-        if (!cell.isCompatible(plant)) {
+
+        if(!(item instanceof Plant) && !(item instanceof Seed)) {
+            console.log("plantCell received invalid input.");
+            return false;
+        }
+
+        if (!cell.isCompatible(item)) {
             console.log("incompatible plant with terrain, failed to plant.");
             return false;
         }
-        cell.plant = plant;
+
+        if(item instanceof Seed) {
+            cell.seed = item;
+            return true;
+        }
+
+        cell.plant = item;
 
         // if plant is placed on an ecosystem, it expands the ecosystem.
         if (cell.isEcoSphere) {
@@ -30,7 +44,7 @@ export class BoardCells {
         }
         // if ecosystem is not built, first try to build one.
         let components = new Map();
-        components.set(plant.name, cell);
+        components.set(item.name, cell);
         if (this.findEcoSphereDFS(x, y, components)) {
             console.log("ecosystem built!");
             this.setEcoSphereDFS(x, y);
@@ -95,18 +109,23 @@ export class BoardCells {
 
         let t = this.getCell(x, y).terrain;
         let p = this.getCell(x, y).plant;
+        let s = this.getCell(x, y).seed;
         let e = this.getCell(x, y).enemy;
 
         if (t === null) {
             return `cell at (${x},${y}) is missing terrain!`;
         }
 
-        if (p === null && e === null) {
+        if (p === null && s === null && e === null) {
             return `cell at (${x},${y}) is of terrain ${t.name}.`;
         }
 
         if(e !== null) {
             return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
+        }
+
+        if(s !== null) {
+            return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
         }
 
         return `cell at (${x},${y}) is of terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
@@ -290,8 +309,8 @@ class Cell {
         return "The cell is not in an ecosystem.";
     }
 
-    // check if plant is compatible with the terrain.
-    isCompatible(plant) {
+    // check if plant or seed is compatible with the terrain.
+    isCompatible(item) {
         if(this.enemy !== null){
             console.log("an enemy is on this cell, you cant place plant here!");
             return false;

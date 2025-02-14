@@ -122,6 +122,8 @@ export class Storm extends Enemy {
             let cell = playBoard.boardObjects.getCell(index[0], index[1]);
             if (cell.plant !== null && cell.plant.status === true) {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
+            }else if(cell.seed !== null){
+                plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
             }
         }
 

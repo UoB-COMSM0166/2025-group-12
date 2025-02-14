@@ -74,7 +74,7 @@ export class Grass extends Plant {
 export class GrassSeed extends Seed {
     constructor(p5) {
         super();
-        this.name = "Grass";
+        this.name = "GrassSeed";
         this.color = "blue";
         this.seedType = seedTypes.GRASS;
         this.countdown = 1;
