@@ -219,6 +219,9 @@ export class PlayBoard {
         // clear enemies
         this.enemies = [];
 
+        // reset info box status
+        this.infoStatus = 't';
+
         // reset board cells
         this.boardObjects = new BoardCells(this.gridSize);
 
