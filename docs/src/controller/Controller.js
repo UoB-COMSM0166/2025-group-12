@@ -62,7 +62,7 @@ export class Controller {
 
     setData(p5, newState) {
         // if PLAY is in enemy movement, only call enemy movement
-        if (newState === stateCode.PLAY && this.gameState.playerCanClick === false) {
+        if (newState === stateCode.PLAY && this.gameState.enemyCanMove === true) {
             this.menus[stateCode.PLAY].enemyMovements(p5);
         }
 

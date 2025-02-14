@@ -24,6 +24,7 @@ export class GameState {
         this.images = images; // store images so all menus can retrieve
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
+        this.enemyCanMove = false;
     }
 
     setState(newState) {
@@ -45,6 +46,10 @@ export class GameState {
 
     togglePaused(){
         this.paused = !this.paused;
+    }
+
+    toggleEnemyCanMove(){
+        this.enemyCanMove = !this.enemyCanMove;
     }
 }
 
