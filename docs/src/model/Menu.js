@@ -29,6 +29,9 @@ export class StartMenu {
         }
     }
 
+    handleKey() {
+
+    }
     draw(p5) {
         p5.background(50);
         p5.fill(255);

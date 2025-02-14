@@ -3,6 +3,7 @@ import { StartMenu } from "../model/Menu.js";
 import { StandbyMenu } from "../model/Standby.js";
 import { Stage1PlayBoard } from "../model/stages/Stage1.js";
 import { Stage2PlayBoard } from "../model/stages/Stage2.js";
+import {InputHandler} from "./input.js";
 
 export class Controller {
     constructor(images) {
@@ -14,6 +15,8 @@ export class Controller {
             [stateCode.PLAY]: null
         };
 
+        //key input
+        this.input = new InputHandler(this.gameState);
         this.saveState = stateCode.MENU; // default
     }
 
