@@ -232,19 +232,25 @@ export class PlayBoard {
     drawGrid(p5) {
         p5.stroke(0);
         p5.strokeWeight(2);
+        let img = this.gameState.images.get("ground");
+        let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
+                let [x1, y1, x2, y2, x3, y3, x4, y4] = this.CellIndex2Pos(p5, i, j, p5.CORNERS);
+                p5.image(img, x1 - this.cellWidth/2, y1 , this.cellWidth, this.cellHeight);
 
                 if (this.boardObjects.getCell(i, j).isEcoSphere) {
-                    p5.fill("green");
+                    p5.fill('rgba(0%, 0%, 100%, 0.5)');
                 } else {
-                    p5.fill(100);
+                    p5.fill(0,0,0,0);
                 }
-
-                let [x1, y1, x2, y2, x3, y3, x4, y4] = this.CellIndex2Pos(p5, i, j, p5.CORNERS);
+                p5.stroke(0);
+                p5.strokeWeight(2);
                 p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
             }
         }
+        p5.strokeWeight(0);
     }
 
     // set the clicked cell to draw info box
