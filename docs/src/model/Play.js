@@ -59,7 +59,10 @@ export class PlayBoard {
         let [turnWidth, turnHeight] = myutil.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
-        turnButton.onClick = () => {this.gameState.togglePlayerCanClick();}
+        turnButton.onClick = () => {
+            this.gameState.togglePlayerCanClick();
+            this.gameState.toggleEnemyCanMove();
+        }
         this.buttons.push(turnButton);
 
         // setup stage terrain
@@ -474,6 +477,7 @@ export class PlayBoard {
 
         // set action listener active
         this.gameState.togglePlayerCanClick();
+        this.gameState.toggleEnemyCanMove();
     }
 
     nextTurnEnemies(p5){

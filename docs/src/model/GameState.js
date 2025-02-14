@@ -22,6 +22,8 @@ export class GameState {
         this.currentStage = stageCode.NOSTAGE; // no stage is selected
         this.inventory = new Inventory(p5);
         this.playerCanClick = true; // set this to false during end turn enemy activity
+        this.paused = false;
+        this.enemyCanMove = false;
     }
 
     setState(newState) {
@@ -39,6 +41,14 @@ export class GameState {
 
     togglePlayerCanClick(){
         this.playerCanClick = !this.playerCanClick;
+    }
+
+    togglePaused(){
+        this.paused = !this.paused;
+    }
+
+    toggleEnemyCanMove(){
+        this.enemyCanMove = !this.enemyCanMove;
     }
 }
 
