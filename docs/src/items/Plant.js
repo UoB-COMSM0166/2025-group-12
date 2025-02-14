@@ -5,6 +5,14 @@ export class Plant{
         this.type = itemTypes.PLANT;
     }
 
+    getPassiveString(){
+        console.log("getPassiveString not overridden.");
+    }
+
+    getActiveString(){
+        console.log("getActiveString not overridden.");
+    }
+
     checkCollision(enemies){
         for(let enemy of enemies){
             if (

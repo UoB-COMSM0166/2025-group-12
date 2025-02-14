@@ -20,6 +20,20 @@ export class Tree extends Plant {
         this.hasExtended = false;
     }
 
+    getPassiveString(){
+        if(this.hasExtended){
+            return "The tree stops an incoming storm from nearby 8 cells and lose 1 HP.";
+        }
+        return "The Tree stops an incoming storm and lose 1 HP.";
+    }
+
+    getActiveString(){
+        if(this.hasActive){
+            return "The Tree can recharge a plant's HP by 1.";
+        }
+        return "The Tree has no active skill now.";
+    }
+
     drawHealthBar(p5, x, y, width, height) {
         p5.stroke(0);
         p5.strokeWeight(2);

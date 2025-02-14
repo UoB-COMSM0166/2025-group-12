@@ -17,6 +17,17 @@ export class Grass extends Plant {
         this.hasActive = null;
     }
 
+    getPassiveString(){
+        return "The Grass has no passive skill.";
+    }
+
+    getActiveString(){
+        if(this.hasActive){
+            return "The Grass can send your animal friends to attack a nearby group of bandits.";
+        }
+        return "The Grass has no active skill now.";
+    }
+
     drawHealthBar(p5, x, y, width, height) {
         p5.stroke(0);
         p5.strokeWeight(2);

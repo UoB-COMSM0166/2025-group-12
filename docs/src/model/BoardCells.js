@@ -218,16 +218,22 @@ class Cell {
     // however we still need to change terrain
     // for game extensibility.
     set terrain(terrain) {
-
         if (terrain.type !== itemTypes.TERRAIN) {
             console.log(`failed to set cell at (${this.x},${this.y}) since the input is not terrain.`);
             return;
         }
-
         this._terrain = terrain;
     }
 
+    get terrain() {
+        return this._terrain;
+    }
+
     set plant(plant) {
+        if (plant.type !== itemTypes.PLANT) {
+            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not plant.`);
+            return;
+        }
         this._plant = plant;
     }
 
@@ -235,8 +241,8 @@ class Cell {
         return this._plant;
     }
 
-    get terrain() {
-        return this._terrain;
+    removePlant() {
+        this._plant = null;
     }
 
     set enemy(enemy) {
@@ -247,8 +253,11 @@ class Cell {
         return this._enemy;
     }
 
-    removePlant() {
-        this._plant = null;
+    getEcoString(){
+        if(this.isEcoSphere){
+            return "The cell is in an ecosystem and has some passive skill.";
+        }
+        return "The cell is not in an ecosystem.";
     }
 
     // check if plant is compatible with the terrain.

@@ -33,9 +33,10 @@ export class PlayBoard {
         // store all enemies
         this.enemies = [];
 
-        // board objects array and information block
+        // board objects array and information block indicator
         this.boardObjects = new BoardCells(this.gridSize);
         this.selectedCell = [];
+        this.infoStatus = 't';
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
@@ -73,6 +74,14 @@ export class PlayBoard {
     }
 
     handleClick(p5) {
+
+        // clicked info box arrows when they exist
+        if(this.selectedCell !== null) {
+            if(this.clickInfoBoxArrow(p5)){
+                return;
+            }
+        }
+
         // clicked inventory, then click a cell
         if (this.gameState.inventory.selectedItem !== null) {
             let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
@@ -115,6 +124,12 @@ export class PlayBoard {
 
     draw(p5) {
         p5.background(200);
+
+        if(this.gameState.inventory.selectedItem !== null) {
+            p5.cursor('grab');
+        }else{
+            p5.cursor(p5.ARROW);
+        }
 
         // draw stage grid
         this.drawGrid(p5);
@@ -293,9 +308,81 @@ export class PlayBoard {
         }
     }
 
+    // a finite state machine.
+    infoBoxFSM(nextOrPrev){
+        let cell = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+
+        // terrain & enemy
+        if(this.infoStatus === 't'){
+            if(nextOrPrev === 'n'){
+                if(cell.plant !== null){
+                    this.infoStatus = 'p';
+                }else{
+                    this.infoStatus = 'e';
+                }
+            }else{
+                this.infoStatus = 'e';
+            }
+            return;
+        }
+
+        // plant passive skill
+        if(this.infoStatus === 'p'){
+            if(nextOrPrev === 'n'){
+                this.infoStatus = 'a';
+            }else{
+                this.infoStatus = 't';
+            }
+            return;
+        }
+
+        // plant active skill
+        if(this.infoStatus === 'a'){
+            if(nextOrPrev === 'n'){
+                this.infoStatus = 'e';
+            }else{
+                this.infoStatus = 'p';
+            }
+            return;
+        }
+
+        // ecosystem
+        if(this.infoStatus === 'e'){
+            if(nextOrPrev === 'n'){
+                this.infoStatus = 't';
+            }else{
+                if(cell.plant !== null){
+                    this.infoStatus = 'a';
+                }else{
+                    this.infoStatus = 't';
+                }
+            }
+            return;
+        }
+    }
+
+    clickInfoBoxArrow(p5){
+        // the parameters of arrows are hardcoded now, should refactor later.
+        let leftArrowX = 74;
+        let rightArrowX = 150.8;
+        let arrowY = 494.4;
+        let arrowSize = 25.6;
+        if(p5.mouseX >= leftArrowX && p5.mouseX < leftArrowX + arrowSize
+            && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize){
+            this.infoBoxFSM('p');
+            return true;
+        }
+        if(p5.mouseX >= rightArrowX && p5.mouseX < rightArrowX + arrowSize
+            && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize){
+            this.infoBoxFSM('n');
+            return true;
+        }
+        return false;
+    }
+
     // left bottom info box
     drawInfoBox(p5) {
-        let [boxWidth, boxHeight] = myutil.relative2absolute(5 / 32, 5 / 36);
+        let [boxWidth, boxHeight] = myutil.relative2absolute(0.18, 1 / 4);
         let boxX = myutil.relative2absolute(1 / 128, 0)[0];
         let [paddingX, paddingY] = myutil.relative2absolute(1 / 128, 1 / 72);
         let boxY = this.canvasHeight - boxHeight - paddingY;
@@ -304,12 +391,36 @@ export class PlayBoard {
         p5.noStroke();
         p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundness
 
+        let title;
+        let info;
+
+        if(this.infoStatus === 't'){
+            title = "General Info";
+            info = this.boardObjects.getCellString(this.selectedCell[0], this.selectedCell[1]);
+        }else if(this.infoStatus === 'p'){
+            title = "Plant Passive";
+            info = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]).plant.getPassiveString();
+        }else if(this.infoStatus === 'a'){
+            title = "Plant Active";
+            info = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]).plant.getActiveString();
+        }else if(this.infoStatus === 'e'){
+            title = "Ecosystem";
+            info = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]).getEcoString();
+        }
+
         p5.fill(255);
+        p5.textSize(20);
+        p5.textAlign(p5.CENTER, p5.TOP);
+        p5.text(title, boxX + boxWidth / 2, boxY + paddingY);
+
         p5.textSize(18);
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
-        let info = this.boardObjects.getCellString(this.selectedCell[0], this.selectedCell[1]);
-        p5.text(info, boxX + paddingX, boxY + paddingY, boxWidth - paddingX * 2);
+        p5.text(info, boxX + paddingX, boxY + paddingY + 24, boxWidth - paddingX * 2);
+
+        let arrowSize = myutil.relative2absolute(0.02)[0];
+        p5.image(this.gameState.images.get("leftarrow"), boxX + boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
+        p5.image(this.gameState.images.get("rightarrow"), boxX + 2*boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
     }
 
     // end turn enemy activities

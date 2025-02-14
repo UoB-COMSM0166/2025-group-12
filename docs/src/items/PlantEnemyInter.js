@@ -9,7 +9,7 @@ export class plantEnemyInteractions {
         let cells = playBoard.boardObjects.getAllCellsWithPlant();
         let cell = cells.find(c => c.plant === plant);
         if(cell !== null){}{
-            cell.plant = null;
+            cell.removePlant();
             playBoard.boardObjects.reconstructEcosystem();
         }
     }
@@ -35,7 +35,6 @@ export class plantEnemyInteractions {
             plant.health--;
             if (plant.health === 0) {
                 plant.status = false;
-
             }
             storm.health = 0;
             storm.status = false;
