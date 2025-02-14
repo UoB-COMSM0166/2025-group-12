@@ -1,5 +1,9 @@
 # 2025-group-12
 
+Reading Week:
+1. Seed design
+2. stage terrain & enemy route design
+3. action points
 
 [Kaban](https://succulent-fedora-3cf.notion.site/18c028ddf64e809da9e4f3fcc03ee99d?v=18c028ddf64e80aaa882000ce3420299)
 
