@@ -85,6 +85,10 @@ export class Storm extends Enemy {
         }
     }
 
+    // priority and logic of storm interactions:
+    // 1. check current cell to perform storm-terrain interaction.
+    // 2. check extended trees' existence, and randomly pick one lucky tree.
+    // 3. check current cell to attack plant or seed.
     moveAndInvokeStorm(playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
             console.error('moveAndInvokeStorm has received invalid PlayBoard.');
@@ -101,9 +105,15 @@ export class Storm extends Enemy {
 
         // call interaction when storm overlays with plant (cell level)
         let index = playBoard.pos2CellIndex(this.x, this.y);
-        // if the storm is within grids, look up current cell and 3 cells ahead.
         if (index[0] !== -1) {
-            // first check if there is an extended tree nearby
+            let cell = playBoard.boardObjects.getCell(index[0], index[1]);
+            // 1. check current cell to perform storm-terrain interaction.
+            if(cell.terrain.name === "Mountain"){
+                this.status = false;
+                plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            }
+
+            // 2. check extended trees' existence, and randomly pick one lucky tree.
             let cells = playBoard.boardObjects.getAdjacent4Cells(index[0], index[1]);
             let trees = [];
             for (let adCell of cells) {
@@ -118,13 +128,13 @@ export class Storm extends Enemy {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, luckyTree, this);
             }
 
-            // then look up current cell
-            let cell = playBoard.boardObjects.getCell(index[0], index[1]);
+            // 3. check current cell to attack plant or seed.
             if (cell.plant !== null && cell.plant.status === true) {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
             }else if(cell.seed !== null){
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
             }
+
         }
 
         // if the storm goes out of the grid, it dies anyway.

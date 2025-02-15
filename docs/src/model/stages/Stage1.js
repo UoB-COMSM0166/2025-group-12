@@ -29,9 +29,9 @@ export class Stage1PlayBoard extends PlayBoard {
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
         this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
         this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
-        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 1);
+        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 2);
         this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
-        this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 3);
+        this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 2);
         // update inventory height
         this.gameState.inventory.updateInventoryHeight();
     }
@@ -51,8 +51,7 @@ export class Stage1PlayBoard extends PlayBoard {
     nextTurnEnemies(p5) {
         if (this.turn === 1) {
             Storm.createNewStorm(p5, this, 3, 3, 'd');
-            Storm.createNewStorm(p5, this, 2, 3, 'u');
-            Storm.createNewStorm(p5, this, 3, 2, 'r');
+            Storm.createNewStorm(p5, this, 0, 5, 'd');
             Mob.createNewMob(p5, this, 5, 5);
         } else if (this.turn === 2) {
             Storm.createNewStorm(p5, this, 2, 2, 'u');

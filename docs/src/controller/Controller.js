@@ -92,16 +92,11 @@ export class Controller {
             // reset board later, since it also clears tmp inventory items
             this.menus[stateCode.PLAY].resetBoard();
         }
-        // if a game stage is cleared, we shift from PLAY to FINISH, then go to STANDBY
-        // remove all seeds, store all living plants and keep the inventory.
+
+        // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
         if (newState === stateCode.FINISH) {
             this.menus[stateCode.PLAY].resetBoard();
             this.gameState.setState(stateCode.STANDBY);
-
-            // remove all seed? ------
-            // codes ......
-
-
         }
 
     }
