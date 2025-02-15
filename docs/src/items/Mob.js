@@ -19,6 +19,7 @@ export class Mob extends Enemy {
         this.targetX;
         this.targetY;
         this.moved = false;
+        this.chosen = false;
     }
 
     drawHealthBar(p5, x, y, width, height) {
@@ -62,8 +63,9 @@ export class Mob extends Enemy {
 
         // randomly choose a target
         let cells = playBoard.boardObjects.getAllCellsWithPlant();
-        if (cells.length > 0) {
+        if (cells.length > 0 && !this.chosen) {
             this.targetCell = cells[Math.floor(Math.random() * cells.length)];
+            this.chosen = true;
         }
         if(this.cell !== null && this.targetCell !== null) {
             let posArr = aStarSearch(playBoard.boardObjects.boardObjects, this.cell, this.targetCell, 1);
@@ -80,6 +82,7 @@ export class Mob extends Enemy {
                     this.y = this.targetY;
                     this.cell = this.tempcell;
                     this.moved = true;
+                    return false;
                 }
                 return true;
             }

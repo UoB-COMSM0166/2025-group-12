@@ -480,6 +480,7 @@ export class PlayBoard {
         for(let enemy of this.enemies) {
             if(enemy.name === 'Mob'){
                 enemy.moved = false;
+                enemy.chosen = false;
             }
         }
 
