@@ -1,3 +1,75 @@
+## Meeting Agenda for Next Meeting (Update on February 13, 2025)
+
+## **Video Recording of the Paper Prototype**
+
+- The editing of the recorded gameplay test video has been completed.
+
+## **Game Software Development & Design**
+
+### **Confirmed Elements**
+
+- **Level 1 Plant Skills and Attributes:**
+    - Based on the submitted Paper Prototype in class.
+    - Includes **three plant types** and **natural disasters (storm interactions).**
+- **Pixel Art Style:**
+    - Inspired by *Stone Age* aesthetics (**Art Design**).
+- **Image Resolution:**
+    - The initial resolution will be set higher (16:9 aspect ratio).
+- **Worldbuilding Documentation:**
+    - Initial draft completed.
+
+### **Pending Decisions**
+
+- **Frame rate for game animations.**
+- **Object modeling angles:**
+    - Requires alignment between **game development and art design**.
+
+### **In Progress**
+
+- **Game Interface (UI) Flat Design** (**Art Design**)
+- **Adjusting Absolute Positions to Relative Positions** (**Game Development**)
+
+## **Encyclopedia (Compendium) System – Post-MVP Implementation**
+
+- **Aesthetic design of the interface.**
+- **Interactive elements within the compendium.**
+- **Accuracy and completeness of plant data.**
+
+## **Potential Inclusion of a Weather System – Post-MVP Consideration**
+
+- **Gameplay Balance Adjustments**
+- **Using the Weather System as a Hidden Variable in Map Terrain**
+    - **Decision:** Initially, the weather system design will be simplified.
+
+### (中文)
+
+- **Paper Prototype 影片錄製：**遊戲測試影片的剪輯已完成
+- **遊戲軟體開發與設計**
+- **已確定項目**
+    - **第一關植物技能與屬性：**
+        
+        以上課提交的 Paper Prototype 為主，包含 **三種植物** 與 **天災（暴風的交互）**
+        
+    - **像素風格設計：**採用 *石器時代* 風格（**美術設計**）
+    - **圖片分辨率設定：**起始分辨率設定較高（16:9 長寬比）
+    - **世界觀設定文檔：**初步撰寫完成
+- **待確定項目**
+    1. **遊戲動畫幀數**
+    2. **物件建模角度：**需與 **遊戲開發與美術設計** 進行確認與統一
+- **執行中**
+    - **遊戲介面（UI）平面設計**（**美術設計**）
+    - **將遊戲內的絕對座標改為相對座標**（**遊戲開發**）
+- **圖鑑系統設計 – MVP 之後實施**
+    1. **介面設計的美觀度**
+    2. **圖鑑的互動方式**
+    3. **植物資料的準確性與完整度**
+- **天氣系統的納入可能性 – MVP 之後考慮**
+    - **遊戲玩法平衡性調整。**
+    - **將天氣系統作為地圖地形的隱藏變量。**
+    - **決議：** 初步將天氣系統設計簡化，降低開發負擔
+
+---
+
 ## Meeting Agenda for Next Meeting (Update on February 11, 2025)
 
 ### **Video Recording of the Paper Prototype**
