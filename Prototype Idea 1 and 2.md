@@ -28,7 +28,7 @@
     - **event cards:** randomly triggered opportunities or challenges.
     - **ecological cards:** attract wildlife and improve the environment, such as “bee pollination”, “bird nesting”.
 
-In our prototype idea, “Green Renaissance” is not only a strategic management game but also an immersive experience that integrates ecological education. The game emphasizes the dynamic balance of ecosystems while incorporating card mechanics to enhance playability. We aim to design this game in the form of a turn-based strategy game, which provides spaces that make playerㄋ consider which strategy they desire. Through proper planning, players can understand the complexity and importance of ecosystems.
+In our prototype idea, “Green Renaissance” is not only a strategic management game but also an immersive experience that integrates ecological education. The game emphasizes the dynamic balance of ecosystems while incorporating card mechanics to enhance playability. We aim to design this game in the form of a turn-based strategy game, which provides spaces that make player consider which strategy they desire. Through proper planning, players can understand the complexity and importance of ecosystems.
 
 ![Video: Paper Prototype Idea 1](week3/Prototype%20Idea%201.mp4)
 
