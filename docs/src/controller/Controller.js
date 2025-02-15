@@ -1,8 +1,8 @@
-import { stateCode, stageCode, GameState } from "../model/GameState.js";
-import { StartMenu } from "../model/Menu.js";
-import { StandbyMenu } from "../model/Standby.js";
-import { Stage1PlayBoard } from "../model/stages/Stage1.js";
-import { Stage2PlayBoard } from "../model/stages/Stage2.js";
+import {stateCode, stageCode, GameState} from "../model/GameState.js";
+import {StartMenu} from "../model/Menu.js";
+import {StandbyMenu} from "../model/Standby.js";
+import {Stage1PlayBoard} from "../model/stages/Stage1.js";
+import {Stage2PlayBoard} from "../model/stages/Stage2.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 
@@ -28,14 +28,13 @@ export class Controller {
                 menu.setup(p5);
             }
         }
-        if (this.pauseMenu && this.pauseMenu.setup) {
-            this.pauseMenu.setup(p5);
-        }
+        this.pauseMenu.setup(p5);
     }
 
     clickListener(p5) {
-        if (this.pauseMenu && this.pauseMenu.handleClick) {
+        if (this.gameState.paused) {
             this.pauseMenu.handleClick(p5);
+            return;
         }
         if (this.gameState.playerCanClick === false) {
             return;
@@ -44,8 +43,6 @@ export class Controller {
         if (currentMenu && currentMenu.handleClick) {
             currentMenu.handleClick(p5);
         }
-
-
     }
 
     scrollListener(event) {
@@ -60,7 +57,7 @@ export class Controller {
         if (currentMenu && currentMenu.draw) {
             currentMenu.draw(p5);
         }
-        if(this.gameState.paused){
+        if (this.gameState.paused) {
             p5.push();
             p5.filter(p5.BLUR, 3);
             p5.pop();
@@ -68,7 +65,7 @@ export class Controller {
         }
     }
 
-    setPlayStage(p5){
+    setPlayStage(p5) {
         if (this.gameState.getState() === stateCode.PLAY
             && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStage)) {
             this.menus[stateCode.PLAY] = this.newGameStage(this.gameState.currentStage);
