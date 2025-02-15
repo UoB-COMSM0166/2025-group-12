@@ -4,6 +4,7 @@ import { StandbyMenu } from "../model/Standby.js";
 import { Stage1PlayBoard } from "../model/stages/Stage1.js";
 import { Stage2PlayBoard } from "../model/stages/Stage2.js";
 import {InputHandler} from "./input.js";
+import {PauseMenu} from "../model/PauseMenu.js";
 
 export class Controller {
     constructor(p5) {
@@ -15,7 +16,8 @@ export class Controller {
             [stateCode.PLAY]: null
         };
 
-        //key input
+        this.pauseMenu = new PauseMenu(this.gameState);
+        // key input
         this.input = new InputHandler(this.gameState);
         this.saveState = stateCode.MENU; // default
     }
@@ -26,9 +28,15 @@ export class Controller {
                 menu.setup(p5);
             }
         }
+        if (this.pauseMenu && this.pauseMenu.setup) {
+            this.pauseMenu.setup(p5);
+        }
     }
 
     clickListener(p5) {
+        if (this.pauseMenu && this.pauseMenu.handleClick) {
+            this.pauseMenu.handleClick(p5);
+        }
         if (this.gameState.playerCanClick === false) {
             return;
         }
@@ -36,6 +44,8 @@ export class Controller {
         if (currentMenu && currentMenu.handleClick) {
             currentMenu.handleClick(p5);
         }
+
+
     }
 
     scrollListener(event) {
@@ -49,6 +59,12 @@ export class Controller {
         let currentMenu = this.menus[this.gameState.getState()];
         if (currentMenu && currentMenu.draw) {
             currentMenu.draw(p5);
+        }
+        if(this.gameState.paused){
+            p5.push();
+            p5.filter(p5.BLUR, 3);
+            p5.pop();
+            this.pauseMenu.draw(p5);
         }
     }
 
