@@ -74,6 +74,7 @@ export class PlayBoard {
     }
 
     handleClick(p5) {
+        console.log(this.boardObjects.getCell(0, 0));
 
         // clicked info box arrows when they exist
         if(this.selectedCell.length !== 0) {
@@ -472,6 +473,13 @@ export class PlayBoard {
             }else if(grown instanceof Plant){
                 cws.removeSeed();
                 cws.plant = grown;
+            }
+        }
+
+        // set enemy back to can move
+        for(let enemy of this.enemies) {
+            if(enemy.name === 'Mob'){
+                enemy.moved = false;
             }
         }
 

@@ -6,6 +6,7 @@ import { Steppe } from "../../items/Steppe.js";
 import { PlayerBase } from "../../items/PlayerBase.js";
 import { Mountain } from "../../items/Mountain.js";
 import { Storm } from "../../items/Storm.js";
+import { Mob} from "../../items/Mob.js";
 
 export class Stage1PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -52,6 +53,7 @@ export class Stage1PlayBoard extends PlayBoard {
             Storm.createNewStorm(p5, this, 3, 3, 'd');
             Storm.createNewStorm(p5, this, 2, 3, 'u');
             Storm.createNewStorm(p5, this, 3, 2, 'r');
+            Mob.createNewMob(p5, this, 5, 5);
         } else if (this.turn === 2) {
             Storm.createNewStorm(p5, this, 2, 2, 'u');
         } else if (this.turn === 3) {

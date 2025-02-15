@@ -45,7 +45,7 @@ class Graph {
             let newX = x + dx;
             let newY = y + dy;
             // condition statement, change later
-            if (newX >= 0 && newX < this.rows && newY >= 0 && newY < this.cols && this.grid[newX][newY]._plant === null) {
+            if (newX >= 0 && newX < this.rows && newY >= 0 && newY < this.cols) {
                 result.push(new Node(newX, newY));
             }
         }
@@ -79,14 +79,13 @@ class Node {
 
 /* 
 usage:
-function receive 4 parameters, an 2d array, a start object contains coordinate [x, y], 
+function receive 4 parameters, a 2d array, a start object contains coordinate [x, y],
 a target object contains coordinate[x, y], a step.
-reuturn an array contains all the coordinate in object
+return an array contains all the coordinate in object
 */
 
 export function aStarSearch(graphIn, startIn, goalIn, step) {
     let graph = new Graph(graphIn);
-    console.log(graph);
     let start = new Node(startIn.x, startIn.y);
     let goal = new Node(goalIn.x, goalIn.y);
     let frontier = new PriorityQueue();
@@ -131,7 +130,7 @@ function reconstructPath(cameFrom, startKey, goalKey, step) {
     let currentKey = goalKey;
     while (currentKey !== startKey) {
         let [x, y] = currentKey.split(',').map(Number);
-        path.push(new Node(x, y));
+        path.push([x, y]);
         currentKey = cameFrom.get(currentKey);
     }
 
@@ -144,3 +143,15 @@ function reconstructPath(cameFrom, startKey, goalKey, step) {
     path.splice(step, path.length-step);
     return path;
 }
+
+let grid = [
+    [0, 0, 0, 0, 1],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+]
+
+let start = new Node(0, 0);
+let goal = new Node(3, 3);
+let result = aStarSearch(grid,start, goal, 4);
+console.log(result);

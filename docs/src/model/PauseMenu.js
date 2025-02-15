@@ -43,7 +43,6 @@ export class PauseMenu {
 
         for (let button of this.buttons) {
             button.draw(p5);
-            console.log('agaga');
         }
     }
 }
