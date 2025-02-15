@@ -1,10 +1,11 @@
-import { CanvasSize } from "../CanvasSize.js";
-import { myutil } from "../../lib/myutil.js";
-import { Button } from "../items/Button.js";
-import { stateCode,stageCode } from "./GameState.js";
-import { BoardCells } from "./BoardCells.js";
-import { Seed } from "../items/Seed.js";
-import { Plant } from "../items/Plant.js";
+import {CanvasSize} from "../CanvasSize.js";
+import {myutil} from "../../lib/myutil.js";
+import {Button} from "../items/Button.js";
+import {stateCode, stageCode} from "./GameState.js";
+import {BoardCells} from "./BoardCells.js";
+import {Seed} from "../items/Seed.js";
+import {Plant} from "../items/Plant.js";
+import {InfoBox} from "./InfoBox.js";
 
 export class PlayBoard {
 
@@ -30,10 +31,10 @@ export class PlayBoard {
         // store all enemies
         this.enemies = [];
 
-        // board objects array and information block indicator
+        // board objects array and information box
         this.boardObjects = new BoardCells(this.gridSize);
         this.selectedCell = [];
-        this.infoStatus = 't';
+        this.infoBox = new InfoBox();
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
@@ -74,13 +75,12 @@ export class PlayBoard {
     }
 
     handleClick(p5) {
-        console.log(this.boardObjects.getCell(0, 0));
 
         // clicked info box arrows when they exist
-        if(this.selectedCell.length !== 0) {
-            if(this.clickInfoBoxArrow(p5)){
+        if (this.selectedCell.length !== 0) {
+            if (this.infoBox.clickArrow(p5, this)) {
                 return;
-            }else{
+            } else {
                 // reset the info status to prevent unintentional bugs
                 this.infoStatus = 't';
             }
@@ -129,9 +129,9 @@ export class PlayBoard {
     draw(p5) {
         p5.background(200);
 
-        if(this.gameState.inventory.selectedItem !== null) {
+        if (this.gameState.inventory.selectedItem !== null) {
             p5.cursor('grab');
-        }else{
+        } else {
             p5.cursor(p5.ARROW);
         }
 
@@ -145,7 +145,7 @@ export class PlayBoard {
 
         // left bottom corner info box
         if (this.selectedCell.length !== 0) {
-            this.drawInfoBox(p5);
+            this.infoBox.draw(p5, this);
         }
 
         // draw all enemies according to this.enemy
@@ -167,7 +167,7 @@ export class PlayBoard {
                     p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
                 }
-                if(seed !== null){
+                if (seed !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
@@ -213,7 +213,7 @@ export class PlayBoard {
         this.enemies = [];
 
         // reset info box status
-        this.infoStatus = 't';
+        this.infoBox.infoStatus = 't';
 
         // reset board cells
         this.boardObjects = new BoardCells(this.gridSize);
@@ -233,12 +233,12 @@ export class PlayBoard {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = this.CellIndex2Pos(p5, i, j, p5.CORNERS);
-                p5.image(img, x1 - this.cellWidth/2, y1 , this.cellWidth, this.cellHeight);
+                p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
                 if (this.boardObjects.getCell(i, j).isEcoSphere) {
                     p5.fill('rgba(0%, 0%, 100%, 0.5)');
                 } else {
-                    p5.fill(0,0,0,0);
+                    p5.fill(0, 0, 0, 0);
                 }
                 p5.stroke(0);
                 p5.strokeWeight(2);
@@ -309,121 +309,6 @@ export class PlayBoard {
         }
     }
 
-    // a finite state machine.
-    infoBoxFSM(nextOrPrev){
-        let cell = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
-
-        // terrain & enemy
-        if(this.infoStatus === 't'){
-            if(nextOrPrev === 'n'){
-                if(cell.plant !== null){
-                    this.infoStatus = 'p';
-                }else{
-                    this.infoStatus = 'e';
-                }
-            }else{
-                this.infoStatus = 'e';
-            }
-            return;
-        }
-
-        // plant passive skill
-        if(this.infoStatus === 'p'){
-            if(nextOrPrev === 'n'){
-                this.infoStatus = 'a';
-            }else{
-                this.infoStatus = 't';
-            }
-            return;
-        }
-
-        // plant active skill
-        if(this.infoStatus === 'a'){
-            if(nextOrPrev === 'n'){
-                this.infoStatus = 'e';
-            }else{
-                this.infoStatus = 'p';
-            }
-            return;
-        }
-
-        // ecosystem
-        if(this.infoStatus === 'e'){
-            if(nextOrPrev === 'n'){
-                this.infoStatus = 't';
-            }else{
-                if(cell.plant !== null){
-                    this.infoStatus = 'a';
-                }else{
-                    this.infoStatus = 't';
-                }
-            }
-            return;
-        }
-    }
-
-    clickInfoBoxArrow(p5){
-        // the parameters of arrows are hardcoded now, should refactor later.
-        let leftArrowX = 74;
-        let rightArrowX = 150.8;
-        let arrowY = 494.4;
-        let arrowSize = 25.6;
-        if(p5.mouseX >= leftArrowX && p5.mouseX < leftArrowX + arrowSize
-            && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize){
-            this.infoBoxFSM('p');
-            return true;
-        }
-        if(p5.mouseX >= rightArrowX && p5.mouseX < rightArrowX + arrowSize
-            && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize){
-            this.infoBoxFSM('n');
-            return true;
-        }
-        return false;
-    }
-
-    // left bottom info box
-    drawInfoBox(p5) {
-        let [boxWidth, boxHeight] = myutil.relative2absolute(0.18, 1 / 4);
-        let boxX = myutil.relative2absolute(1 / 128, 0)[0];
-        let [paddingX, paddingY] = myutil.relative2absolute(1 / 128, 1 / 72);
-        let boxY = this.canvasHeight - boxHeight - paddingY;
-
-        p5.fill(50);
-        p5.noStroke();
-        p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundness
-
-        let title;
-        let info;
-
-        if(this.infoStatus === 't'){
-            title = "General Info";
-            info = this.boardObjects.getCellString(this.selectedCell[0], this.selectedCell[1]);
-        }else if(this.infoStatus === 'p'){
-            title = "Plant Passive";
-            info = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]).plant.getPassiveString();
-        }else if(this.infoStatus === 'a'){
-            title = "Plant Active";
-            info = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]).plant.getActiveString();
-        }else if(this.infoStatus === 'e'){
-            title = "Ecosystem";
-            info = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]).getEcoString();
-        }
-
-        p5.fill(255);
-        p5.textSize(20);
-        p5.textAlign(p5.CENTER, p5.TOP);
-        p5.text(title, boxX + boxWidth / 2, boxY + paddingY);
-
-        p5.textSize(18);
-        p5.textAlign(p5.LEFT, p5.TOP);
-        p5.textWrap(p5.WORD);
-        p5.text(info, boxX + paddingX, boxY + paddingY + 24, boxWidth - paddingX * 2);
-
-        let arrowSize = myutil.relative2absolute(0.02)[0];
-        p5.image(p5.images.get("leftarrow"), boxX + boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
-        p5.image(p5.images.get("rightarrow"), boxX + 2*boxWidth/3 - arrowSize/2, boxY - arrowSize - paddingY, arrowSize, arrowSize);
-    }
-
     // end turn enemy activities
     enemyMovements(p5) {
         for (let enemy of this.enemies) {
@@ -462,23 +347,33 @@ export class PlayBoard {
         this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
         if (this.turn === this.maxTurn) {
             this.gameState.setState(stateCode.FINISH);
+            // when a stage is cleared:
+            // 1. store all living plants
+            let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
+            for (let cws of cellsWithPlant) {
+                this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
+            }
+
+            // 2. remove all seeds
+            this.gameState.inventory.removeAllSeeds();
+            this.gameState.inventory.updateInventoryHeight();
         }
 
         // update seed status
         let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
         for (let cws of cellsWithSeed) {
             let grown = cws.seed.grow(p5);
-            if(grown instanceof Seed){
+            if (grown instanceof Seed) {
                 cws.seed = grown;
-            }else if(grown instanceof Plant){
+            } else if (grown instanceof Plant) {
                 cws.removeSeed();
                 cws.plant = grown;
             }
         }
 
         // set enemy back to can move
-        for(let enemy of this.enemies) {
-            if(enemy.name === 'Mob'){
+        for (let enemy of this.enemies) {
+            if (enemy.name === 'Mob') {
                 enemy.moved = false;
                 enemy.chosen = false;
             }
@@ -489,7 +384,7 @@ export class PlayBoard {
         this.gameState.toggleEnemyCanMove();
     }
 
-    nextTurnEnemies(p5){
+    nextTurnEnemies(p5) {
         console.log("nextTurnEnemies is not overridden!");
     }
 
@@ -498,7 +393,7 @@ export class PlayBoard {
     reevaluatePlantSkills(p5) {
         let cells = this.boardObjects.getAllCellsWithPlant();
         for (let cell of cells) {
-           cell.plant.reevaluateSkills(this, cell);
+            cell.plant.reevaluateSkills(this, cell);
         }
     }
 

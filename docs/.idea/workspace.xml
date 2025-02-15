@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/controller/input.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.js" afterDir="false" />
+    <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="merged zr's pause">
+      <change afterPath="$PROJECT_DIR$/src/model/InfoBox.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/Controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/GameState.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/GameState.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Menu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Menu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/Inventory.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Inventory.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Play.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Play.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,6 +26,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -38,21 +40,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript Debug.index.html.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging main",
-    "last_opened_file_path": "E:/Users/Desktop/2025-group-12/docs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Users/Desktop/2025-group-12/docs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/docs/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
@@ -83,7 +85,8 @@
       <workItem from="1739528590612" duration="5850000" />
       <workItem from="1739541289614" duration="1527000" />
       <workItem from="1739543415801" duration="247000" />
-      <workItem from="1739561383040" duration="11521000" />
+      <workItem from="1739561383040" duration="11852000" />
+      <workItem from="1739638397595" duration="2509000" />
     </task>
     <servers />
   </component>
@@ -107,5 +110,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="merged zr's pause" />
+    <option name="LAST_COMMIT_MESSAGE" value="merged zr's pause" />
   </component>
 </project>

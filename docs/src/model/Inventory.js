@@ -11,7 +11,7 @@ export class Inventory {
         this.selectedItem = null; // a String
 
         // for fast lookup when creating item
-        this.itemPrototypes = this.initPrototypes(p5);
+        this.itemPrototypes = this.initPrototypes(p5); // Map<String name, Plant/Seed instance>
 
         // inventory and item parameters
         [this.padding, this.itemHeight] = myutil.relative2absolute(0.01, 0.06);
@@ -96,7 +96,7 @@ export class Inventory {
         // fetch an instance from item prototypes
         let item = this.itemPrototypes.get(name);
         if(item === null){
-            console.log("input of createItem is not a unknown?");
+            console.log("input of createItem is unknown?");
             return null;
         }
 
@@ -169,5 +169,14 @@ export class Inventory {
     // update inventory height
     updateInventoryHeight(){
         this.inventoryHeight = this.items.size * this.itemHeight + this.padding * 2;
+    }
+
+    // when a stage is cleared, remove all seeds from inventory.
+    removeAllSeeds(){
+        for (let [name, instance] of this.itemPrototypes.entries()) {
+            if(instance.type === itemTypes.SEED){
+                this.items.delete(name);
+            }
+        }
     }
 }

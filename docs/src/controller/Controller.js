@@ -93,7 +93,7 @@ export class Controller {
             this.menus[stateCode.PLAY].resetBoard();
         }
         // if a game stage is cleared, we shift from PLAY to FINISH, then go to STANDBY
-        // remove all seeds and keep the inventory.
+        // remove all seeds, store all living plants and keep the inventory.
         if (newState === stateCode.FINISH) {
             this.menus[stateCode.PLAY].resetBoard();
             this.gameState.setState(stateCode.STANDBY);
