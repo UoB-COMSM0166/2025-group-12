@@ -67,7 +67,7 @@ export class PlayBoard {
         this.buttons.push(turnButton);
 
         // setup stage terrain
-        this.setStageTerrain();
+        this.setStageTerrain(p5);
     }
 
     handleScroll(event) {
@@ -152,7 +152,7 @@ export class PlayBoard {
         for (let enemy of this.enemies) {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(enemy.img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
-            enemy.drawHealthBar(p5, enemy.x - 20, enemy.y - 50, 40, 5);
+            myutil.drawHealthBar(p5, enemy, enemy.x - 20, enemy.y - 50, 40, 5);
         }
 
         // draw plants according to board objects
@@ -165,7 +165,7 @@ export class PlayBoard {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
-                    plant.drawHealthBar(p5, avgX - 21, avgY - 42, 40, 5);
+                    myutil.drawHealthBar(p5, plant, avgX - 21, avgY - 42, 40, 5);
                 }
                 if (seed !== null) {
                     let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
@@ -195,13 +195,13 @@ export class PlayBoard {
     }
 
     // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain() {
+    setStageTerrain(p5) {
         console.log("setStageTerrain is not overridden!");
     }
 
     // when clear or quit, invoke this function to reset board
     // called by controller
-    resetBoard() {
+    resetBoard(p5) {
         // reset turn and button
         this.turn = 1;
         this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
@@ -219,7 +219,7 @@ export class PlayBoard {
         this.boardObjects = new BoardCells(this.gridSize);
 
         // reset terrain
-        this.setStageTerrain();
+        this.setStageTerrain(p5);
 
         // reset tmp inventory
         this.tmpInventoryItems = null;
@@ -246,6 +246,16 @@ export class PlayBoard {
             }
         }
         p5.strokeWeight(0);
+
+        // terrain
+        for (let i = this.gridSize - 1; i >= 0; i--) {
+            for (let j = this.gridSize - 1; j >= 0; j--) {
+                let cell = this.boardObjects.getCell(i, j);
+                if(cell.terrain.name === "Steppe") continue;
+                let [x1, y1] = this.CellIndex2Pos(p5, i, j, p5.CORNER);
+                p5.image(cell.terrain.img, x1 - this.cellWidth/4, y1, this.cellWidth/2, this.cellHeight/2);
+            }
+        }
     }
 
     // set the clicked cell to draw info box
@@ -376,6 +386,9 @@ export class PlayBoard {
             if (enemy.name === 'Mob') {
                 enemy.moved = false;
                 enemy.chosen = false;
+            }
+            if(enemy.name === "Bandit"){
+                enemy.hasMoved = false;
             }
         }
 

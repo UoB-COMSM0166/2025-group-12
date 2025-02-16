@@ -95,4 +95,26 @@ export class plantEnemyInteractions {
         }
 
     }
+
+    static plantIsAttacked(playBoard, item, lost){
+        if (!playBoard || !(playBoard instanceof PlayBoard)) {
+            console.log("plantAttacked1 has received invalid board.");
+            return;
+        }
+        let plant = null, seed = null;
+        if (item instanceof Plant) {
+            item.health -= lost;
+            if(item.health <= 0) {
+                item.health = 0;
+                item.status = false;
+                plantEnemyInteractions.findPlantAndDelete(playBoard, item);
+            }
+        } else if (item instanceof Seed) {
+            item.health = 0;
+            item.status = false;
+            plantEnemyInteractions.findSeedAndDelete(playBoard, item);
+        } else {
+            console.log("plantAttacked1 has received invalid plant or seed.");
+        }
+    }
 }

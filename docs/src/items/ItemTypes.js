@@ -16,3 +16,12 @@ export let seedTypes = {
     BUSH: 4,
     GRASS: 8
 }
+
+export let terrainTypes = {
+    RUIN: 0,
+    BASE: 1,
+    MOUNTAIN: 2,
+    RIVER: 4,
+    BRIDGE: 8,
+    STEPPE: 16
+}

@@ -7,6 +7,7 @@ import { PlayerBase } from "../../items/PlayerBase.js";
 import { Mountain } from "../../items/Mountain.js";
 import { Storm } from "../../items/Storm.js";
 import { Mob} from "../../items/Mob.js";
+import {Bandit} from "../../items/Bandit.js";
 
 export class Stage1PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -37,22 +38,23 @@ export class Stage1PlayBoard extends PlayBoard {
     }
 
     // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain() {
+    setStageTerrain(p5) {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe());
+                this.boardObjects.setCell(i, j, new Steppe(p5));
             }
         }
-        this.boardObjects.setCell(4, 4, new PlayerBase());
-        this.boardObjects.setCell(4, 5, new Mountain());
-        this.boardObjects.setCell(5, 5, new Mountain());
+        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
+        this.boardObjects.setCell(4, 5, new Mountain(p5));
+        this.boardObjects.setCell(5, 5, new Mountain(p5));
     }
 
     nextTurnEnemies(p5) {
         if (this.turn === 1) {
             Storm.createNewStorm(p5, this, 3, 3, 'd');
             Storm.createNewStorm(p5, this, 0, 5, 'd');
-            Mob.createNewMob(p5, this, 5, 5);
+            //Mob.createNewMob(p5, this, 5, 5);
+            Bandit.createNewBandit(p5, this, 5, 0);
         } else if (this.turn === 2) {
             Storm.createNewStorm(p5, this, 2, 2, 'u');
         } else if (this.turn === 3) {

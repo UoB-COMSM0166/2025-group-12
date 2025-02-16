@@ -90,12 +90,12 @@ export class Controller {
             // reset inventory
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
             // reset board later, since it also clears tmp inventory items
-            this.menus[stateCode.PLAY].resetBoard();
+            this.menus[stateCode.PLAY].resetBoard(p5);
         }
 
         // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
         if (newState === stateCode.FINISH) {
-            this.menus[stateCode.PLAY].resetBoard();
+            this.menus[stateCode.PLAY].resetBoard(p5);
             this.gameState.setState(stateCode.STANDBY);
         }
 

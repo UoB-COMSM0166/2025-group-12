@@ -6,6 +6,7 @@ import { Steppe } from "../../items/Steppe.js";
 import { PlayerBase } from "../../items/PlayerBase.js";
 import { Mountain } from "../../items/Mountain.js";
 import { Storm } from "../../items/Storm.js";
+import {Bandit} from "../../items/Bandit.js";
 
 export class Stage2PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -20,7 +21,7 @@ export class Stage2PlayBoard extends PlayBoard {
 
         // turn counter
         this.turn = 1;
-        this.maxTurn = 10;
+        this.maxTurn = 50;
     }
 
     // set stage inventory at entering, called by controller
@@ -33,24 +34,20 @@ export class Stage2PlayBoard extends PlayBoard {
     }
 
     // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain() {
+    setStageTerrain(p5) {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe());
+                this.boardObjects.setCell(i, j, new Steppe(p5));
             }
         }
-        this.boardObjects.setCell(4, 4, new PlayerBase());
-        this.boardObjects.setCell(4, 5, new Mountain());
-        this.boardObjects.setCell(5, 5, new Mountain());
+        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
+        this.boardObjects.setCell(4, 5, new Mountain(p5));
+        this.boardObjects.setCell(5, 5, new Mountain(p5));
     }
 
     nextTurnEnemies(p5) {
         if (this.turn === 1) {
-            Storm.createNewStorm(p5, this, 3, 3, 'd');
-        } else if (this.turn === 2) {
-            Storm.createNewStorm(p5, this, 2, 2, 'u');
-        } else if (this.turn === 3) {
-            Storm.createNewStorm(p5, this, 1, 1, 'r');
+            Bandit.createNewBandit(p5, this, 0, 0);
         }
     }
 }

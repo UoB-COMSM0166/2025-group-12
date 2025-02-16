@@ -24,4 +24,31 @@ export class myutil{
 
         return [xAbsolute / CanvasSize.getSize()[0], yAbsolute / CanvasSize.getSize()[1]];
     }
+
+    static manhattanDistance(x0, y0, x1, y1){
+        return Math.abs(x0 - x1) + Math.abs(y0 - y1);
+    }
+
+    static euclideanDistance(x0, y0, x1, y1){
+        return Math.abs(x0 - x1) ** 2 + Math.abs(y0 - y1) ** 2;
+    }
+
+    static drawHealthBar(p5, item, x, y, width, height) {
+        p5.stroke(0);
+        p5.strokeWeight(2);
+        p5.fill(255, 255, 255, 0);
+        p5.rect(x, y, width, height);
+
+        let p = item.health / item.maxHealth;
+
+        p5.noStroke();
+        p5.fill("green");
+        p5.rect(x, y, width * p, height);
+
+        for (let i = 1; i < item.maxHealth; i++) {
+            p5.stroke(0);
+            p5.strokeWeight(1);
+            p5.line(x + i * width / item.maxHealth, y, x + i * width / item.maxHealth, y + height);
+        }
+    }
 }

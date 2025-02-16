@@ -31,25 +31,6 @@ export class Storm extends Enemy {
         this.isMoving = false;
     }
 
-    drawHealthBar(p5, x, y, width, height) {
-        p5.stroke(0);
-        p5.strokeWeight(2);
-        p5.fill(255, 255, 255, 0);
-        p5.rect(x, y, width, height);
-
-        let p = this.health / this.maxHealth;
-
-        p5.noStroke();
-        p5.fill("green");
-        p5.rect(x, y, width * p, height);
-
-        for (let i = 1; i < this.maxHealth; i++) {
-            p5.stroke(0);
-            p5.strokeWeight(1);
-            p5.line(x + i * width / this.maxHealth, y, x + i * width / this.maxHealth, y + height);
-        }
-    }
-
     static createNewStorm(p5, playBoard, i, j, direction) {
         let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);
         let storm = new Storm(p5, avgX, avgY, direction);
