@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="merged zr's pause">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/myutil.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/myutil.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/PriorityQueue.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/PriorityQueue.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Bandit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Bandit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/BoardCells.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/BoardCells.js" afterDir="false" />
-    </list>
+    <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="merged zr's pause" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,7 +93,7 @@
       <workItem from="1739638397595" duration="4576000" />
       <workItem from="1739725886310" duration="22111000" />
       <workItem from="1739785857493" duration="16703000" />
-      <workItem from="1739817544892" duration="5030000" />
+      <workItem from="1739817544892" duration="5286000" />
     </task>
     <servers />
   </component>
