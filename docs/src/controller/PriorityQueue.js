@@ -1,8 +1,8 @@
 export class PriorityQueue{
-    // Priority Queue based on binary pile
+    // Priority Queue based on binary heap
     constructor(compareTo){
         this.compareTo = compareTo;
-        this.pq = [null];
+        this.pq = [];
         this.N = 0;
     }
 
@@ -15,8 +15,7 @@ export class PriorityQueue{
     }
 
     insert(key){
-        this.pq.push(key);
-        this.N++;
+        this.pq[++this.N] = key;
         this.swim(this.N);
     }
 
@@ -25,9 +24,8 @@ export class PriorityQueue{
         if(item === undefined){
             return null;
         }
-        this.exchange(1, this.N);
-        this.N--;
-        this.pq[this.N+1] = undefined;
+        this.exchange(1, this.N--);
+        this.pq[this.N+1] = null;
         this.sink(1);
         return item;
     }
@@ -55,12 +53,57 @@ export class PriorityQueue{
 
     less(i, j){
         if (!this.pq[i] || !this.pq[j]) return false; // Prevent undefined access
-        return this.compareTo(this.pq[i], this.pq[j]) < 0;
+        return this.compareTo(this.pq[i], this.pq[j]) > 0;
     }
 
     exchange(i, j){
         let tmp = this.pq[i];
         this.pq[i] = this.pq[j];
         this.pq[j] = tmp;
+    }
+}
+
+export class IndexPriorityQueue {
+    constructor(compareTo) {
+        this.compareTo = compareTo; // Comparison function
+        this.queue = []; // Stores [index, priority]
+        this.indices = new Map(); // Maps index -> priority
+    }
+
+    insert(i, key) {
+        if (this.contains(i)) throw new Error(`Index ${i} already exists`);
+
+        this.indices.set(i, key);
+        this.queue.push([i, key]);
+        this.queue.sort((a, b) => this.compareTo(a[1], b[1])); // Keep sorted
+    }
+
+    pollIndex() {
+        if (this.isEmpty()) return null;
+        let [minIndex, _] = this.queue.shift();
+        this.indices.delete(minIndex);
+        return minIndex;
+    }
+
+    change(i, key) {
+        if (!this.contains(i)) {
+            this.insert(i, key);
+        } else {
+            this.indices.set(i, key);
+            this.queue = this.queue.map(([idx, val]) => (idx === i ? [i, key] : [idx, val]));
+            this.queue.sort((a, b) => this.compareTo(a[1], b[1])); // Re-sort after change
+        }
+    }
+
+    contains(i) {
+        return this.indices.has(i);
+    }
+
+    isEmpty() {
+        return this.queue.length === 0;
+    }
+
+    size() {
+        return this.queue.length;
     }
 }

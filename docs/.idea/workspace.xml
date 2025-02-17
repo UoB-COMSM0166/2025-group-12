@@ -5,26 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="merged zr's pause">
-      <change afterPath="$PROJECT_DIR$/src/controller/PriorityQueue.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/controller/UnionFind.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/items/Bandit.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/items/Terrain.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/items/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/myutil.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/myutil.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Preloader.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Preloader.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/Controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Bush.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Bush.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Grass.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Grass.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/ItemTypes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/ItemTypes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Mob.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Mob.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Mountain.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Mountain.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/PlantEnemyInter.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/PlantEnemyInter.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/PlayerBase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/PlayerBase.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Steppe.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Steppe.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/items/Storm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Storm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Play.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Play.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/stages/Stage1.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/stages/Stage1.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/stages/Stage2.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/stages/Stage2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/PriorityQueue.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/PriorityQueue.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/items/Bandit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Bandit.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +19,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -57,6 +42,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "JavaScript Debug.index.html (1).executor": "Run",
     "JavaScript Debug.index.html.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -110,7 +96,8 @@
       <workItem from="1739543415801" duration="247000" />
       <workItem from="1739561383040" duration="11852000" />
       <workItem from="1739638397595" duration="4576000" />
-      <workItem from="1739725886310" duration="21915000" />
+      <workItem from="1739725886310" duration="22111000" />
+      <workItem from="1739785857493" duration="16430000" />
     </task>
     <servers />
   </component>
