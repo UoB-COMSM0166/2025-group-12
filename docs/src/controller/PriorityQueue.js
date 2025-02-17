@@ -63,6 +63,7 @@ export class PriorityQueue{
     }
 }
 
+// refactor later, this version of IPQ is O(Nlog(N)), much worse than binary heap O(log(N)).
 export class IndexPriorityQueue {
     constructor(compareTo) {
         this.compareTo = compareTo; // Comparison function

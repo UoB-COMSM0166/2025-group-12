@@ -92,7 +92,7 @@ export class BoardCells {
         let cells = [];
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
-                if (this.getCell(i, j).plant !== null) {
+                if (this.getCell(i, j).enemy !== null) {
                     cells.push(this.getCell(i, j));
                 }
             }

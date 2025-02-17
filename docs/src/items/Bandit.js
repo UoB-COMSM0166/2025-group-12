@@ -96,15 +96,36 @@ export class Bandit extends Enemy {
     }
 
     setTarget(playBoard) {
-        let path = this.pickLuckyPlant(playBoard);
+        let cellsWithPlant = playBoard.boardObjects.getAllCellsWithPlant();
+        let cellsWithSeed = playBoard.boardObjects.getAllCellsWithSeed();
+        let allTargets = [...cellsWithPlant, ...cellsWithSeed];
+
+        if (allTargets.length === 0) {
+            return null;
+        }
+
+        let G = this.graph(playBoard);
+        let path = this.pickLuckyPlant(playBoard, G, allTargets);
         if (path === null || path.length === 0) {
             return;
         }
 
+        let targetPlantCell = playBoard.boardObjects.getCell(path[path.length - 1].to() % playBoard.gridSize, Math.floor(path[path.length - 1].to() / playBoard.gridSize));
         let nextEdge = path[0];
         let nextCell = playBoard.boardObjects.getCell(nextEdge.to() % playBoard.gridSize, Math.floor(nextEdge.to() / playBoard.gridSize));
+        let altCellIndex = myutil.findAlternativeCell(this.cell.x, this.cell.y, targetPlantCell.x, targetPlantCell.y, nextCell.x, nextCell.y);
+        if (altCellIndex !== null) {
+            let dist = myutil.euclideanDistance(nextCell.x, nextCell.y, targetPlantCell.x, targetPlantCell.y);
+            let altDist = myutil.euclideanDistance(altCellIndex[0], altCellIndex[1], targetPlantCell.x, targetPlantCell.y);
+            if (dist > altDist &&
+                G.adj[this.cell.x + this.cell.y * playBoard.gridSize].find(edge => edge.to() === nextCell.x + nextCell.y * playBoard.gridSize).weight >=
+                G.adj[this.cell.x + this.cell.y * playBoard.gridSize].find(edge => edge.to() === altCellIndex[0] + altCellIndex[1] * playBoard.gridSize).weight
+            ) {
+                nextCell = playBoard.boardObjects.getCell(altCellIndex[0], altCellIndex[1]);
+            }
+        }
 
-        // if this and target plant is adjacent, do not move but attack
+        // If adjacent to the target plant, attack instead of moving
         if (path.length === 1) {
             plantEnemyInteractions.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);
             this.hasMoved = true;
@@ -115,17 +136,9 @@ export class Bandit extends Enemy {
         this.direction = [this.targetCell.x - this.cell.x, this.targetCell.y - this.cell.y];
     }
 
-    pickLuckyPlant(playBoard) {
-        let cellsWithPlant = playBoard.boardObjects.getAllCellsWithPlant();
-        let cellsWithSeed = playBoard.boardObjects.getAllCellsWithSeed();
-        let allTargets = [...cellsWithPlant, ...cellsWithSeed];
-
-        if (allTargets.length === 0) {
-            return null;
-        }
-
+    pickLuckyPlant(playBoard, G, allTargets) {
         // pick the one with the lowest path weight
-        let dijkstraSP = new DijkstraSP(this.graph(playBoard), this.cell.x + this.cell.y * playBoard.gridSize)
+        let dijkstraSP = new DijkstraSP(G, this.cell.x + this.cell.y * playBoard.gridSize)
         let minWeight = dijkstraSP.minWeightTo(allTargets[0].x + allTargets[0].y * playBoard.gridSize);
         let index = 0;
         for (let i = 0; i < allTargets.length; i++) {
@@ -133,6 +146,12 @@ export class Bandit extends Enemy {
             if (dijkstraSP.minWeightTo(vertex) < minWeight) {
                 index = i;
             }
+        }
+
+        // if min weight is too high, hold still.
+        // --- any weight higher than 100 will be marked inaccessible.
+        if (minWeight > 100) {
+            return null;
         }
 
         // return the whole path
@@ -146,6 +165,7 @@ export class Bandit extends Enemy {
         let N = playBoard.gridSize;
         let G = new EdgeWeightedDigraph(N * N);
 
+        // set weight according to terrain.
         for (let i = 0; i < N; i++) {
             for (let j = 0; j < N; j++) {
                 if (i + 1 < N) {
@@ -162,6 +182,29 @@ export class Bandit extends Enemy {
                 }
             }
         }
+
+        // set weight to avoid storm.
+        let cellsWithEnemy = playBoard.boardObjects.getAllCellsWithEnemy();
+        for (let cwe of cellsWithEnemy) {
+            let x = cwe.x;
+            let y = cwe.y;
+            if (cwe.enemy && cwe.enemy.name === "Storm") {
+                for (let i = 0; i < playBoard.gridSize; i++) {
+                    G.setWeight(i + y * playBoard.gridSize, i + 1 + y * playBoard.gridSize, 10, 'a');
+                }
+                for (let j = 0; j < playBoard.gridSize; j++) {
+                    G.setWeight(x + j * playBoard.gridSize, x + (j + 1) * playBoard.gridSize, 10, 'a');
+                }
+            }
+            // set edges connecting cells with other enemies high enough to avoid clash
+            if (x !== this.cell.x || y !== this.cell.y) {
+                G.setWeight(x + y * playBoard.gridSize, (x - 1) + y * playBoard.gridSize, 1000, "ab");
+                G.setWeight(x + y * playBoard.gridSize, (x + 1) + y * playBoard.gridSize, 1000, "ab");
+                G.setWeight(x + y * playBoard.gridSize, x + (y - 1) * playBoard.gridSize, 1000, "ab");
+                G.setWeight(x + y * playBoard.gridSize, x + (y + 1) * playBoard.gridSize, 1000, "ab");
+            }
+        }
+
         return G;
     }
 
@@ -241,6 +284,7 @@ export class EdgeWeightedDigraph {
         this.E++;
     }
 
+    // return all edges of the graph
     edges() {
         let edges = [];
         for (let v = 0; v < this.V; v++) {
@@ -249,6 +293,31 @@ export class EdgeWeightedDigraph {
             }
         }
         return edges;
+    }
+
+    // modify the weight of edge v -> w.
+    setWeight(v, w, weight, mode) {
+        // if v or w is not in the graph, return false.
+        if (v < 0 || w < 0 || v >= this.V || w >= this.V) {
+            return false;
+        }
+
+        let edge = this.adj[v].find(e => e.to() === w);
+        // if v->w is not in the graph, insert it.
+        if (edge === null) {
+            this.addEdge(new DirectedEdge(v, w, weight));
+        } else {
+            if (mode === 'a') {
+                edge.weight += weight;
+            } else if (mode === "ab") {
+                // append to both directions
+                edge.weight += weight;
+                this.adj[w].find(e => e.to() === v).weight += weight;
+            } else {
+                edge.weight = weight;
+            }
+        }
+        return true;
     }
 }
 

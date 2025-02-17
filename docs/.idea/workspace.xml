@@ -5,10 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f2f6b45e-fdff-4062-9dcd-de24234855e1" name="Changes" comment="merged zr's pause">
-      <change afterPath="$PROJECT_DIR$/src/items/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/myutil.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/myutil.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/PriorityQueue.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/PriorityQueue.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/items/Bandit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/items/Bandit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/items/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/BoardCells.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/BoardCells.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,26 +42,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.index.html (1).executor": "Run",
-    "JavaScript Debug.index.html.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "E:/Users/Desktop/2025-group-12/docs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.standard": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.standard": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.JavaScript",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Users/Desktop/2025-group-12/docs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.JavaScript&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="JavaScript Debug.index.html">
     <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/docs/src/items/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
@@ -97,7 +99,8 @@
       <workItem from="1739561383040" duration="11852000" />
       <workItem from="1739638397595" duration="4576000" />
       <workItem from="1739725886310" duration="22111000" />
-      <workItem from="1739785857493" duration="16430000" />
+      <workItem from="1739785857493" duration="16703000" />
+      <workItem from="1739817544892" duration="5030000" />
     </task>
     <servers />
   </component>
