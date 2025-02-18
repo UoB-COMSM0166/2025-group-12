@@ -18,6 +18,10 @@ export class Grass extends Plant {
         // active: send animal friends to attack outlaw.
         // not implemented yet.
         this.hasActive = null;
+
+        // to set limit of active skill usage in one turn. reset at end of turn.
+        this.useLeft = 1;
+        this.maxUse = 1;
     }
 
     getPassiveString(){

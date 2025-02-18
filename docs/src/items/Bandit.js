@@ -96,6 +96,7 @@ export class Bandit extends Enemy {
     }
 
     setTarget(playBoard) {
+        // get all living plants and seeds
         let cellsWithPlant = playBoard.boardObjects.getAllCellsWithPlant();
         let cellsWithSeed = playBoard.boardObjects.getAllCellsWithSeed();
         let allTargets = [...cellsWithPlant, ...cellsWithSeed];
@@ -104,12 +105,14 @@ export class Bandit extends Enemy {
             return null;
         }
 
+        // create graph and pick a target according to playground status
         let G = this.graph(playBoard);
         let path = this.pickLuckyPlant(playBoard, G, allTargets);
         if (path === null || path.length === 0) {
             return;
         }
 
+        // don't go along one direction then switch to another. move zigzag
         let targetPlantCell = playBoard.boardObjects.getCell(path[path.length - 1].to() % playBoard.gridSize, Math.floor(path[path.length - 1].to() / playBoard.gridSize));
         let nextEdge = path[0];
         let nextCell = playBoard.boardObjects.getCell(nextEdge.to() % playBoard.gridSize, Math.floor(nextEdge.to() / playBoard.gridSize));
@@ -299,12 +302,12 @@ export class EdgeWeightedDigraph {
     setWeight(v, w, weight, mode) {
         // if v or w is not in the graph, return false.
         if (v < 0 || w < 0 || v >= this.V || w >= this.V) {
-            return false;
+            return;
         }
 
         let edge = this.adj[v].find(e => e.to() === w);
         // if v->w is not in the graph, insert it.
-        if (edge === null) {
+        if (edge === null || edge === undefined) {
             this.addEdge(new DirectedEdge(v, w, weight));
         } else {
             if (mode === 'a') {
@@ -317,7 +320,6 @@ export class EdgeWeightedDigraph {
                 edge.weight = weight;
             }
         }
-        return true;
     }
 }
 

@@ -6,6 +6,8 @@ import {BoardCells} from "./BoardCells.js";
 import {Seed} from "../items/Seed.js";
 import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
+import {PlantActive} from "../items/PlantActive.js";
+import {plantTypes} from "../items/ItemTypes.js";
 
 export class PlayBoard {
 
@@ -34,7 +36,7 @@ export class PlayBoard {
         // board objects array and information box
         this.boardObjects = new BoardCells(this.gridSize);
         this.selectedCell = [];
-        this.infoBox = new InfoBox();
+        this.infoBox = new InfoBox(this);
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
@@ -43,6 +45,10 @@ export class PlayBoard {
         // turn counter
         this.turn = 1;
         this.maxTurn = 10;
+
+        // to implement plant active skills.
+        // I have a strong feeling that we need refactoring
+        this.awaitCell = false;
     }
 
     /* public methods */
@@ -54,7 +60,6 @@ export class PlayBoard {
         escapeButton.onClick = () => {
             this.gameState.setState(stateCode.STANDBY);
         };
-        this.buttons.push(escapeButton);
 
         // turn button
         let [turnWidth, turnHeight] = myutil.relative2absolute(5 / 32, 0.07);
@@ -64,7 +69,8 @@ export class PlayBoard {
             this.gameState.togglePlayerCanClick();
             this.gameState.toggleEnemyCanMove();
         }
-        this.buttons.push(turnButton);
+
+        this.buttons.push(escapeButton, turnButton);
 
         // setup stage terrain
         this.setStageTerrain(p5);
@@ -76,13 +82,38 @@ export class PlayBoard {
 
     handleClick(p5) {
 
-        // clicked info box arrows when they exist
+        // when activate button is clicked, system awaits cell input
+        if (this.awaitCell) {
+            let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
+            if (index[0] === -1) {
+                console.log("invalid target.");
+            } else {
+                let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+                let target = this.boardObjects.getCell(index[0], index[1]);
+                if (spellCaster.plant.plantType === plantTypes.TREE) {
+                    PlantActive.rechargeHP(spellCaster, target, 1);
+                } else if (spellCaster.plant.plantType === plantTypes.GRASS) {
+                    PlantActive.sendAnimalFriends(spellCaster, target);
+                }
+            }
+            this.awaitCell = false;
+        }
+
+        // click any button
+        for (let button of this.buttons) {
+            if (button.mouseClick(p5) && button === this.infoBox.activateButton) {
+                return;
+            }
+        }
+
+        // clicked info box arrows when info box exists
         if (this.selectedCell.length !== 0) {
             if (this.infoBox.clickArrow(p5, this)) {
                 return;
             } else {
                 // reset the info status to prevent unintentional bugs
-                this.infoStatus = 't';
+                this.infoBox.infoStatus = 't';
+                this.infoBox.deleteActivateButton(p5, this);
             }
         }
 
@@ -117,11 +148,6 @@ export class PlayBoard {
         // handle inventory clicks later to prevent unintentional issues
         this.gameState.inventory.handleClick(p5);
 
-        // click any button
-        for (let button of this.buttons) {
-            button.mouseClick(p5);
-        }
-
         // click any grid cell to display info box
         this.clickCells(p5);
     }
@@ -137,11 +163,6 @@ export class PlayBoard {
 
         // draw stage grid
         this.drawGrid(p5);
-
-        // all buttons
-        for (let button of this.buttons) {
-            button.draw(p5);
-        }
 
         // left bottom corner info box
         if (this.selectedCell.length !== 0) {
@@ -177,6 +198,12 @@ export class PlayBoard {
 
         // draw inventory
         this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
+
+        // all buttons
+        // to cascade activate button above info box, place this loop after info box
+        for (let button of this.buttons) {
+            button.draw(p5);
+        }
     }
 
     /* ----------------------------------- */
@@ -251,9 +278,9 @@ export class PlayBoard {
         for (let i = this.gridSize - 1; i >= 0; i--) {
             for (let j = this.gridSize - 1; j >= 0; j--) {
                 let cell = this.boardObjects.getCell(i, j);
-                if(cell.terrain.name === "Steppe") continue;
+                if (cell.terrain.name === "Steppe") continue;
                 let [x1, y1] = this.CellIndex2Pos(p5, i, j, p5.CORNER);
-                p5.image(cell.terrain.img, x1 - this.cellWidth/4, y1, this.cellWidth/2, this.cellHeight/2);
+                p5.image(cell.terrain.img, x1 - this.cellWidth / 4, y1, this.cellWidth / 2, this.cellHeight / 2);
             }
         }
     }
@@ -341,11 +368,15 @@ export class PlayBoard {
 
     // miscellaneous end turn settings
     endTurnActivity(p5) {
-        // a safe-lock to remove all dead plants
         let cells = this.boardObjects.getAllCellsWithPlant();
         for (let cell of cells) {
+            // a safe-lock to remove all dead plants
             if (cell.plant.status === false) {
                 this.boardObjects.removePlant(cell.x, cell.y);
+            }
+            // reset active skill status
+            if (cell.plant.hasActive) {
+                cell.plant.useLeft = cell.plant.maxUse;
             }
         }
 
@@ -381,13 +412,13 @@ export class PlayBoard {
             }
         }
 
-        // set enemy back to can move
+        // reset enemy status
         for (let enemy of this.enemies) {
             if (enemy.name === 'Mob') {
                 enemy.moved = false;
                 enemy.chosen = false;
             }
-            if(enemy.name === "Bandit"){
+            if (enemy.hasMoved !== undefined) {
                 enemy.hasMoved = false;
             }
         }
@@ -407,6 +438,13 @@ export class PlayBoard {
         let cells = this.boardObjects.getAllCellsWithPlant();
         for (let cell of cells) {
             cell.plant.reevaluateSkills(this, cell);
+        }
+    }
+
+    activatePlantSkill(p5) {
+        let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+        if (spellCaster.plant.type === plantTypes.TREE || spellCaster.plant.type === plantTypes.GRASS) {
+            this.awaitCell = true;
         }
     }
 

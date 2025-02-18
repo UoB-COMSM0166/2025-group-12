@@ -89,7 +89,7 @@ export class Storm extends Enemy {
         if (index[0] !== -1) {
             let cell = playBoard.boardObjects.getCell(index[0], index[1]);
             // 1. check current cell to perform storm-terrain interaction.
-            if(cell.terrain.name === "Mountain"){
+            if (cell.terrain.name === "Mountain") {
                 this.status = false;
                 plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
             }
@@ -104,7 +104,7 @@ export class Storm extends Enemy {
                     }
                 }
             }
-            if(trees.length > 0) {
+            if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, luckyTree, this);
             }
@@ -112,8 +112,16 @@ export class Storm extends Enemy {
             // 3. check current cell to attack plant or seed.
             if (cell.plant !== null && cell.plant.status === true) {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
-            }else if(cell.seed !== null){
+            } else if (cell.seed !== null) {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
+            }
+
+            // 4. if a bandit is at this cell, dies.
+            if (cell.enemy && cell.enemy.name === "Bandit") {
+                cell.enemy.health = 0;
+                cell.enemy.status = false;
+                plantEnemyInteractions.findEnemyAndDelete(playBoard, cell.enemy);
+                cell.enemy = null;
             }
 
         }

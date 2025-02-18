@@ -16,15 +16,19 @@ export class Tree extends Plant {
         this.status = true;
 
         // passive: only lose 1 health when attacked by storm.
-        // implemented in plantAttackedByStorm from PlantEnemyInteraction
+        // implemented in plantAttackedByStorm of PlantEnemyInteraction
 
         // active: can recharge a nearby plant's health by 1. with bush and grass.
-        // not implemented yet.
+        // implemented in rechargeHP of PlantActive
 
         // extend: when a bush is placed next to it, passive ability extends.
-        // implemented moveAndInvokeStorm form Storm
+        // implemented in moveAndInvokeStorm of Storm
         this.hasActive = false;
         this.hasExtended = false;
+
+        // to set limit of active skill usage in one turn. reset at end of turn.
+        this.useLeft = 1;
+        this.maxUse = 1;
     }
 
     getPassiveString(){

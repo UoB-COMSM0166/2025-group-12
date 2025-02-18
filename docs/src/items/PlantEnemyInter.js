@@ -10,8 +10,6 @@ export class plantEnemyInteractions {
         let cells = playBoard.boardObjects.getAllCellsWithSeed();
         let cell = cells.find(c => c.seed === seed);
         if (cell !== null) {
-        }
-        {
             cell.removeSeed();
         }
     }
@@ -20,8 +18,6 @@ export class plantEnemyInteractions {
         let cells = playBoard.boardObjects.getAllCellsWithPlant();
         let cell = cells.find(c => c.plant === plant);
         if (cell !== null) {
-        }
-        {
             cell.removePlant();
             playBoard.boardObjects.reconstructEcosystem();
         }
@@ -96,7 +92,7 @@ export class plantEnemyInteractions {
 
     }
 
-    static plantIsAttacked(playBoard, item, lost){
+    static plantIsAttacked(playBoard, item, lost) {
         if (!playBoard || !(playBoard instanceof PlayBoard)) {
             console.log("plantAttacked1 has received invalid board.");
             return;
@@ -104,7 +100,7 @@ export class plantEnemyInteractions {
         let plant = null, seed = null;
         if (item instanceof Plant) {
             item.health -= lost;
-            if(item.health <= 0) {
+            if (item.health <= 0) {
                 item.health = 0;
                 item.status = false;
                 plantEnemyInteractions.findPlantAndDelete(playBoard, item);

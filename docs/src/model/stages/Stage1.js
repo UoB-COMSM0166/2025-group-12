@@ -51,10 +51,10 @@ export class Stage1PlayBoard extends PlayBoard {
 
     nextTurnEnemies(p5) {
         if (this.turn === 1) {
-            Storm.createNewStorm(p5, this, 3, 3, 'd');
-            Storm.createNewStorm(p5, this, 0, 5, 'd');
+            Storm.createNewStorm(p5, this, 1, 1, 'd');
+            Storm.createNewStorm(p5, this, 0, 0, 'd');
             //Mob.createNewMob(p5, this, 5, 5);
-            Bandit.createNewBandit(p5, this, 5, 0);
+            Bandit.createNewBandit(p5, this, 3, 1);
         } else if (this.turn === 2) {
             Storm.createNewStorm(p5, this, 2, 2, 'u');
         } else if (this.turn === 3) {
