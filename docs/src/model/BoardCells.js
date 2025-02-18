@@ -20,7 +20,7 @@ export class BoardCells {
     plantCell(x, y, item) {
         let cell = this.getCell(x, y);
 
-        if(!(item instanceof Plant) && !(item instanceof Seed)) {
+        if (!(item instanceof Plant) && !(item instanceof Seed)) {
             console.log("plantCell received invalid input.");
             return false;
         }
@@ -30,8 +30,11 @@ export class BoardCells {
             return false;
         }
 
-        if(item instanceof Seed) {
+        if (item instanceof Seed) {
             cell.seed = item;
+            if (cell.isEcoSphere) {
+                cell.seed.countdown = cell.seed.countdown - 1 < 1 ? 1 : cell.seed.countdown - 1;
+            }
             return true;
         }
 
@@ -58,7 +61,7 @@ export class BoardCells {
     }
 
     getCell(x, y) {
-        if(x < 0 || x >= this.size || y < 0 || y >= this.size) {
+        if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
             return null;
         }
         return this.boardObjects[x][y];
@@ -120,11 +123,11 @@ export class BoardCells {
             return `cell at (${x},${y}) is of terrain ${t.name}.`;
         }
 
-        if(e !== null) {
+        if (e !== null) {
             return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
         }
 
-        if(s !== null) {
+        if (s !== null) {
             return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
         }
 
@@ -180,7 +183,7 @@ export class BoardCells {
         }
     }
 
-    reconstructEcosystem(){
+    reconstructEcosystem() {
         // when a plant is removed, an existing ecosystem may get destroyed.
         // 1. remove all ecosystem markers
         for (let i = 0; i < this.size; i++) {
@@ -278,7 +281,7 @@ class Cell {
         this._plant = null;
     }
 
-    set seed(seed){
+    set seed(seed) {
         if (seed.type !== itemTypes.SEED) {
             console.log(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);
             return;
@@ -290,7 +293,7 @@ class Cell {
         return this._seed;
     }
 
-    removeSeed(){
+    removeSeed() {
         this._seed = null;
     }
 
@@ -302,21 +305,21 @@ class Cell {
         return this._enemy;
     }
 
-    getEcoString(){
-        if(this.isEcoSphere){
-            return "The cell is in an ecosystem and has some passive skill.";
+    getEcoString() {
+        if (this.isEcoSphere) {
+            return "The cell is in an ecosystem and seeds planted here will grow faster.";
         }
         return "The cell is not in an ecosystem.";
     }
 
     // check if plant or seed is compatible with the terrain.
     isCompatible(item) {
-        if(this.enemy !== null){
+        if (this.enemy !== null) {
             console.log("an enemy is on this cell, you cant place plant here!");
             return false;
         }
 
-        if(this.seed !== null){
+        if (this.seed !== null) {
             console.log("an seed is already on this cell, you cant place plant here!");
             return false;
         }

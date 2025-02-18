@@ -8,9 +8,12 @@ export class PlayerBase extends Terrain {
         this.color = "red";
         this.terrainType = terrainTypes.BASE;
         this.img = p5.images.get(`${this.name}`);
+
+        this.health = 1;
+        this.maxHealth = 1;
     }
 
-    getWeight(){
+    getWeight() {
         return 0;
     }
 }

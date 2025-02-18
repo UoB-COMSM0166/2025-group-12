@@ -13,7 +13,7 @@ export class PlayBoard {
 
     constructor(gameState) {
         this.gameState = gameState;
-        this.stageCode = stageCode.NOSTAGE;
+        this.stageCode = stageCode.NO_STAGE;
         this.canvasWidth = CanvasSize.getSize()[0];
         this.canvasHeight = CanvasSize.getSize()[1];
 
@@ -71,6 +71,13 @@ export class PlayBoard {
         }
 
         this.buttons.push(escapeButton, turnButton);
+
+        // a keyboard shortcut to activate plant skill
+        window.addEventListener("keyup", (event) => {
+            if (event.key === "e" && this.infoBox.activateButton !== null) {
+                this.infoBox.activateButton._onClick(p5);
+            }
+        })
 
         // setup stage terrain
         this.setStageTerrain(p5);
@@ -226,6 +233,22 @@ export class PlayBoard {
     // set stage terrain, called when the stage is loaded or reset
     setStageTerrain(p5) {
         console.log("setStageTerrain is not overridden!");
+    }
+
+    // when the main base is destroyed, invoke this function
+    gameOver(p5) {
+        console.log("game over.");
+        this.gameState.togglePlayerCanClick();
+        this.gameState.toggleEnemyCanMove();
+        this.gameState.setState(stateCode.STANDBY);
+
+        // IMPORTANT: BELOW CODE IS EXTREMELY DANGEROUS
+        // only setting state does to standby not work.
+        // this might be related to the rendering and data accessing logic of Main.js.
+        // by making controller global, we can temporarily take over the right of controlling.
+        // ... but this is dangerous!
+        // need refactoring later.
+        p5.controller.setData(p5, stateCode.STANDBY);
     }
 
     // when clear or quit, invoke this function to reset board

@@ -123,7 +123,8 @@ export class InfoBox {
 
     setStatus(p5, newStatus) {
         this.infoStatus = newStatus;
-        if (this.infoStatus === 'a' && this.recordStatus !== 'a') {
+        let cell = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
+        if (this.infoStatus === 'a' && this.recordStatus !== 'a' && cell.plant !== null && cell.plant.hasActive) {
             this.setActivateButton(p5);
         } else if (this.infoStatus !== 'a' && this.recordStatus === 'a') {
             this.deleteActivateButton(p5);

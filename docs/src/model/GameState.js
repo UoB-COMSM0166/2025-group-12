@@ -8,7 +8,7 @@ export const stateCode = {
 };
 
 export const stageCode = {
-    NOSTAGE: 0,
+    NO_STAGE: 0,
     STAGE1: 1,
     STAGE2: 2,
     STAGE3: 3,
@@ -19,7 +19,7 @@ export const stageCode = {
 export class GameState {
     constructor(p5) {
         this.state = stateCode.MENU; // default
-        this.currentStage = stageCode.NOSTAGE; // no stage is selected
+        this.currentStage = stageCode.NO_STAGE; // no stage is selected
         this.inventory = new Inventory(p5);
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
@@ -39,15 +39,15 @@ export class GameState {
         return this.state;
     }
 
-    togglePlayerCanClick(){
+    togglePlayerCanClick() {
         this.playerCanClick = !this.playerCanClick;
     }
 
-    togglePaused(){
+    togglePaused() {
         this.paused = !this.paused;
     }
 
-    toggleEnemyCanMove(){
+    toggleEnemyCanMove() {
         this.enemyCanMove = !this.enemyCanMove;
     }
 }

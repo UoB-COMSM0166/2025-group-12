@@ -1,11 +1,11 @@
-import { stageCode } from "../GameState.js";
-import { PlayBoard } from "../Play.js";
-import { myutil } from "../../../lib/myutil.js";
-import { BoardCells } from "../BoardCells.js";
-import { Steppe } from "../../items/Steppe.js";
-import { PlayerBase } from "../../items/PlayerBase.js";
-import { Mountain } from "../../items/Mountain.js";
-import { Storm } from "../../items/Storm.js";
+import {stageCode} from "../GameState.js";
+import {PlayBoard} from "../Play.js";
+import {myutil} from "../../../lib/myutil.js";
+import {BoardCells} from "../BoardCells.js";
+import {Steppe} from "../../items/Steppe.js";
+import {PlayerBase} from "../../items/PlayerBase.js";
+import {Mountain} from "../../items/Mountain.js";
+import {Storm} from "../../items/Storm.js";
 import {Bandit} from "../../items/Bandit.js";
 
 export class Stage2PlayBoard extends PlayBoard {
@@ -29,6 +29,9 @@ export class Stage2PlayBoard extends PlayBoard {
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
         this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
         this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
+        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 2);
+        this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
+        this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 2);
         // update inventory height
         this.gameState.inventory.updateInventoryHeight();
     }
@@ -48,6 +51,7 @@ export class Stage2PlayBoard extends PlayBoard {
     nextTurnEnemies(p5) {
         if (this.turn === 1) {
             Bandit.createNewBandit(p5, this, 0, 0);
+            Storm.createNewStorm(p5, this, 0, 4, 'd');
         }
     }
 }

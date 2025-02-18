@@ -1,7 +1,8 @@
-import {itemTypes} from "./ItemTypes.js";
+import {itemTypes, terrainTypes} from "./ItemTypes.js";
 import {Enemy} from "./Enemy.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {PlayBoard} from "../model/Play.js";
+import {stateCode} from "../model/GameState.js";
 
 export class Storm extends Enemy {
     constructor(p5, x, y, direction) {
@@ -48,7 +49,7 @@ export class Storm extends Enemy {
             return false;
         }
         if (this.isMoving === true) {
-            this.moveAndInvokeStorm(playBoard);
+            this.moveAndInvokeStorm(p5, playBoard);
             return true;
         }
         if (this.countdown > 0) {
@@ -61,7 +62,7 @@ export class Storm extends Enemy {
                 this.cell = null;
             }
             this.isMoving = true;
-            this.moveAndInvokeStorm(playBoard);
+            this.moveAndInvokeStorm(p5, playBoard);
             return true;
         }
     }
@@ -70,7 +71,7 @@ export class Storm extends Enemy {
     // 1. check current cell to perform storm-terrain interaction.
     // 2. check extended trees' existence, and randomly pick one lucky tree.
     // 3. check current cell to attack plant or seed.
-    moveAndInvokeStorm(playBoard) {
+    moveAndInvokeStorm(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
             console.error('moveAndInvokeStorm has received invalid PlayBoard.');
             return;
@@ -114,6 +115,11 @@ export class Storm extends Enemy {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
             } else if (cell.seed !== null) {
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
+            }
+
+            // 4. if player base is at this cell, destroy it.
+            if (cell.terrain.terrainType === terrainTypes.BASE) {
+                playBoard.gameOver(p5);
             }
 
             // 4. if a bandit is at this cell, dies.

@@ -4,38 +4,37 @@ import {preloader} from "./Preloader.js";
 
 new p5((p) => {
 
-    let controller;
-    let pauseMenu;
+    //let controller;
     p.preload = async () => { p.images = await preloader(p);};
 
     p.setup = () => {
         let canvasSize = CanvasSize.getSize();
         p.createCanvas(canvasSize[0], canvasSize[1]);
-        controller = new Controller(p);
-        controller.setup(p);
+        p.controller = new Controller(p);
+        p.controller.setup(p);
     };
 
     p.mouseWheel = (event) => {
-        controller.scrollListener(event);
+        p.controller.scrollListener(event);
     }
 
     p.mouseClicked = () => {
-        controller.clickListener(p);
+        p.controller.clickListener(p);
     }
     p.draw = () => {
         p.background(100);
         
         // create play stage
-        controller.setPlayStage(p);
+        p.controller.setPlayStage(p);
 
         // when game state changes, load or save data accordingly
-        controller.setData(p, controller.gameState.getState());
+        p.controller.setData(p, p.controller.gameState.getState());
 
         // replace following tmp view handling later
-        controller.view(p);
+        p.controller.view(p);
 
         // keep a copy of current state
-        controller.saveState = controller.gameState.getState();
+        p.controller.saveState = p.controller.gameState.getState();
 
     };
 });
