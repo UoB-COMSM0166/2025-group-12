@@ -93,7 +93,7 @@ export class PlayBoard {
                 if (spellCaster.plant.plantType === plantTypes.TREE) {
                     PlantActive.rechargeHP(spellCaster, target, 1);
                 } else if (spellCaster.plant.plantType === plantTypes.GRASS) {
-                    PlantActive.sendAnimalFriends(spellCaster, target);
+                    PlantActive.sendAnimalFriends(spellCaster, target, this);
                 }
             }
             this.awaitCell = false;
@@ -112,7 +112,7 @@ export class PlayBoard {
                 return;
             } else {
                 // reset the info status to prevent unintentional bugs
-                this.infoBox.infoStatus = 't';
+                this.infoBox.resetStatus();
                 this.infoBox.deleteActivateButton(p5, this);
             }
         }
@@ -157,6 +157,8 @@ export class PlayBoard {
 
         if (this.gameState.inventory.selectedItem !== null) {
             p5.cursor('grab');
+        } else if (this.awaitCell) {
+            p5.cursor('pointer');
         } else {
             p5.cursor(p5.ARROW);
         }
@@ -240,7 +242,7 @@ export class PlayBoard {
         this.enemies = [];
 
         // reset info box status
-        this.infoBox.infoStatus = 't';
+        this.infoBox.resetStatus();
 
         // reset board cells
         this.boardObjects = new BoardCells(this.gridSize);
@@ -292,6 +294,11 @@ export class PlayBoard {
             this.selectedCell = [];
         } else {
             this.selectedCell = [index[0], index[1]];
+            // a shortcut to direct to plant active skill page
+            let cell = this.boardObjects.getCell(index[0], index[1]);
+            if (cell.plant !== null && cell.plant.hasActive) {
+                this.infoBox.setStatus(p5, 'a');
+            }
         }
     }
 

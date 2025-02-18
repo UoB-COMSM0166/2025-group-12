@@ -4,6 +4,7 @@ import {Button} from "../items/Button.js";
 export class InfoBox {
     constructor(playBoard) {
         this.infoStatus = 't'; // by default prints terrain & ( enemy | seed )
+        this.recordStatus = 't'; // if record!='a' && status = 'a', init button, vice versa.
         this.activateButton = null;
 
         this.playBoard = playBoard;
@@ -78,52 +79,61 @@ export class InfoBox {
         if (this.infoStatus === 't') {
             if (nextOrPrev === 'n') {
                 if (cell.plant !== null) {
-                    this.infoStatus = 'p';
+                    this.setStatus(p5, 'p');
                 } else {
-                    this.infoStatus = 'e';
+                    this.setStatus(p5, 'e');
                 }
             } else {
-                this.infoStatus = 'e';
+                this.setStatus(p5, 'e');
             }
         }
 
         // plant passive skill
         else if (this.infoStatus === 'p') {
             if (nextOrPrev === 'n') {
-                this.infoStatus = 'a';
+                this.setStatus(p5, 'a');
             } else {
-                this.infoStatus = 't';
+                this.setStatus(p5, 't');
             }
         }
 
         // plant active skill
         else if (this.infoStatus === 'a') {
             if (nextOrPrev === 'n') {
-                this.infoStatus = 'e';
+                this.setStatus(p5, 'e');
             } else {
-                this.infoStatus = 'p';
+                this.setStatus(p5, 'p');
             }
         }
 
         // ecosystem
         else if (this.infoStatus === 'e') {
             if (nextOrPrev === 'n') {
-                this.infoStatus = 't';
+                this.setStatus(p5, 't');
             } else {
                 if (cell.plant !== null) {
-                    this.infoStatus = 'a';
+                    this.setStatus(p5, 'a');
                 } else {
-                    this.infoStatus = 't';
+                    this.setStatus(p5, 't');
                 }
             }
         }
 
-        // set and reset activate button
-        if (this.infoStatus === 'a' && this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).plant.hasActive) {
+    }
+
+    setStatus(p5, newStatus) {
+        this.infoStatus = newStatus;
+        if (this.infoStatus === 'a' && this.recordStatus !== 'a') {
             this.setActivateButton(p5);
-        } else if (this.infoStatus !== 'a' && this.activateButton !== null) {
+        } else if (this.infoStatus !== 'a' && this.recordStatus === 'a') {
             this.deleteActivateButton(p5);
         }
+        this.recordStatus = newStatus;
+    }
+
+    resetStatus() {
+        this.infoStatus = 't';
+        this.recordStatus = 't';
     }
 
     setActivateButton(p5) {
