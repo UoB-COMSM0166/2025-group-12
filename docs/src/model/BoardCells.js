@@ -252,7 +252,7 @@ export class BoardCells {
                     Bandit.createNewBandit(gameState.p5, gameState.currentStage, i, j);
                 }
                 if (savedBoard[i][j].enemyType === enemyTypes.STORM) {
-                    Storm.createNewStorm(gameState.p5, gameState.currentStage, i, j);
+                    Storm.createNewStorm(gameState.p5, gameState.currentStage, i, j, 'd');
                 }
 
             }
