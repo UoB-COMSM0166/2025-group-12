@@ -16,10 +16,10 @@ export class StandbyMenu {
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
         let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Stage 1");
-        stage1Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStage = stageCode.STAGE1};
+        stage1Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStageCode = stageCode.STAGE1};
 
         let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Stage 2");
-        stage2Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStage = stageCode.STAGE2};
+        stage2Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStageCode = stageCode.STAGE2};
         
         let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Stage 3");
         stage3Button.onClick = () => {console.log("placeholder3")};

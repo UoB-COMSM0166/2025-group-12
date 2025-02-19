@@ -1,4 +1,4 @@
-import {itemTypes} from "../items/ItemTypes.js";
+import {enemyTypes, itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
 import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
 
@@ -228,6 +228,27 @@ export class BoardCells {
         return cells;
     }
 
+    saveBoard() {
+        let tmpArray = Array.from({length: this.size},
+            () => Array.from({length: this.size}, () => null));
+        for (let i = 0; i < tmpArray.length; i++) {
+            for (let j = 0; j < tmpArray[i].length; j++) {
+                tmpArray[i][j] = this.getCell(i, j).saveCell();
+            }
+        }
+        return tmpArray;
+    }
+
+    loadBoard(savedBoard, gameState) {
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                if (savedBoard[i][j].plantType !== null || savedBoard[i][j].seedType !== null) {
+                    this.plantCell(i, j, gameState.inventory.createItem(gameState.p5, savedBoard[i][j].name));
+                }
+            }
+        }
+    }
+
 }
 
 class Cell {
@@ -329,6 +350,28 @@ class Cell {
             return false;
         }
         return true;
+    }
+
+    saveCell(){
+        let tmpObj = {
+            name: null,
+            plantType: null,
+            seedType: null,
+            enemyType: null,
+        }
+        if(this.plant){
+            tmpObj.plantType = this.plant.plantType;
+            tmpObj.name = this.plant.name;
+        }
+        if(this.seed){
+            tmpObj.seedType = this.seed.seedType;
+            tmpObj.name = this.seed.name;
+        }
+        if(this.enemy){
+            tmpObj.enemyType = this.enemy.enemyType;
+            tmpObj.name = this.enemy.name;
+        }
+        return tmpObj;
     }
 
 }

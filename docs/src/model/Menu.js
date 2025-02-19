@@ -1,6 +1,7 @@
 import { Button } from "../items/Button.js";
 import { stateCode } from "./GameState.js";
 import { myutil } from "../../lib/myutil.js";
+import {GameSave} from "./GameSave.js";
 
 export class StartMenu {
     constructor(gameState) {
@@ -18,7 +19,7 @@ export class StartMenu {
         newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
 
         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
-        loadGameButton.onClick = () => console.log("Load Game (placeholder)");
+        loadGameButton.onClick = () => GameSave.load(this.gameState);
 
         this.buttons.push(newGameButton, loadGameButton);
     }
