@@ -66,7 +66,7 @@ export class PlayBoard {
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
         turnButton.onClick = () => {
-            this.enemies.sort((a,b) => a.enemyType - b.enemyType);
+            this.enemies.sort((a, b) => a.enemyType - b.enemyType);
             this.gameState.togglePlayerCanClick();
             this.gameState.toggleEnemyCanMove();
         }
@@ -148,8 +148,6 @@ export class PlayBoard {
             // clear inventory's selected item
             if (clickedCell) {
                 this.gameState.inventory.itemDecrement();
-                // update inventory height
-                this.gameState.inventory.updateInventoryHeight();
                 return;
             }
         }
@@ -244,7 +242,7 @@ export class PlayBoard {
         this.gameState.setState(stateCode.STANDBY);
 
         // IMPORTANT: BELOW CODE IS EXTREMELY DANGEROUS
-        // only setting state does to standby not work.
+        // only setting state to standby does not work.
         // this might be related to the rendering and data accessing logic of Main.js.
         // by making controller global, we can temporarily take over the right of controlling.
         // ... but this is dangerous!
@@ -385,13 +383,16 @@ export class PlayBoard {
             }
             // delete dead enemy
             if (!enemy.status) {
-                this.enemies.splice(this.enemies.indexOf(enemy), 1);
+                let index = this.enemies.indexOf(enemy);
+                if (index !== -1) {
+                    this.enemies.splice(index, 1);
+                }
             }
         }
 
         // if all enemies are updated:
-        // 1. set new enemies according to turn counter
-        this.nextTurnEnemies(p5);
+        // 1. set new enemies and inventory items according to turn counter
+        this.nextTurnItems(p5);
 
         // 2. set status
         this.endTurnActivity(p5);
@@ -414,23 +415,6 @@ export class PlayBoard {
         // reevaluate plants' skills
         this.reevaluatePlantSkills();
 
-        // set turn and counter
-        this.turn++;
-        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
-        if (this.turn === this.maxTurn) {
-            this.gameState.setState(stateCode.FINISH);
-            // when a stage is cleared:
-            // 1. store all living plants
-            let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
-            for (let cws of cellsWithPlant) {
-                this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
-            }
-
-            // 2. remove all seeds
-            this.gameState.inventory.removeAllSeeds();
-            this.gameState.inventory.updateInventoryHeight();
-        }
-
         // update seed status
         let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
         for (let cws of cellsWithSeed) {
@@ -441,6 +425,22 @@ export class PlayBoard {
                 cws.removeSeed();
                 cws.plant = grown;
             }
+        }
+
+        // set turn and counter
+        this.turn++;
+        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
+        if (this.turn === this.maxTurn) {
+            this.gameState.setState(stateCode.FINISH);
+            // when a stage is cleared:
+            // 1. store all living plants, this comes after seeds have grown
+            let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
+            for (let cws of cellsWithPlant) {
+                this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
+            }
+
+            // 2. remove all seeds
+            this.gameState.inventory.removeAllSeeds();
         }
 
         // reset enemy status
@@ -459,7 +459,7 @@ export class PlayBoard {
         this.gameState.toggleEnemyCanMove();
     }
 
-    nextTurnEnemies(p5) {
+    nextTurnItems(p5) {
         console.log("nextTurnEnemies is not overridden!");
     }
 

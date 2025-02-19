@@ -24,6 +24,8 @@ export class GameState {
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
         this.enemyCanMove = false;
+
+        this.clearedStages = [];
     }
 
     setState(newState) {

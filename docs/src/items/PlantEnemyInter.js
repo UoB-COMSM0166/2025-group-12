@@ -25,7 +25,11 @@ export class plantEnemyInteractions {
 
     static findEnemyAndDelete(playBoard, enemy) {
         let index = playBoard.enemies.findIndex(e => e === enemy);
+        if (index === -1) {
+            return;
+        }
         playBoard.enemies.splice(index, 1);
+        playBoard.enemies.sort((a, b) => a.enemyType - b.enemyType);
     }
 
     static plantAttackedByStorm(playBoard, item, storm) {
