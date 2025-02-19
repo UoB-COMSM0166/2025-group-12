@@ -27,6 +27,7 @@ export class GameState {
         this.enemyCanMove = false;
         this.loaded = false;
         this.currentStage = null;
+        this.clearedStages = [];
     }
 
     setState(newState) {
