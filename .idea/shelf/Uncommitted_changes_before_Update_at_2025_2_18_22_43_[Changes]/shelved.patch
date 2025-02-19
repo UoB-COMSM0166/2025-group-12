@@ -1,0 +1,383 @@
+Index: docs/src/model/PauseMenu.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Button } from \"../items/Button.js\";\r\nimport { myutil } from \"../../lib/myutil.js\";\r\n\r\nexport class PauseMenu {\r\n    constructor(gameState) {\r\n        this.gameState = gameState;\r\n        this.buttons = [];\r\n    }\r\n\r\n    setup(p5) {\r\n\r\n        let [buttonWidth, buttonHeight] = myutil.relative2absolute(0.15, 0.07);\r\n        let [buttonX, buttonY] = myutil.relative2absolute(0.5, 0.3);\r\n        let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];\r\n\r\n        let continueButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, \"Continue\");\r\n        continueButton.onClick = () => {\r\n            this.gameState.togglePaused();\r\n            this.gameState.togglePlayerCanClick();\r\n        }\r\n        let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, \"Load Game\");\r\n        loadGameButton.onClick = () => console.log(\"Load Game (placeholder)\");\r\n\r\n        this.buttons.push(continueButton, loadGameButton);\r\n    }\r\n\r\n    handleClick(p5) {\r\n        for (let button of this.buttons) {\r\n            button.mouseClick(p5);\r\n        }\r\n    }\r\n\r\n    handleKey() {\r\n\r\n    }\r\n    draw(p5) {\r\n        p5.background(0, 0, 0, 80);\r\n        p5.fill(255);\r\n        p5.textSize(50);\r\n        p5.textAlign(p5.CENTER, p5.CENTER);\r\n        let [textX, textY] = myutil.relative2absolute(0.5, 0.2);\r\n        p5.text(\"PAUSE\", textX, textY);\r\n\r\n        for (let button of this.buttons) {\r\n            button.draw(p5);\r\n        }\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/model/PauseMenu.js b/docs/src/model/PauseMenu.js
+--- a/docs/src/model/PauseMenu.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/model/PauseMenu.js	(date 1739913469487)
+@@ -1,5 +1,6 @@
+-import { Button } from "../items/Button.js";
+-import { myutil } from "../../lib/myutil.js";
++import {Button} from "../items/Button.js";
++import {myutil} from "../../lib/myutil.js";
++import {GameSave} from "./GameSave.js";
+ 
+ export class PauseMenu {
+     constructor(gameState) {
+@@ -19,9 +20,27 @@
+             this.gameState.togglePlayerCanClick();
+         }
+         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+-        loadGameButton.onClick = () => console.log("Load Game (placeholder)");
++        loadGameButton.onClick = () => {
++            GameSave.load(this.gameState);
++            this.gameState.togglePaused();
++            this.gameState.togglePlayerCanClick();
++        }
++        let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
++        saveGameButton.onClick = () => {
++            GameSave.save(this.gameState);
++            this.gameState.togglePaused();
++            this.gameState.togglePlayerCanClick();
++        }
++        let exitGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Exit Game");
++        exitGameButton.onClick = () => {
++            if (confirm("Are you sure you want to exit the game?")) {
++                location.reload();
++            }
++            this.gameState.togglePaused();
++            this.gameState.togglePlayerCanClick();
++        }
+ 
+-        this.buttons.push(continueButton, loadGameButton);
++        this.buttons.push(continueButton, loadGameButton, saveGameButton, exitGameButton);
+     }
+ 
+     handleClick(p5) {
+@@ -33,6 +52,7 @@
+     handleKey() {
+ 
+     }
++
+     draw(p5) {
+         p5.background(0, 0, 0, 80);
+         p5.fill(255);
+Index: docs/src/model/BoardCells.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {itemTypes} from \"../items/ItemTypes.js\";\r\nimport {Plant} from \"../items/Plant.js\";\r\nimport {Seed} from \"../items/Seed.js\";\r\n\r\nexport class BoardCells {\r\n    constructor(size) {\r\n        this.size = size;\r\n        // initially the array is empty since we have to\r\n        // manually set terrain for every cell\r\n        this.boardObjects = Array.from({length: this.size},\r\n            () => Array.from({length: this.size}, () => null));\r\n    }\r\n\r\n    // to set terrain, invoke this function\r\n    setCell(x, y, terrain) {\r\n        this.boardObjects[x][y] = new Cell(x, y, terrain);\r\n    }\r\n\r\n    // plant on a cell\r\n    plantCell(x, y, item) {\r\n        let cell = this.getCell(x, y);\r\n\r\n        if(!(item instanceof Plant) && !(item instanceof Seed)) {\r\n            console.log(\"plantCell received invalid input.\");\r\n            return false;\r\n        }\r\n\r\n        if (!cell.isCompatible(item)) {\r\n            console.log(\"incompatible plant with terrain, failed to plant.\");\r\n            return false;\r\n        }\r\n\r\n        if(item instanceof Seed) {\r\n            cell.seed = item;\r\n            return true;\r\n        }\r\n\r\n        cell.plant = item;\r\n\r\n        // if plant is placed on an ecosystem, it expands the ecosystem.\r\n        if (cell.isEcoSphere) {\r\n            this.setEcoSphereDFS(x, y);\r\n            return true;\r\n        }\r\n        // if ecosystem is not built, first try to build one.\r\n        let components = new Map();\r\n        components.set(item.name, cell);\r\n        if (this.findEcoSphereDFS(x, y, components)) {\r\n            console.log(\"ecosystem built!\");\r\n            this.setEcoSphereDFS(x, y);\r\n        }\r\n        return true;\r\n    }\r\n\r\n    removePlant(x, y) {\r\n        this.getCell(x, y).removePlant();\r\n        this.reconstructEcosystem();\r\n    }\r\n\r\n    getCell(x, y) {\r\n        if(x < 0 || x >= this.size || y < 0 || y >= this.size) {\r\n            return null;\r\n        }\r\n        return this.boardObjects[x][y];\r\n    }\r\n\r\n    getAllCellsWithPlant() {\r\n        let cells = [];\r\n        for (let i = 0; i < this.size; i++) {\r\n            for (let j = 0; j < this.size; j++) {\r\n                if (this.getCell(i, j).plant !== null) {\r\n                    cells.push(this.getCell(i, j));\r\n                }\r\n            }\r\n        }\r\n        return cells;\r\n    }\r\n\r\n    getAllCellsWithSeed() {\r\n        let cells = [];\r\n        for (let i = 0; i < this.size; i++) {\r\n            for (let j = 0; j < this.size; j++) {\r\n                if (this.getCell(i, j).seed !== null) {\r\n                    cells.push(this.getCell(i, j));\r\n                }\r\n            }\r\n        }\r\n        return cells;\r\n    }\r\n\r\n    getAllCellsWithEnemy() {\r\n        let cells = [];\r\n        for (let i = 0; i < this.size; i++) {\r\n            for (let j = 0; j < this.size; j++) {\r\n                if (this.getCell(i, j).enemy !== null) {\r\n                    cells.push(this.getCell(i, j));\r\n                }\r\n            }\r\n        }\r\n        return cells;\r\n    }\r\n\r\n    // a temporary test function body.\r\n    getCellString(x, y) {\r\n\r\n        if (this.getCell(x, y) === null) {\r\n            return `cell at (${x},${y}) is null!`\r\n        }\r\n\r\n        let t = this.getCell(x, y).terrain;\r\n        let p = this.getCell(x, y).plant;\r\n        let s = this.getCell(x, y).seed;\r\n        let e = this.getCell(x, y).enemy;\r\n\r\n        if (t === null) {\r\n            return `cell at (${x},${y}) is missing terrain!`;\r\n        }\r\n\r\n        if (p === null && s === null && e === null) {\r\n            return `cell at (${x},${y}) is of terrain ${t.name}.`;\r\n        }\r\n\r\n        if(e !== null) {\r\n            return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;\r\n        }\r\n\r\n        if(s !== null) {\r\n            return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;\r\n        }\r\n\r\n        return `cell at (${x},${y}) is of terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;\r\n    }\r\n\r\n    // when a new plant is placed at (x,y), recursively find an ecosystem.\r\n    // MUST CREATE COMPONENTS AS A MAP, AND STORE THE NEW PLANT TO IT BEFORE INVOKING!!!!!!\r\n    findEcoSphereDFS(x, y, components) {\r\n        if (!(components instanceof Map)) {\r\n            console.log(\"findEcoSphereDFS is mis-invoked since input component is not a map.\");\r\n            return false;\r\n        }\r\n        // when tree bush grass are all found, exit and return true\r\n        if (components.size === 3) {\r\n            return true;\r\n        }\r\n        let adjacentCells = this.getAdjacent4Cells(x, y, components);\r\n        for (let cell of adjacentCells) {\r\n            if (cell.plant === null) {\r\n                continue;\r\n            }\r\n            if (components.has(cell.plant.name)) {\r\n                continue;\r\n            }\r\n            components.set(cell.plant.name, cell);\r\n            if (this.findEcoSphereDFS(cell.x, cell.y, components)) {\r\n                return true;\r\n            }\r\n        }\r\n        return false;\r\n    }\r\n\r\n    // recursively set ecosystem, starting from (x,y).\r\n    setEcoSphereDFS(x, y) {\r\n        // the cell itself is set to eco.\r\n        let cell = this.getCell(x, y);\r\n        cell.isEcoSphere = true;\r\n\r\n        // recursively lookup 4 surrounding cells.\r\n        for (let adCell of this.getAdjacent4Cells(x, y)) {\r\n            if (adCell.isEcoSphere === true) {\r\n                continue;\r\n            }\r\n            if (adCell.plant !== null) {\r\n                this.setEcoSphereDFS(adCell.x, adCell.y);\r\n            }\r\n        }\r\n\r\n        // what's left from the 8 adjacent cells are also set to eco.\r\n        for (let adCell of this.getAdjacent8Cells(x, y)) {\r\n            adCell.isEcoSphere = true;\r\n        }\r\n    }\r\n\r\n    reconstructEcosystem(){\r\n        // when a plant is removed, an existing ecosystem may get destroyed.\r\n        // 1. remove all ecosystem markers\r\n        for (let i = 0; i < this.size; i++) {\r\n            for (let j = 0; j < this.size; j++) {\r\n                this.getCell(i, j).isEcoSphere = false;\r\n            }\r\n        }\r\n        // 2. loop through all remaining plants and try to reconstruct ecosystem\r\n        let remainingPlants = this.getAllCellsWithPlant();\r\n        for (let cell of remainingPlants) {\r\n            let components = new Map();\r\n            components.set(cell.plant.name, cell);\r\n            if (this.findEcoSphereDFS(cell.x, cell.y, components)) {\r\n                this.setEcoSphereDFS(cell.x, cell.y);\r\n            }\r\n        }\r\n    }\r\n\r\n    getAdjacent8Cells(x, y) {\r\n        let cells = [];\r\n        for (let i = -1; i <= 1; i++) {\r\n            for (let j = -1; j <= 1; j++) {\r\n                if (i === 0 && j === 0) {\r\n                    continue;\r\n                }\r\n                if (0 <= x + i && x + i < this.size && 0 <= y + j && y + j < this.size) {\r\n                    cells.push(this.getCell(x + i, y + j));\r\n                }\r\n            }\r\n        }\r\n        return cells;\r\n    }\r\n\r\n    getAdjacent4Cells(x, y) {\r\n        let cells = [];\r\n        let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];\r\n        for (let [i, j] of directions) {\r\n            if (0 <= x + i && x + i < this.size && 0 <= y + j && y + j < this.size) {\r\n                cells.push(this.getCell(x + i, y + j));\r\n            }\r\n        }\r\n        return cells;\r\n    }\r\n\r\n}\r\n\r\nclass Cell {\r\n    // constructor only involves terrain since\r\n    // we will manually set terrain for all stages\r\n    // but the right to plant is handed over to player.\r\n    constructor(x, y, terrain) {\r\n\r\n        if (terrain.type !== itemTypes.TERRAIN) {\r\n            console.log(`failed to set cell at (${x},${y}) since the input is not terrain.`);\r\n            return;\r\n        }\r\n\r\n        this.x = x;\r\n        this.y = y;\r\n        this._terrain = terrain;\r\n        this._plant = null;\r\n        this._seed = null;\r\n        this._enemy = null;\r\n        this.isEcoSphere = false;\r\n    }\r\n\r\n    // however we still need to change terrain\r\n    // for game extensibility.\r\n    set terrain(terrain) {\r\n        if (terrain.type !== itemTypes.TERRAIN) {\r\n            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not terrain.`);\r\n            return;\r\n        }\r\n        this._terrain = terrain;\r\n    }\r\n\r\n    get terrain() {\r\n        return this._terrain;\r\n    }\r\n\r\n    // to remove a plant from a cell, use removePlant below.\r\n    set plant(plant) {\r\n        if (plant.type !== itemTypes.PLANT) {\r\n            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not plant.`);\r\n            return;\r\n        }\r\n        this._plant = plant;\r\n    }\r\n\r\n    get plant() {\r\n        return this._plant;\r\n    }\r\n\r\n    removePlant() {\r\n        this._plant = null;\r\n    }\r\n\r\n    set seed(seed){\r\n        if (seed.type !== itemTypes.SEED) {\r\n            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);\r\n            return;\r\n        }\r\n        this._seed = seed;\r\n    }\r\n\r\n    get seed() {\r\n        return this._seed;\r\n    }\r\n\r\n    removeSeed(){\r\n        this._seed = null;\r\n    }\r\n\r\n    set enemy(enemy) {\r\n        this._enemy = enemy;\r\n    }\r\n\r\n    get enemy() {\r\n        return this._enemy;\r\n    }\r\n\r\n    getEcoString(){\r\n        if(this.isEcoSphere){\r\n            return \"The cell is in an ecosystem and has some passive skill.\";\r\n        }\r\n        return \"The cell is not in an ecosystem.\";\r\n    }\r\n\r\n    // check if plant or seed is compatible with the terrain.\r\n    isCompatible(item) {\r\n        if(this.enemy !== null){\r\n            console.log(\"an enemy is on this cell, you cant place plant here!\");\r\n            return false;\r\n        }\r\n\r\n        if(this.seed !== null){\r\n            console.log(\"an seed is already on this cell, you cant place plant here!\");\r\n            return false;\r\n        }\r\n\r\n        if (this.terrain.name === \"Mountain\" || this.terrain.name === \"PlayerBase\") {\r\n            console.log(\"cannot plant on this terrain.\");\r\n            return false;\r\n        }\r\n        return true;\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/model/BoardCells.js b/docs/src/model/BoardCells.js
+--- a/docs/src/model/BoardCells.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/model/BoardCells.js	(date 1739912940298)
+@@ -1,6 +1,7 @@
+-import {itemTypes} from "../items/ItemTypes.js";
++import {itemTypes, plantTypes} from "../items/ItemTypes.js";
+ import {Plant} from "../items/Plant.js";
+ import {Seed} from "../items/Seed.js";
++import {Tree} from "../items/Tree.js";
+ 
+ export class BoardCells {
+     constructor(size) {
+@@ -20,7 +21,7 @@
+     plantCell(x, y, item) {
+         let cell = this.getCell(x, y);
+ 
+-        if(!(item instanceof Plant) && !(item instanceof Seed)) {
++        if (!(item instanceof Plant) && !(item instanceof Seed)) {
+             console.log("plantCell received invalid input.");
+             return false;
+         }
+@@ -30,7 +31,7 @@
+             return false;
+         }
+ 
+-        if(item instanceof Seed) {
++        if (item instanceof Seed) {
+             cell.seed = item;
+             return true;
+         }
+@@ -58,7 +59,7 @@
+     }
+ 
+     getCell(x, y) {
+-        if(x < 0 || x >= this.size || y < 0 || y >= this.size) {
++        if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
+             return null;
+         }
+         return this.boardObjects[x][y];
+@@ -120,11 +121,11 @@
+             return `cell at (${x},${y}) is of terrain ${t.name}.`;
+         }
+ 
+-        if(e !== null) {
++        if (e !== null) {
+             return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
+         }
+ 
+-        if(s !== null) {
++        if (s !== null) {
+             return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
+         }
+ 
+@@ -180,7 +181,7 @@
+         }
+     }
+ 
+-    reconstructEcosystem(){
++    reconstructEcosystem() {
+         // when a plant is removed, an existing ecosystem may get destroyed.
+         // 1. remove all ecosystem markers
+         for (let i = 0; i < this.size; i++) {
+@@ -225,6 +226,28 @@
+         return cells;
+     }
+ 
++    saveCells() {
++        let tmpArray = Array.from({length: this.size},
++            () => Array.from({length: this.size}, () => null));
++        for (let i = 0; i < this.size; i++) {
++            for (let j = 0; j < this.size; j++) {
++                tmpArray[i][j] = this.getCell(i, j).saveCell();
++            }
++        }
++        return tmpArray;
++    }
++
++    loadCells(cellsArray, gameState) {
++        for (let i = 0; i < this.size; i++) {
++            for (let j = 0; j < this.size; j++) {
++                if(cellsArray[i][j].itemType === itemTypes.PLANT) {
++                    console.log(cellsArray[i][j].itemName);
++                    this.plantCell(i, j, gameState.inventory.createItem(gameState.p5, cellsArray[i][j].itemName));
++                }
++            }
++        }
++    }
++
+ }
+ 
+ class Cell {
+@@ -278,7 +301,7 @@
+         this._plant = null;
+     }
+ 
+-    set seed(seed){
++    set seed(seed) {
+         if (seed.type !== itemTypes.SEED) {
+             console.log(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);
+             return;
+@@ -290,7 +313,7 @@
+         return this._seed;
+     }
+ 
+-    removeSeed(){
++    removeSeed() {
+         this._seed = null;
+     }
+ 
+@@ -302,8 +325,8 @@
+         return this._enemy;
+     }
+ 
+-    getEcoString(){
+-        if(this.isEcoSphere){
++    getEcoString() {
++        if (this.isEcoSphere) {
+             return "The cell is in an ecosystem and has some passive skill.";
+         }
+         return "The cell is not in an ecosystem.";
+@@ -311,12 +334,12 @@
+ 
+     // check if plant or seed is compatible with the terrain.
+     isCompatible(item) {
+-        if(this.enemy !== null){
++        if (this.enemy !== null) {
+             console.log("an enemy is on this cell, you cant place plant here!");
+             return false;
+         }
+ 
+-        if(this.seed !== null){
++        if (this.seed !== null) {
+             console.log("an seed is already on this cell, you cant place plant here!");
+             return false;
+         }
+@@ -328,4 +351,31 @@
+         return true;
+     }
+ 
++    saveCell() {
++        const tmpCell = {
++            itemType: null,
++            plantType: null,
++            seedType: null,
++            enemyType: null,
++            itemName: null,
++        };
++        if (this._plant !== null) {
++            tmpCell.itemType = this._plant.type;
++            tmpCell.plantType = this._plant.plantType;
++            tmpCell.itemName = this._plant.name;
++        }
++        if (this._enemy !== null) {
++            tmpCell.itemType = this._enemy.itemType;
++            tmpCell.enemyType = this._enemy.enemyType;
++        }
++        if (this._seed !== null) {
++            tmpCell.itemType = this._seed.itemType;
++            tmpCell.seedType = this._seed.seedType
++        }
++        return tmpCell;
++    }
++
++    loadCell() {
++
++    }
+ }
+\ No newline at end of file
+Index: docs/src/model/GameState.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Inventory} from \"./Inventory.js\";\r\n\r\nexport const stateCode = {\r\n    MENU: 1,\r\n    STANDBY: 2,\r\n    PLAY: 4,\r\n    FINISH: 8\r\n};\r\n\r\nexport const stageCode = {\r\n    NOSTAGE: 0,\r\n    STAGE1: 1,\r\n    STAGE2: 2,\r\n    STAGE3: 3,\r\n    STAGE4: 4,\r\n    STAGE5: 5\r\n}\r\n\r\nexport class GameState {\r\n    constructor(p5) {\r\n        this.state = stateCode.MENU; // default\r\n        this.currentStage = stageCode.NOSTAGE; // no stage is selected\r\n        this.inventory = new Inventory(p5);\r\n        this.playerCanClick = true; // set this to false during end turn enemy activity\r\n        this.paused = false;\r\n        this.enemyCanMove = false;\r\n    }\r\n\r\n    setState(newState) {\r\n        if (Object.values(stateCode).includes(newState)) {\r\n            console.log(`Game state changed to: ${Object.keys(stateCode).find(key => stateCode[key] === newState)}`);\r\n            this.state = newState;\r\n        } else {\r\n            console.error(\"Invalid state:\", newState);\r\n        }\r\n    }\r\n\r\n    getState() {\r\n        return this.state;\r\n    }\r\n\r\n    togglePlayerCanClick(){\r\n        this.playerCanClick = !this.playerCanClick;\r\n    }\r\n\r\n    togglePaused(){\r\n        this.paused = !this.paused;\r\n    }\r\n\r\n    toggleEnemyCanMove(){\r\n        this.enemyCanMove = !this.enemyCanMove;\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/model/GameState.js b/docs/src/model/GameState.js
+--- a/docs/src/model/GameState.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/model/GameState.js	(date 1739909803645)
+@@ -18,12 +18,14 @@
+ 
+ export class GameState {
+     constructor(p5) {
++        this.p5 = p5;
+         this.state = stateCode.MENU; // default
+         this.currentStage = stageCode.NOSTAGE; // no stage is selected
+-        this.inventory = new Inventory(p5);
++        this.inventory = new Inventory(this.p5);
+         this.playerCanClick = true; // set this to false during end turn enemy activity
+         this.paused = false;
+         this.enemyCanMove = false;
++        this.boardObjects = null;
+     }
+ 
+     setState(newState) {
+Index: docs/src/model/Menu.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Button } from \"../items/Button.js\";\r\nimport { stateCode } from \"./GameState.js\";\r\nimport { myutil } from \"../../lib/myutil.js\";\r\n\r\nexport class StartMenu {\r\n    constructor(gameState) {\r\n        this.gameState = gameState;\r\n        this.buttons = [];\r\n    }\r\n\r\n    setup(p5) {\r\n\r\n        let [buttonWidth, buttonHeight] = myutil.relative2absolute(0.15, 0.07);\r\n        let [buttonX, buttonY] = myutil.relative2absolute(0.5, 0.6);\r\n        let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];\r\n\r\n        let newGameButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, \"New Game\");\r\n        newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);\r\n\r\n        let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, \"Load Game\");\r\n        loadGameButton.onClick = () => console.log(\"Load Game (placeholder)\");\r\n\r\n        this.buttons.push(newGameButton, loadGameButton);\r\n    }\r\n\r\n    handleClick(p5) {\r\n        for (let button of this.buttons) {\r\n            button.mouseClick(p5);\r\n        }\r\n    }\r\n\r\n    handleKey() {\r\n\r\n    }\r\n    draw(p5) {\r\n        p5.background(50);\r\n        p5.fill(255);\r\n        p5.textSize(32);\r\n        p5.textAlign(p5.CENTER, p5.TOP);\r\n        let [textX, textY] = myutil.relative2absolute(0.5, 0.1);\r\n        p5.text(\"Start Menu\", textX, textY);\r\n\r\n        for (let button of this.buttons) {\r\n            button.draw(p5);\r\n        }\r\n    }\r\n}\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/model/Menu.js b/docs/src/model/Menu.js
+--- a/docs/src/model/Menu.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/model/Menu.js	(date 1739899298162)
+@@ -1,6 +1,7 @@
+ import { Button } from "../items/Button.js";
+ import { stateCode } from "./GameState.js";
+ import { myutil } from "../../lib/myutil.js";
++import { GameSave } from "./GameSave.js";
+ 
+ export class StartMenu {
+     constructor(gameState) {
+@@ -18,7 +19,9 @@
+         newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
+ 
+         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+-        loadGameButton.onClick = () => console.log("Load Game (placeholder)");
++        loadGameButton.onClick = () => {
++            GameSave.load();
++        }
+ 
+         this.buttons.push(newGameButton, loadGameButton);
+     }
+Index: docs/src/controller/Controller.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {stateCode, stageCode, GameState} from \"../model/GameState.js\";\r\nimport {StartMenu} from \"../model/Menu.js\";\r\nimport {StandbyMenu} from \"../model/Standby.js\";\r\nimport {Stage1PlayBoard} from \"../model/stages/Stage1.js\";\r\nimport {Stage2PlayBoard} from \"../model/stages/Stage2.js\";\r\nimport {InputHandler} from \"./input.js\";\r\nimport {PauseMenu} from \"../model/PauseMenu.js\";\r\n\r\nexport class Controller {\r\n    constructor(p5) {\r\n        this.gameState = new GameState(p5);\r\n\r\n        this.menus = {\r\n            [stateCode.MENU]: new StartMenu(this.gameState),\r\n            [stateCode.STANDBY]: new StandbyMenu(this.gameState),\r\n            [stateCode.PLAY]: null\r\n        };\r\n\r\n        this.pauseMenu = new PauseMenu(this.gameState);\r\n        // key input\r\n        this.input = new InputHandler(this.gameState);\r\n        this.saveState = stateCode.MENU; // default\r\n    }\r\n\r\n    setup(p5) {\r\n        for (let menu of Object.values(this.menus)) {\r\n            if (menu && menu.setup) {\r\n                menu.setup(p5);\r\n            }\r\n        }\r\n        this.pauseMenu.setup(p5);\r\n    }\r\n\r\n    clickListener(p5) {\r\n        if (this.gameState.paused) {\r\n            this.pauseMenu.handleClick(p5);\r\n            return;\r\n        }\r\n        if (this.gameState.playerCanClick === false) {\r\n            return;\r\n        }\r\n        let currentMenu = this.menus[this.gameState.getState()];\r\n        if (currentMenu && currentMenu.handleClick) {\r\n            currentMenu.handleClick(p5);\r\n        }\r\n    }\r\n\r\n    scrollListener(event) {\r\n        let currentMenu = this.menus[this.gameState.getState()];\r\n        if (currentMenu && currentMenu.handleScroll) {\r\n            currentMenu.handleScroll(event);\r\n        }\r\n    }\r\n\r\n    view(p5) {\r\n        let currentMenu = this.menus[this.gameState.getState()];\r\n        if (currentMenu && currentMenu.draw) {\r\n            currentMenu.draw(p5);\r\n        }\r\n        if (this.gameState.paused) {\r\n            p5.push();\r\n            p5.filter(p5.BLUR, 3);\r\n            p5.pop();\r\n            this.pauseMenu.draw(p5);\r\n        }\r\n    }\r\n\r\n    setPlayStage(p5) {\r\n        if (this.gameState.getState() === stateCode.PLAY\r\n            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStage)) {\r\n            this.menus[stateCode.PLAY] = this.newGameStage(this.gameState.currentStage);\r\n            this.menus[stateCode.PLAY].setup(p5);\r\n        }\r\n    }\r\n\r\n    setData(p5, newState) {\r\n        // if PLAY is in enemy movement, only call enemy movement\r\n        if (newState === stateCode.PLAY && this.gameState.enemyCanMove === true) {\r\n            this.menus[stateCode.PLAY].enemyMovements(p5);\r\n        }\r\n\r\n        // if we go to PLAY from STANDBY, save inventory then push stage items\r\n        if (this.saveState === stateCode.STANDBY && newState === stateCode.PLAY) {\r\n            this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();\r\n            this.menus[stateCode.PLAY].setStageInventory(p5);\r\n        }\r\n\r\n        // if we quit PLAY to STANDBY, reset PlayBoard and inventory\r\n        if (this.saveState === stateCode.PLAY && newState === stateCode.STANDBY) {\r\n            // reset inventory\r\n            this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);\r\n            // reset board later, since it also clears tmp inventory items\r\n            this.menus[stateCode.PLAY].resetBoard(p5);\r\n        }\r\n\r\n        // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY\r\n        if (newState === stateCode.FINISH) {\r\n            this.menus[stateCode.PLAY].resetBoard(p5);\r\n            this.gameState.setState(stateCode.STANDBY);\r\n        }\r\n\r\n    }\r\n\r\n    newGameStage(newStage) {\r\n        if (newStage === stageCode.STAGE1) {\r\n            return new Stage1PlayBoard(this.gameState);\r\n        }\r\n        if (newStage === stageCode.STAGE2) {\r\n            return new Stage2PlayBoard(this.gameState);\r\n        }\r\n        return null;\r\n    }\r\n}\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/controller/Controller.js b/docs/src/controller/Controller.js
+--- a/docs/src/controller/Controller.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/controller/Controller.js	(date 1739912556214)
+@@ -69,6 +69,8 @@
+         if (this.gameState.getState() === stateCode.PLAY
+             && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStage)) {
+             this.menus[stateCode.PLAY] = this.newGameStage(this.gameState.currentStage);
++            // set board in gameState
++            this.gameState.boardObjects = this.menus[stateCode.PLAY].boardObjects;
+             this.menus[stateCode.PLAY].setup(p5);
+         }
+     }
+@@ -103,6 +105,7 @@
+ 
+     newGameStage(newStage) {
+         if (newStage === stageCode.STAGE1) {
++            // load data then
+             return new Stage1PlayBoard(this.gameState);
+         }
+         if (newStage === stageCode.STAGE2) {
+Index: docs/src/items/ItemTypes.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>export let itemTypes = {\r\n    PLANT: 2,\r\n    SEED: 4,\r\n    ENEMY: 8,\r\n    TERRAIN: 16\r\n}\r\n\r\nexport let plantTypes = {\r\n    TREE: 2,\r\n    BUSH: 4,\r\n    GRASS: 8\r\n}\r\n\r\nexport let seedTypes = {\r\n    TREE: 2,\r\n    BUSH: 4,\r\n    GRASS: 8\r\n}\r\n\r\nexport let terrainTypes = {\r\n    RUIN: 0,\r\n    BASE: 1,\r\n    MOUNTAIN: 2,\r\n    RIVER: 4,\r\n    BRIDGE: 8,\r\n    STEPPE: 16\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/items/ItemTypes.js b/docs/src/items/ItemTypes.js
+--- a/docs/src/items/ItemTypes.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/items/ItemTypes.js	(date 1739907326872)
+@@ -24,4 +24,9 @@
+     RIVER: 4,
+     BRIDGE: 8,
+     STEPPE: 16
++}
++
++export let enemyTypes = {
++    STORM: 2,
++    BANDIT: 4,
+ }
+\ No newline at end of file
+Index: docs/src/items/Bandit.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Enemy} from \"./Enemy.js\";\r\nimport {PlayBoard} from \"../model/Play.js\";\r\nimport {myutil} from \"../../lib/myutil.js\";\r\nimport {plantEnemyInteractions} from \"./PlantEnemyInter.js\";\r\nimport {DijkstraSP, EdgeWeightedDigraph, DirectedEdge} from \"../controller/GraphSP.js\";\r\n\r\nexport class Bandit extends Enemy {\r\n    constructor(p5, x, y) {\r\n        super(x, y);\r\n        this.name = \"Bandit\";\r\n        this.img = p5.images.get(`${this.name}`);\r\n\r\n        this.health = 3;\r\n        this.maxHealth = 3;\r\n        this.status = true;\r\n        this.cell = null;\r\n\r\n        // at the beginning of end turn movement, isMoving = false, targetCell = null\r\n        // during movement, isMoving = true, targetCell != null\r\n        // at the end of movement, isMoving = true, targetCell = null\r\n        this.targetCell = null;\r\n        this.isMoving = false;\r\n        this.hasMoved = false;\r\n        this.direction = [];\r\n    }\r\n\r\n    static createNewBandit(p5, playBoard, i, j) {\r\n        let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);\r\n        let bandit = new Bandit(p5, avgX, avgY);\r\n        playBoard.enemies.push(bandit);\r\n        playBoard.boardObjects.getCell(i, j).enemy = bandit;\r\n        bandit.cell = playBoard.boardObjects.getCell(i, j);\r\n    }\r\n\r\n    enemyMovements(p5, playBoard) {\r\n        if (!(playBoard instanceof PlayBoard)) {\r\n            console.error('enemyMovements of Storm has received invalid PlayBoard.');\r\n            return false;\r\n        }\r\n        if (this.status === false || this.hasMoved) {\r\n            return false;\r\n        }\r\n\r\n        // end movement\r\n        if (this.isMoving === true && this.targetCell === null) {\r\n            this.isMoving = false;\r\n            this.hasMoved = true;\r\n            this.direction = [];\r\n            return false;\r\n        }\r\n        // during movement\r\n        if (this.isMoving === true && this.targetCell !== null) {\r\n            this.move(p5, playBoard);\r\n            return true;\r\n        }\r\n        // before movement\r\n        if (this.isMoving === false && this.targetCell === null) {\r\n            this.setTarget(playBoard);\r\n            // if setting target fails, the bandit holds.\r\n            if (this.targetCell === null) {\r\n                this.hasMoved = true;\r\n                return false;\r\n            }\r\n\r\n            if (this.cell) {\r\n                this.cell.enemy = null;\r\n                this.cell = null;\r\n            }\r\n            this.isMoving = true;\r\n            this.move(p5, playBoard);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    move(p5, playBoard) {\r\n        let [dy, dx] = this.direction;\r\n        let oldX = playBoard.oldCoorX(this.x, this.y) + 5 * dx;\r\n        let oldY = playBoard.oldCoorY(this.x, this.y) + 5 * dy;\r\n        let newX = playBoard.newCoorX(oldX, oldY);\r\n        let newY = playBoard.newCoorY(oldX, oldY);\r\n        this.x = newX;\r\n        this.y = newY;\r\n\r\n        let [targetX, targetY] = playBoard.CellIndex2Pos(p5, this.targetCell.x, this.targetCell.y, p5.CENTER);\r\n\r\n        // when arriving at target, set this.cell to target cell, and set targetCell -> null\r\n        if (myutil.manhattanDistance(this.x, this.y, targetX, targetY) < 2) {\r\n            this.x = targetX;\r\n            this.y = targetY;\r\n            this.cell = this.targetCell;\r\n            this.cell.enemy = this;\r\n            this.targetCell = null;\r\n        }\r\n\r\n    }\r\n\r\n    setTarget(playBoard) {\r\n        // get all living plants and seeds\r\n        let cellsWithPlant = playBoard.boardObjects.getAllCellsWithPlant();\r\n        let cellsWithSeed = playBoard.boardObjects.getAllCellsWithSeed();\r\n        let allTargets = [...cellsWithPlant, ...cellsWithSeed];\r\n\r\n        if (allTargets.length === 0) {\r\n            return null;\r\n        }\r\n\r\n        // create graph and pick a target according to playground status\r\n        let G = this.graph(playBoard);\r\n        let path = this.pickLuckyPlant(playBoard, G, allTargets);\r\n        if (path === null || path.length === 0) {\r\n            return;\r\n        }\r\n\r\n        // don't go along one direction then switch to another. move zigzag\r\n        let targetPlantCell = playBoard.boardObjects.getCell(path[path.length - 1].to() % playBoard.gridSize, Math.floor(path[path.length - 1].to() / playBoard.gridSize));\r\n        let nextEdge = path[0];\r\n        let nextCell = playBoard.boardObjects.getCell(nextEdge.to() % playBoard.gridSize, Math.floor(nextEdge.to() / playBoard.gridSize));\r\n        let altCellIndex = myutil.findAlternativeCell(this.cell.x, this.cell.y, targetPlantCell.x, targetPlantCell.y, nextCell.x, nextCell.y);\r\n        if (altCellIndex !== null) {\r\n            let dist = myutil.euclideanDistance(nextCell.x, nextCell.y, targetPlantCell.x, targetPlantCell.y);\r\n            let altDist = myutil.euclideanDistance(altCellIndex[0], altCellIndex[1], targetPlantCell.x, targetPlantCell.y);\r\n            if (dist > altDist &&\r\n                G.adj[this.cell.x + this.cell.y * playBoard.gridSize].find(edge => edge.to() === nextCell.x + nextCell.y * playBoard.gridSize).weight >=\r\n                G.adj[this.cell.x + this.cell.y * playBoard.gridSize].find(edge => edge.to() === altCellIndex[0] + altCellIndex[1] * playBoard.gridSize).weight\r\n            ) {\r\n                nextCell = playBoard.boardObjects.getCell(altCellIndex[0], altCellIndex[1]);\r\n            }\r\n        }\r\n\r\n        // If adjacent to the target plant, attack instead of moving\r\n        if (path.length === 1) {\r\n            plantEnemyInteractions.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);\r\n            this.hasMoved = true;\r\n            return;\r\n        }\r\n\r\n        this.targetCell = nextCell;\r\n        this.direction = [this.targetCell.x - this.cell.x, this.targetCell.y - this.cell.y];\r\n    }\r\n\r\n    pickLuckyPlant(playBoard, G, allTargets) {\r\n        // pick the one with the lowest path weight\r\n        let dijkstraSP = new DijkstraSP(G, this.cell.x + this.cell.y * playBoard.gridSize)\r\n        let minWeight = dijkstraSP.minWeightTo(allTargets[0].x + allTargets[0].y * playBoard.gridSize);\r\n        let index = 0;\r\n        for (let i = 0; i < allTargets.length; i++) {\r\n            let vertex = allTargets[i].x + allTargets[i].y * playBoard.gridSize;\r\n            if (dijkstraSP.minWeightTo(vertex) < minWeight) {\r\n                index = i;\r\n            }\r\n        }\r\n\r\n        // if min weight is too high, hold still.\r\n        // --- any weight higher than 100 will be marked inaccessible.\r\n        if (minWeight > 100) {\r\n            return null;\r\n        }\r\n\r\n        // return the whole path\r\n        return dijkstraSP.pathTo(allTargets[index].x + allTargets[index].y * playBoard.gridSize);\r\n\r\n        // refactor later: use union-find to check if pq.poll() is accessible.\r\n        // if all plants in the priority queue is inaccessible, return null.\r\n    }\r\n\r\n    graph(playBoard) {\r\n        let N = playBoard.gridSize;\r\n        let G = new EdgeWeightedDigraph(N * N);\r\n\r\n        // set weight according to terrain.\r\n        for (let i = 0; i < N; i++) {\r\n            for (let j = 0; j < N; j++) {\r\n                if (i + 1 < N) {\r\n                    G.addEdge(new DirectedEdge(i + j * N, (i + 1) + j * N, 1 + playBoard.boardObjects.getCell(i + 1, j).terrain.getWeight()));\r\n                }\r\n                if (j + 1 < N) {\r\n                    G.addEdge(new DirectedEdge(i + j * N, i + (j + 1) * N, 1 + playBoard.boardObjects.getCell(i, j + 1).terrain.getWeight()));\r\n                }\r\n                if (i - 1 >= 0) {\r\n                    G.addEdge(new DirectedEdge(i + j * N, (i - 1) + j * N, 1 + playBoard.boardObjects.getCell(i - 1, j).terrain.getWeight()));\r\n                }\r\n                if (j - 1 >= 0) {\r\n                    G.addEdge(new DirectedEdge(i + j * N, i + (j - 1) * N, 1 + playBoard.boardObjects.getCell(i, j - 1).terrain.getWeight()));\r\n                }\r\n            }\r\n        }\r\n\r\n        // set weight to avoid storm.\r\n        let cellsWithEnemy = playBoard.boardObjects.getAllCellsWithEnemy();\r\n        for (let cwe of cellsWithEnemy) {\r\n            let x = cwe.x;\r\n            let y = cwe.y;\r\n            if (cwe.enemy && cwe.enemy.name === \"Storm\") {\r\n                for (let i = 0; i < playBoard.gridSize; i++) {\r\n                    G.setWeight(i + y * playBoard.gridSize, i + 1 + y * playBoard.gridSize, 10, 'a');\r\n                }\r\n                for (let j = 0; j < playBoard.gridSize; j++) {\r\n                    G.setWeight(x + j * playBoard.gridSize, x + (j + 1) * playBoard.gridSize, 10, 'a');\r\n                }\r\n            }\r\n            // set edges connecting cells with other enemies high enough to avoid clash\r\n            if (x !== this.cell.x || y !== this.cell.y) {\r\n                G.setWeight(x + y * playBoard.gridSize, (x - 1) + y * playBoard.gridSize, 1000, \"ab\");\r\n                G.setWeight(x + y * playBoard.gridSize, (x + 1) + y * playBoard.gridSize, 1000, \"ab\");\r\n                G.setWeight(x + y * playBoard.gridSize, x + (y - 1) * playBoard.gridSize, 1000, \"ab\");\r\n                G.setWeight(x + y * playBoard.gridSize, x + (y + 1) * playBoard.gridSize, 1000, \"ab\");\r\n            }\r\n        }\r\n\r\n        return G;\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/items/Bandit.js b/docs/src/items/Bandit.js
+--- a/docs/src/items/Bandit.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/items/Bandit.js	(date 1739908023996)
+@@ -3,11 +3,13 @@
+ import {myutil} from "../../lib/myutil.js";
+ import {plantEnemyInteractions} from "./PlantEnemyInter.js";
+ import {DijkstraSP, EdgeWeightedDigraph, DirectedEdge} from "../controller/GraphSP.js";
++import {enemyTypes} from "./ItemTypes.js";
+ 
+ export class Bandit extends Enemy {
+     constructor(p5, x, y) {
+         super(x, y);
+         this.name = "Bandit";
++        this.enemyType = enemyTypes.BANDIT;
+         this.img = p5.images.get(`${this.name}`);
+ 
+         this.health = 3;
+Index: docs/src/items/Storm.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {itemTypes} from \"./ItemTypes.js\";\r\nimport {Enemy} from \"./Enemy.js\";\r\nimport {plantEnemyInteractions} from \"./PlantEnemyInter.js\";\r\nimport {PlayBoard} from \"../model/Play.js\";\r\n\r\nexport class Storm extends Enemy {\r\n    constructor(p5, x, y, direction) {\r\n        super(x, y);\r\n        this.name = \"Storm\";\r\n        this.img = p5.images.get(`${this.name}`);\r\n\r\n        this.health = 3;\r\n        this.maxHealth = 3;\r\n        this.status = true;\r\n\r\n        if (direction === 'u') {\r\n            this.direction = [0, -1];\r\n        } else if (direction === 'd') {\r\n            this.direction = [0, 1];\r\n        } else if (direction === 'l') {\r\n            this.direction = [-1, 0];\r\n        } else if (direction === 'r') {\r\n            this.direction = [1, 0];\r\n        } else {\r\n            console.log(`invalid direction of storm`);\r\n            return;\r\n        }\r\n\r\n        this.cell = null;\r\n        this.countdown = 1;\r\n        this.isMoving = false;\r\n    }\r\n\r\n    static createNewStorm(p5, playBoard, i, j, direction) {\r\n        let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);\r\n        let storm = new Storm(p5, avgX, avgY, direction);\r\n        playBoard.enemies.push(storm);\r\n        playBoard.boardObjects.getCell(i, j).enemy = storm;\r\n        storm.cell = playBoard.boardObjects.getCell(i, j);\r\n    }\r\n\r\n    enemyMovements(p5, playBoard) {\r\n        if (!(playBoard instanceof PlayBoard)) {\r\n            console.error('enemyMovements of Storm has received invalid PlayBoard.');\r\n            return false;\r\n        }\r\n        if (this.status === false) {\r\n            return false;\r\n        }\r\n        if (this.isMoving === true) {\r\n            this.moveAndInvokeStorm(playBoard);\r\n            return true;\r\n        }\r\n        if (this.countdown > 0) {\r\n            this.countdown--;\r\n        }\r\n        if (this.countdown === 0) {\r\n            // the storm blows!\r\n            if (this.cell) {\r\n                this.cell.enemy = null;\r\n                this.cell = null;\r\n            }\r\n            this.isMoving = true;\r\n            this.moveAndInvokeStorm(playBoard);\r\n            return true;\r\n        }\r\n    }\r\n\r\n    // priority and logic of storm interactions:\r\n    // 1. check current cell to perform storm-terrain interaction.\r\n    // 2. check extended trees' existence, and randomly pick one lucky tree.\r\n    // 3. check current cell to attack plant or seed.\r\n    moveAndInvokeStorm(playBoard) {\r\n        if (!(playBoard instanceof PlayBoard)) {\r\n            console.error('moveAndInvokeStorm has received invalid PlayBoard.');\r\n            return;\r\n        }\r\n\r\n        let [dx, dy] = this.direction;\r\n        let oldX = playBoard.oldCoorX(this.x, this.y) + 5 * dx; // 5 is a magic number representing the moving speed of storm\r\n        let oldY = playBoard.oldCoorY(this.x, this.y) + 5 * dy;\r\n        let newX = playBoard.newCoorX(oldX, oldY);\r\n        let newY = playBoard.newCoorY(oldX, oldY);\r\n        this.x = newX;\r\n        this.y = newY;\r\n\r\n        // call interaction when storm overlays with plant (cell level)\r\n        let index = playBoard.pos2CellIndex(this.x, this.y);\r\n        if (index[0] !== -1) {\r\n            let cell = playBoard.boardObjects.getCell(index[0], index[1]);\r\n            // 1. check current cell to perform storm-terrain interaction.\r\n            if (cell.terrain.name === \"Mountain\") {\r\n                this.status = false;\r\n                plantEnemyInteractions.findEnemyAndDelete(playBoard, this);\r\n            }\r\n\r\n            // 2. check extended trees' existence, and randomly pick one lucky tree.\r\n            let cells = playBoard.boardObjects.getAdjacent4Cells(index[0], index[1]);\r\n            let trees = [];\r\n            for (let adCell of cells) {\r\n                if (adCell !== null && adCell.plant !== null && adCell.plant.name === \"Tree\") {\r\n                    if (adCell.plant.hasExtended === true && adCell.plant.status === true) {\r\n                        trees.push(adCell.plant);\r\n                    }\r\n                }\r\n            }\r\n            if (trees.length > 0) {\r\n                let luckyTree = trees[Math.floor(Math.random() * trees.length)];\r\n                plantEnemyInteractions.plantAttackedByStorm(playBoard, luckyTree, this);\r\n            }\r\n\r\n            // 3. check current cell to attack plant or seed.\r\n            if (cell.plant !== null && cell.plant.status === true) {\r\n                plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);\r\n            } else if (cell.seed !== null) {\r\n                plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);\r\n            }\r\n\r\n            // 4. if a bandit is at this cell, dies.\r\n            if (cell.enemy && cell.enemy.name === \"Bandit\") {\r\n                cell.enemy.health = 0;\r\n                cell.enemy.status = false;\r\n                plantEnemyInteractions.findEnemyAndDelete(playBoard, cell.enemy);\r\n                cell.enemy = null;\r\n            }\r\n\r\n        }\r\n\r\n        // if the storm goes out of the grid, it dies anyway.\r\n        if (index[0] === -1) {\r\n            this.status = false;\r\n            let index = playBoard.enemies.findIndex(e => e === this);\r\n            playBoard.enemies.splice(index, 1);\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docs/src/items/Storm.js b/docs/src/items/Storm.js
+--- a/docs/src/items/Storm.js	(revision df6b002d4d4ceffa31c9e879833d64afc92b3072)
++++ b/docs/src/items/Storm.js	(date 1739907326857)
+@@ -1,4 +1,4 @@
+-import {itemTypes} from "./ItemTypes.js";
++import {enemyTypes, itemTypes} from "./ItemTypes.js";
+ import {Enemy} from "./Enemy.js";
+ import {plantEnemyInteractions} from "./PlantEnemyInter.js";
+ import {PlayBoard} from "../model/Play.js";
+@@ -7,6 +7,7 @@
+     constructor(p5, x, y, direction) {
+         super(x, y);
+         this.name = "Storm";
++        this.enemyType = enemyTypes.STORM;
+         this.img = p5.images.get(`${this.name}`);
+ 
+         this.health = 3;

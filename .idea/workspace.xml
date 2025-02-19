@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="55998a5a-b26b-4255-93be-2ad3a026a7ad" name="Changes" comment="add save system" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;redial17&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:UoB-COMSM0166/2025-group-12.git&quot;,
+    &quot;accountId&quot;: &quot;c34d9296-9b5a-4320-b925-3a19810649f0&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2t2mbm4sDIMOKDqiTCQ9qWU8moY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.index.html.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/zr/2025-group-12/docs/src/controller",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode.JavaScript",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zr\2025-group-12\docs\src\controller" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/2025-group-12/docs/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.index.html" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="55998a5a-b26b-4255-93be-2ad3a026a7ad" name="Changes" comment="" />
+      <created>1739558618690</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739558618690</updated>
+      <workItem from="1739558620235" duration="18038000" />
+      <workItem from="1739583987497" duration="138000" />
+      <workItem from="1739584366448" duration="10270000" />
+      <workItem from="1739650407746" duration="3962000" />
+      <workItem from="1739818430979" duration="106000" />
+      <workItem from="1739818637080" duration="53000" />
+      <workItem from="1739897129742" duration="15382000" />
+      <workItem from="1739918790694" duration="4185000" />
+      <workItem from="1739987223602" duration="337000" />
+      <workItem from="1739987623142" duration="8919000" />
+      <workItem from="1739996839262" duration="43000" />
+    </task>
+    <task id="LOCAL-00001" summary="add keyInput">
+      <option name="closed" value="true" />
+      <created>1739563949034</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1739563949034</updated>
+    </task>
+    <task id="LOCAL-00002" summary="change the condition of enemy movement to enemyCanMove">
+      <option name="closed" value="true" />
+      <created>1739565158672</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1739565158672</updated>
+    </task>
+    <task id="LOCAL-00003" summary="create PauseMenu state, separate from the gamestate machine">
+      <option name="closed" value="true" />
+      <created>1739580089072</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1739580089072</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix mistaken click">
+      <option name="closed" value="true" />
+      <created>1739580992387</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739580992387</updated>
+    </task>
+    <task id="LOCAL-00005" summary="add mobs">
+      <option name="closed" value="true" />
+      <created>1739593386898</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1739593386898</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix muti chosen issue">
+      <option name="closed" value="true" />
+      <created>1739594049023</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1739594049023</updated>
+    </task>
+    <task id="LOCAL-00007" summary="add save system">
+      <option name="closed" value="true" />
+      <created>1739995992882</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1739995992882</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add save system">
+      <option name="closed" value="true" />
+      <created>1739996633800</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1739996633800</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add keyInput" />
+    <MESSAGE value="change the condition of enemy movement to enemyCanMove" />
+    <MESSAGE value="create PauseMenu state, separate from the gamestate machine" />
+    <MESSAGE value="fix mistaken click" />
+    <MESSAGE value="add mobs" />
+    <MESSAGE value="fix muti chosen issue" />
+    <MESSAGE value="add save system" />
+    <option name="LAST_COMMIT_MESSAGE" value="add save system" />
+  </component>
+</project>
