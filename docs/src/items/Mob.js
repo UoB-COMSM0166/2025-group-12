@@ -1,5 +1,5 @@
 import {Enemy} from "./Enemy.js";
-import {itemTypes} from "./ItemTypes.js";
+import {enemyTypes, itemTypes} from "./ItemTypes.js";
 import {PlayBoard} from "../model/Play.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {aStarSearch} from "../model/Astar.js";
@@ -9,6 +9,7 @@ export class Mob extends Enemy {
         super(x, y);
         this.name = "Mob";
         this.img = p5.images.get(`${this.name}`);
+        this.enemyType = enemyTypes.MOB;
 
         this.health = 3;
         this.maxHealth = 3;

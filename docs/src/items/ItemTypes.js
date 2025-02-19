@@ -25,3 +25,10 @@ export let terrainTypes = {
     BRIDGE: 8,
     STEPPE: 16
 }
+
+// notice: the order of end turn action refers to below ordering.
+export let enemyTypes = {
+    STORM: 100,
+    BANDIT: 200,
+    MOB: 201
+}

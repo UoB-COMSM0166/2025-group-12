@@ -66,6 +66,7 @@ export class PlayBoard {
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
         turnButton.onClick = () => {
+            this.enemies.sort((a,b) => a.enemyType - b.enemyType);
             this.gameState.togglePlayerCanClick();
             this.gameState.toggleEnemyCanMove();
         }

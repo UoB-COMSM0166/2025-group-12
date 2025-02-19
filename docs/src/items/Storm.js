@@ -1,4 +1,4 @@
-import {itemTypes, terrainTypes} from "./ItemTypes.js";
+import {enemyTypes, itemTypes, terrainTypes} from "./ItemTypes.js";
 import {Enemy} from "./Enemy.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {PlayBoard} from "../model/Play.js";
@@ -9,6 +9,7 @@ export class Storm extends Enemy {
         super(x, y);
         this.name = "Storm";
         this.img = p5.images.get(`${this.name}`);
+        this.enemyType = enemyTypes.STORM;
 
         this.health = 3;
         this.maxHealth = 3;

@@ -57,8 +57,10 @@ export class Stage1PlayBoard extends PlayBoard {
             Bandit.createNewBandit(p5, this, 3, 1);
         } else if (this.turn === 2) {
             Storm.createNewStorm(p5, this, 2, 2, 'u');
+            Bandit.createNewBandit(p5, this, 0, 0);
         } else if (this.turn === 3) {
-            Storm.createNewStorm(p5, this, 1, 1, 'r');
+            Bandit.createNewBandit(p5, this, 3, 3);
+            Storm.createNewStorm(p5, this, 1, 1, 'u');
         }
     }
 }

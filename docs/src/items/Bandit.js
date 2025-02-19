@@ -3,12 +3,15 @@ import {PlayBoard} from "../model/Play.js";
 import {myutil} from "../../lib/myutil.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {DijkstraSP, EdgeWeightedDigraph, DirectedEdge} from "../controller/GraphSP.js";
+import {enemyTypes} from "./ItemTypes.js";
 
 export class Bandit extends Enemy {
     constructor(p5, x, y) {
         super(x, y);
         this.name = "Bandit";
         this.img = p5.images.get(`${this.name}`);
+
+        this.enemyType = enemyTypes.BANDIT;
 
         this.health = 3;
         this.maxHealth = 3;
