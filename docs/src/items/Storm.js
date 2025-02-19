@@ -34,7 +34,7 @@ export class Storm extends Enemy {
     }
 
     static createNewStorm(p5, playBoard, i, j, direction) {
-        let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);
+        let [avgX, avgY] = playBoard.cellIndex2Pos(p5, i, j, p5.CENTER);
         let storm = new Storm(p5, avgX, avgY, direction);
         playBoard.enemies.push(storm);
         playBoard.boardObjects.getCell(i, j).enemy = storm;

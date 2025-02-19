@@ -24,7 +24,7 @@ export class Mob extends Enemy {
     }
 
     static createNewMob(p5, playBoard, i, j) {
-        let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);
+        let [avgX, avgY] = playBoard.cellIndex2Pos(p5, i, j, p5.CENTER);
         let mob = new Mob(p5, avgX, avgY);
         playBoard.enemies.push(mob);
         playBoard.boardObjects.getCell(i, j).enemy = mob;
@@ -53,8 +53,8 @@ export class Mob extends Enemy {
             let posArr = aStarSearch(playBoard.boardObjects.boardObjects, this.cell, this.targetCell, 1);
             let [x, y] = posArr[0];
             this.tempcell = playBoard.boardObjects.getCell(x, y);
-            this.targetX = playBoard.CellIndex2Pos(p5, x, y, p5.CENTER)[0];
-            this.targetY = playBoard.CellIndex2Pos(p5, x, y, p5.CENTER)[1];
+            this.targetX = playBoard.cellIndex2Pos(p5, x, y, p5.CENTER)[0];
+            this.targetY = playBoard.cellIndex2Pos(p5, x, y, p5.CENTER)[1];
             if (this.x !== this.targetX || this.targetY !== this.targetY) {
                 this.x = this.x + (this.targetX - this.x) * 0.1;
                 this.y = this.y + (this.targetY - this.y) * 0.1;

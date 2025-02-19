@@ -28,7 +28,7 @@ export class Bandit extends Enemy {
     }
 
     static createNewBandit(p5, playBoard, i, j) {
-        let [avgX, avgY] = playBoard.CellIndex2Pos(p5, i, j, p5.CENTER);
+        let [avgX, avgY] = playBoard.cellIndex2Pos(p5, i, j, p5.CENTER);
         let bandit = new Bandit(p5, avgX, avgY);
         playBoard.enemies.push(bandit);
         playBoard.boardObjects.getCell(i, j).enemy = bandit;
@@ -84,7 +84,7 @@ export class Bandit extends Enemy {
         this.x = newX;
         this.y = newY;
 
-        let [targetX, targetY] = playBoard.CellIndex2Pos(p5, this.targetCell.x, this.targetCell.y, p5.CENTER);
+        let [targetX, targetY] = playBoard.cellIndex2Pos(p5, this.targetCell.x, this.targetCell.y, p5.CENTER);
 
         // when arriving at target, set this.cell to target cell, and set targetCell -> null
         if (myutil.manhattanDistance(this.x, this.y, targetX, targetY) < 2) {
@@ -98,13 +98,44 @@ export class Bandit extends Enemy {
     }
 
     setTarget(playBoard) {
+        // if the bandit is at the same cell with a plant, it first tries to leave.
+        if (this.cell.plant !== null) {
+            let G = this.graph(playBoard);
+            let directions = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+            let possibleDirections = [];
+            for (let [dx, dy] of directions) {
+                // skip out-of-bound
+                if (this.cell.x + dx < 0 || this.cell.x + dx >= playBoard.gridSize || this.cell.y + dy < 0 || this.cell.y + dy >= playBoard.gridSize) {
+                    continue;
+                }
+                // the target cell must not be occupied by another enemy already
+                if (G.edges().find(e => {
+                    return e.from() === this.cell.x + this.cell.y * playBoard.gridSize
+                        && e.to() === (this.cell.x + dx) + (this.cell.y + dy) * playBoard.gridSize
+                }).weight < 100) {
+                    possibleDirections.push([dx, dy]);
+                }
+            }
+            if (possibleDirections.length > 0) {
+                let index = Math.floor(Math.random() * possibleDirections.length);
+                this.targetCell = playBoard.boardObjects.getCell(possibleDirections[index][0], possibleDirections[index][1]);
+                this.direction = [this.targetCell.x - this.cell.x, this.targetCell.y - this.cell.y];
+                return;
+            }
+            // if no way out, the bandit dies of forest insects and animal attacks.
+            // they may deserve a better ending? refactor
+            this.status = false;
+            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            return;
+        }
+
         // get all living plants and seeds
         let cellsWithPlant = playBoard.boardObjects.getAllCellsWithPlant();
         let cellsWithSeed = playBoard.boardObjects.getAllCellsWithSeed();
         let allTargets = [...cellsWithPlant, ...cellsWithSeed];
 
         if (allTargets.length === 0) {
-            return null;
+            return;
         }
 
         // create graph and pick a target according to playground status
@@ -153,14 +184,19 @@ export class Bandit extends Enemy {
             }
         }
 
+        let path = dijkstraSP.pathTo(allTargets[index].x + allTargets[index].y * playBoard.gridSize);
+
         // if min weight is too high, hold still.
         // --- any weight higher than 100 will be marked inaccessible.
-        if (minWeight > 100) {
-            return null;
+        if (minWeight >= 100) {
+            // the bandit can keep moving as long as next step is accessible
+            if (path.length === 0 || path[0].weight >= 100) {
+                return null;
+            }
         }
 
         // return the whole path
-        return dijkstraSP.pathTo(allTargets[index].x + allTargets[index].y * playBoard.gridSize);
+        return path;
 
         // refactor later: use union-find to check if pq.poll() is accessible.
         // if all plants in the priority queue is inaccessible, return null.

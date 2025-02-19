@@ -177,13 +177,6 @@ export class PlayBoard {
             this.infoBox.draw(p5, this);
         }
 
-        // draw all enemies according to this.enemy
-        for (let enemy of this.enemies) {
-            let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-            p5.image(enemy.img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
-            myutil.drawHealthBar(p5, enemy, enemy.x - 20, enemy.y - 50, 40, 5);
-        }
-
         // draw plants according to board objects
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
@@ -191,17 +184,24 @@ export class PlayBoard {
                 let plant = cell.plant;
                 let seed = cell.seed;
                 if (plant !== null) {
-                    let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
+                    let [avgX, avgY] = this.cellIndex2Pos(p5, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     myutil.drawHealthBar(p5, plant, avgX - 21, avgY - 42, 40, 5);
                 }
                 if (seed !== null) {
-                    let [avgX, avgY] = this.CellIndex2Pos(p5, i, j, p5.CENTER);
+                    let [avgX, avgY] = this.cellIndex2Pos(p5, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                 }
             }
+        }
+
+        // draw all enemies according to this.enemy
+        for (let enemy of this.enemies) {
+            let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+            p5.image(enemy.img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
+            myutil.drawHealthBar(p5, enemy, enemy.x - 20, enemy.y - 50, 40, 5);
         }
 
         // draw inventory
@@ -283,7 +283,7 @@ export class PlayBoard {
 
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
-                let [x1, y1, x2, y2, x3, y3, x4, y4] = this.CellIndex2Pos(p5, i, j, p5.CORNERS);
+                let [x1, y1, x2, y2, x3, y3, x4, y4] = this.cellIndex2Pos(p5, i, j, p5.CORNERS);
                 p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
                 if (this.boardObjects.getCell(i, j).isEcoSphere) {
@@ -303,7 +303,7 @@ export class PlayBoard {
             for (let j = this.gridSize - 1; j >= 0; j--) {
                 let cell = this.boardObjects.getCell(i, j);
                 if (cell.terrain.name === "Steppe") continue;
-                let [x1, y1] = this.CellIndex2Pos(p5, i, j, p5.CORNER);
+                let [x1, y1] = this.cellIndex2Pos(p5, i, j, p5.CORNER);
                 p5.image(cell.terrain.img, x1 - this.cellWidth / 4, y1, this.cellWidth / 2, this.cellHeight / 2);
             }
         }
@@ -348,7 +348,7 @@ export class PlayBoard {
     }
 
     // convert cell index into canvas position
-    CellIndex2Pos(p5, i, j, mode) {
+    cellIndex2Pos(p5, i, j, mode) {
         let x = -(this.gridSize * this.cellWidth / 2) + j * this.cellWidth;
         let y = -(this.gridSize * this.cellHeight / 2) + i * this.cellHeight;
 
