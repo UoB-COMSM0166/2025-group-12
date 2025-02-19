@@ -27,6 +27,17 @@ export class Stage1PlayBoard extends PlayBoard {
 
     // set stage inventory at entering, called by controller
     setStageInventory(p5) {
+        if(!this.gameState.loaded){
+            // what's this code for?
+            /*
+            this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
+            this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
+            this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
+            this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 2);
+            this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
+            this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 2);
+             */
+        }
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 1);
     }
 
