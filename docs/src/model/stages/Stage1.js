@@ -57,15 +57,14 @@ export class Stage1PlayBoard extends PlayBoard {
         if (this.turn === 1) {
             Storm.createNewStorm(p5, this, 1, 1, 'd');
             Storm.createNewStorm(p5, this, 0, 0, 'd');
-            //Mob.createNewMob(p5, this, 5, 5);
             Bandit.createNewBandit(p5, this, 3, 1);
         } else if (this.turn === 2) {
-
             this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
             this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
             this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 2);
             this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
             this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 2);
+
 
             Storm.createNewStorm(p5, this, 2, 2, 'u');
             Bandit.createNewBandit(p5, this, 0, 0);
