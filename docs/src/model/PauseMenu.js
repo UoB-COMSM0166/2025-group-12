@@ -1,5 +1,5 @@
-import { Button } from "../items/Button.js";
-import { myutil } from "../../lib/myutil.js";
+import {Button} from "../items/Button.js";
+import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
 
 export class PauseMenu {
@@ -38,13 +38,18 @@ export class PauseMenu {
 
     handleClick(p5) {
         for (let button of this.buttons) {
-            button.mouseClick(p5);
+            if (button.mouseClick(p5)) {
+                return;
+            }
         }
+        this.gameState.togglePaused();
+        this.gameState.togglePlayerCanClick();
     }
 
     handleKey() {
 
     }
+
     draw(p5) {
         p5.background(0, 0, 0, 80);
         p5.fill(255);
