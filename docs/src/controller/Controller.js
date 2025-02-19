@@ -67,9 +67,11 @@ export class Controller {
 
     setPlayStage(p5) {
         if (this.gameState.getState() === stateCode.PLAY
-            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStage)) {
-            this.menus[stateCode.PLAY] = this.newGameStage(this.gameState.currentStage);
+            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStageCode)) {
+            this.menus[stateCode.PLAY] = this.newGameStage(this.gameState.currentStageCode);
             this.menus[stateCode.PLAY].setup(p5);
+            this.gameState.currentBoard = this.menus[stateCode.PLAY].boardObjects;
+            this.gameState.currentStage = this.menus[stateCode.PLAY];
         }
     }
 
