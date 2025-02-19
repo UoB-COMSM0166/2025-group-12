@@ -38,9 +38,9 @@ export class GameSave {
                 gameState.currentStage.boardObjects.loadBoard(loadData.board, gameState);
                 gameState.currentStage.turn = loadData.turn;
                 gameState.currentStage.buttons.find(button => button.text.startsWith("turn")).text = gameState.currentStage.getTurnButtonText();
-                gameState.loaded = false;
                 console.log('Game load');
             }, 50);
+            gameState.loaded = false;
 
         } else {
             console.log('Save data not found!');

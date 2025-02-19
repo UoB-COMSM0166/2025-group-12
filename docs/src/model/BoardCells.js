@@ -1,6 +1,8 @@
 import {enemyTypes, itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
 import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
+import {Bandit} from "../items/Bandit.js";
+import {Storm} from "../items/Storm.js";
 
 export class BoardCells {
     constructor(size) {
@@ -245,6 +247,14 @@ export class BoardCells {
                 if (savedBoard[i][j].plantType !== null || savedBoard[i][j].seedType !== null) {
                     this.plantCell(i, j, gameState.inventory.createItem(gameState.p5, savedBoard[i][j].name));
                 }
+
+                if (savedBoard[i][j].enemyType === enemyTypes.BANDIT) {
+                    Bandit.createNewBandit(gameState.p5, gameState.currentStage, i, j);
+                }
+                if (savedBoard[i][j].enemyType === enemyTypes.STORM) {
+                    Storm.createNewStorm(gameState.p5, gameState.currentStage, i, j);
+                }
+
             }
         }
     }
@@ -352,22 +362,22 @@ class Cell {
         return true;
     }
 
-    saveCell(){
+    saveCell() {
         let tmpObj = {
             name: null,
             plantType: null,
             seedType: null,
             enemyType: null,
         }
-        if(this.plant){
+        if (this.plant) {
             tmpObj.plantType = this.plant.plantType;
             tmpObj.name = this.plant.name;
         }
-        if(this.seed){
+        if (this.seed) {
             tmpObj.seedType = this.seed.seedType;
             tmpObj.name = this.seed.name;
         }
-        if(this.enemy){
+        if (this.enemy) {
             tmpObj.enemyType = this.enemy.enemyType;
             tmpObj.name = this.enemy.name;
         }
