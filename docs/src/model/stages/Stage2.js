@@ -32,8 +32,6 @@ export class Stage2PlayBoard extends PlayBoard {
         this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 2);
         this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
         this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 2);
-        // update inventory height
-        this.gameState.inventory.updateInventoryHeight();
     }
 
     // set stage terrain, called when the stage is loaded or reset
@@ -48,7 +46,7 @@ export class Stage2PlayBoard extends PlayBoard {
         this.boardObjects.setCell(5, 5, new Mountain(p5));
     }
 
-    nextTurnEnemies(p5) {
+    nextTurnItems(p5) {
         if (this.turn === 1) {
             Bandit.createNewBandit(p5, this, 0, 0);
             Storm.createNewStorm(p5, this, 0, 4, 'd');

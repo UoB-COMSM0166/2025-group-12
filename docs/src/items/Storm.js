@@ -94,6 +94,7 @@ export class Storm extends Enemy {
             if (cell.terrain.name === "Mountain") {
                 this.status = false;
                 plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+                return;
             }
 
             // 2. check extended trees' existence, and randomly pick one lucky tree.
@@ -109,18 +110,22 @@ export class Storm extends Enemy {
             if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
                 plantEnemyInteractions.plantAttackedByStorm(playBoard, luckyTree, this);
+                return;
             }
 
             // 3. check current cell to attack plant or seed.
-            if (cell.plant !== null && cell.plant.status === true) {
-                plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
-            } else if (cell.seed !== null) {
-                plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
+            if (this.status === true) {
+                if (cell.plant !== null && cell.plant.status === true) {
+                    plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
+                } else if (cell.seed !== null) {
+                    plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
+                }
             }
 
             // 4. if player base is at this cell, destroy it.
             if (cell.terrain.terrainType === terrainTypes.BASE) {
                 playBoard.gameOver(p5);
+                return;
             }
 
             // 4. if a bandit is at this cell, dies.
@@ -137,7 +142,9 @@ export class Storm extends Enemy {
         if (index[0] === -1) {
             this.status = false;
             let index = playBoard.enemies.findIndex(e => e === this);
-            playBoard.enemies.splice(index, 1);
+            if (index !== -1) {
+                playBoard.enemies.splice(index, 1);
+            }
         }
     }
 }

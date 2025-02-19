@@ -1,5 +1,6 @@
 import { Button } from "../items/Button.js";
 import { myutil } from "../../lib/myutil.js";
+import {GameSave} from "./GameSave.js";
 
 export class PauseMenu {
     constructor(gameState) {
@@ -19,9 +20,20 @@ export class PauseMenu {
             this.gameState.togglePlayerCanClick();
         }
         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
-        loadGameButton.onClick = () => console.log("Load Game (placeholder)");
+        loadGameButton.onClick = () => {
+            GameSave.load(this.gameState);
+            this.gameState.togglePaused();
+            this.gameState.togglePlayerCanClick();
+        }
 
-        this.buttons.push(continueButton, loadGameButton);
+        let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
+        saveGameButton.onClick = () => {
+            GameSave.save(this.gameState);
+            this.gameState.togglePaused();
+            this.gameState.togglePlayerCanClick();
+        }
+
+        this.buttons.push(continueButton, loadGameButton, saveGameButton);
     }
 
     handleClick(p5) {

@@ -89,6 +89,9 @@ export class Inventory {
             this.items.set(this.selectedItem, value);
         }
         this.selectedItem = null;
+
+        // update inventory height after decreasing
+        this.updateInventoryHeight();
     }
 
     // return a new item according to name
@@ -135,6 +138,9 @@ export class Inventory {
         }
         // if the item is invalid:
         // do nothing. createItem has printed error info.
+
+        // update inventory height after pushing:
+        this.updateInventoryHeight();
     }
 
     initPrototypes(p5){
@@ -178,5 +184,6 @@ export class Inventory {
                 this.items.delete(name);
             }
         }
+        this.updateInventoryHeight();
     }
 }
