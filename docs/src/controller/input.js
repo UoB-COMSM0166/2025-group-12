@@ -1,3 +1,5 @@
+import {stateCode} from "../model/GameState.js";
+
 export class InputHandler {
     constructor(gameState) {
         this.gameState = gameState;
@@ -18,8 +20,8 @@ export class InputHandler {
             }else if(e.key === 'q'){
                 //
             }
-            else if(e.key === 'Escape'){
-                //pause the game
+            else if(e.key === 'Escape' && this.gameState.state === stateCode.PLAY){
+                // pause the game
                 this.gameState.togglePaused();
                 this.gameState.togglePlayerCanClick();
             }

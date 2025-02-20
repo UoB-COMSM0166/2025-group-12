@@ -143,15 +143,3 @@ function reconstructPath(cameFrom, startKey, goalKey, step) {
     path.splice(step, path.length-step);
     return path;
 }
-
-let grid = [
-    [0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-]
-
-let start = new Node(0, 0);
-let goal = new Node(3, 3);
-let result = aStarSearch(grid,start, goal, 4);
-console.log(result);

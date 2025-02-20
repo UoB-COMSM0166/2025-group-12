@@ -34,7 +34,6 @@ export class GameSave {
             setTimeout(() => {
                 let inventoryMap = new Map(loadData.inventory);
                 gameState.inventory.loadInventory(inventoryMap);
-                console.log('gameState CurrentBoard' + gameState.currentBoard);
                 gameState.currentStage.boardObjects.loadBoard(loadData.board, gameState);
                 gameState.currentStage.turn = loadData.turn;
                 gameState.currentStage.buttons.find(button => button.text.startsWith("turn")).text = gameState.currentStage.getTurnButtonText();
