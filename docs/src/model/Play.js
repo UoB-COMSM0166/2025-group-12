@@ -431,7 +431,7 @@ export class PlayBoard {
         this.turn++;
         this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
         if (this.turn === this.maxTurn) {
-            this.gameState.setState(stateCode.FINISH);
+
             // when a stage is cleared:
             // 1. store all living plants, this comes after seeds have grown
             let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
@@ -441,6 +441,12 @@ export class PlayBoard {
 
             // 2. remove all seeds
             this.gameState.inventory.removeAllSeeds();
+
+            // 3. record current stage clear
+            this.gameState.setStageCleared(this);
+
+            // 4. set game state
+            this.gameState.setState(stateCode.FINISH);
         }
 
         // reset enemy status

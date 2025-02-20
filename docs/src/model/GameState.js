@@ -26,7 +26,7 @@ export class GameState {
         this.paused = false;
         this.enemyCanMove = false;
         this.loaded = false;
-        this.clearedStages = [];
+        this.clearedStages = new Set();
     }
 
     setState(newState) {
@@ -52,6 +52,14 @@ export class GameState {
 
     toggleEnemyCanMove() {
         this.enemyCanMove = !this.enemyCanMove;
+    }
+
+    setStageCleared(playBoard){
+        this.clearedStages.add(playBoard.stageCode);
+    }
+
+    isStageCleared(stageCode){
+        return this.clearedStages.has(stageCode);
     }
 }
 

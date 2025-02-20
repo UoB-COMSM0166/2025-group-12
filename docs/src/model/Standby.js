@@ -1,7 +1,7 @@
-import { Button } from "../items/Button.js";
-import { stateCode,stageCode } from "./GameState.js";
-import { CanvasSize } from "../CanvasSize.js";
-import { myutil } from "../../lib/myutil.js";
+import {Button} from "../items/Button.js";
+import {stateCode, stageCode} from "./GameState.js";
+import {CanvasSize} from "../CanvasSize.js";
+import {myutil} from "../../lib/myutil.js";
 
 export class StandbyMenu {
     constructor(gameState) {
@@ -23,19 +23,29 @@ export class StandbyMenu {
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
         let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Stage 1");
-        stage1Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStageCode = stageCode.STAGE1};
+        stage1Button.onClick = () => {
+            this.clickedStageButton(stageCode.STAGE1);
+        };
 
         let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Stage 2");
-        stage2Button.onClick = () => {this.gameState.setState(stateCode.PLAY);this.gameState.currentStageCode = stageCode.STAGE2};
-        
+        stage2Button.onClick = () => {
+            this.clickedStageButton(stageCode.STAGE2);
+        };
+
         let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Stage 3");
-        stage3Button.onClick = () => {console.log("placeholder3")};
+        stage3Button.onClick = () => {
+            console.log("placeholder3")
+        };
 
         let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Stage 4");
-        stage4Button.onClick = () => {console.log("placeholder4")};
+        stage4Button.onClick = () => {
+            console.log("placeholder4")
+        };
 
         let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Stage 5");
-        stage5Button.onClick = () => {console.log("placeholder5")};
+        stage5Button.onClick = () => {
+            console.log("placeholder5")
+        };
 
         this.buttons.push(escapeButton, stage1Button, stage2Button, stage3Button, stage4Button, stage5Button);
     }
@@ -59,6 +69,19 @@ export class StandbyMenu {
         }
 
         this.gameState.inventory.draw(p5, CanvasSize.getSize()[0], CanvasSize.getSize()[1]);
+    }
+
+    clickedStageButton(stageCode){
+        if(this.checkClearedStage(stageCode)){
+            console.log("this stage has been cleared.");
+            return;
+        }
+        this.gameState.setState(stateCode.PLAY);
+        this.gameState.currentStageCode = stageCode;
+    }
+
+    checkClearedStage(stageCode) {
+        return this.gameState.isStageCleared(stageCode);
     }
 }
 

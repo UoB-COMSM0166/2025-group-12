@@ -51,3 +51,40 @@ export class GameSave {
         return JSON.parse(localStorage.getItem("PnP"));
     }
 }
+
+function generateKey(timestamp, keySize) {
+    let buffer = new ArrayBuffer(8);
+    let view = new DataView(buffer);
+    view.setBigInt64(0, BigInt(timestamp));
+
+    let fullKey = new Uint8Array(buffer);
+    return fullKey.slice(8 - keySize);
+}
+
+function encrypt(input) {
+    let timestamp = Date.now();
+    let keySize = 4;
+    let key = generateKey(timestamp, keySize);
+    let inputBytes = new TextEncoder().encode(input);
+    let encrypted = new Uint8Array(inputBytes.length);
+    for (let i = 0; i < inputBytes.length; i++) {
+        encrypted[i] = inputBytes[i] ^ key[i % key.length];
+    }
+    let result = new Uint8Array(key.length + encrypted.length);
+    result.set(key, 0);
+    result.set(encrypted, key.length);
+
+    return result;
+}
+
+function decrypt(encryptedData) {
+    let keySize = 4;
+    let key = encryptedData.slice(0, keySize);
+    let encryptedText = encryptedData.slice(keySize);
+    let decrypted = new Uint8Array(encryptedText.length);
+    for (let i = 0; i < encryptedText.length; i++) {
+        decrypted[i] = encryptedText[i] ^ key[i % key.length];
+    }
+
+    return new TextDecoder().decode(decrypted);
+}
