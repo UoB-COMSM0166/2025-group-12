@@ -25,19 +25,19 @@ export class Stage1PlayBoard extends PlayBoard {
         this.maxTurn = 7;
     }
 
+    /*
+    this.floatingWindow = new FloatingWindow(p5, "ur", "{red:abcd}\\\\{black:111111}", {
+            x: 100,
+            y: 100,
+            boxWidth: 150,
+            boxHeight: 100,
+            padding: 10,
+            spacingRatio: 0.3
+        });
+     */
+
     // set stage inventory at entering, called by controller
     setStageInventory(p5) {
-        if(!this.gameState.loaded){
-            // what's this code for?
-            /*
-            this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
-            this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
-            this.gameState.inventory.pushItem2Inventory(p5, "Grass", 3);
-            this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 2);
-            this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 2);
-            this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 2);
-             */
-        }
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 1);
     }
 

@@ -8,6 +8,7 @@ import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
 import {plantTypes} from "../items/ItemTypes.js";
+import {FloatingWindow} from "./FloatingWindow.js";
 
 export class PlayBoard {
 
@@ -49,6 +50,8 @@ export class PlayBoard {
         // to implement plant active skills.
         // I have a strong feeling that we need refactoring
         this.awaitCell = false;
+
+        this.floatingWindow = null;
     }
 
     /* public methods */
@@ -89,6 +92,12 @@ export class PlayBoard {
     }
 
     handleClick(p5) {
+
+        // when floating window is on, click anywhere to disable it.
+        if (this.floatingWindow !== null) {
+            this.floatingWindow = null;
+            return;
+        }
 
         // when activate button is clicked, system awaits cell input
         if (this.awaitCell) {
@@ -212,6 +221,11 @@ export class PlayBoard {
         for (let button of this.buttons) {
             button.draw(p5);
         }
+
+        // draw floating window
+        if (this.floatingWindow !== null) {
+            this.floatingWindow.draw();
+        }
     }
 
     /* ----------------------------------- */
@@ -248,32 +262,6 @@ export class PlayBoard {
         // ... but this is dangerous!
         // need refactoring later.
         p5.controller.setData(p5, stateCode.STANDBY);
-    }
-
-    // when clear or quit, invoke this function to reset board
-    // called by controller
-    resetBoard(p5) {
-        // reset turn and button
-        this.turn = 1;
-        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
-
-        // reset inventory indicator
-        this.selectedCell = [];
-
-        // clear enemies
-        this.enemies = [];
-
-        // reset info box status
-        this.infoBox.resetStatus();
-
-        // reset board cells
-        this.boardObjects = new BoardCells(this.gridSize);
-
-        // reset terrain
-        this.setStageTerrain(p5);
-
-        // reset tmp inventory
-        this.tmpInventoryItems = null;
     }
 
     drawGrid(p5) {

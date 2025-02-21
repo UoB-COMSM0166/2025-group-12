@@ -86,17 +86,17 @@ export class Controller {
             this.menus[stateCode.PLAY].setStageInventory(p5);
         }
 
-        // if we quit PLAY to STANDBY, reset PlayBoard and inventory
+        // if we quit PLAY to STANDBY, reset inventory and board
         if (this.saveState === stateCode.PLAY && newState === stateCode.STANDBY) {
             // reset inventory
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
-            // reset board later, since it also clears tmp inventory items
-            this.menus[stateCode.PLAY].resetBoard(p5);
+            // destroy the play board directly
+            this.menus[stateCode.PLAY] = null;
         }
 
         // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
         if (newState === stateCode.FINISH) {
-            this.menus[stateCode.PLAY].resetBoard(p5);
+            this.menus[stateCode.PLAY] = null;
             this.gameState.setState(stateCode.STANDBY);
         }
 

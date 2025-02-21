@@ -4,7 +4,6 @@ import {preloader} from "./Preloader.js";
 
 new p5((p) => {
 
-    //let controller;
     p.preload = async () => { p.images = await preloader(p);};
 
     p.setup = () => {
