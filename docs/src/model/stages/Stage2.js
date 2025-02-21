@@ -52,4 +52,10 @@ export class Stage2PlayBoard extends PlayBoard {
             Storm.createNewStorm(p5, this, 0, 4, 'd');
         }
     }
+
+    modifyBoard(p5, code) {}
+
+    setFloatingWindow(p5) {}
+
+    initAllFloatingWindows(p5){}
 }

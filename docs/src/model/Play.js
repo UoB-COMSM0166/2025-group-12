@@ -11,7 +11,6 @@ import {plantTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 
 export class PlayBoard {
-
     constructor(gameState) {
         this.gameState = gameState;
         this.stageCode = stageCode.NO_STAGE;
@@ -52,6 +51,7 @@ export class PlayBoard {
         this.awaitCell = false;
 
         this.floatingWindow = null;
+        this.allFloatingWindows = null;
     }
 
     /* public methods */
@@ -85,6 +85,9 @@ export class PlayBoard {
 
         // setup stage terrain
         this.setStageTerrain(p5);
+
+        // initialized all fw
+        this.initAllFloatingWindows(p5);
     }
 
     handleScroll(event) {
@@ -92,11 +95,21 @@ export class PlayBoard {
     }
 
     handleClick(p5) {
-
         // when floating window is on, click anywhere to disable it.
+        // when fading, player cannot click.
         if (this.floatingWindow !== null) {
-            this.floatingWindow = null;
-            return;
+            if (!this.allFloatingWindows.has("000")) {
+                this.gameState.setState(stateCode.FINISH);
+            }
+            if (!this.floatingWindow.isFading) {
+                this.floatingWindow.isFading = true;
+                if (!this.floatingWindow.playerCanClick) {
+                    return;
+                }
+            }
+            if (!this.floatingWindow.playerCanClick) {
+                return;
+            }
         }
 
         // when activate button is clicked, system awaits cell input
@@ -168,7 +181,7 @@ export class PlayBoard {
     }
 
     draw(p5) {
-        p5.background(200);
+        p5.background(180);
 
         if (this.gameState.inventory.selectedItem !== null) {
             p5.cursor('grab');
@@ -219,12 +232,24 @@ export class PlayBoard {
         // all buttons
         // to cascade activate button above info box, place this loop after info box
         for (let button of this.buttons) {
-            button.draw(p5);
+            if (!(this.turn === this.maxTurn + 1 && button.text.startsWith("turn"))) {
+                button.draw(p5);
+            }
         }
 
         // draw floating window
+        this.setFloatingWindow(p5);
         if (this.floatingWindow !== null) {
-            this.floatingWindow.draw();
+            if (this.floatingWindow.isFading) {
+                this.floatingWindow.fadeOut();
+                if (this.floatingWindow.hasFadedOut()) {
+                    this.floatingWindow = null;
+                } else {
+                    this.floatingWindow.draw();
+                }
+            } else {
+                this.floatingWindow.draw();
+            }
         }
     }
 
@@ -377,13 +402,9 @@ export class PlayBoard {
                 }
             }
         }
-
-        // if all enemies are updated:
-        // 1. set new enemies and inventory items according to turn counter
-        this.nextTurnItems(p5);
-
-        // 2. set status
-        this.endTurnActivity(p5);
+        if (this.turn < this.maxTurn + 1) {
+            this.endTurnActivity(p5);
+        }
     }
 
     // miscellaneous end turn settings
@@ -418,7 +439,7 @@ export class PlayBoard {
         // set turn and counter
         this.turn++;
         this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
-        if (this.turn === this.maxTurn) {
+        if (this.turn === this.maxTurn + 1) {
 
             // when a stage is cleared:
             // 1. store all living plants, this comes after seeds have grown
@@ -430,11 +451,13 @@ export class PlayBoard {
             // 2. remove all seeds
             this.gameState.inventory.removeAllSeeds();
 
-            // 3. record current stage clear
+            // 3. record current stage cleared
             this.gameState.setStageCleared(this);
 
-            // 4. set game state
-            this.gameState.setState(stateCode.FINISH);
+            // 4. reset action listener
+            this.gameState.togglePlayerCanClick();
+
+            return;
         }
 
         // reset enemy status
@@ -448,6 +471,9 @@ export class PlayBoard {
             }
         }
 
+        // set next turn enemies and new inventory items
+        this.nextTurnItems(p5);
+
         // set action listener active
         this.gameState.togglePlayerCanClick();
         this.gameState.toggleEnemyCanMove();
@@ -455,6 +481,14 @@ export class PlayBoard {
 
     nextTurnItems(p5) {
         console.log("nextTurnEnemies is not overridden!");
+    }
+
+    setFloatingWindow(p5) {
+        console.log("setFloatingWindow is not overridden!");
+    }
+
+    initAllFloatingWindows(p5) {
+        console.log("initAllFloatingWindows is not overridden!");
     }
 
     // when a new plant is placed, or at the end of a turn,
