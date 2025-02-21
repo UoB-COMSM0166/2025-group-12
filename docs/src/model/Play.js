@@ -8,7 +8,6 @@ import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
 import {plantTypes} from "../items/ItemTypes.js";
-import {FloatingWindow} from "./FloatingWindow.js";
 
 export class PlayBoard {
     constructor(gameState) {
@@ -52,6 +51,8 @@ export class PlayBoard {
 
         this.floatingWindow = null;
         this.allFloatingWindows = null;
+
+        this.isGameOver = false;
     }
 
     /* public methods */
@@ -61,6 +62,7 @@ export class PlayBoard {
         let [escWidth, escHeight] = myutil.relative2absolute(0.09, 0.07);
         let escapeButton = new Button(escX, escY, escWidth, escHeight, "Escape");
         escapeButton.onClick = () => {
+            console.log(this.tmpInventoryItems);
             this.gameState.setState(stateCode.STANDBY);
         };
 
@@ -71,7 +73,6 @@ export class PlayBoard {
         turnButton.onClick = () => {
             this.enemies.sort((a, b) => a.enemyType - b.enemyType);
             this.gameState.togglePlayerCanClick();
-            this.gameState.toggleEnemyCanMove();
         }
 
         this.buttons.push(escapeButton, turnButton);
@@ -96,11 +97,17 @@ export class PlayBoard {
 
     handleClick(p5) {
         // when floating window is on, click anywhere to disable it.
-        // when fading, player cannot click.
         if (this.floatingWindow !== null) {
+            // game over
+            if(!this.allFloatingWindows.has("001")) {
+                this.gameState.setState(stateCode.STANDBY);
+                return;
+            }
+            // game clear
             if (!this.allFloatingWindows.has("000")) {
                 this.gameState.setState(stateCode.FINISH);
             }
+            // common floating windows
             if (!this.floatingWindow.isFading) {
                 this.floatingWindow.isFading = true;
                 if (!this.floatingWindow.playerCanClick) {
@@ -274,19 +281,12 @@ export class PlayBoard {
     }
 
     // when the main base is destroyed, invoke this function
-    gameOver(p5) {
-        console.log("game over.");
-        this.gameState.togglePlayerCanClick();
-        this.gameState.toggleEnemyCanMove();
-        this.gameState.setState(stateCode.STANDBY);
-
-        // IMPORTANT: BELOW CODE IS EXTREMELY DANGEROUS
-        // only setting state to standby does not work.
-        // this might be related to the rendering and data accessing logic of Main.js.
-        // by making controller global, we can temporarily take over the right of controlling.
-        // ... but this is dangerous!
-        // need refactoring later.
-        p5.controller.setData(p5, stateCode.STANDBY);
+    gameOver() {
+        if (this.allFloatingWindows.has("001")) {
+            this.floatingWindow = this.allFloatingWindows.get("001");
+            this.allFloatingWindows.delete("001");
+        }
+        this.isGameOver = true;
     }
 
     drawGrid(p5) {
@@ -390,6 +390,10 @@ export class PlayBoard {
 
     // end turn enemy activities
     enemyMovements(p5) {
+        if(this.isGameOver){
+            this.gameState.togglePlayerCanClick();
+            return;
+        }
         for (let enemy of this.enemies) {
             if (enemy.enemyMovements(p5, this) === true) {
                 return; // enemies will move one after one instead of moving simultaneously
@@ -476,7 +480,6 @@ export class PlayBoard {
 
         // set action listener active
         this.gameState.togglePlayerCanClick();
-        this.gameState.toggleEnemyCanMove();
     }
 
     nextTurnItems(p5) {

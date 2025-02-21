@@ -9,7 +9,7 @@ import {PauseMenu} from "../model/PauseMenu.js";
 export class Controller {
     constructor(p5) {
         this.gameState = new GameState(p5);
-        this.gsf = new GameStageFactory(this.gameState);
+
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
             [stateCode.STANDBY]: new StandbyMenu(this.gameState),
@@ -68,36 +68,41 @@ export class Controller {
     setPlayStage(p5) {
         if (this.gameState.getState() === stateCode.PLAY
             && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStageCode)) {
-            this.menus[stateCode.PLAY] = this.gsf.newGameStage(this.gameState.currentStageCode);
+            this.menus[stateCode.PLAY] = this.gameState.newGameStage();
             this.menus[stateCode.PLAY].setup(p5);
             this.gameState.currentStage = this.menus[stateCode.PLAY];
+            this.gameState.currentStageCode = this.menus[stateCode.PLAY].stageCode;
         }
     }
 
     setData(p5, newState) {
         // if PLAY is in enemy movement, only call enemy movement
-        if (newState === stateCode.PLAY && this.gameState.enemyCanMove === true) {
+        if (newState === stateCode.PLAY && !this.gameState.playerCanClick) {
             this.menus[stateCode.PLAY].enemyMovements(p5);
+            return;
         }
 
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === stateCode.STANDBY && newState === stateCode.PLAY) {
             this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
             this.menus[stateCode.PLAY].setStageInventory(p5);
+            return;
         }
 
         // if we quit PLAY to STANDBY, reset inventory and board
         if (this.saveState === stateCode.PLAY && newState === stateCode.STANDBY) {
             // reset inventory
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
-            // destroy the play board directly
+            // destroy the play board
             this.menus[stateCode.PLAY] = null;
+            return;
         }
 
         // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
         if (newState === stateCode.FINISH) {
             this.menus[stateCode.PLAY] = null;
             this.gameState.setState(stateCode.STANDBY);
+            return;
         }
 
         // if we go back to start menu from standby, we set New Game button into Resume Game.
@@ -106,26 +111,9 @@ export class Controller {
             if (newGameButton !== null && newGameButton !== undefined) {
                 newGameButton.text = "Resume Game";
             }
+            return;
         }
     }
 
 }
-
-class GameStageFactory {
-    constructor(gameState) {
-        this.gameState = gameState;
-        this.stageClasses = {
-            [stageCode.STAGE1]: Stage1PlayBoard,
-            [stageCode.STAGE2]: Stage2PlayBoard,
-        };
-    }
-
-    newGameStage(newStage) {
-        let StageClass = this.stageClasses[newStage];
-        return StageClass ? new StageClass(this.gameState) : null;
-    }
-}
-
-
-
 

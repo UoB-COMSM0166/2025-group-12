@@ -1,4 +1,7 @@
 import {Inventory} from "./Inventory.js";
+import {Stage1PlayBoard} from "./stages/Stage1.js";
+import {Stage2PlayBoard} from "./stages/Stage2.js";
+import {Volcano1PlayBoard} from "./stages/V1.js";
 
 export const stateCode = {
     MENU: 1,
@@ -25,9 +28,10 @@ export class GameState {
         this.inventory = new Inventory(this.p5);
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
-        this.enemyCanMove = false;
         this.loaded = false;
-        this.clearedStages = new Set();
+        this.clearedStages = new Map();
+
+        this.gsf = new GameStageFactory();
     }
 
     setState(newState) {
@@ -51,16 +55,36 @@ export class GameState {
         this.paused = !this.paused;
     }
 
-    toggleEnemyCanMove() {
-        this.enemyCanMove = !this.enemyCanMove;
+    setStageCleared(playBoard) {
+        if (this.clearedStages.has(playBoard.stageCode)) {
+            this.clearedStages.set(playBoard.stageCode, this.clearedStages.get(playBoard.stageCode) + 1);
+        } else {
+            this.clearedStages.set(playBoard.stageCode, 1);
+        }
     }
 
-    setStageCleared(playBoard){
-        this.clearedStages.add(playBoard.stageCode);
+    isStageCleared(stageCode) {
+        let index = this.clearedStages.get(stageCode);
+        return index !== undefined && index>=this.gsf.stageClasses[stageCode].length;
     }
 
-    isStageCleared(stageCode){
-        return this.clearedStages.has(stageCode);
+    newGameStage() {
+        return this.gsf.newGameStage(this.currentStageCode, this);
     }
 }
 
+class GameStageFactory {
+    constructor() {
+        this.stageClasses = Array.from({length: 20}, ()=>[]); // long enough
+        this.stageClasses[1].push(Stage1PlayBoard);
+        this.stageClasses[1].push(Stage2PlayBoard);
+        this.stageClasses[2].push(Volcano1PlayBoard);
+    }
+
+    newGameStage(newStage, gameState) {
+        let StageClasses = this.stageClasses[gameState.currentStageCode];
+        let index = gameState.clearedStages.get(gameState.currentStageCode);
+        let StageClass = StageClasses[ index !== undefined? index : 0 ];
+        return StageClass ? new StageClass(gameState) : null;
+    }
+}

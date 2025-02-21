@@ -55,12 +55,7 @@ export class Stage1PlayBoard extends PlayBoard {
         } else if (this.turn === 2) {
             Storm.createNewStorm(p5, this, 0, 4, 'd');
         } else if (this.turn === 3) {
-            Storm.createNewStorm(p5, this, 0, 0, 'r');
-            Storm.createNewStorm(p5, this, 1, 0, 'r');
-            Storm.createNewStorm(p5, this, 2, 0, 'r');
             Storm.createNewStorm(p5, this, 3, 0, 'r');
-            Storm.createNewStorm(p5, this, 4, 0, 'r');
-            Storm.createNewStorm(p5, this, 5, 0, 'r');
         }
     }
 
@@ -150,6 +145,7 @@ export class Stage1PlayBoard extends PlayBoard {
             if (this.allFloatingWindows.has("000")) {
                 this.floatingWindow = this.allFloatingWindows.get("000");
                 this.allFloatingWindows.delete("000");
+                return;
             }
         }
     }
@@ -167,7 +163,17 @@ export class Stage1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("100", new FloatingWindow(p5, null, "{white: welcome to the game.}\\ {white: Your goal is to protect your house by growing plants.}", {
+        afw.set("001", new FloatingWindow(p5, null, "{white: Game Over}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("100", new FloatingWindow(p5, null, "{white: Welcome to the game.}\\ {white: Your goal is to protect your house by growing plants.}", {
             x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
             y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
@@ -177,7 +183,7 @@ export class Stage1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("101", new FloatingWindow(p5, "uc", "{white:there is your house. It will be destroyed by}\\ {white:natural disasters if you do nothing.}", {
+        afw.set("101", new FloatingWindow(p5, "uc", "{white:There is your house. It will be destroyed by}\\ {white:natural disasters if you do nothing.}", {
             x: myutil.relative2absolute(1 / 2, 2 / 3 + 0.01)[0],
             y: myutil.relative2absolute(1 / 2, 2 / 3 + 0.01)[1],
             fontSize: 16,
@@ -217,7 +223,7 @@ export class Stage1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("200", new FloatingWindow(p5, null, "{white:Your plants sacrifice their}\\{white:life to protect your house.}", {
+        afw.set("200", new FloatingWindow(p5, null, "{white:Your plants sacrificed their}\\{white:life to protect your house.}", {
             x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
             y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 16,

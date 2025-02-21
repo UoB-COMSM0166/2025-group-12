@@ -22,7 +22,7 @@ export class StandbyMenu {
         let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.2);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
-        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Stage 1");
+        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "In Media Tempestate");
         stage1Button.onClick = () => {
             this.clickedStageButton(stageCode.STAGE1);
         };

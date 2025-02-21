@@ -4,7 +4,7 @@ import {preloader} from "./Preloader.js";
 
 new p5((p) => {
 
-    p.preload = async () => { p.images = await preloader(p);};
+    p.preload = () => { p.images = preloader(p);};
 
     p.setup = () => {
         let canvasSize = CanvasSize.getSize();

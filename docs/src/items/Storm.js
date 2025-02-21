@@ -124,7 +124,7 @@ export class Storm extends Enemy {
 
             // 4. if player base is at this cell, destroy it.
             if (cell.terrain.terrainType === terrainTypes.BASE) {
-                playBoard.gameOver(p5);
+                playBoard.gameOver();
                 return;
             }
 

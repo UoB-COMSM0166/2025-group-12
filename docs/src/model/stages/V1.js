@@ -9,7 +9,7 @@ import {Storm} from "../../items/Storm.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 
-export class Stage2PlayBoard extends PlayBoard {
+export class Volcano1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
         this.stageCode = stageCode.STAGE2;
@@ -22,7 +22,7 @@ export class Stage2PlayBoard extends PlayBoard {
 
         // turn counter
         this.turn = 1;
-        this.maxTurn = 2;
+        this.maxTurn = 5;
     }
 
     // set stage inventory at entering, called by controller
