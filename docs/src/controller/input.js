@@ -23,7 +23,8 @@ export class InputHandler {
             else if(e.key === 'Escape' && this.gameState.state === stateCode.PLAY){
                 // pause the game
                 this.gameState.togglePaused();
-                this.gameState.togglePlayerCanClick();
+                // comment out since code change
+                //this.gameState.togglePlayerCanClick();
             }
         });
         window.addEventListener('keyup', e => {
