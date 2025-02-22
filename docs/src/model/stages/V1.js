@@ -48,9 +48,8 @@ export class Volcano1PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
-        if (this.turn === 1) {
-            Bandit.createNewBandit(p5, this, 0, 0);
-            Storm.createNewStorm(p5, this, 0, 4, 'd');
+        if (this.turn === 2) {
+            Storm.createNewStorm(p5, this, 0, 0, 'd');
         }
     }
 

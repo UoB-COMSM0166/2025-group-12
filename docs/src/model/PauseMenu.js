@@ -39,7 +39,7 @@ export class PauseMenu {
             escapeButton.onClick = () => {
                 this.gameState.togglePaused();
                 this.gameState.setState(stateCode.STANDBY);
-                //this.gameState.togglePlayerCanClick();
+                this.gameState.setPlayerCanClick();
             };
         }
         this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);

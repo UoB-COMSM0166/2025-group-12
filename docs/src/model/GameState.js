@@ -51,6 +51,10 @@ export class GameState {
         this.playerCanClick = !this.playerCanClick;
     }
 
+    setPlayerCanClick() {
+        this.playerCanClick = true;
+    }
+
     togglePaused() {
         this.paused = !this.paused;
     }
@@ -65,7 +69,7 @@ export class GameState {
 
     isStageCleared(stageCode) {
         let index = this.clearedStages.get(stageCode);
-        return index !== undefined && index>=this.gsf.stageClasses[stageCode].length;
+        return index !== undefined && index >= this.gsf.stageClasses[stageCode].length;
     }
 
     // invoked by controller.
@@ -76,7 +80,7 @@ export class GameState {
 
 class GameStageFactory {
     constructor() {
-        this.stageClasses = Array.from({length: 20}, ()=>[]);
+        this.stageClasses = Array.from({length: 20}, () => []);
         this.stageClasses[stageCode.STORM].push(Stage1PlayBoard);
         this.stageClasses[stageCode.STORM].push(Stage2PlayBoard);
         this.stageClasses[stageCode.VOLCANO].push(Volcano1PlayBoard);
@@ -86,7 +90,7 @@ class GameStageFactory {
     newGameStage(newStage, gameState) {
         let StageClasses = this.stageClasses[gameState.currentStageCode];
         let index = gameState.clearedStages.get(gameState.currentStageCode);
-        let StageClass = StageClasses[ index !== undefined? index : 0 ];
+        let StageClass = StageClasses[index !== undefined ? index : 0];
         return StageClass ? new StageClass(gameState) : null;
     }
 }
