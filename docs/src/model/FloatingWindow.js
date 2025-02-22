@@ -4,6 +4,7 @@ export class FloatingWindow {
         this.p5 = p5;
         this.triPos = triPos;
         this.text = text;
+        this.boxParam = boxParam;
         this.fontSize = boxParam.fontSize;
         this.padding = boxParam.padding;
         this.spacingRatio = boxParam.spacingRatio;
@@ -152,5 +153,9 @@ export class FloatingWindow {
 
     hasFadedOut() {
         return this.boxOpacity <= 0 && this.textOpacity <= 0;
+    }
+
+    static copyOf(fw){
+        return new FloatingWindow(fw.p5, fw.triPos, fw.text, fw.boxParam);
     }
 }

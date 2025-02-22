@@ -6,6 +6,7 @@ import {Stage2PlayBoard} from "../model/stages/Stage2.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 
+// controller should never invoke any specific field but only encapsulated methods.
 export class Controller {
     constructor(p5) {
         this.gameState = new GameState(p5);
@@ -65,6 +66,7 @@ export class Controller {
         }
     }
 
+    // when shift to PLAY from STANDBY, create the new play board
     setPlayStage(p5) {
         if (this.gameState.getState() === stateCode.PLAY
             && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStageCode)) {
@@ -75,6 +77,7 @@ export class Controller {
         }
     }
 
+    // deal with 1. data transferring when switching menu, 2. player-enemy movement switching
     setData(p5, newState) {
         // if PLAY is in enemy movement, only call enemy movement
         if (newState === stateCode.PLAY && !this.gameState.playerCanClick) {
@@ -107,10 +110,7 @@ export class Controller {
 
         // if we go back to start menu from standby, we set New Game button into Resume Game.
         if (this.saveState === stateCode.STANDBY && newState === stateCode.MENU) {
-            let newGameButton = this.menus[stateCode.MENU].buttons.find(button => button.text.startsWith("New Game"));
-            if (newGameButton !== null && newGameButton !== undefined) {
-                newGameButton.text = "Resume Game";
-            }
+            this.menus[stateCode.MENU].changeNewToResume();
             return;
         }
     }

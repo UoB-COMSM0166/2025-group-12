@@ -10,15 +10,15 @@ export const stateCode = {
     FINISH: 8
 };
 
+// game stages are now grouped and the code refers to affiliated group
+// the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
 export const stageCode = {
     NO_STAGE: 0,
-    STAGE1: 1,
-    STAGE2: 2,
-    STAGE3: 3,
-    STAGE4: 4,
-    STAGE5: 5
+    STORM: 1,
+    VOLCANO: 2,
 }
 
+// game state should not handle any switching logic but only stores information
 export class GameState {
     constructor(p5) {
         this.p5 = p5;
@@ -68,6 +68,7 @@ export class GameState {
         return index !== undefined && index>=this.gsf.stageClasses[stageCode].length;
     }
 
+    // invoked by controller.
     newGameStage() {
         return this.gsf.newGameStage(this.currentStageCode, this);
     }
@@ -75,12 +76,13 @@ export class GameState {
 
 class GameStageFactory {
     constructor() {
-        this.stageClasses = Array.from({length: 20}, ()=>[]); // long enough
-        this.stageClasses[1].push(Stage1PlayBoard);
-        this.stageClasses[1].push(Stage2PlayBoard);
-        this.stageClasses[2].push(Volcano1PlayBoard);
+        this.stageClasses = Array.from({length: 20}, ()=>[]);
+        this.stageClasses[stageCode.STORM].push(Stage1PlayBoard);
+        this.stageClasses[stageCode.STORM].push(Stage2PlayBoard);
+        this.stageClasses[stageCode.VOLCANO].push(Volcano1PlayBoard);
     }
 
+    // allocate game stage dynamically
     newGameStage(newStage, gameState) {
         let StageClasses = this.stageClasses[gameState.currentStageCode];
         let index = gameState.clearedStages.get(gameState.currentStageCode);

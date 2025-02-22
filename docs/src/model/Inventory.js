@@ -92,7 +92,8 @@ export class Inventory {
         this.updateInventoryHeight();
     }
 
-    // return a new item according to name
+    // return a new item according to its name.
+    // use prototypes for type lookup
     createItem(p5, name) {
         // fetch an instance from item prototypes
         let item = this.itemPrototypes.get(name);
@@ -124,6 +125,7 @@ export class Inventory {
         }
     }
 
+    // add item into the inventory.
     pushItem2Inventory(p5, name, number) {
         // if the item is already in inventory:
         if (this.items.has(name)) {
@@ -141,6 +143,9 @@ export class Inventory {
         this.updateInventoryHeight();
     }
 
+    // with prototypes, we can find seed or plant type given a name,
+    // while name is a concrete String rather than a reference
+    // so we can create it multiple times.
     initPrototypes(p5) {
         return new Map([
             ["Tree", new Tree(p5)],
@@ -152,7 +157,7 @@ export class Inventory {
         ]);
     }
 
-    // store inventory items
+    // store inventory items so next method can load it
     saveInventory() {
         let tmpItems = new Map();
         for (let [key, value] of this.items.entries()) {
@@ -161,7 +166,7 @@ export class Inventory {
         return tmpItems;
     }
 
-    // load saved inventory items
+    // load saved inventory items when quit a stage
     loadInventory(tmpItems) {
         this.items = new Map();
         for (let [key, value] of tmpItems.entries()) {
@@ -170,9 +175,17 @@ export class Inventory {
         this.updateInventoryHeight();
     }
 
-    // update inventory height
+    // update inventory height after insertion or delete
     updateInventoryHeight() {
         this.inventoryHeight = this.items.size * this.itemHeight + this.padding * 2;
+        // and secretly sort items by type
+        this.items = new Map([...this.items].sort(([key1], [key2]) => {
+            let instance1 = this.itemPrototypes.get(key1);
+            let instance2 = this.itemPrototypes.get(key2);
+            const type1 = "plantType" in instance1 ? instance1.plantType : instance1.seedType;
+            const type2 = "plantType" in instance2 ? instance2.plantType : instance2.seedType;
+            return type1 - type2;
+        }))
     }
 
     // when a stage is cleared, remove all seeds from inventory.

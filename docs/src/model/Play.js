@@ -58,11 +58,11 @@ export class PlayBoard {
     /* public methods */
 
     setup(p5) {
+        // escape button
         let [escX, escY] = myutil.relative2absolute(0.01, 0.01);
         let [escWidth, escHeight] = myutil.relative2absolute(0.09, 0.07);
         let escapeButton = new Button(escX, escY, escWidth, escHeight, "Escape");
         escapeButton.onClick = () => {
-            console.log(this.tmpInventoryItems);
             this.gameState.setState(stateCode.STANDBY);
         };
 
@@ -95,6 +95,12 @@ export class PlayBoard {
         this.gameState.inventory.handleScroll(event);
     }
 
+    // a hodgepodge.
+    // handles clicks, or refuse to handle a click, according to priority:
+    // 1. floating window
+    // 2. plant active skill target
+    // 3. buttons
+    // 4. info box arrow
     handleClick(p5) {
         // when floating window is on, click anywhere to disable it.
         if (this.floatingWindow !== null) {
@@ -119,7 +125,7 @@ export class PlayBoard {
             }
         }
 
-        // when activate button is clicked, system awaits cell input
+        // when activate button is clicked, system awaits a cell input
         if (this.awaitCell) {
             let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
             if (index[0] === -1) {
@@ -162,14 +168,11 @@ export class PlayBoard {
             if (index[0] !== -1) {
                 let row = index[0];
                 let col = index[1];
-                if (this.boardObjects.getCell(row, col).plant !== null) {
-                    return; // prevent repetitive planting one cell
-                }
                 if (this.boardObjects.plantCell(row, col, this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${row}, col ${col}`);
 
                     // set plant's skill
-                    this.reevaluatePlantSkills(p5);
+                    this.reevaluatePlantSkills();
 
                     clickedCell = true;
                 }
@@ -226,7 +229,7 @@ export class PlayBoard {
             }
         }
 
-        // draw all enemies according to this.enemy
+        // draw all enemies according to this.enemies
         for (let enemy of this.enemies) {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(enemy.img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
@@ -311,7 +314,7 @@ export class PlayBoard {
         }
         p5.strokeWeight(0);
 
-        // terrain
+        // terrain images
         for (let i = this.gridSize - 1; i >= 0; i--) {
             for (let j = this.gridSize - 1; j >= 0; j--) {
                 let cell = this.boardObjects.getCell(i, j);
@@ -390,6 +393,7 @@ export class PlayBoard {
 
     // end turn enemy activities
     enemyMovements(p5) {
+        // if game over, set player can click so controller stops handling movement
         if(this.isGameOver){
             this.gameState.togglePlayerCanClick();
             return;
@@ -398,7 +402,7 @@ export class PlayBoard {
             if (enemy.enemyMovements(p5, this) === true) {
                 return; // enemies will move one after one instead of moving simultaneously
             }
-            // delete dead enemy
+            // delete dead enemy, a safe-lock
             if (!enemy.status) {
                 let index = this.enemies.indexOf(enemy);
                 if (index !== -1) {
@@ -406,6 +410,7 @@ export class PlayBoard {
                 }
             }
         }
+        // when game is not cleared, go to end turn stuff
         if (this.turn < this.maxTurn + 1) {
             this.endTurnActivity(p5);
         }
@@ -413,6 +418,8 @@ export class PlayBoard {
 
     // miscellaneous end turn settings
     endTurnActivity(p5) {
+
+        // remove dead plants and reset plant skill
         let cells = this.boardObjects.getAllCellsWithPlant();
         for (let cell of cells) {
             // a safe-lock to remove all dead plants
@@ -452,10 +459,10 @@ export class PlayBoard {
                 this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
             }
 
-            // 2. remove all seeds
+            // 2. remove all seeds from inventory
             this.gameState.inventory.removeAllSeeds();
 
-            // 3. record current stage cleared
+            // 3. set current stage cleared
             this.gameState.setStageCleared(this);
 
             // 4. reset action listener
@@ -494,9 +501,9 @@ export class PlayBoard {
         console.log("initAllFloatingWindows is not overridden!");
     }
 
-    // when a new plant is placed, or at the end of a turn,
+    // when a new plant is placed or removed,
     // we need to verify all plant's skill status.
-    reevaluatePlantSkills(p5) {
+    reevaluatePlantSkills() {
         let cells = this.boardObjects.getAllCellsWithPlant();
         for (let cell of cells) {
             cell.plant.reevaluateSkills(this, cell);

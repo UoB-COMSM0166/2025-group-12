@@ -12,7 +12,7 @@ import {FloatingWindow} from "../FloatingWindow.js";
 export class Volcano1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.STAGE2;
+        this.stageCode = stageCode.VOLCANO;
         // grid parameters
         this.gridSize = 10;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);

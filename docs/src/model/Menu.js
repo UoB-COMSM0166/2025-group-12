@@ -42,6 +42,13 @@ export class StartMenu {
             button.draw(p5);
         }
     }
+
+    changeNewToResume(){
+        let newGameButton = this.buttons.find(button => button.text.startsWith("New Game"));
+        if (newGameButton !== null && newGameButton !== undefined) {
+            newGameButton.text = "Resume Game";
+        }
+    }
 }
 
 

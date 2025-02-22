@@ -15,7 +15,7 @@ import {Grass} from "../../items/Grass.js";
 export class Stage1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.STAGE1;
+        this.stageCode = stageCode.STORM;
         // grid parameters
         this.gridSize = 6;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);

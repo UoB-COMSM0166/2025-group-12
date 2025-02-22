@@ -12,7 +12,7 @@ import {FloatingWindow} from "../FloatingWindow.js";
 export class Stage2PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.STAGE2;
+        this.stageCode = stageCode.STORM;
         // grid parameters
         this.gridSize = 10;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
