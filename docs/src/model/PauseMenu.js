@@ -18,20 +18,17 @@ export class PauseMenu {
         let continueButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "Continue");
         continueButton.onClick = () => {
             this.gameState.togglePaused();
-            //this.gameState.togglePlayerCanClick();
         }
         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
             GameSave.load(this.gameState);
             this.gameState.togglePaused();
-            //this.gameState.togglePlayerCanClick();
         }
 
         let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
         saveGameButton.onClick = () => {
             GameSave.save(this.gameState);
             this.gameState.togglePaused();
-            //this.gameState.togglePlayerCanClick();
         }
 
         let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Quit");
@@ -39,7 +36,7 @@ export class PauseMenu {
             escapeButton.onClick = () => {
                 this.gameState.togglePaused();
                 this.gameState.setState(stateCode.STANDBY);
-                this.gameState.setPlayerCanClick();
+                this.gameState.setPlayerCanClick(true);
             };
         }
         this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);
@@ -52,7 +49,6 @@ export class PauseMenu {
             }
         }
         this.gameState.togglePaused();
-        //this.gameState.togglePlayerCanClick();
     }
 
     handleKey() {

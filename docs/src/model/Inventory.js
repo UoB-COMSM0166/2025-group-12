@@ -9,6 +9,8 @@ export class Inventory {
     constructor(p5) {
         this.items = new Map(); // <String name, int count>
         this.selectedItem = null; // a String
+        this.scrollIndex = 0;
+        this.maxVisibleItems = 6;
 
         // for fast lookup when creating item
         this.itemPrototypes = this.initPrototypes(p5); // Map<String name, Plant/Seed instance>
@@ -17,7 +19,7 @@ export class Inventory {
         [this.padding, this.itemHeight] = myutil.relative2absolute(0.01, 0.06);
         [this.inventoryWidth, this.inventoryY] = myutil.relative2absolute(0.1, 0.03);
         this.itemInter = myutil.relative2absolute(0.01, 0.01)[1];
-        this.inventoryHeight = this.items.size * this.itemHeight + this.padding * 2;
+        this.inventoryHeight = Math.min(this.items.size, this.maxVisibleItems) * this.itemHeight + this.padding * 2;
         this.inventoryX = CanvasSize.getSize()[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
@@ -36,24 +38,29 @@ export class Inventory {
         p5.text("Inventory", this.inventoryX + this.inventoryWidth / 2, this.inventoryY + this.padding);
 
         // loop inventory items
+        let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
         let index = 0;
-        for (let [key, value] of this.items.entries()) {
+        for (let [key, value] of visibleItems) {
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
-            let tmpItem = this.createItem(p5, key);
-            // draw an item of inventory
-            p5.fill(tmpItem.color);
+            let itemInstance = this.itemPrototypes.get(key);
+            p5.fill(itemInstance.color);
             p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - this.itemInter, this.itemInter);
             p5.fill(0);
             p5.textSize(14);
             p5.textAlign(p5.CENTER, p5.CENTER);
-            p5.text(tmpItem.name, this.inventoryX + this.itemWidth / 2 + this.padding, itemY + (this.itemHeight - this.itemInter) / 2);
+            p5.text(itemInstance.name, this.inventoryX + this.itemWidth / 2 + this.padding, itemY + (this.itemHeight - this.itemInter) / 2);
             p5.text(value, this.inventoryX + this.inventoryWidth - (this.inventoryWidth - (this.itemWidth + this.padding)) / 2, itemY + (this.itemHeight - this.itemInter) / 2);
             index++;
         }
     }
 
     handleScroll(event) {
-        // placeholder
+        let maxIndex = Math.max(0, this.items.size - this.maxVisibleItems);
+        if (event.deltaY > 0) {
+            this.scrollIndex = Math.min(this.scrollIndex + 1, maxIndex);
+        } else if (event.deltaY < 0) {
+            this.scrollIndex = Math.max(this.scrollIndex - 1, 0);
+        }
     }
 
     handleClick(p5) {
@@ -176,9 +183,10 @@ export class Inventory {
     }
 
     // update inventory height after insertion or delete
+    // and secretly sort items by type. may want to refactor
     updateInventoryHeight() {
-        this.inventoryHeight = this.items.size * this.itemHeight + this.padding * 2;
-        // and secretly sort items by type
+        this.inventoryHeight = Math.min(this.items.size, this.maxVisibleItems) * this.itemHeight + this.padding * 2;
+
         this.items = new Map([...this.items].sort(([key1], [key2]) => {
             let instance1 = this.itemPrototypes.get(key1);
             let instance2 = this.itemPrototypes.get(key2);

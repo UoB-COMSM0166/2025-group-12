@@ -3,6 +3,7 @@ import {enemyTypes, itemTypes} from "./ItemTypes.js";
 import {PlayBoard} from "../model/Play.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {aStarSearch} from "../model/Astar.js";
+import {myutil} from "../../lib/myutil.js";
 
 export class Mob extends Enemy {
     constructor(p5, x, y) {
@@ -24,7 +25,7 @@ export class Mob extends Enemy {
     }
 
     static createNewMob(p5, playBoard, i, j) {
-        let [avgX, avgY] = playBoard.cellIndex2Pos(p5, i, j, p5.CENTER);
+        let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let mob = new Mob(p5, avgX, avgY);
         playBoard.enemies.push(mob);
         playBoard.boardObjects.getCell(i, j).enemy = mob;
@@ -53,8 +54,8 @@ export class Mob extends Enemy {
             let posArr = aStarSearch(playBoard.boardObjects.boardObjects, this.cell, this.targetCell, 1);
             let [x, y] = posArr[0];
             this.tempcell = playBoard.boardObjects.getCell(x, y);
-            this.targetX = playBoard.cellIndex2Pos(p5, x, y, p5.CENTER)[0];
-            this.targetY = playBoard.cellIndex2Pos(p5, x, y, p5.CENTER)[1];
+            this.targetX = myutil.cellIndex2Pos(p5, playBoard, x, y, p5.CENTER)[0];
+            this.targetY = myutil.cellIndex2Pos(p5, playBoard, x, y, p5.CENTER)[1];
             if (this.x !== this.targetX || this.targetY !== this.targetY) {
                 this.x = this.x + (this.targetX - this.x) * 0.1;
                 this.y = this.y + (this.targetY - this.y) * 0.1;

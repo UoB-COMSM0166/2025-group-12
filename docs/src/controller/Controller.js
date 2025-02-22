@@ -94,6 +94,7 @@ export class Controller {
 
         // if we quit PLAY to STANDBY, reset inventory and board
         if (this.saveState === stateCode.PLAY && newState === stateCode.STANDBY) {
+            this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
             // destroy the play board
@@ -105,6 +106,7 @@ export class Controller {
         if (newState === stateCode.FINISH) {
             this.menus[stateCode.PLAY] = null;
             this.gameState.setState(stateCode.STANDBY);
+            this.gameState.setPlayerCanClick(true);
             return;
         }
 

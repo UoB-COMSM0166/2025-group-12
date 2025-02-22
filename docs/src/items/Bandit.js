@@ -28,7 +28,7 @@ export class Bandit extends Enemy {
     }
 
     static createNewBandit(p5, playBoard, i, j) {
-        let [avgX, avgY] = playBoard.cellIndex2Pos(p5, i, j, p5.CENTER);
+        let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let bandit = new Bandit(p5, avgX, avgY);
         playBoard.enemies.push(bandit);
         playBoard.boardObjects.getCell(i, j).enemy = bandit;
@@ -76,15 +76,15 @@ export class Bandit extends Enemy {
     }
 
     move(p5, playBoard) {
-        let [dy, dx] = this.direction;
-        let oldX = playBoard.oldCoorX(this.x, this.y) + 5 * dx;
-        let oldY = playBoard.oldCoorY(this.x, this.y) + 5 * dy;
-        let newX = playBoard.newCoorX(oldX, oldY);
-        let newY = playBoard.newCoorY(oldX, oldY);
+        let [dx, dy] = this.direction;
+        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + 5 * dx;
+        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + 5 * dy;
+        let newX = myutil.newCoorX(playBoard, oldX, oldY);
+        let newY = myutil.newCoorY(playBoard, oldX, oldY);
         this.x = newX;
         this.y = newY;
 
-        let [targetX, targetY] = playBoard.cellIndex2Pos(p5, this.targetCell.x, this.targetCell.y, p5.CENTER);
+        let [targetX, targetY] = myutil.cellIndex2Pos(p5, playBoard, this.targetCell.x, this.targetCell.y, p5.CENTER);
 
         // when arriving at target, set this.cell to target cell, and set targetCell -> null
         if (myutil.manhattanDistance(this.x, this.y, targetX, targetY) < 2) {
@@ -169,7 +169,7 @@ export class Bandit extends Enemy {
         }
 
         this.targetCell = nextCell;
-        this.direction = [this.targetCell.x - this.cell.x, this.targetCell.y - this.cell.y];
+        this.direction = [this.targetCell.y - this.cell.y, this.targetCell.x - this.cell.x]; // the row and col is reversed to fit the board's matrix-like cell positioning
     }
 
     pickLuckyPlant(playBoard, G, allTargets) {

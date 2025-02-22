@@ -25,7 +25,8 @@ export class PlayBoard {
 
         // grid parameters
         this.gridSize = 8;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        this.cellWidth = myutil.relative2absolute(1 / 16, 1 / 9)[0];
+        this.cellHeight = myutil.relative2absolute(1 / 16, 1 / 9)[1];
 
         this.buttons = [];
 
@@ -72,7 +73,7 @@ export class PlayBoard {
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
         turnButton.onClick = () => {
             this.enemies.sort((a, b) => a.enemyType - b.enemyType);
-            this.gameState.togglePlayerCanClick();
+            this.gameState.setPlayerCanClick(false);
         }
 
         this.buttons.push(escapeButton, turnButton);
@@ -101,33 +102,16 @@ export class PlayBoard {
     // 2. plant active skill target
     // 3. buttons
     // 4. info box arrow
+    // 5. inventory items
     handleClick(p5) {
-        // when floating window is on, click anywhere to disable it.
-        if (this.floatingWindow !== null) {
-            // game over
-            if(!this.allFloatingWindows.has("001")) {
-                this.gameState.setState(stateCode.STANDBY);
-                return;
-            }
-            // game clear
-            if (!this.allFloatingWindows.has("000")) {
-                this.gameState.setState(stateCode.FINISH);
-            }
-            // common floating windows
-            if (!this.floatingWindow.isFading) {
-                this.floatingWindow.isFading = true;
-                if (!this.floatingWindow.playerCanClick) {
-                    return;
-                }
-            }
-            if (!this.floatingWindow.playerCanClick) {
-                return;
-            }
+
+        if (this.handleFloatingWindow()) {
+            return;
         }
 
         // when activate button is clicked, system awaits a cell input
         if (this.awaitCell) {
-            let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
+            let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
             if (index[0] === -1) {
                 console.log("invalid target.");
             } else {
@@ -150,44 +134,13 @@ export class PlayBoard {
         }
 
         // clicked info box arrows when info box exists
-        if (this.selectedCell.length !== 0) {
-            if (this.infoBox.clickArrow(p5, this)) {
-                return;
-            } else {
-                // reset the info status to prevent unintentional bugs
-                this.infoBox.resetStatus();
-                this.infoBox.deleteActivateButton(p5, this);
-            }
-        }
+        if(this.infoBox.handleClickArrow(p5, this)){return;}
 
-        // clicked inventory, then click a cell
-        if (this.gameState.inventory.selectedItem !== null) {
-            let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
-            let clickedCell = false;
-
-            if (index[0] !== -1) {
-                let row = index[0];
-                let col = index[1];
-                if (this.boardObjects.plantCell(row, col, this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
-                    console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${row}, col ${col}`);
-
-                    // set plant's skill
-                    this.reevaluatePlantSkills();
-
-                    clickedCell = true;
-                }
-            }
-            // clear inventory's selected item
-            if (clickedCell) {
-                this.gameState.inventory.itemDecrement();
-                return;
-            }
-        }
-        // handle inventory clicks later to prevent unintentional issues
-        this.gameState.inventory.handleClick(p5);
+        // inventory and planting
+        this.handlePlanting(p5);
 
         // click any grid cell to display info box
-        this.clickCells(p5);
+        this.clickedCell(p5);
     }
 
     draw(p5) {
@@ -216,13 +169,13 @@ export class PlayBoard {
                 let plant = cell.plant;
                 let seed = cell.seed;
                 if (plant !== null) {
-                    let [avgX, avgY] = this.cellIndex2Pos(p5, i, j, p5.CENTER);
+                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                     myutil.drawHealthBar(p5, plant, avgX - 21, avgY - 42, 40, 5);
                 }
                 if (seed !== null) {
-                    let [avgX, avgY] = this.cellIndex2Pos(p5, i, j, p5.CENTER);
+                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
                     let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
                     p5.image(seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
                 }
@@ -273,25 +226,6 @@ export class PlayBoard {
     /* ----------------------------------- */
     /* ----------------------------------- */
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-        console.log("setStageInventory is not overridden!");
-    }
-
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        console.log("setStageTerrain is not overridden!");
-    }
-
-    // when the main base is destroyed, invoke this function
-    gameOver() {
-        if (this.allFloatingWindows.has("001")) {
-            this.floatingWindow = this.allFloatingWindows.get("001");
-            this.allFloatingWindows.delete("001");
-        }
-        this.isGameOver = true;
-    }
-
     drawGrid(p5) {
         p5.stroke(0);
         p5.strokeWeight(2);
@@ -299,7 +233,7 @@ export class PlayBoard {
 
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
-                let [x1, y1, x2, y2, x3, y3, x4, y4] = this.cellIndex2Pos(p5, i, j, p5.CORNERS);
+                let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
                 p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
                 if (this.boardObjects.getCell(i, j).isEcoSphere) {
@@ -319,15 +253,15 @@ export class PlayBoard {
             for (let j = this.gridSize - 1; j >= 0; j--) {
                 let cell = this.boardObjects.getCell(i, j);
                 if (cell.terrain.name === "Steppe") continue;
-                let [x1, y1] = this.cellIndex2Pos(p5, i, j, p5.CORNER);
+                let [x1, y1] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNER);
                 p5.image(cell.terrain.img, x1 - this.cellWidth / 4, y1, this.cellWidth / 2, this.cellHeight / 2);
             }
         }
     }
 
     // set the clicked cell to draw info box
-    clickCells(p5) {
-        let index = this.pos2CellIndex(p5.mouseX, p5.mouseY);
+    clickedCell(p5) {
+        let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
         if (index[0] === -1) {
             this.selectedCell = [];
         } else {
@@ -340,62 +274,56 @@ export class PlayBoard {
         }
     }
 
-    // convert canvas position into cell index
-    pos2CellIndex(x, y) {
-        // edges of the grid under old grid-centered coordinates
-        let leftEdge = -(this.gridSize * this.cellWidth) / 2;
-        let rightEdge = (this.gridSize * this.cellWidth) / 2;
-        let topEdge = -(this.gridSize * this.cellHeight) / 2;
-        let bottomEdge = (this.gridSize * this.cellHeight) / 2;
-
-        // mouse position under old grid-centered coordinates
-        let oldX = this.oldCoorX(x - this.canvasWidth / 2, y - this.canvasHeight / 2);
-        let oldY = this.oldCoorY(x - this.canvasWidth / 2, y - this.canvasHeight / 2);
-
-        // Check if click is within the grid
-        if (oldX >= leftEdge && oldX <= rightEdge
-            && oldY >= topEdge && oldY <= bottomEdge) {
-            let col = Math.floor((oldX + (this.gridSize * this.cellWidth) / 2) / this.cellWidth);
-            let row = Math.floor((oldY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
-            return [row, col];
-        } else {
-            return [-1];
+    // when floating window is on, click anywhere to disable it.
+    handleFloatingWindow() {
+        if (this.floatingWindow !== null) {
+            // game over
+            if (!this.allFloatingWindows.has("001")) {
+                this.gameState.setState(stateCode.STANDBY);
+                return true;
+            }
+            // game clear
+            if (!this.allFloatingWindows.has("000")) {
+                this.gameState.setState(stateCode.FINISH);
+                return true;
+            }
+            // common floating windows
+            if (!this.floatingWindow.isFading) {
+                this.floatingWindow.isFading = true;
+            }
+            if (!this.floatingWindow.playerCanClick) {
+                return true;
+            }
         }
+        return false;
     }
 
-    // convert cell index into canvas position
-    cellIndex2Pos(p5, i, j, mode) {
-        let x = -(this.gridSize * this.cellWidth / 2) + j * this.cellWidth;
-        let y = -(this.gridSize * this.cellHeight / 2) + i * this.cellHeight;
+    handlePlanting(p5) {
+        let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        // clicked an item from inventory, then clicked a cell:
+        if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
+            if (this.boardObjects.plantCell(index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
+                console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
 
-        let x1 = this.newCoorX(x, y) + this.canvasWidth / 2;
-        let y1 = this.newCoorY(x, y) + this.canvasHeight / 2;
+                // set plant's skill
+                this.reevaluatePlantSkills();
 
-        if (mode === p5.CORNER) {
-            return [x1, y1];
+                // remove item from inventory
+                this.gameState.inventory.itemDecrement();
+                return;
+            }
         }
 
-        let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasWidth / 2;
-        let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasHeight / 2;
-        let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasWidth / 2;
-        let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasHeight / 2;
-        let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasWidth / 2;
-        let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasHeight / 2;
-
-        if (mode === p5.CORNERS) {
-            return [x1, y1, x2, y2, x3, y3, x4, y4];
-        }
-
-        if (mode === p5.CENTER) {
-            return [(x1 + x2 + x3 + x4) / 4, (y1 + y2 + y3 + y4) / 4];
-        }
+        // clicked item from inventory or clicked somewhere else:
+        // handle inventory clicks later to prevent unintentional issues
+        this.gameState.inventory.handleClick(p5);
     }
 
     // end turn enemy activities
     enemyMovements(p5) {
         // if game over, set player can click so controller stops handling movement
-        if(this.isGameOver){
-            this.gameState.togglePlayerCanClick();
+        if (this.isGameOver) {
+            this.gameState.setPlayerCanClick(true);
             return;
         }
         for (let enemy of this.enemies) {
@@ -466,7 +394,7 @@ export class PlayBoard {
             this.gameState.setStageCleared(this);
 
             // 4. reset action listener
-            this.gameState.togglePlayerCanClick();
+            this.gameState.setPlayerCanClick(true);
 
             return;
         }
@@ -486,7 +414,24 @@ export class PlayBoard {
         this.nextTurnItems(p5);
 
         // set action listener active
-        this.gameState.togglePlayerCanClick();
+        this.gameState.setPlayerCanClick(true);
+    }
+
+    // when a new plant is placed or removed,
+    // we need to verify all plant's skill status.
+    reevaluatePlantSkills() {
+        let cells = this.boardObjects.getAllCellsWithPlant();
+        for (let cell of cells) {
+            cell.plant.reevaluateSkills(this, cell);
+        }
+    }
+
+    // this does not activate skill immediately, but go to awaiting status
+    activatePlantSkill(p5) {
+        let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+        if (spellCaster.plant.type === plantTypes.TREE || spellCaster.plant.type === plantTypes.GRASS) {
+            this.awaitCell = true;
+        }
     }
 
     nextTurnItems(p5) {
@@ -501,45 +446,17 @@ export class PlayBoard {
         console.log("initAllFloatingWindows is not overridden!");
     }
 
-    // when a new plant is placed or removed,
-    // we need to verify all plant's skill status.
-    reevaluatePlantSkills() {
-        let cells = this.boardObjects.getAllCellsWithPlant();
-        for (let cell of cells) {
-            cell.plant.reevaluateSkills(this, cell);
-        }
+    // set stage inventory at entering, called by controller
+    setStageInventory(p5) {
+        console.log("setStageInventory is not overridden!");
     }
 
-    activatePlantSkill(p5) {
-        let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
-        if (spellCaster.plant.type === plantTypes.TREE || spellCaster.plant.type === plantTypes.GRASS) {
-            this.awaitCell = true;
-        }
-    }
-
-    // the coordinate transformation is
-    // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) ) ( x )
-    // (  ) = (                                   ) (   )
-    // (y')   ( Sx * sin(rot)  Sy * sin(rot+span) ) ( y )
-
-    newCoorX(x, y) {
-        return x * this.Sx * Math.cos(this.rot) + y * this.Sy * Math.cos(this.span + this.rot);
-    }
-
-    newCoorY(x, y) {
-        return this.Hy * (x * this.Sx * Math.sin(this.rot) + y * this.Sy * Math.sin(this.span + this.rot));
-    }
-
-    oldCoorX(newX, newY) {
-        return (1 / (this.Sx * this.Sy * Math.sin(this.span))) * (this.Sy * Math.sin(this.rot + this.span) * newX - this.Sy * Math.cos(this.rot + this.span) * newY);
-    }
-
-    oldCoorY(newX, newY) {
-        return -(1 / (this.Sx * this.Sy * Math.sin(this.span))) * (this.Sx * Math.sin(this.rot) * newX - this.Sx * Math.cos(this.rot) * newY);
+    // set stage terrain, called when the stage is loaded or reset
+    setStageTerrain(p5) {
+        console.log("setStageTerrain is not overridden!");
     }
 
     getTurnButtonText() {
         return `turn ${this.turn} in ${this.maxTurn}`;
     }
-
 }

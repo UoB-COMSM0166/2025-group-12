@@ -3,6 +3,7 @@ import {Enemy} from "./Enemy.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {PlayBoard} from "../model/Play.js";
 import {stateCode} from "../model/GameState.js";
+import {myutil} from "../../lib/myutil.js";
 
 export class Storm extends Enemy {
     constructor(p5, x, y, direction) {
@@ -34,7 +35,7 @@ export class Storm extends Enemy {
     }
 
     static createNewStorm(p5, playBoard, i, j, direction) {
-        let [avgX, avgY] = playBoard.cellIndex2Pos(p5, i, j, p5.CENTER);
+        let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let storm = new Storm(p5, avgX, avgY, direction);
         playBoard.enemies.push(storm);
         playBoard.boardObjects.getCell(i, j).enemy = storm;
@@ -79,15 +80,15 @@ export class Storm extends Enemy {
         }
 
         let [dx, dy] = this.direction;
-        let oldX = playBoard.oldCoorX(this.x, this.y) + 5 * dx; // 5 is a magic number representing the moving speed of storm
-        let oldY = playBoard.oldCoorY(this.x, this.y) + 5 * dy;
-        let newX = playBoard.newCoorX(oldX, oldY);
-        let newY = playBoard.newCoorY(oldX, oldY);
+        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + 5 * dx; // 5 is a magic number representing the moving speed of storm
+        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + 5 * dy;
+        let newX = myutil.newCoorX(playBoard, oldX, oldY);
+        let newY = myutil.newCoorY(playBoard, oldX, oldY);
         this.x = newX;
         this.y = newY;
 
         // call interaction when storm overlays with plant (cell level)
-        let index = playBoard.pos2CellIndex(this.x, this.y);
+        let index = myutil.pos2CellIndex(playBoard, this.x, this.y);
         if (index[0] !== -1) {
             let cell = playBoard.boardObjects.getCell(index[0], index[1]);
             // 1. check current cell to perform storm-terrain interaction.
@@ -124,11 +125,11 @@ export class Storm extends Enemy {
 
             // 4. if player base is at this cell, destroy it.
             if (cell.terrain.terrainType === terrainTypes.BASE) {
-                playBoard.gameOver();
+                myutil.gameOver(playBoard);
                 return;
             }
 
-            // 4. if a bandit is at this cell, dies.
+            // 5. if a bandit is at this cell, dies.
             if (cell.enemy && cell.enemy.name === "Bandit") {
                 cell.enemy.health = 0;
                 cell.enemy.status = false;

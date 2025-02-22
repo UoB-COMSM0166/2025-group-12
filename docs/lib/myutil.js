@@ -65,4 +65,87 @@ export class myutil {
             p5.line(x + i * width / item.maxHealth, y, x + i * width / item.maxHealth, y + height);
         }
     }
+
+    // when the main base is destroyed, invoke this function
+    static gameOver(playBoard) {
+        if (playBoard.allFloatingWindows.has("001")) {
+            playBoard.floatingWindow = playBoard.allFloatingWindows.get("001");
+            playBoard.allFloatingWindows.delete("001");
+        } else {
+            console.error("playBoard does not have game over floating window?");
+        }
+        playBoard.isGameOver = true;
+    }
+
+    // convert canvas position into cell index
+    static pos2CellIndex(playBoard, x, y) {
+        // edges of the grid under old grid-centered coordinates
+        let leftEdge = -(playBoard.gridSize * playBoard.cellWidth) / 2;
+        let rightEdge = (playBoard.gridSize * playBoard.cellWidth) / 2;
+        let topEdge = -(playBoard.gridSize * playBoard.cellHeight) / 2;
+        let bottomEdge = (playBoard.gridSize * playBoard.cellHeight) / 2;
+
+        // mouse position under old grid-centered coordinates
+        let oldX = myutil.oldCoorX(playBoard, x - playBoard.canvasWidth / 2, y - playBoard.canvasHeight / 2);
+        let oldY = myutil.oldCoorY(playBoard, x - playBoard.canvasWidth / 2, y - playBoard.canvasHeight / 2);
+
+        // Check if click is within the grid
+        if (oldX >= leftEdge && oldX <= rightEdge
+            && oldY >= topEdge && oldY <= bottomEdge) {
+            let col = Math.floor((oldX + (playBoard.gridSize * playBoard.cellWidth) / 2) / playBoard.cellWidth);
+            let row = Math.floor((oldY + (playBoard.gridSize * playBoard.cellHeight) / 2) / playBoard.cellHeight);
+            return [row, col];
+        } else {
+            return [-1];
+        }
+    }
+
+    // convert cell index into canvas position
+    static cellIndex2Pos(p5, playBoard, i, j, mode) {
+        let x = -(playBoard.gridSize * playBoard.cellWidth / 2) + j * playBoard.cellWidth;
+        let y = -(playBoard.gridSize * playBoard.cellHeight / 2) + i * playBoard.cellHeight;
+
+        let x1 = myutil.newCoorX(playBoard, x, y) + playBoard.canvasWidth / 2;
+        let y1 = myutil.newCoorY(playBoard, x, y) + playBoard.canvasHeight / 2;
+
+        if (mode === p5.CORNER) {
+            return [x1, y1];
+        }
+
+        let x2 = myutil.newCoorX(playBoard, x + playBoard.cellWidth, y) + playBoard.canvasWidth / 2;
+        let y2 = myutil.newCoorY(playBoard, x + playBoard.cellWidth, y) + playBoard.canvasHeight / 2;
+        let x3 = myutil.newCoorX(playBoard, x + playBoard.cellWidth, y + playBoard.cellHeight) + playBoard.canvasWidth / 2;
+        let y3 = myutil.newCoorY(playBoard, x + playBoard.cellWidth, y + playBoard.cellHeight) + playBoard.canvasHeight / 2;
+        let x4 = myutil.newCoorX(playBoard, x, y + playBoard.cellHeight) + playBoard.canvasWidth / 2;
+        let y4 = myutil.newCoorY(playBoard, x, y + playBoard.cellHeight) + playBoard.canvasHeight / 2;
+
+        if (mode === p5.CORNERS) {
+            return [x1, y1, x2, y2, x3, y3, x4, y4];
+        }
+
+        if (mode === p5.CENTER) {
+            return [(x1 + x2 + x3 + x4) / 4, (y1 + y2 + y3 + y4) / 4];
+        }
+    }
+
+    // the coordinate transformation is
+    // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) ) ( x )
+    // (  ) = (                                   ) (   )
+    // (y')   ( Sx * sin(rot)  Sy * sin(rot+span) ) ( y )
+
+    static newCoorX(playBoard, x, y) {
+        return x * playBoard.Sx * Math.cos(playBoard.rot) + y * playBoard.Sy * Math.cos(playBoard.span + playBoard.rot);
+    }
+
+    static newCoorY(playBoard, x, y) {
+        return playBoard.Hy * (x * playBoard.Sx * Math.sin(playBoard.rot) + y * playBoard.Sy * Math.sin(playBoard.span + playBoard.rot));
+    }
+
+    static oldCoorX(playBoard, newX, newY) {
+        return (1 / (playBoard.Sx * playBoard.Sy * Math.sin(playBoard.span))) * (playBoard.Sy * Math.sin(playBoard.rot + playBoard.span) * newX - playBoard.Sy * Math.cos(playBoard.rot + playBoard.span) * newY);
+    }
+
+    static oldCoorY(playBoard, newX, newY) {
+        return -(1 / (playBoard.Sx * playBoard.Sy * Math.sin(playBoard.span))) * (playBoard.Sx * Math.sin(playBoard.rot) * newX - playBoard.Sx * Math.cos(playBoard.rot) * newY);
+    }
 }

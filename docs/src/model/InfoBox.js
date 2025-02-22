@@ -52,6 +52,20 @@ export class InfoBox {
         p5.image(p5.images.get("rightarrow"), this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
     }
 
+    // clicked info box arrows when info box exists in play board
+    handleClickArrow(p5, playBoard){
+        if (playBoard.selectedCell.length !== 0) {
+            if (playBoard.infoBox.clickArrow(p5, this)) {
+                return true;
+            } else {
+                // reset the info status to prevent unintentional bugs
+                playBoard.infoBox.resetStatus();
+                playBoard.infoBox.deleteActivateButton(p5, this);
+            }
+        }
+        return false;
+    }
+
     clickArrow(p5) {
         // the parameters of arrows are hardcoded now, should refactor later.
         let leftArrowX = 74;

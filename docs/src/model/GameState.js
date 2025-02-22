@@ -47,12 +47,8 @@ export class GameState {
         return this.state;
     }
 
-    togglePlayerCanClick() {
-        this.playerCanClick = !this.playerCanClick;
-    }
-
-    setPlayerCanClick() {
-        this.playerCanClick = true;
+    setPlayerCanClick(bool) {
+        this.playerCanClick = bool;
     }
 
     togglePaused() {
