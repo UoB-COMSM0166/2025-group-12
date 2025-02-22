@@ -1,6 +1,7 @@
 import {Button} from "../items/Button.js";
 import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
+import {stateCode} from "./GameState.js";
 
 export class PauseMenu {
     constructor(gameState) {
@@ -17,23 +18,31 @@ export class PauseMenu {
         let continueButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "Continue");
         continueButton.onClick = () => {
             this.gameState.togglePaused();
-            this.gameState.togglePlayerCanClick();
+            //this.gameState.togglePlayerCanClick();
         }
         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
             GameSave.load(this.gameState);
             this.gameState.togglePaused();
-            this.gameState.togglePlayerCanClick();
+            //this.gameState.togglePlayerCanClick();
         }
 
         let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
         saveGameButton.onClick = () => {
             GameSave.save(this.gameState);
             this.gameState.togglePaused();
-            this.gameState.togglePlayerCanClick();
+            //this.gameState.togglePlayerCanClick();
         }
 
-        this.buttons.push(continueButton, loadGameButton, saveGameButton);
+        let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Quit");
+        escapeButton.onClick = () => {
+            escapeButton.onClick = () => {
+                this.gameState.togglePaused();
+                this.gameState.setState(stateCode.STANDBY);
+                //this.gameState.togglePlayerCanClick();
+            };
+        }
+        this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);
     }
 
     handleClick(p5) {
@@ -43,7 +52,7 @@ export class PauseMenu {
             }
         }
         this.gameState.togglePaused();
-        this.gameState.togglePlayerCanClick();
+        //this.gameState.togglePlayerCanClick();
     }
 
     handleKey() {
