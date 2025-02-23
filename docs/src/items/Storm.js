@@ -30,21 +30,24 @@ export class Storm extends Enemy {
         }
 
         this.cell = null;
+        this.targetCell = null;
         this.countdown = 1;
         this.isMoving = false;
+        this.hasMoved = true;
+        this.moveSpeed = 5;
     }
 
     static createNewStorm(p5, playBoard, i, j, direction) {
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let storm = new Storm(p5, avgX, avgY, direction);
-        playBoard.enemies.push(storm);
+        playBoard.movables.push(storm);
         playBoard.boardObjects.getCell(i, j).enemy = storm;
         storm.cell = playBoard.boardObjects.getCell(i, j);
     }
 
-    enemyMovements(p5, playBoard) {
+    movements(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('enemyMovements of Storm has received invalid PlayBoard.');
+            console.error('movements of Storm has received invalid PlayBoard.');
             return false;
         }
         if (this.status === false) {
@@ -80,8 +83,8 @@ export class Storm extends Enemy {
         }
 
         let [dx, dy] = this.direction;
-        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + 5 * dx; // 5 is a magic number representing the moving speed of storm
-        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + 5 * dy;
+        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + this.moveSpeed * dx;
+        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + this.moveSpeed * dy;
         let newX = myutil.newCoorX(playBoard, oldX, oldY);
         let newY = myutil.newCoorY(playBoard, oldX, oldY);
         this.x = newX;
@@ -142,10 +145,7 @@ export class Storm extends Enemy {
         // if the storm goes out of the grid, it dies anyway.
         if (index[0] === -1) {
             this.status = false;
-            let index = playBoard.enemies.findIndex(e => e === this);
-            if (index !== -1) {
-                playBoard.enemies.splice(index, 1);
-            }
+            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
         }
     }
 }

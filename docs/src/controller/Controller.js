@@ -77,11 +77,11 @@ export class Controller {
         }
     }
 
-    // deal with 1. data transferring when switching menu, 2. player-enemy movement switching
+    // deal with 1. player-movable switching, 2. data transferring when switching menu
     setData(p5, newState) {
-        // if PLAY is in enemy movement, only call enemy movement
+        // if movables has objects to move, skip other phases
         if (newState === stateCode.PLAY && !this.gameState.playerCanClick) {
-            this.menus[stateCode.PLAY].enemyMovements(p5);
+            this.handleMovables(p5);
             return;
         }
 
@@ -114,6 +114,36 @@ export class Controller {
         if (this.saveState === stateCode.STANDBY && newState === stateCode.MENU) {
             this.menus[stateCode.MENU].changeNewToResume();
             return;
+        }
+    }
+
+    handleMovables(p5){
+        // if game over caused by movable, set player can click so controller stops handling movement
+        if (this.menus[stateCode.PLAY].isGameOver) {
+            this.gameState.setPlayerCanClick(true);
+            return;
+        }
+        // if movables has objects not moved:
+        for (let movable of this.menus[stateCode.PLAY].movables) {
+            if (!movable.hasMoved) {
+                movable.movements(p5, this.menus[stateCode.PLAY]);
+                return;
+            }
+            // delete dead movable object, a safe-lock
+            if (!movable.status) {
+                let index = this.menus[stateCode.PLAY].movables.indexOf(movable);
+                if (index !== -1) {
+                    this.menus[stateCode.PLAY].movables.splice(index, 1);
+                }
+            }
+        }
+        // all moved, if it not end turn, set player can click
+        if(!this.menus[stateCode.PLAY].endTurn){
+            this.gameState.setPlayerCanClick(true);
+        }
+        // if it at end turn, invoke end turn stuff
+        else{
+            this.menus[stateCode.PLAY].endTurnActivity(p5);
         }
     }
 

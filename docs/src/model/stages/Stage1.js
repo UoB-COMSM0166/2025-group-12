@@ -26,6 +26,7 @@ export class Stage1PlayBoard extends PlayBoard {
         // turn counter
         this.turn = 1;
         this.maxTurn = 4;
+        this.hasActionPoints = false;
 
         this.allFloatingWindows = null; // Map<int code, fw>
     }

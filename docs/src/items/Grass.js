@@ -88,7 +88,7 @@ export class GrassAnimal{
 
         this.targetCell = null;
         this.isMoving = false;
-        this.hasMoved = false;
+        this.hasMoved = true;
         this.direction = [];
     }
 

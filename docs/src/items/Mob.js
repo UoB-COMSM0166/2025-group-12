@@ -27,7 +27,7 @@ export class Mob extends Enemy {
     static createNewMob(p5, playBoard, i, j) {
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let mob = new Mob(p5, avgX, avgY);
-        playBoard.enemies.push(mob);
+        playBoard.movables.push(mob);
         playBoard.boardObjects.getCell(i, j).enemy = mob;
         mob.cell = playBoard.boardObjects.getCell(i, j);
     }

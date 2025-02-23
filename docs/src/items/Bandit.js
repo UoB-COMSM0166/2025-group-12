@@ -16,31 +16,32 @@ export class Bandit extends Enemy {
         this.health = 3;
         this.maxHealth = 3;
         this.status = true;
-        this.cell = null;
 
         // at the beginning of end turn movement, isMoving = false, targetCell = null
         // during movement, isMoving = true, targetCell != null
         // at the end of movement, isMoving = true, targetCell = null
+        this.cell = null;
         this.targetCell = null;
         this.isMoving = false;
-        this.hasMoved = false;
+        this.hasMoved = true;
         this.direction = [];
+        this.moveSpeed = 5;
     }
 
     static createNewBandit(p5, playBoard, i, j) {
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let bandit = new Bandit(p5, avgX, avgY);
-        playBoard.enemies.push(bandit);
+        playBoard.movables.push(bandit);
         playBoard.boardObjects.getCell(i, j).enemy = bandit;
         bandit.cell = playBoard.boardObjects.getCell(i, j);
     }
 
-    enemyMovements(p5, playBoard) {
+    movements(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('enemyMovements of Storm has received invalid PlayBoard.');
+            console.error('movements of Storm has received invalid PlayBoard.');
             return false;
         }
-        if (this.status === false || this.hasMoved) {
+        if (!this.status || this.hasMoved) {
             return false;
         }
 
@@ -77,8 +78,8 @@ export class Bandit extends Enemy {
 
     move(p5, playBoard) {
         let [dx, dy] = this.direction;
-        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + 5 * dx;
-        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + 5 * dy;
+        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + this.moveSpeed * dx;
+        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + this.moveSpeed * dy;
         let newX = myutil.newCoorX(playBoard, oldX, oldY);
         let newY = myutil.newCoorY(playBoard, oldX, oldY);
         this.x = newX;

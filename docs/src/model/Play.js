@@ -31,8 +31,9 @@ export class PlayBoard {
 
         this.buttons = [];
 
-        // store all enemies
-        this.enemies = [];
+        // store all movable objects including enemies
+        // objects in this array MUST have boolean fields hasMoved and isMoving!!!!!
+        this.movables = [];
 
         // board objects array and information box
         this.boardObjects = new BoardCells(this.gridSize);
@@ -46,6 +47,7 @@ export class PlayBoard {
         // turn counter
         this.turn = 1;
         this.maxTurn = 10;
+        this.endTurn = false;
         // can place this number of plants every turn
         this.actionPoints = 3;
         this.maxActionPoints = 3;
@@ -77,7 +79,23 @@ export class PlayBoard {
         let [turnX, turnY] = myutil.relative2absolute(0.5, 0.01);
         let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
         turnButton.onClick = () => {
-            this.enemies.sort((a, b) => a.enemyType - b.enemyType);
+            this.movables.sort((a, b) => {
+                if (a.enemyType !== undefined && b.enemyType !== undefined) {
+                    return a.enemyType - b.enemyType;
+                }
+                if (a.enemyType !== undefined) return -1;
+                if (b.enemyType !== undefined) return 1;
+                return 0;
+            });
+            // set movable status
+            for (let movable of this.movables) {
+                movable.hasMoved = false;
+            }
+            // when game is not cleared, remember to deal with end turn stuff
+            if (this.turn < this.maxTurn + 1) {
+                this.endTurn = true;
+            }
+            // once player unable to click, controller will loop movables to check if there are anything has not moved
             this.gameState.setPlayerCanClick(false);
         }
 
@@ -189,18 +207,18 @@ export class PlayBoard {
             }
         }
 
-        // draw all enemies according to this.enemies
-        for (let enemy of this.enemies) {
+        // draw all movables according to this.movables
+        for (let movable of this.movables) {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-            p5.image(enemy.img, enemy.x - imgSize / 2, enemy.y - imgSize, imgSize, imgSize);
-            myutil.drawHealthBar(p5, enemy, enemy.x - 20, enemy.y - 50, 40, 5);
+            p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
+            myutil.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
         }
 
         // draw inventory
         this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
 
         // draw action points
-        if(this.hasActionPoints){
+        if (this.hasActionPoints) {
             let x = this.gameState.inventory.inventoryX;
             let y = this.gameState.inventory.inventoryY + this.gameState.inventory.inventoryHeight + this.gameState.inventory.padding;
             let width = this.gameState.inventory.inventoryWidth;
@@ -208,13 +226,13 @@ export class PlayBoard {
             p5.stroke(0);
             p5.strokeWeight(2);
             p5.fill(255, 255, 255, 0);
-            p5.rect(x, y, width, height);
+            p5.rect(x, y, width, height, 20);
 
-            let p = this.actionPoints/this.maxActionPoints;
+            let p = this.actionPoints / this.maxActionPoints;
 
             p5.noStroke();
             p5.fill("green");
-            p5.rect(x, y, width * p, height);
+            p5.rect(x, y, width * p, height, 20);
 
             for (let i = 1; i < this.maxActionPoints; i++) {
                 p5.stroke(0);
@@ -337,7 +355,9 @@ export class PlayBoard {
             if (this.actionPoints > 0) {
                 if (this.boardObjects.plantCell(index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
-                    this.actionPoints--;
+                    if (this.hasActionPoints) {
+                        this.actionPoints--;
+                    }
                     // set plant's skill
                     this.reevaluatePlantSkills();
 
@@ -346,7 +366,7 @@ export class PlayBoard {
                     return;
                 }
             } else {
-                if (this.actionPoints === 0) {
+                if (this.hasActionPoints && this.actionPoints === 0) {
                     this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("002"));
                     return;
                 }
@@ -356,38 +376,10 @@ export class PlayBoard {
         // clicked item from inventory or clicked somewhere else:
         // handle inventory clicks later to prevent unintentional issues
         this.gameState.inventory.handleClick(p5);
-
-
-    }
-
-    // end turn enemy activities
-    enemyMovements(p5) {
-        // if game over, set player can click so controller stops handling movement
-        if (this.isGameOver) {
-            this.gameState.setPlayerCanClick(true);
-            return;
-        }
-        for (let enemy of this.enemies) {
-            if (enemy.enemyMovements(p5, this) === true) {
-                return; // enemies will move one after one instead of moving simultaneously
-            }
-            // delete dead enemy, a safe-lock
-            if (!enemy.status) {
-                let index = this.enemies.indexOf(enemy);
-                if (index !== -1) {
-                    this.enemies.splice(index, 1);
-                }
-            }
-        }
-        // when game is not cleared, go to end turn stuff
-        if (this.turn < this.maxTurn + 1) {
-            this.endTurnActivity(p5);
-        }
     }
 
     // miscellaneous end turn settings
     endTurnActivity(p5) {
-
         //reset action points
         this.actionPoints = this.maxActionPoints;
 
@@ -441,17 +433,8 @@ export class PlayBoard {
             this.gameState.setPlayerCanClick(true);
 
             return;
-        }
-
-        // reset enemy status
-        for (let enemy of this.enemies) {
-            if (enemy.name === 'Mob') {
-                enemy.moved = false;
-                enemy.chosen = false;
-            }
-            if (enemy.hasMoved !== undefined) {
-                enemy.hasMoved = false;
-            }
+        }else{
+            this.endTurn = false;
         }
 
         // set next turn enemies and new inventory items

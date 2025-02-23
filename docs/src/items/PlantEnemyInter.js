@@ -24,12 +24,19 @@ export class plantEnemyInteractions {
     }
 
     static findEnemyAndDelete(playBoard, enemy) {
-        let index = playBoard.enemies.findIndex(e => e === enemy);
+        let index = playBoard.movables.findIndex(e => e === enemy);
         if (index === -1) {
             return;
         }
-        playBoard.enemies.splice(index, 1);
-        playBoard.enemies.sort((a, b) => a.enemyType - b.enemyType);
+        playBoard.movables.splice(index, 1);
+        playBoard.movables.sort((a, b) => {
+            if (a.enemyType !== undefined && b.enemyType !== undefined) {
+                return a.enemyType - b.enemyType;
+            }
+            if (a.enemyType !== undefined) return -1;
+            if (b.enemyType !== undefined) return 1;
+            return 0;
+        });
     }
 
     static plantAttackedByStorm(playBoard, item, storm) {
