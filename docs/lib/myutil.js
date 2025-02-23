@@ -66,7 +66,32 @@ export class myutil {
         }
     }
 
-    // when the main base is destroyed, invoke this function
+    static drawActionPoints(p5, playBoard) {
+        if (playBoard.hasActionPoints) {
+            let x = playBoard.gameState.inventory.inventoryX;
+            let y = playBoard.gameState.inventory.inventoryY + playBoard.gameState.inventory.inventoryHeight + playBoard.gameState.inventory.padding;
+            let width = playBoard.gameState.inventory.inventoryWidth;
+            let height = playBoard.gameState.inventory.itemHeight;
+            p5.stroke(0);
+            p5.strokeWeight(2);
+            p5.fill(255, 255, 255, 0);
+            p5.rect(x, y, width, height, 20);
+
+            let p = playBoard.actionPoints / playBoard.maxActionPoints;
+
+            p5.noStroke();
+            p5.fill("green");
+            p5.rect(x, y, width * p, height, 20);
+
+            for (let i = 1; i < playBoard.maxActionPoints; i++) {
+                p5.stroke(0);
+                p5.strokeWeight(1);
+                p5.line(x + i * width / playBoard.maxActionPoints, y, x + i * width / playBoard.maxActionPoints, y + height);
+            }
+        }
+    }
+
+    // when the main base is destroyed, invoke this function to display game over floating window
     static gameOver(playBoard) {
         if (playBoard.allFloatingWindows.has("001")) {
             playBoard.floatingWindow = playBoard.allFloatingWindows.get("001");

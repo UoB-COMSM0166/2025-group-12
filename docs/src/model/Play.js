@@ -119,35 +119,13 @@ export class PlayBoard {
         this.gameState.inventory.handleScroll(event);
     }
 
-    // a hodgepodge.
-    // handles clicks, or refuse to handle a click, according to priority:
-    // 1. floating window
-    // 2. plant active skill target
-    // 3. buttons
-    // 4. info box arrow
-    // 5. inventory items
     handleClick(p5) {
 
         if (this.handleFloatingWindow()) {
             return;
         }
 
-        // when activate button is clicked, system awaits a cell input
-        if (this.awaitCell) {
-            let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
-            if (index[0] === -1) {
-                console.log("invalid target.");
-            } else {
-                let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
-                let target = this.boardObjects.getCell(index[0], index[1]);
-                if (spellCaster.plant.plantType === plantTypes.TREE) {
-                    PlantActive.rechargeHP(spellCaster, target, 1);
-                } else if (spellCaster.plant.plantType === plantTypes.GRASS) {
-                    PlantActive.sendAnimalFriends(spellCaster, target, this);
-                }
-            }
-            this.awaitCell = false;
-        }
+        this.handleActiveSkills(p5);
 
         // click any button
         for (let button of this.buttons) {
@@ -161,7 +139,7 @@ export class PlayBoard {
             return;
         }
 
-        // inventory and planting
+        // inventory item and planting
         this.handlePlanting(p5);
 
         // click any grid cell to display info box
@@ -171,6 +149,7 @@ export class PlayBoard {
     draw(p5) {
         p5.background(180);
 
+        // set cursor style
         if (this.gameState.inventory.selectedItem !== null) {
             p5.cursor('grab');
         } else if (this.awaitCell) {
@@ -188,58 +167,22 @@ export class PlayBoard {
         }
 
         // draw plants according to board objects
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                let cell = this.boardObjects.getCell(i, j);
-                let plant = cell.plant;
-                let seed = cell.seed;
-                if (plant !== null) {
-                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
-                    let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-                    p5.image(plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
-                    myutil.drawHealthBar(p5, plant, avgX - 21, avgY - 42, 40, 5);
-                }
-                if (seed !== null) {
-                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
-                    let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-                    p5.image(seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
-                }
-            }
-        }
+        this.drawAllPlants(p5);
 
         // draw all movables according to this.movables
         for (let movable of this.movables) {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
-            myutil.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
+            if (movable.health !== undefined) {
+                myutil.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
+            }
         }
 
         // draw inventory
         this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
 
         // draw action points
-        if (this.hasActionPoints) {
-            let x = this.gameState.inventory.inventoryX;
-            let y = this.gameState.inventory.inventoryY + this.gameState.inventory.inventoryHeight + this.gameState.inventory.padding;
-            let width = this.gameState.inventory.inventoryWidth;
-            let height = this.gameState.inventory.itemHeight;
-            p5.stroke(0);
-            p5.strokeWeight(2);
-            p5.fill(255, 255, 255, 0);
-            p5.rect(x, y, width, height, 20);
-
-            let p = this.actionPoints / this.maxActionPoints;
-
-            p5.noStroke();
-            p5.fill("green");
-            p5.rect(x, y, width * p, height, 20);
-
-            for (let i = 1; i < this.maxActionPoints; i++) {
-                p5.stroke(0);
-                p5.strokeWeight(1);
-                p5.line(x + i * width / this.maxActionPoints, y, x + i * width / this.maxActionPoints, y + height);
-            }
-        }
+        myutil.drawActionPoints(p5, this);
 
         // all buttons
         // to cascade activate button above info box, place this loop after info box
@@ -247,6 +190,11 @@ export class PlayBoard {
             if (!(this.turn === this.maxTurn + 1 && button.text.startsWith("turn"))) {
                 button.draw(p5);
             }
+        }
+
+        // if game over, set player can click to stop movables updating
+        if (this.isGameOver && !this.gameState.playerCanClick) {
+            this.gameState.setPlayerCanClick(true);
         }
 
         // draw floating window
@@ -309,6 +257,25 @@ export class PlayBoard {
         }
     }
 
+    drawAllPlants(p5) {
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let cell = this.boardObjects.getCell(i, j);
+                if (cell.plant !== null) {
+                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
+                    let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+                    p5.image(cell.plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+                    myutil.drawHealthBar(p5, cell.plant, avgX - 21, avgY - 42, 40, 5);
+                }
+                if (cell.seed !== null) {
+                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
+                    let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+                    p5.image(cell.seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+                }
+            }
+        }
+    }
+
     // set the clicked cell to draw info box
     clickedCell(p5) {
         let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
@@ -346,6 +313,28 @@ export class PlayBoard {
             }
         }
         return false;
+    }
+
+    handleActiveSkills(p5) {
+        // when activate button is clicked, system awaits a cell input
+        if (this.awaitCell) {
+            let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+            if (index[0] === -1) {
+                console.log("invalid target.");
+            } else {
+                let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+                let target = this.boardObjects.getCell(index[0], index[1]);
+                if (spellCaster.plant.plantType === plantTypes.TREE) {
+                    PlantActive.rechargeHP(spellCaster, target, 1);
+                } else if (spellCaster.plant.plantType === plantTypes.GRASS) {
+                    PlantActive.sendAnimalFriends(spellCaster, target, this);
+                }
+            }
+            this.awaitCell = false;
+        }
+
+        // there might be other types of skill that does not wait one cell,
+        // so separate this chunk of code for easier later refactor.
     }
 
     handlePlanting(p5) {
@@ -433,7 +422,7 @@ export class PlayBoard {
             this.gameState.setPlayerCanClick(true);
 
             return;
-        }else{
+        } else {
             this.endTurn = false;
         }
 

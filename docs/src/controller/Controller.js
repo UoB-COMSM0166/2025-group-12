@@ -118,11 +118,6 @@ export class Controller {
     }
 
     handleMovables(p5){
-        // if game over caused by movable, set player can click so controller stops handling movement
-        if (this.menus[stateCode.PLAY].isGameOver) {
-            this.gameState.setPlayerCanClick(true);
-            return;
-        }
         // if movables has objects not moved:
         for (let movable of this.menus[stateCode.PLAY].movables) {
             if (!movable.hasMoved) {
