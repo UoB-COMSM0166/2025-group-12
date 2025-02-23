@@ -8,6 +8,7 @@ import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
 import {plantTypes} from "../items/ItemTypes.js";
+import {FloatingWindow} from "./FloatingWindow.js";
 
 export class PlayBoard {
     constructor(gameState) {
@@ -45,6 +46,10 @@ export class PlayBoard {
         // turn counter
         this.turn = 1;
         this.maxTurn = 10;
+        // can place this number of plants every turn
+        this.actionPoints = 3;
+        this.maxActionPoints = 3;
+        this.hasActionPoints = true;
 
         // to implement plant active skills.
         // I have a strong feeling that we need refactoring
@@ -134,7 +139,9 @@ export class PlayBoard {
         }
 
         // clicked info box arrows when info box exists
-        if(this.infoBox.handleClickArrow(p5, this)){return;}
+        if (this.infoBox.handleClickArrow(p5, this)) {
+            return;
+        }
 
         // inventory and planting
         this.handlePlanting(p5);
@@ -192,6 +199,30 @@ export class PlayBoard {
         // draw inventory
         this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
 
+        // draw action points
+        if(this.hasActionPoints){
+            let x = this.gameState.inventory.inventoryX;
+            let y = this.gameState.inventory.inventoryY + this.gameState.inventory.inventoryHeight + this.gameState.inventory.padding;
+            let width = this.gameState.inventory.inventoryWidth;
+            let height = this.gameState.inventory.itemHeight;
+            p5.stroke(0);
+            p5.strokeWeight(2);
+            p5.fill(255, 255, 255, 0);
+            p5.rect(x, y, width, height);
+
+            let p = this.actionPoints/this.maxActionPoints;
+
+            p5.noStroke();
+            p5.fill("green");
+            p5.rect(x, y, width * p, height);
+
+            for (let i = 1; i < this.maxActionPoints; i++) {
+                p5.stroke(0);
+                p5.strokeWeight(1);
+                p5.line(x + i * width / this.maxActionPoints, y, x + i * width / this.maxActionPoints, y + height);
+            }
+        }
+
         // all buttons
         // to cascade activate button above info box, place this loop after info box
         for (let button of this.buttons) {
@@ -224,6 +255,7 @@ export class PlayBoard {
     /* ----------------------------------- */
     /* ----------------------------------- */
     /* ----------------------------------- */
+
     /* ----------------------------------- */
 
     drawGrid(p5) {
@@ -302,21 +334,30 @@ export class PlayBoard {
         let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
-            if (this.boardObjects.plantCell(index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
-                console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
+            if (this.actionPoints > 0) {
+                if (this.boardObjects.plantCell(index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
+                    console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
+                    this.actionPoints--;
+                    // set plant's skill
+                    this.reevaluatePlantSkills();
 
-                // set plant's skill
-                this.reevaluatePlantSkills();
-
-                // remove item from inventory
-                this.gameState.inventory.itemDecrement();
-                return;
+                    // remove item from inventory
+                    this.gameState.inventory.itemDecrement();
+                    return;
+                }
+            } else {
+                if (this.actionPoints === 0) {
+                    this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("002"));
+                    return;
+                }
             }
         }
 
         // clicked item from inventory or clicked somewhere else:
         // handle inventory clicks later to prevent unintentional issues
         this.gameState.inventory.handleClick(p5);
+
+
     }
 
     // end turn enemy activities
@@ -346,6 +387,9 @@ export class PlayBoard {
 
     // miscellaneous end turn settings
     endTurnActivity(p5) {
+
+        //reset action points
+        this.actionPoints = this.maxActionPoints;
 
         // remove dead plants and reset plant skill
         let cells = this.boardObjects.getAllCellsWithPlant();

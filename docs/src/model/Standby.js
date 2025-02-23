@@ -27,17 +27,17 @@ export class StandbyMenu {
         let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.2);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
-        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "In Media Tempestate");
+        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Calamitas Caeli");
         stage1Button.onClick = () => {
             this.clickedStageButton(p5, stageCode.STORM);
         };
 
-        let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Stage 2");
+        let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Ira Ignis");
         stage2Button.onClick = () => {
             this.clickedStageButton(p5, stageCode.VOLCANO);
         };
 
-        let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Stage 3");
+        let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Locus Lapsus");
         stage3Button.onClick = () => {
             this.setFloatingWindow(p5, "lock");
         };
@@ -47,7 +47,7 @@ export class StandbyMenu {
             this.setFloatingWindow(p5, "lock");
         };
 
-        let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Stage 5");
+        let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Ultima Unda");
         stage5Button.onClick = () => {
             this.setFloatingWindow(p5, "lock");
         };
