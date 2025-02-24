@@ -120,7 +120,7 @@ export class Bandit extends Enemy {
             if (possibleDirections.length > 0) {
                 let index = Math.floor(Math.random() * possibleDirections.length);
                 this.targetCell = playBoard.boardObjects.getCell(this.cell.x + possibleDirections[index][0], this.cell.y + possibleDirections[index][1]);
-                this.direction = [this.targetCell.x - this.cell.x, this.targetCell.y - this.cell.y];
+                this.direction = [this.targetCell.y - this.cell.y, this.targetCell.x - this.cell.x];
                 return;
             }
             // if no way out, the bandit dies of forest insects and animal attacks.
