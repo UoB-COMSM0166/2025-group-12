@@ -41,11 +41,11 @@ export class plantEnemyInteractions {
 
     static plantAttackedByTornado(playBoard, item, tornado) {
         if (!playBoard || !(playBoard instanceof PlayBoard)) {
-            console.log("plantAttackedByTornado has received invalid board.");
+            console.error("plantAttackedByTornado has received invalid board.");
             return;
         }
         if (!(tornado instanceof Tornado)) {
-            console.log("plantAttackedByTornado has received invalid tornado.");
+            console.error("plantAttackedByTornado has received invalid tornado.");
             return;
         }
 
@@ -55,7 +55,7 @@ export class plantEnemyInteractions {
         } else if (item instanceof Seed) {
             seed = item;
         } else {
-            console.log("plantAttackedByTornado has received invalid plant or seed.");
+            console.error("plantAttackedByTornado has received invalid plant or seed.");
             return;
         }
 
@@ -105,10 +105,9 @@ export class plantEnemyInteractions {
 
     static plantIsAttacked(playBoard, item, lost) {
         if (!playBoard || !(playBoard instanceof PlayBoard)) {
-            console.log("plantAttacked1 has received invalid board.");
+            console.error("plantAttacked1 has received invalid board.");
             return;
         }
-        let plant = null, seed = null;
         if (item instanceof Plant) {
             item.health -= lost;
             if (item.health <= 0) {
@@ -121,7 +120,7 @@ export class plantEnemyInteractions {
             item.status = false;
             plantEnemyInteractions.findSeedAndDelete(playBoard, item);
         } else {
-            console.log("plantAttacked1 has received invalid plant or seed.");
+            console.error("plantAttacked1 has received invalid plant or seed.");
         }
     }
 }

@@ -24,12 +24,12 @@ export class Grass extends Plant {
         this.maxUse = 1;
     }
 
-    getPassiveString(){
+    getPassiveString() {
         return "The Grass has no passive skill.";
     }
 
-    getActiveString(){
-        if(this.hasActive){
+    getActiveString() {
+        if (this.hasActive) {
             return "The Grass can send your animal friends to attack a nearby group of bandits.";
         }
         return "The Grass has no active skill now.";
@@ -37,10 +37,12 @@ export class Grass extends Plant {
 
     reevaluateSkills(playBoard, cell) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.log('reevaluateSkills of Grass has received invalid PlayBoard.');
+            console.error('reevaluateSkills of Grass has received invalid PlayBoard.');
+            return;
         }
-        if(cell.plant !== this){
-            console.log("reevaluateSkills of Grass has received wrong cell.");
+        if (cell.plant !== this) {
+            console.error("reevaluateSkills of Grass has received wrong cell.");
+            return;
         }
 
         // set all skills to false first.
@@ -66,17 +68,17 @@ export class GrassSeed extends Seed {
         this.img = this.img = p5.images.get("Seed");
     }
 
-    grow(p5){
+    grow(p5) {
         this.countdown--;
-        if(this.countdown === 0){
+        if (this.countdown === 0) {
             return new Grass(p5);
-        }else{
+        } else {
             return this;
         }
     }
 }
 
-export class GrassAnimal{
+export class GrassAnimal {
     constructor(p5, target) {
         this.target = target;
         this.x = 0;

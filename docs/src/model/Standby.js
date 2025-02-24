@@ -101,8 +101,8 @@ export class StandbyMenu {
         }
     }
 
-    clickedStageButton(p5, stageCode){
-        if(this.gameState.isStageCleared(stageCode)){
+    clickedStageButton(p5, stageCode) {
+        if (this.gameState.isStageCleared(stageCode)) {
             this.setFloatingWindow(p5, "clear");
             return;
         }
@@ -114,7 +114,7 @@ export class StandbyMenu {
         this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get(str));
     }
 
-    initAllFloatingWindows(p5){
+    initAllFloatingWindows(p5) {
         let afw = new Map();
 
         afw.set("clear", new FloatingWindow(p5, null, "{white:This stage has been cleared.}", {

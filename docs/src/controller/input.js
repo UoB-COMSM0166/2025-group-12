@@ -10,17 +10,16 @@ export class InputHandler {
         window.addEventListener('keydown', e => {
             console.log(e.key);
             if ((e.key === 'w' ||
-                e.key === 'a' ||
-                e.key === 's' ||
-                e.key === 'd' ||
-                e.key === 'Enter' ||
-                e.key === ' ' )
-                && this.keyboradKeys.indexOf(e.key) === -1){
+                    e.key === 'a' ||
+                    e.key === 's' ||
+                    e.key === 'd' ||
+                    e.key === 'Enter' ||
+                    e.key === ' ')
+                && this.keyboradKeys.indexOf(e.key) === -1) {
                 this.keyboradKeys.push(e.key);
-            }else if(e.key === 'q'){
+            } else if (e.key === 'q') {
                 //
-            }
-            else if(e.key === 'Escape' && this.gameState.state === stateCode.PLAY){
+            } else if (e.key === 'Escape' && this.gameState.state === stateCode.PLAY) {
                 // pause the game
                 this.gameState.togglePaused();
                 // comment out since code change
@@ -28,21 +27,21 @@ export class InputHandler {
             }
         });
         window.addEventListener('keyup', e => {
-            if  (e.key === 'w' ||
+            if (e.key === 'w' ||
                 e.key === 'a' ||
                 e.key === 's' ||
                 e.key === 'd' ||
                 e.key === 'Enter' ||
-                e.key === ' ' ){
+                e.key === ' ') {
                 this.keyboradKeys.splice(this.keyboradKeys.indexOf(e.key), 1);
             }
         });
 
-        window.addEventListener('gamepadconnected',(e) =>{
+        window.addEventListener('gamepadconnected', (e) => {
             this.gamepad = e.gamepad;
         });
 
-        window.addEventListener('gamepaddisconnected', (e)=>{
+        window.addEventListener('gamepaddisconnected', (e) => {
             this.gamepad = null;
         });
     }
@@ -55,21 +54,18 @@ export class InputHandler {
             if (gamepad) {
                 const axisX = gamepad.axes[0];
 
-                if (axisX > 0.5 && !this.gamepadKeys.includes('d') ) {
+                if (axisX > 0.5 && !this.gamepadKeys.includes('d')) {
                     this.gamepadKeys.push('d');
-                }
-                else if(axisX < -0.5 && !this.gamepadKeys.includes('a')){
+                } else if (axisX < -0.5 && !this.gamepadKeys.includes('a')) {
                     this.gamepadKeys.push('a');
-                } 
-                else if (Math.abs(axisX) < 0.5 && (this.gamepadKeys.includes('a') || this.gamepadKeys.includes('d'))) {
+                } else if (Math.abs(axisX) < 0.5 && (this.gamepadKeys.includes('a') || this.gamepadKeys.includes('d'))) {
                     this.gamepadKeys.splice(this.gamepadKeys.indexOf('a'), 1);
                     this.gamepadKeys.splice(this.gamepadKeys.indexOf('d'), 1);
                 }
 
-                if(gamepad.buttons[0].pressed && !this.gamepadKeys.includes(' ')){
+                if (gamepad.buttons[0].pressed && !this.gamepadKeys.includes(' ')) {
                     this.gamepadKeys.push(' ');
-                }
-                else if(!gamepad.buttons[0].pressed && this.gamepadKeys.includes(' ')){
+                } else if (!gamepad.buttons[0].pressed && this.gamepadKeys.includes(' ')) {
                     this.gamepadKeys.splice(this.gamepadKeys.indexOf(' '), 1);
                 }
             }

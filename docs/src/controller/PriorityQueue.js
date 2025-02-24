@@ -1,49 +1,49 @@
-export class PriorityQueue{
+export class PriorityQueue {
     // Priority Queue based on binary heap
-    constructor(compareTo){
+    constructor(compareTo) {
         this.compareTo = compareTo;
         this.pq = [];
         this.N = 0;
     }
 
-    isEmpty(){
+    isEmpty() {
         return this.N === 0;
     }
 
-    size(){
+    size() {
         return this.N;
     }
 
-    insert(key){
+    insert(key) {
         this.pq[++this.N] = key;
         this.swim(this.N);
     }
 
-    poll(){
+    poll() {
         let item = this.pq[1];
-        if(item === undefined){
+        if (item === undefined) {
             return null;
         }
         this.exchange(1, this.N--);
-        this.pq[this.N+1] = null;
+        this.pq[this.N + 1] = null;
         this.sink(1);
         return item;
     }
 
-    swim(k){
-        while(k > 1 && this.less(Math.floor(k / 2), k)){
+    swim(k) {
+        while (k > 1 && this.less(Math.floor(k / 2), k)) {
             this.exchange(Math.floor(k / 2), k);
             k = Math.floor(k / 2);
         }
     }
 
-    sink(k){
-        while(2*k <= this.N){
-            let j = 2*k;
-            if(j < this.N && this.less(j, j+1)){
+    sink(k) {
+        while (2 * k <= this.N) {
+            let j = 2 * k;
+            if (j < this.N && this.less(j, j + 1)) {
                 j++;
             }
-            if(!this.less(k, j)){
+            if (!this.less(k, j)) {
                 break;
             }
             this.exchange(k, j);
@@ -51,12 +51,12 @@ export class PriorityQueue{
         }
     }
 
-    less(i, j){
+    less(i, j) {
         if (!this.pq[i] || !this.pq[j]) return false; // Prevent undefined access
         return this.compareTo(this.pq[i], this.pq[j]) > 0;
     }
 
-    exchange(i, j){
+    exchange(i, j) {
         let tmp = this.pq[i];
         this.pq[i] = this.pq[j];
         this.pq[j] = tmp;

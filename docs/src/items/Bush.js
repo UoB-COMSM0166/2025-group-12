@@ -1,5 +1,5 @@
 import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
-import { Plant } from "./Plant.js";
+import {Plant} from "./Plant.js";
 import {PlayBoard} from "../model/Play.js";
 import {Seed} from "./Seed.js";
 
@@ -19,15 +19,15 @@ export class Bush extends Plant {
         // implemented in Tree's reevaluateSkills
     }
 
-    getPassiveString(){
+    getPassiveString() {
         return "The Bush extends nearby Trees' passive ability to adjacent 8 cells.";
     }
 
-    getActiveString(){
+    getActiveString() {
         return "The Bush has no active skill.";
     }
 
-    reevaluateSkills(playBoard, cell){
+    reevaluateSkills(playBoard, cell) {
         // do nothing for Bush.
     }
 }
@@ -42,11 +42,11 @@ export class BushSeed extends Seed {
         this.img = this.img = p5.images.get("Seed");
     }
 
-    grow(p5){
+    grow(p5) {
         this.countdown--;
-        if(this.countdown === 0){
+        if (this.countdown === 0) {
             return new Bush(p5);
-        }else{
+        } else {
             return this;
         }
     }

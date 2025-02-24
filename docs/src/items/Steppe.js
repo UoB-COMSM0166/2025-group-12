@@ -10,7 +10,7 @@ export class Steppe extends Terrain {
         this.img = p5.images.get(`${this.name}`);
     }
 
-    getWeight(){
+    getWeight() {
         return 0;
     }
 }

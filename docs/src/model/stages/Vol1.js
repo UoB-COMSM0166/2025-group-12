@@ -54,7 +54,8 @@ export class Volcano1PlayBoard extends PlayBoard {
         }
     }
 
-    modifyBoard(p5, code) {}
+    modifyBoard(p5, code) {
+    }
 
     setFloatingWindow(p5) {
         if (this.turn === this.maxTurn + 1) {
@@ -66,38 +67,10 @@ export class Volcano1PlayBoard extends PlayBoard {
         }
     }
 
-    initAllFloatingWindows(p5){
+    initAllFloatingWindows(p5) {
         let afw = new Map();
 
-        afw.set("000", new FloatingWindow(p5, null, "{white:Stage Cleared!}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
-            fontSize: 20,
-            padding: 10,
-            spacingRatio: 0.3,
-            fadingSpeed: 1,
-            playerCanClick: true
-        }));
-
-        afw.set("001", new FloatingWindow(p5, null, "{white:Game Over}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
-            fontSize: 20,
-            padding: 10,
-            spacingRatio: 0.3,
-            fadingSpeed: 1,
-            playerCanClick: true
-        }));
-
-        afw.set("002", new FloatingWindow(p5, null, "{white:Out of Action Points!}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
-            fontSize: 20,
-            padding: 10,
-            spacingRatio: 0.3,
-            fadingSpeed: 1,
-            playerCanClick: false
-        }));
+        myutil.commonFloatingWindows(p5, afw);
 
         this.allFloatingWindows = afw;
     }

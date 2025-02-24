@@ -115,7 +115,7 @@ export class Controller {
         }
     }
 
-    handleMovables(p5){
+    handleMovables(p5) {
         // if movables has objects not moved:
         for (let movable of this.menus[stateCode.PLAY].movables) {
             if (!movable.hasMoved) {
@@ -131,11 +131,11 @@ export class Controller {
             }
         }
         // all moved, if it not end turn, set player can click
-        if(!this.menus[stateCode.PLAY].endTurn){
+        if (!this.menus[stateCode.PLAY].endTurn) {
             this.gameState.setPlayerCanClick(true);
         }
         // if it at end turn, invoke end turn stuff
-        else{
+        else {
             this.menus[stateCode.PLAY].endTurnActivity(p5);
         }
     }

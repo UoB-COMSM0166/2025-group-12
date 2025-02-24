@@ -3,6 +3,7 @@ import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
 import {Bandit} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
+import {FloatingWindow} from "./FloatingWindow.js";
 
 export class BoardCells {
     constructor(size) {
@@ -19,15 +20,15 @@ export class BoardCells {
     }
 
     // plant on a cell
-    plantCell(x, y, item) {
+    plantCell(playBoard, x, y, item) {
         let cell = this.getCell(x, y);
 
         if (!(item instanceof Plant) && !(item instanceof Seed)) {
-            console.log("plantCell received invalid input.");
+            console.error("plantCell received invalid input.");
             return false;
         }
 
-        if (!cell.isCompatible(item)) {
+        if (!cell.isCompatible(playBoard, item)) {
             return false;
         }
 
@@ -140,7 +141,7 @@ export class BoardCells {
     // MUST CREATE COMPONENTS AS A MAP, AND STORE THE NEW PLANT TO IT BEFORE INVOKING!!!!!!
     findEcoSphereDFS(x, y, components) {
         if (!(components instanceof Map)) {
-            console.log("findEcoSphereDFS is mis-invoked since input component is not a map.");
+            console.error("findEcoSphereDFS is mis-invoked since input component is not a map.");
             return false;
         }
         // when tree bush grass are all found, exit and return true
@@ -268,7 +269,7 @@ class Cell {
     constructor(x, y, terrain) {
 
         if (terrain.type !== itemTypes.TERRAIN) {
-            console.log(`failed to set cell at (${x},${y}) since the input is not terrain.`);
+            console.error(`failed to set cell at (${x},${y}) since the input is not terrain.`);
             return;
         }
 
@@ -285,7 +286,7 @@ class Cell {
     // for game extensibility.
     set terrain(terrain) {
         if (terrain.type !== itemTypes.TERRAIN) {
-            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not terrain.`);
+            console.error(`failed to set cell at (${this.x},${this.y}) since the input is not terrain.`);
             return;
         }
         this._terrain = terrain;
@@ -298,7 +299,7 @@ class Cell {
     // to remove a plant from a cell, use removePlant below.
     set plant(plant) {
         if (plant.type !== itemTypes.PLANT) {
-            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not plant.`);
+            console.error(`failed to set cell at (${this.x},${this.y}) since the input is not plant.`);
             return;
         }
         this._plant = plant;
@@ -314,7 +315,7 @@ class Cell {
 
     set seed(seed) {
         if (seed.type !== itemTypes.SEED) {
-            console.log(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);
+            console.error(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);
             return;
         }
         this._seed = seed;
@@ -344,19 +345,19 @@ class Cell {
     }
 
     // check if plant or seed is compatible with the terrain, or if the cell is occupied by another plant.
-    isCompatible(item) {
+    isCompatible(playBoard, item) {
         if (this.enemy !== null) {
-            console.log("an enemy is on this cell, you cant place plant here!");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("010"));
             return false;
         }
 
         if (this.seed !== null || this.plant !== null) {
-            console.log("a seed or a plant is already on this cell, you cant place seed here!");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("011"));
             return false;
         }
 
         if (this.terrain.name === "Mountain" || this.terrain.name === "PlayerBase") {
-            console.log("cannot plant on this terrain.");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }
         return true;

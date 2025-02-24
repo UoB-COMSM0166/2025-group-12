@@ -53,7 +53,7 @@ export class InfoBox {
     }
 
     // clicked info box arrows when info box exists in play board
-    handleClickArrow(p5, playBoard){
+    handleClickArrow(p5, playBoard) {
         if (playBoard.selectedCell.length !== 0) {
             if (playBoard.infoBox.clickArrow(p5, this)) {
                 return true;

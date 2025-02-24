@@ -105,7 +105,7 @@ export class Inventory {
         // fetch an instance from item prototypes
         let item = this.itemPrototypes.get(name);
         if (item === null) {
-            console.log("input of createItem is unknown?");
+            console.error("input of createItem is unknown?");
             return null;
         }
 
@@ -127,7 +127,7 @@ export class Inventory {
                 return new GrassSeed(p5);
             }
         } else {
-            console.log("input of createItem is not a unknown?");
+            console.error("input of createItem is not a unknown?");
             return null;
         }
     }

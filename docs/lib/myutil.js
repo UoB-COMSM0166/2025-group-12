@@ -1,4 +1,5 @@
 import {CanvasSize} from "../src/CanvasSize.js"
+import {FloatingWindow} from "../src/model/FloatingWindow.js";
 
 export class myutil {
     static mod2PiPositive(x) {
@@ -8,7 +9,7 @@ export class myutil {
     static relative2absolute(xPercent, yPercent) {
 
         if (xPercent < 0 || xPercent > 1 || yPercent < 0 || yPercent > 1) {
-            console.log(`input of relative2absolute (${xPercent}, ${yPercent}) are not percentages.`);
+            console.error(`input of relative2absolute (${xPercent}, ${yPercent}) are not percentages.`);
             return [-1];
         }
 
@@ -18,7 +19,7 @@ export class myutil {
     static absolute2Relative(xAbsolute, yAbsolute) {
 
         if (xAbsolute < 0 || xAbsolute > CanvasSize.getSize()[0] || yAbsolute < 0 || yAbsolute > CanvasSize.getSize()[1]) {
-            console.log(`input of absolute2Relative (${xAbsolute}, ${yAbsolute}) is not valid position.`);
+            console.error(`input of absolute2Relative (${xAbsolute}, ${yAbsolute}) is not valid position.`);
             return [-1];
         }
 
@@ -172,5 +173,107 @@ export class myutil {
 
     static oldCoorY(playBoard, newX, newY) {
         return -(1 / (playBoard.Sx * playBoard.Sy * Math.sin(playBoard.span))) * (playBoard.Sx * Math.sin(playBoard.rot) * newX - playBoard.Sx * Math.cos(playBoard.rot) * newY);
+    }
+
+    static commonFloatingWindows(p5, afw){
+        afw.set("000", new FloatingWindow(p5, null, "{white:Stage Cleared!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("001", new FloatingWindow(p5, null, "{white:Game Over}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("002", new FloatingWindow(p5, null, "{white:Out of Action Points!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("010", new FloatingWindow(p5, null, "{white:An enemy is on this cell,}\\{white:you can't grow plant here!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("011", new FloatingWindow(p5, null, "{white:A seed or plant is already on this cell,}\\{white:you can't grow plant here!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("012", new FloatingWindow(p5, null, "{white:Cannot grow plant on incompatible terrain!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("050", new FloatingWindow(p5, null, "{white:Invalid target!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("051", new FloatingWindow(p5, null, "{white:The plant cannot activate skill}\\{white:so many times in one turn!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("052", new FloatingWindow(p5, null, "{white:Target is too far away!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("053", new FloatingWindow(p5, null, "{white:You cannot recharge a plant not injured!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
     }
 }

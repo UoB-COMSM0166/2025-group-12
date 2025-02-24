@@ -1,5 +1,5 @@
 export function preloader(p5) {
-    const basePath =  window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
+    const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
 
     let images = new Map();
 

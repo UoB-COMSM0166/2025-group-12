@@ -4,7 +4,9 @@ import {preloader} from "./Preloader.js";
 
 new p5((p) => {
 
-    p.preload = () => { p.images = preloader(p);};
+    p.preload = () => {
+        p.images = preloader(p);
+    };
 
     p.setup = () => {
         let canvasSize = CanvasSize.getSize();
@@ -22,7 +24,7 @@ new p5((p) => {
     }
     p.draw = () => {
         p.background(100);
-        
+
         // create play stage
         p.controller.setPlayStage(p);
 

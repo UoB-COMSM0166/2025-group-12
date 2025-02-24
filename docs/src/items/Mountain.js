@@ -10,7 +10,7 @@ export class Mountain extends Terrain {
         this.img = p5.images.get(`${this.name}`);
     }
 
-    getWeight(){
+    getWeight() {
         return 1000; // almost inaccessible.
     }
 }

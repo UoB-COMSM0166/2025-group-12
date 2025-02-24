@@ -1,13 +1,13 @@
 export let CanvasSize = {
-    canvasWidth : 1280,
+    canvasWidth: 1280,
     canvasHeight: 720,
 
-    setSize : (width, height) => {
+    setSize: (width, height) => {
         CanvasSize.canvasWidth = width;
         CanvasSize.canvasHeight = height;
     },
 
-    getSize : () => {
+    getSize: () => {
         return [CanvasSize.canvasWidth, CanvasSize.canvasHeight];
     }
 }

@@ -31,45 +31,28 @@ export class Tree extends Plant {
         this.maxUse = 1;
     }
 
-    getPassiveString(){
-        if(this.hasExtended){
+    getPassiveString() {
+        if (this.hasExtended) {
             return "The tree stops an incoming tornado from nearby 8 cells and lose 1 HP.";
         }
         return "The Tree stops an incoming tornado and lose 1 HP.";
     }
 
-    getActiveString(){
-        if(this.hasActive){
+    getActiveString() {
+        if (this.hasActive) {
             return "The Tree can recharge a plant's HP by 1.";
         }
         return "The Tree has no active skill now.";
     }
 
-    drawHealthBar(p5, x, y, width, height) {
-        p5.stroke(0);
-        p5.strokeWeight(2);
-        p5.fill(255, 255, 255, 0);
-        p5.rect(x, y, width, height);
-
-        let p = this.health / this.maxHealth;
-
-        p5.noStroke();
-        p5.fill("green");
-        p5.rect(x, y, width * p, height);
-
-        for (let i = 1; i < this.maxHealth; i++) {
-            p5.stroke(0);
-            p5.strokeWeight(1);
-            p5.line(x + i * width / this.maxHealth, y, x + i * width / this.maxHealth, y + height);
-        }
-    }
-
     reevaluateSkills(playBoard, cell) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.log('reevaluateSkills of Tree has received invalid PlayBoard.');
+            console.error('reevaluateSkills of Tree has received invalid PlayBoard.');
+            return;
         }
         if (cell.plant !== this) {
-            console.log("reevaluateSkills of Tree has received wrong cell.");
+            console.error("reevaluateSkills of Tree has received wrong cell.");
+            return;
         }
 
         // set all skills to false first.
@@ -107,11 +90,11 @@ export class TreeSeed extends Seed {
         this.img = this.img = p5.images.get("Seed");
     }
 
-    grow(p5){
+    grow(p5) {
         this.countdown--;
-        if(this.countdown === 0){
+        if (this.countdown === 0) {
             return new Tree(p5);
-        }else{
+        } else {
             return this;
         }
     }

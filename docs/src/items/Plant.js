@@ -1,15 +1,15 @@
-import { itemTypes } from "./ItemTypes.js";
+import {itemTypes} from "./ItemTypes.js";
 
-export class Plant{
-    constructor(){
+export class Plant {
+    constructor() {
         this.type = itemTypes.PLANT;
     }
 
-    getPassiveString(){
-        console.log("getPassiveString not overridden.");
+    getPassiveString() {
+        console.error("getPassiveString not overridden.");
     }
 
-    getActiveString(){
-        console.log("getActiveString not overridden.");
+    getActiveString() {
+        console.error("getActiveString not overridden.");
     }
 }

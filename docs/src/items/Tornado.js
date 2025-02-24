@@ -24,7 +24,7 @@ export class Tornado extends Enemy {
         } else if (direction === 'r') {
             this.direction = [1, 0];
         } else {
-            console.log(`invalid direction of Tornado`);
+            console.error(`invalid direction of Tornado`);
             return;
         }
 

@@ -157,7 +157,7 @@ export class FloatingWindow {
 
     /* some floating windows are reusable: stage cleared, stage locked, invalid plant skill target, ect.
        use copyOf to create a copy of reusable window. */
-    static copyOf(fw){
+    static copyOf(fw) {
         return new FloatingWindow(fw.p5, fw.triPos, fw.text, fw.boxParam);
     }
 }

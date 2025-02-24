@@ -1,6 +1,6 @@
-import { Button } from "../items/Button.js";
-import { stateCode } from "./GameState.js";
-import { myutil } from "../../lib/myutil.js";
+import {Button} from "../items/Button.js";
+import {stateCode} from "./GameState.js";
+import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
 
 export class StartMenu {
@@ -43,7 +43,7 @@ export class StartMenu {
         }
     }
 
-    changeNewToResume(){
+    changeNewToResume() {
         let newGameButton = this.buttons.find(button => button.text.startsWith("New Game"));
         if (newGameButton !== null && newGameButton !== undefined) {
             newGameButton.text = "Resume Game";

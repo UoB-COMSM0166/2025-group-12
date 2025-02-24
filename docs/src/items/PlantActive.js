@@ -1,18 +1,19 @@
 import {myutil} from "../../lib/myutil.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
+import {FloatingWindow} from "../model/FloatingWindow.js";
 
 export class PlantActive {
 
-    static rechargeHP(spellCasterCell, targetCell, n) {
+    static rechargeHP(playBoard, spellCasterCell, targetCell, n) {
         if (spellCasterCell.plant.useLeft === 0) {
-            console.log("the plant cannot activate skill any more this turn.")
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("051"));
             return false;
         }
 
         if (myutil.manhattanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) > 2
             && myutil.euclideanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) >= 2
         ) {
-            console.log("cancelled rechargeHP since target is too far away from the spell caster.");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
             return false;
         }
 
@@ -22,12 +23,12 @@ export class PlantActive {
         } else if (targetCell.seed) {
             item = targetCell.seed;
         } else {
-            console.log("rechargeHP received invalid target.");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
             return false;
         }
 
         if (item.health === item.maxHealth) {
-            console.log("you don't need to recharge the target since it is of full HP.");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("053"));
             return false;
         }
 
@@ -39,9 +40,9 @@ export class PlantActive {
         return true;
     }
 
-    static sendAnimalFriends(spellCasterCell, targetCell, playBoard) {
+    static sendAnimalFriends(playBoard, spellCasterCell, targetCell) {
         if (spellCasterCell.plant.useLeft === 0) {
-            console.log("the plant cannot activate skill any more this turn.")
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("051"));
             return false;
         }
 
@@ -50,12 +51,12 @@ export class PlantActive {
         if (myutil.manhattanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) > 2
             && myutil.euclideanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) >= 2
         ) {
-            console.log("cancelled sendAnimalFriends since target is too far away from the spell caster.");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
             return false;
         }
 
         if (targetCell.enemy === null || targetCell.enemy.name !== "Bandit") {
-            console.log("sendAnimalFriends received invalid target.");
+            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
             return false;
         }
 

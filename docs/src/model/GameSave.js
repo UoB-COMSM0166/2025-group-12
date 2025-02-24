@@ -11,7 +11,7 @@ export class GameSave {
             inventory: Array.from(gameState.inventory.saveInventory()),
             board: null,
         };
-        if(gameState.currentStage.boardObjects){
+        if (gameState.currentStage.boardObjects) {
             saveData.board = gameState.currentStage.boardObjects.saveBoard();
         }
         localStorage.setItem("PnP", JSON.stringify(saveData));

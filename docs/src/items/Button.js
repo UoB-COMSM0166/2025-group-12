@@ -8,7 +8,9 @@ export class Button {
         this.text = text;
         // mouse status
         this.isHovered = false;
-        this._onClick = (p5) => {console.log("button's onClick function is not overridden");};
+        this._onClick = (p5) => {
+            console.log("button's onClick function is not overridden");
+        };
     }
 
     draw(p5) {
@@ -35,13 +37,13 @@ export class Button {
         this._onClick = func;
     }
 
-    hasMouseOver(p5){
+    hasMouseOver(p5) {
         return p5.mouseX > this.x && p5.mouseX < this.x + this.width
             && p5.mouseY > this.y && p5.mouseY < this.y + this.height;
     }
 
     mouseClick(p5) {
-        if(this.hasMouseOver(p5)) {
+        if (this.hasMouseOver(p5)) {
             this._onClick(p5);
             return true;
         }

@@ -319,14 +319,14 @@ export class PlayBoard {
         if (this.awaitCell) {
             let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
             if (index[0] === -1) {
-                console.log("invalid target.");
+                this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("050"));
             } else {
                 let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
                 let target = this.boardObjects.getCell(index[0], index[1]);
                 if (spellCaster.plant.plantType === plantTypes.TREE) {
-                    PlantActive.rechargeHP(spellCaster, target, 1);
+                    PlantActive.rechargeHP(this, spellCaster, target, 1);
                 } else if (spellCaster.plant.plantType === plantTypes.GRASS) {
-                    PlantActive.sendAnimalFriends(spellCaster, target, this);
+                    PlantActive.sendAnimalFriends(this, spellCaster, target);
                 }
             }
             this.awaitCell = false;
@@ -341,7 +341,7 @@ export class PlayBoard {
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
-                if (this.boardObjects.plantCell(index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
+                if (this.boardObjects.plantCell(this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     if (this.hasActionPoints) {
                         this.actionPoints--;
@@ -450,25 +450,25 @@ export class PlayBoard {
     }
 
     nextTurnItems(p5) {
-        console.log("nextTurnEnemies is not overridden!");
+        console.error("nextTurnEnemies is not overridden!");
     }
 
     setFloatingWindow(p5) {
-        console.log("setFloatingWindow is not overridden!");
+        console.error("setFloatingWindow is not overridden!");
     }
 
     initAllFloatingWindows(p5) {
-        console.log("initAllFloatingWindows is not overridden!");
+        console.error("initAllFloatingWindows is not overridden!");
     }
 
     // set stage inventory at entering, called by controller
     setStageInventory(p5) {
-        console.log("setStageInventory is not overridden!");
+        console.error("setStageInventory is not overridden!");
     }
 
     // set stage terrain, called when the stage is loaded or reset
     setStageTerrain(p5) {
-        console.log("setStageTerrain is not overridden!");
+        console.error("setStageTerrain is not overridden!");
     }
 
     getTurnButtonText() {
