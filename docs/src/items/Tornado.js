@@ -2,15 +2,14 @@ import {enemyTypes, itemTypes, terrainTypes} from "./ItemTypes.js";
 import {Enemy} from "./Enemy.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {PlayBoard} from "../model/Play.js";
-import {stateCode} from "../model/GameState.js";
 import {myutil} from "../../lib/myutil.js";
 
-export class Storm extends Enemy {
+export class Tornado extends Enemy {
     constructor(p5, x, y, direction) {
         super(x, y);
-        this.name = "Storm";
+        this.name = "Tornado";
         this.img = p5.images.get(`${this.name}`);
-        this.enemyType = enemyTypes.STORM;
+        this.enemyType = enemyTypes.TORNADO;
 
         this.health = 3;
         this.maxHealth = 3;
@@ -25,7 +24,7 @@ export class Storm extends Enemy {
         } else if (direction === 'r') {
             this.direction = [1, 0];
         } else {
-            console.log(`invalid direction of storm`);
+            console.log(`invalid direction of Tornado`);
             return;
         }
 
@@ -37,48 +36,48 @@ export class Storm extends Enemy {
         this.moveSpeed = 5;
     }
 
-    static createNewStorm(p5, playBoard, i, j, direction) {
+    static createNewTornado(p5, playBoard, i, j, direction) {
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
-        let storm = new Storm(p5, avgX, avgY, direction);
-        playBoard.movables.push(storm);
-        playBoard.boardObjects.getCell(i, j).enemy = storm;
-        storm.cell = playBoard.boardObjects.getCell(i, j);
+        let tornado = new Tornado(p5, avgX, avgY, direction);
+        playBoard.movables.push(tornado);
+        playBoard.boardObjects.getCell(i, j).enemy = tornado;
+        tornado.cell = playBoard.boardObjects.getCell(i, j);
     }
 
     movements(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of Storm has received invalid PlayBoard.');
+            console.error('movements of Tornado has received invalid PlayBoard.');
             return false;
         }
         if (this.status === false) {
             return false;
         }
         if (this.isMoving === true) {
-            this.moveAndInvokeStorm(p5, playBoard);
+            this.moveAndInvokeTornado(p5, playBoard);
             return true;
         }
         if (this.countdown > 0) {
             this.countdown--;
         }
         if (this.countdown === 0) {
-            // the storm blows!
+            // the Tornado blows!
             if (this.cell) {
                 this.cell.enemy = null;
                 this.cell = null;
             }
             this.isMoving = true;
-            this.moveAndInvokeStorm(p5, playBoard);
+            this.moveAndInvokeTornado(p5, playBoard);
             return true;
         }
     }
 
-    // priority and logic of storm interactions:
-    // 1. check current cell to perform storm-terrain interaction.
+    // priority and logic of Tornado interactions:
+    // 1. check current cell to perform Tornado-terrain interaction.
     // 2. check extended trees' existence, and randomly pick one lucky tree.
     // 3. check current cell to attack plant or seed.
-    moveAndInvokeStorm(p5, playBoard) {
+    moveAndInvokeTornado(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('moveAndInvokeStorm has received invalid PlayBoard.');
+            console.error('moveAndInvokeTornado has received invalid PlayBoard.');
             return;
         }
 
@@ -90,11 +89,11 @@ export class Storm extends Enemy {
         this.x = newX;
         this.y = newY;
 
-        // call interaction when storm overlays with plant (cell level)
+        // call interaction when Tornado overlays with plant (cell level)
         let index = myutil.pos2CellIndex(playBoard, this.x, this.y);
         if (index[0] !== -1) {
             let cell = playBoard.boardObjects.getCell(index[0], index[1]);
-            // 1. check current cell to perform storm-terrain interaction.
+            // 1. check current cell to perform Tornado-terrain interaction.
             if (cell.terrain.name === "Mountain") {
                 this.status = false;
                 plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
@@ -113,16 +112,16 @@ export class Storm extends Enemy {
             }
             if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
-                plantEnemyInteractions.plantAttackedByStorm(playBoard, luckyTree, this);
+                plantEnemyInteractions.plantAttackedByTornado(playBoard, luckyTree, this);
                 return;
             }
 
             // 3. check current cell to attack plant or seed.
             if (this.status === true) {
                 if (cell.plant !== null && cell.plant.status === true) {
-                    plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.plant, this);
+                    plantEnemyInteractions.plantAttackedByTornado(playBoard, cell.plant, this);
                 } else if (cell.seed !== null) {
-                    plantEnemyInteractions.plantAttackedByStorm(playBoard, cell.seed, this);
+                    plantEnemyInteractions.plantAttackedByTornado(playBoard, cell.seed, this);
                 }
             }
 
@@ -142,7 +141,7 @@ export class Storm extends Enemy {
 
         }
 
-        // if the storm goes out of the grid, it dies anyway.
+        // if the tornado goes out of the grid, it dies anyway.
         if (index[0] === -1) {
             this.status = false;
             plantEnemyInteractions.findEnemyAndDelete(playBoard, this);

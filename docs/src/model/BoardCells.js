@@ -2,7 +2,7 @@ import {enemyTypes, itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.j
 import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
 import {Bandit} from "../items/Bandit.js";
-import {Storm} from "../items/Storm.js";
+import {Tornado} from "../items/Tornado.js";
 
 export class BoardCells {
     constructor(size) {
@@ -251,8 +251,8 @@ export class BoardCells {
                 if (savedBoard[i][j].enemyType === enemyTypes.BANDIT) {
                     Bandit.createNewBandit(gameState.p5, gameState.currentStage, i, j);
                 }
-                if (savedBoard[i][j].enemyType === enemyTypes.STORM) {
-                    Storm.createNewStorm(gameState.p5, gameState.currentStage, i, j, 'd');
+                if (savedBoard[i][j].enemyType === enemyTypes.TORNADO) {
+                    Tornado.createNewTornado(gameState.p5, gameState.currentStage, i, j, 'd');
                 }
 
             }

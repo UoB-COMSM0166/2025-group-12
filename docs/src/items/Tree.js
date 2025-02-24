@@ -15,14 +15,14 @@ export class Tree extends Plant {
         this.maxHealth = 3;
         this.status = true;
 
-        // passive: only lose 1 health when attacked by storm.
-        // implemented in plantAttackedByStorm of PlantEnemyInteraction
+        // passive: only lose 1 health when attacked by Tornado.
+        // implemented in plantAttackedByTornado of PlantEnemyInteraction
 
         // active: can recharge a nearby plant's health by 1. with bush and grass.
         // implemented in rechargeHP of PlantActive
 
         // extend: when a bush is placed next to it, passive ability extends.
-        // implemented in moveAndInvokeStorm of Storm
+        // implemented in moveAndInvokeTornado of Tornado
         this.hasActive = false;
         this.hasExtended = false;
 
@@ -33,9 +33,9 @@ export class Tree extends Plant {
 
     getPassiveString(){
         if(this.hasExtended){
-            return "The tree stops an incoming storm from nearby 8 cells and lose 1 HP.";
+            return "The tree stops an incoming tornado from nearby 8 cells and lose 1 HP.";
         }
-        return "The Tree stops an incoming storm and lose 1 HP.";
+        return "The Tree stops an incoming tornado and lose 1 HP.";
     }
 
     getActiveString(){

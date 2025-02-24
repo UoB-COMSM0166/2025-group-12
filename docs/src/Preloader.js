@@ -18,7 +18,7 @@ export function preloader(p5) {
 
     images.set("Seed", p5.loadImage(basePath + "Seed.png"));
 
-    images.set("Storm", p5.loadImage(basePath + "Storm.png"));
+    images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));
     images.set("Mob", p5.loadImage(basePath + "Mob.jpg"));
     images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
 

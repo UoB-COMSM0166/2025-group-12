@@ -5,14 +5,14 @@ import {BoardCells} from "../BoardCells.js";
 import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
-import {Storm} from "../../items/Storm.js";
+import {Tornado} from "../../items/Tornado.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 
-export class Stage2PlayBoard extends PlayBoard {
+export class Volcano1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.STORM;
+        this.stageCode = stageCode.VOLCANO;
         // grid parameters
         this.gridSize = 10;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
@@ -22,7 +22,7 @@ export class Stage2PlayBoard extends PlayBoard {
 
         // turn counter
         this.turn = 1;
-        this.maxTurn = 2;
+        this.maxTurn = 5;
     }
 
     // set stage inventory at entering, called by controller
@@ -48,9 +48,9 @@ export class Stage2PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
-        if (this.turn === 1) {
-            Bandit.createNewBandit(p5, this, 0, 0);
-            Storm.createNewStorm(p5, this, 0, 4, 'd');
+        if (this.turn === 2) {
+            Tornado.createNewTornado(p5, this, 0, 0, 'd');
+            Bandit.createNewBandit(p5, this, 0, 1);
         }
     }
 
@@ -70,8 +70,8 @@ export class Stage2PlayBoard extends PlayBoard {
         let afw = new Map();
 
         afw.set("000", new FloatingWindow(p5, null, "{white:Stage Cleared!}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
             padding: 10,
             spacingRatio: 0.3,
@@ -90,8 +90,8 @@ export class Stage2PlayBoard extends PlayBoard {
         }));
 
         afw.set("002", new FloatingWindow(p5, null, "{white:Out of Action Points!}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
             fontSize: 20,
             padding: 10,
             spacingRatio: 0.3,

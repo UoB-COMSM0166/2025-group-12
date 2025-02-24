@@ -1,6 +1,6 @@
 import {itemTypes, plantTypes} from "./ItemTypes.js";
 import {PlayBoard} from "../model/Play.js";
-import {Storm} from "./Storm.js";
+import {Tornado} from "./Tornado.js";
 import {Plant} from "./Plant.js";
 import {Seed} from "./Seed.js";
 
@@ -39,13 +39,13 @@ export class plantEnemyInteractions {
         });
     }
 
-    static plantAttackedByStorm(playBoard, item, storm) {
+    static plantAttackedByTornado(playBoard, item, tornado) {
         if (!playBoard || !(playBoard instanceof PlayBoard)) {
-            console.log("plantAttackedByStorm has received invalid board.");
+            console.log("plantAttackedByTornado has received invalid board.");
             return;
         }
-        if (!(storm instanceof Storm)) {
-            console.log("plantAttackedByStorm has received invalid storm.");
+        if (!(tornado instanceof Tornado)) {
+            console.log("plantAttackedByTornado has received invalid tornado.");
             return;
         }
 
@@ -55,49 +55,49 @@ export class plantEnemyInteractions {
         } else if (item instanceof Seed) {
             seed = item;
         } else {
-            console.log("plantAttackedByStorm has received invalid plant or seed.");
+            console.log("plantAttackedByTornado has received invalid plant or seed.");
             return;
         }
 
         if (seed !== null) {
             seed.health = 0;
             plantEnemyInteractions.findSeedAndDelete(playBoard, seed);
-            storm.health--;
-            if (storm.health === 0) {
-                storm.status = false;
+            tornado.health--;
+            if (tornado.health === 0) {
+                tornado.status = false;
             }
-            if (storm.status === false) {
-                plantEnemyInteractions.findEnemyAndDelete(playBoard, storm);
+            if (tornado.status === false) {
+                plantEnemyInteractions.findEnemyAndDelete(playBoard, tornado);
             }
         }
 
         if (plant !== null) {
-            // if a tree is attacked by a storm
+            // if a tree is attacked by a tornado
             if (plant.plantType === plantTypes.TREE && plant.name === "Tree") {
                 plant.health--;
                 if (plant.health === 0) {
                     plant.status = false;
                 }
-                storm.health = 0;
-                storm.status = false;
+                tornado.health = 0;
+                tornado.status = false;
             } else {
-                // other plants attacked by a storm, one of them dies first, or they die simultaneously
-                while (plant.health > 0 && storm.health > 0) {
+                // other plants attacked by a tornado, one of them dies first, or they die simultaneously
+                while (plant.health > 0 && tornado.health > 0) {
                     plant.health--;
-                    storm.health--;
+                    tornado.health--;
                 }
                 if (plant.health === 0) {
                     plant.status = false;
                 }
-                if (storm.health === 0) {
-                    storm.status = false;
+                if (tornado.health === 0) {
+                    tornado.status = false;
                 }
             }
             if (plant.status === false) {
                 plantEnemyInteractions.findPlantAndDelete(playBoard, plant);
             }
-            if (storm.status === false) {
-                plantEnemyInteractions.findEnemyAndDelete(playBoard, storm);
+            if (tornado.status === false) {
+                plantEnemyInteractions.findEnemyAndDelete(playBoard, tornado);
             }
         }
 

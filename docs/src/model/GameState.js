@@ -1,7 +1,7 @@
 import {Inventory} from "./Inventory.js";
-import {Stage1PlayBoard} from "./stages/Stage1.js";
-import {Stage2PlayBoard} from "./stages/Stage2.js";
-import {Volcano1PlayBoard} from "./stages/V1.js";
+import {Tornado1PlayBoard} from "./stages/Tor1.js";
+import {Tornado2PlayBoard} from "./stages/Tor2.js";
+import {Volcano1PlayBoard} from "./stages/Vol1.js";
 
 export const stateCode = {
     MENU: 1,
@@ -14,7 +14,7 @@ export const stateCode = {
 // the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
 export const stageCode = {
     NO_STAGE: 0,
-    STORM: 1,
+    TORNADO: 1,
     VOLCANO: 2,
 }
 
@@ -77,8 +77,8 @@ export class GameState {
 class GameStageFactory {
     constructor() {
         this.stageClasses = Array.from({length: 20}, () => []);
-        this.stageClasses[stageCode.STORM].push(Stage1PlayBoard);
-        this.stageClasses[stageCode.STORM].push(Stage2PlayBoard);
+        this.stageClasses[stageCode.TORNADO].push(Tornado1PlayBoard);
+        this.stageClasses[stageCode.TORNADO].push(Tornado2PlayBoard);
         this.stageClasses[stageCode.VOLCANO].push(Volcano1PlayBoard);
     }
 

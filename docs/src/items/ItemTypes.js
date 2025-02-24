@@ -28,7 +28,7 @@ export let terrainTypes = {
 
 // notice: the order of end turn action refers to below ordering.
 export let enemyTypes = {
-    STORM: 100,
+    TORNADO: 100,
     BANDIT: 200,
     MOB: 201
 }

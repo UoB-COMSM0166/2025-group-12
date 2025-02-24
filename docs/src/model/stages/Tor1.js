@@ -5,17 +5,17 @@ import {BoardCells} from "../BoardCells.js";
 import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
-import {Storm} from "../../items/Storm.js";
+import {Tornado} from "../../items/Tornado.js";
 import {Mob} from "../../items/Mob.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Bush} from "../../items/Bush.js";
 import {Grass} from "../../items/Grass.js";
 
-export class Stage1PlayBoard extends PlayBoard {
+export class Tornado1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.STORM;
+        this.stageCode = stageCode.TORNADO;
         // grid parameters
         this.gridSize = 6;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
@@ -54,16 +54,16 @@ export class Stage1PlayBoard extends PlayBoard {
     nextTurnItems(p5) {
         if (this.turn === 1) {
         } else if (this.turn === 2) {
-            Storm.createNewStorm(p5, this, 0, 4, 'd');
+            Tornado.createNewTornado(p5, this, 0, 4, 'd');
         } else if (this.turn === 3) {
-            Storm.createNewStorm(p5, this, 3, 0, 'r');
+            Tornado.createNewTornado(p5, this, 3, 0, 'r');
         }
     }
 
     modifyBoard(p5, code) {
         if (this.turn === 1) {
             if (code === 102) {
-                Storm.createNewStorm(p5, this, 0, 4, 'd');
+                Tornado.createNewTornado(p5, this, 0, 4, 'd');
                 return;
             }
             if (code === 103) {

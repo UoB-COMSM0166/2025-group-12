@@ -29,7 +29,7 @@ export class StandbyMenu {
 
         let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Calamitas Caeli");
         stage1Button.onClick = () => {
-            this.clickedStageButton(p5, stageCode.STORM);
+            this.clickedStageButton(p5, stageCode.TORNADO);
         };
 
         let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Ira Ignis");

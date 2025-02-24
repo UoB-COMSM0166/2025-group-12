@@ -37,7 +37,7 @@ export class Mob extends Enemy {
             return false;
         }
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('enemyMovements of Storm has received invalid PlayBoard.');
+            console.error('enemyMovements of Tornado has received invalid PlayBoard.');
             return false;
         }
         if (this.status === false) {

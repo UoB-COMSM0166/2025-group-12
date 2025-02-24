@@ -1,8 +1,6 @@
 import {stateCode, stageCode, GameState} from "../model/GameState.js";
 import {StartMenu} from "../model/Menu.js";
 import {StandbyMenu} from "../model/Standby.js";
-import {Stage1PlayBoard} from "../model/stages/Stage1.js";
-import {Stage2PlayBoard} from "../model/stages/Stage2.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 

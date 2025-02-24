@@ -38,7 +38,7 @@ export class Bandit extends Enemy {
 
     movements(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of Storm has received invalid PlayBoard.');
+            console.error('movements of Tornado has received invalid PlayBoard.');
             return false;
         }
         if (!this.status || this.hasMoved) {
@@ -225,12 +225,12 @@ export class Bandit extends Enemy {
             }
         }
 
-        // set weight to avoid storm.
+        // set weight to avoid tornado.
         let cellsWithEnemy = playBoard.boardObjects.getAllCellsWithEnemy();
         for (let cwe of cellsWithEnemy) {
             let x = cwe.x;
             let y = cwe.y;
-            if (cwe.enemy && cwe.enemy.name === "Storm") {
+            if (cwe.enemy && cwe.enemy.enemyType === enemyTypes.TORNADO) {
                 for (let i = 0; i < playBoard.gridSize; i++) {
                     G.setWeight(i + y * playBoard.gridSize, i + 1 + y * playBoard.gridSize, 10, 'a');
                 }
