@@ -1,3 +1,59 @@
+## Meeting Agenda for Next Meeting (Update on February 25, 2025)
+
+### 1. Enemy Interactions in Each Level
+
+- Previously discussed plant and natural disaster mechanics for each level.
+- Focus on refining interactions between enemies and plants within each stage.
+
+### 2. Enhancing UX/UI Design
+
+- Implement additional user experience (UX) and user interface (UI) improvements based on the current framework.
+
+### 3. Adjustments to the One-to-One Mapping Between Plants and Disasters
+
+- Refinement of the skill system to improve balance and adaptability.
+
+### 4. Element Selection for Thematic Consistency
+
+- Identify and refine key thematic elements, balancing post-apocalyptic aesthetics with warmth and hope.
+
+### 5. Future Level Design and Compatibility
+
+- Ensure scalability and adaptability of later-stage enemies and mechanics.
+
+### 6. Discussion on the Summer Project
+
+- Define project goals, scope, and alignment with ongoing game development.
+
+### (中文)
+
+1. 每個關卡中的敵人互動
+
+- 先前已討論每個關卡的植物與天災機制。
+- 本次聚焦於敵人與植物之間的具體互動方式。
+
+2. 強化 UX/UI 設計
+
+- 在現有基礎上，進一步優化使用者體驗（UX）與使用者介面（UI）。
+
+3. 植物與天災的一對一關係調整
+
+- 優化技能系統，提升平衡性與適應性。
+
+4. 遊戲主題元素篩選與調整
+
+- 確定並精煉關鍵主題元素，平衡末日風格與溫馨氛圍。
+
+5. 後續關卡設計與兼容性調整
+
+- 確保後續關卡的敵人機制與遊戲內容的可擴展性與適配性。
+
+6. Summer Project 討論
+
+- 明確專案目標、範圍，並與現有遊戲開發進度保持一致。
+
+---
+
 ## Meeting Agenda for Next Meeting (Update on February 13, 2025)
 
 ## **Video Recording of the Paper Prototype**
