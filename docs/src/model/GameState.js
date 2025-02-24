@@ -2,6 +2,7 @@ import {Inventory} from "./Inventory.js";
 import {Tornado1PlayBoard} from "./stages/Tor1.js";
 import {Tornado2PlayBoard} from "./stages/Tor2.js";
 import {Volcano1PlayBoard} from "./stages/Vol1.js";
+import {LanguageManager} from "../LanguageManager.js";
 
 export const stateCode = {
     MENU: 1,
@@ -32,6 +33,8 @@ export class GameState {
         this.clearedStages = new Map();
 
         this.gsf = new GameStageFactory();
+        this.languageManager = new LanguageManager();
+        this.showOptions = false;
     }
 
     setState(newState) {
