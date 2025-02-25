@@ -54,7 +54,7 @@ export class Volcano1PlayBoard extends PlayBoard {
         }
 
         if (this.turn === 3) {
-            Tornado.createNewTornado(p5, this, 0, 5, 'd');
+            Tornado.createNewTornado(p5, this, 0, 4, 'd');
             Bandit.createNewBandit(p5, this, 3, 3);
         }
     }
