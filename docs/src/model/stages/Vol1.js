@@ -22,7 +22,7 @@ export class Volcano1PlayBoard extends PlayBoard {
 
         // turn counter
         this.turn = 1;
-        this.maxTurn = 5;
+        this.maxTurn = 50;
     }
 
     // set stage inventory at entering, called by controller
@@ -51,6 +51,11 @@ export class Volcano1PlayBoard extends PlayBoard {
         if (this.turn === 2) {
             Tornado.createNewTornado(p5, this, 0, 0, 'd');
             Bandit.createNewBandit(p5, this, 0, 1);
+        }
+
+        if (this.turn === 3) {
+            Tornado.createNewTornado(p5, this, 0, 5, 'd');
+            Bandit.createNewBandit(p5, this, 3, 3);
         }
     }
 
