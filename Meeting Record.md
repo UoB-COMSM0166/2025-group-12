@@ -1,3 +1,78 @@
+## Meeting Agenda for Next Meeting (Update on February 10, 2025)
+
+### **1. Enemy Interactions in Each Level**
+
+- Previous discussions focused on **plants and natural disasters per level**.
+- Now, the focus shifts to **how enemies interact with plants within each level**.
+- **Dynamic Disaster Properties:**
+    - Previously, only plant attributes changed based on conditions.
+    - Moving forward, **natural disasters will also have dynamic attributes** that change with different states.
+
+### **2. UI/UX Enhancements**
+
+- **Tutorial Improvements:**
+    - Clearer explanations of **plant functions and effects**.
+- **Visual Cues for Enemy Attacks:**
+    - Indicate the **direction of incoming enemy attacks** for better player awareness.
+
+### **3. Future Levels & Enemy Compatibility**
+
+- Avoid **having only one type of disaster per level**.
+- Introduce **a cumulative enemy system**, where **new types of enemies appear in later stages while maintaining previous ones**.
+
+### **4. Adjustments to the Plant-Disaster One-to-One Relationship & Skill System**
+
+- Reevaluate **how plants interact with natural disasters** to create a more **strategic and dynamic skill system**.
+
+### **5. Thematic Element Selection (Post-Apocalyptic & Warmth Balance)**
+
+- Categorize and organize **key thematic elements**.
+- Finalize the **design direction of the game’s starting screen** after defining key elements.
+
+### **6. Summer Project Discussion**
+
+- Discuss project scope, objectives, and alignment with the ongoing game development.
+
+This summary ensures a **structured overview of the key discussion points**, making it easier to track and implement decisions. 🚀 Let me know if any refinements are needed!
+
+### (中文)
+
+### **1. 每個關卡的敵人互動**
+
+- 先前的討論主要集中在**每個關卡的植物與天災**。
+- 本次重點轉向**敵人與植物之間的具體互動方式**。
+- **天災屬性變化機制：**
+    - 之前僅討論植物的屬性會隨著狀態變化而改變。
+    - 目前決定**天災的屬性也會隨狀態改變，增加變數與挑戰性**。
+
+### **2. UI/UX 優化**
+
+- **教學機制改進：**
+    - 增加**植物作用與效果的清晰說明**，提升新手玩家體驗。
+- **敵人攻擊視覺化提示：**
+    - 明確標示**敵人進攻方向**，讓玩家能更快反應與規劃策略。
+
+### **3. 後續關卡設計與敵人兼容性**
+
+- **避免每個關卡僅有一種天災，改為設計多種敵人同時出現**。
+- **累積式敵人機制：**
+    - 隨著關卡推進，引入新敵人類型，同時保留部分舊敵人，提升遊戲深度。
+
+### **4. 植物與天災的一對一關係調整 & 技能系統**
+
+- 重新思考**植物與天災之間的互動機制**，以構建更具**策略性的技能系統**。
+
+### **5. 主題元素篩選（末日風格與溫馨氛圍的平衡）**
+
+- **整理與分類**遊戲內的**關鍵主題元素**。
+- **遊戲開場畫面設計**將在主題確立後進行討論與規劃。
+
+### **6. Summer Project 討論**
+
+- 討論專案目標、範圍，並確保與現有遊戲開發進度相匹配。
+
+---
+
 ## Meeting Agenda for Next Meeting (Update on February 25, 2025)
 
 ### 1. Enemy Interactions in Each Level
