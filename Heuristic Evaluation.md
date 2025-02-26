@@ -1,4 +1,32 @@
 ## Heuristic Evaluation
+| **Interface** | **Issue** | **Heuristic(s)** | **Frequency** (0-4) | **Impact** (0-4) | **Persistence** (0-4) | **Severity** = (F+I+P)/3 |
+| --- | --- | --- | --- | --- | --- | --- |
+| UI/UX | Missing **Help Button**, making it difficult for players to get quick assistance | Help & Documentation | 3 | 3 | 3 | 3.00 |
+| UI/UX | Title and background design are unclear, affecting immersion | Aesthetic & Minimalist Design | 2 | 2 | 2 | 2.00 |
+| UI/UX | Latin placeholder text remains in the game, affecting comprehension | Match Between System & Real World | 2 | 2 | 2 | 2.00 |
+| Gameplay | No rewards after defending against a tornado, reducing gameplay satisfaction | Consistency & Standards | 3 | 4 | 3 | 3.33 |
+| UI/UX | Lack of a clear announcement when the game ends, leaving players uncertain | Visibility of System Status | 3 | 3 | 3 | 3.00 |
+| Gameplay | In the tutorial, resource amounts increase on the second playthrough without explanation | Consistency & Standards | 2 | 3 | 3 | 2.67 |
+| UI/UX | **Gameplay is not intuitive, and core mechanics are unclear** | Recognition Rather Than Recall | 4 | 4 | 4 | 4.00 |
+| UI/UX | **Players only discover the stamina bar in the second level, second round** | Visibility of System Status | 4 | 4 | 4 | 4.00 |
+| Gameplay | The logic of natural disasters and enemy directions is unclear, affecting strategic planning | Match Between System & Real World | 4 | 4 | 4 | 4.00 |
+| Gameplay | **Lack of ecosystem hints, affecting strategy formulation** | Help & Documentation | 3 | 4 | 3 | 3.33 |
+| Gameplay | **Victory conditions lack diversity, potentially affecting gameplay experience** | Flexibility & Efficiency of Use | 3 | 3 | 3 | 3.00 |
+| UI/UX | **Resource values lack clear meaning (Magic Number issue)** | Consistency & Standards | 4 | 4 | 3 | 3.67 |
+| UI/UX | **Game hints and annotations are not separated, affecting readability** | Visibility of System Status | 3 | 3 | 3 | 3.00 |
+| Gameplay | **Significant difficulty gap between the tutorial and the first level, impacting new player experience** | Consistency & Standards | 4 | 4 | 3 | 3.67 |
+| UI/UX | Hovering or clicking should display corresponding hints | Recognition Rather Than Recall | 3 | 3 | 3 | 3.00 |
+| UI/UX | Unable to change plant selection after clicking, reducing fluidity | User Control & Freedom | 3 | 3 | 3 | 3.00 |
+| UI/UX | Hint transition speed is too slow, affecting gameplay flow | Visibility of System Status | 2 | 3 | 3 | 2.67 |
+| UI/UX | Hint text is currently displayed at grid coordinates, should be highlighted instead | Visibility of System Status | 3 | 3 | 3 | 3.00 |
+| Gameplay | Players should be able to plant by pressing the spacebar to improve efficiency | Flexibility & Efficiency of Use | 2 | 3 | 3 | 2.67 |
+| Gameplay | Players should be able to undo the previous turn to avoid mistakes | User Control & Freedom | 4 | 4 | 4 | 4.00 |
+| Gameplay | Players should be able to withdraw a recently planted plant to increase strategic flexibility | User Control & Freedom | 3 | 3 | 3 | 3.00 |
+| UI/UX | The arrow on the hint window should fade or disappear when no hint is available | Aesthetic & Minimalist Design | 2 | 2 | 2 | 2.00 |
+| Gameplay | **The game may automatically skip the first round, affecting turn-based strategy** | Consistency & Standards | 4 | 4 | 4 | 4.00 |
+| UI/UX | **Players with turn-based tactics experience adapt quickly, while new players struggle with a steep learning curve** | Help & Documentation | 4 | 4 | 4 | 4.00 |
+
+---
 
 | **Interface** | **Issue** | **Heuristic(s)** | **Frequency** (0-4) | **Impact** (0-4) | **Persistence** (0-4) | **Severity** = (F+I+P)/3 |
 | --- | --- | --- | --- | --- | --- | --- |
