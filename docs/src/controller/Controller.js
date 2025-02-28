@@ -3,6 +3,7 @@ import {StartMenu} from "../model/Menu.js";
 import {StandbyMenu} from "../model/Standby.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
+import {Options} from "../model/Options.js";
 
 // controller should never invoke any specific field but only encapsulated methods.
 export class Controller {
@@ -16,6 +17,7 @@ export class Controller {
         };
 
         this.pauseMenu = new PauseMenu(this.gameState);
+        this.options = new Options(this);
         // key input
         this.input = new InputHandler(this.gameState);
         this.saveState = stateCode.MENU; // default
@@ -28,6 +30,7 @@ export class Controller {
             }
         }
         this.pauseMenu.setup(p5);
+        this.options.setup(p5);
     }
 
     clickListener(p5) {
@@ -36,6 +39,10 @@ export class Controller {
             return;
         }
         if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        if (this.gameState.showOptions){
+            this.options.handleClick(p5);
             return;
         }
         let currentMenu = this.menus[this.gameState.getState()];
@@ -61,6 +68,9 @@ export class Controller {
             p5.filter(p5.BLUR, 3);
             p5.pop();
             this.pauseMenu.draw(p5);
+        }
+        if (this.gameState.showOptions) {
+            this.options.draw(p5);
         }
     }
 
