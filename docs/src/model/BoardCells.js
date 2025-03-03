@@ -123,18 +123,22 @@ export class BoardCells {
         }
 
         if (p === null && s === null && e === null) {
-            return `cell at (${x},${y}) is of terrain ${t.name}.`;
+            //return `cell at (${x},${y}) is of terrain ${t.name}.`;
+            return `terrain ${t.name}`;
         }
 
         if (e !== null) {
-            return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
+            //return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
+            return `terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
         }
 
         if (s !== null) {
-            return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
+            //return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
+            return `terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
         }
 
-        return `cell at (${x},${y}) is of terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
+        //return `cell at (${x},${y}) is of terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
+        return `terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
     }
 
     // when a new plant is placed at (x,y), recursively find an ecosystem.

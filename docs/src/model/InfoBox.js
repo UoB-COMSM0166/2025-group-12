@@ -50,6 +50,49 @@ export class InfoBox {
         let arrowSize = myutil.relative2absolute(0.02)[0];
         p5.image(p5.images.get("leftarrow"), this.boxX + this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
         p5.image(p5.images.get("rightarrow"), this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
+
+        // draw a box to highlight arrow
+        if(this.boxX + this.boxWidth / 3 - arrowSize / 2 < p5.mouseX &&  p5.mouseX < this.boxX + this.boxWidth / 3 - arrowSize / 2 + arrowSize
+        && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize){
+            p5.fill(0,0,0, 0);
+            p5.stroke(100);
+            p5.strokeWeight(2);
+            p5.rect(this.boxX + this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
+        }
+        if(this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 < p5.mouseX &&  p5.mouseX < this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 + arrowSize
+            && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize){
+            p5.fill(0,0,0, 0);
+            p5.stroke(100);
+            p5.strokeWeight(2);
+            p5.rect(this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
+        }
+
+        // add a page indicator
+        let cell = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
+        let pages;
+        let currentPage;
+        if(cell.plant === null){
+            pages = 2;
+            switch (this.infoStatus){
+                case 't': currentPage = 1; break;
+                case 'e': currentPage = 2; break;
+                default: currentPage = 1; break;
+            }
+        }else{
+            pages = 4;
+            switch (this.infoStatus){
+                case 't': currentPage = 1; break;
+                case 'p': currentPage = 2; break;
+                case 'a': currentPage = 3; break;
+                case 'e': currentPage = 4; break;
+                default: currentPage = 1; break;
+            }
+        }
+        p5.textSize(18);
+        p5.fill(255);
+        p5.noStroke();
+        p5.textAlign(p5.LEFT, p5.TOP);
+        p5.text(`${currentPage}/${pages}`,this.boxX +  this.boxWidth / 2 - arrowSize / 2, this.boxY - 2*arrowSize /3  - this.paddingY);
     }
 
     // clicked info box arrows when info box exists in play board
@@ -74,15 +117,24 @@ export class InfoBox {
         let arrowSize = 25.6;
         if (p5.mouseX >= leftArrowX && p5.mouseX < leftArrowX + arrowSize
             && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize) {
-            this.infoBoxFSM(p5, 'p');
-            return true;
+            return this.clickLeftArrow(p5);
         }
         if (p5.mouseX >= rightArrowX && p5.mouseX < rightArrowX + arrowSize
             && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize) {
-            this.infoBoxFSM(p5, 'n');
-            return true;
+            return this.clickRightArrow(p5);
         }
         return false;
+    }
+
+    // separate the two functions to incorporate keyboard shortcut
+    clickLeftArrow(p5){
+        this.infoBoxFSM(p5, 'p');
+        return true;
+    }
+
+    clickRightArrow(p5){
+        this.infoBoxFSM(p5, 'n');
+        return true;
     }
 
     // a finite state machine.

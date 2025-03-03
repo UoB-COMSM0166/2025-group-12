@@ -1,4 +1,4 @@
-import {stageCode, stateCode} from "./GameState.js";
+import {stageGroup, stateCode} from "./GameState.js";
 
 export class GameSave {
     static save(gameState) {
@@ -6,7 +6,7 @@ export class GameSave {
             stageCleared: [false, false, false, false, false],
             locked: [false, true, true, true, true],
             state: gameState.state,
-            currentStage: gameState.currentStageCode,
+            currentStage: gameState.currentStageGroup,
             turn: gameState.currentStage.turn,
             inventory: Array.from(gameState.inventory.saveInventory()),
             board: null,
@@ -28,7 +28,7 @@ export class GameSave {
              */
             gameState.loaded = true;
             gameState.setState(loadData.state);
-            gameState.currentStageCode = loadData.currentStage;
+            gameState.currentStageGroup = loadData.currentStage;
 
             // currentStage has changed, but update is in next draw(), code followed needs to wait until it's done
             setTimeout(() => {

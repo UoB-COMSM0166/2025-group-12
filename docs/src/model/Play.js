@@ -1,7 +1,7 @@
 import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js";
 import {Button} from "../items/Button.js";
-import {stateCode, stageCode} from "./GameState.js";
+import {stateCode, stageGroup} from "./GameState.js";
 import {BoardCells} from "./BoardCells.js";
 import {Seed} from "../items/Seed.js";
 import {Plant} from "../items/Plant.js";
@@ -13,7 +13,8 @@ import {FloatingWindow} from "./FloatingWindow.js";
 export class PlayBoard {
     constructor(gameState) {
         this.gameState = gameState;
-        this.stageCode = stageCode.NO_STAGE;
+        this.stageGroup = stageGroup.NO_STAGE;
+        this.stageNumbering = "0-0";
         this.canvasWidth = CanvasSize.getSize()[0];
         this.canvasHeight = CanvasSize.getSize()[1];
 
@@ -106,6 +107,18 @@ export class PlayBoard {
             if (event.key === "e" && this.infoBox.activateButton !== null) {
                 this.infoBox.activateButton._onClick(p5);
             }
+            if(event.key === "a" && this.selectedCell.length !== 0){
+                this.infoBox.clickLeftArrow(p5);
+            }
+            if(event.key === "ArrowLeft" && this.selectedCell.length !== 0){
+                this.infoBox.clickLeftArrow(p5);
+            }
+            if(event.key === "d" && this.selectedCell.length !== 0){
+                this.infoBox.clickRightArrow(p5);
+            }
+            if(event.key === "ArrowRight" && this.selectedCell.length !== 0){
+                this.infoBox.clickRightArrow(p5);
+            }
         })
 
         // setup stage terrain
@@ -157,6 +170,13 @@ export class PlayBoard {
         } else {
             p5.cursor(p5.ARROW);
         }
+
+        let [stageNumberingX, stageNumberingY] = myutil.relative2absolute(0.38, 0.04);
+        p5.textSize(20);
+        p5.fill('red');
+        p5.noStroke();
+        p5.textAlign(p5.LEFT, p5.TOP);
+        p5.text(this.stageNumbering, stageNumberingX, stageNumberingY);
 
         // draw stage grid
         this.drawGrid(p5);
@@ -368,7 +388,7 @@ export class PlayBoard {
 
     // miscellaneous end turn settings
     endTurnActivity(p5) {
-        //reset action points
+        // reset action points
         this.actionPoints = this.maxActionPoints;
 
         // remove dead plants and reset plant skill

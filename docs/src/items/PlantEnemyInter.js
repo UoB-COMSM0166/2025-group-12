@@ -74,7 +74,10 @@ export class plantEnemyInteractions {
         if (plant !== null) {
             // if a tree is attacked by a tornado
             if (plant.plantType === plantTypes.TREE && plant.name === "Tree") {
-                plant.health--;
+                for (let i = 0; i<2 && plant.health > 0 && tornado.health > 0; i++) {
+                    plant.health--;
+                    tornado.health--;
+                }
                 if (plant.health === 0) {
                     plant.status = false;
                 }

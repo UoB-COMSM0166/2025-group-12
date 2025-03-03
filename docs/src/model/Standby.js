@@ -1,5 +1,5 @@
 import {Button} from "../items/Button.js";
-import {stateCode, stageCode} from "./GameState.js";
+import {stateCode, stageGroup} from "./GameState.js";
 import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js";
 import {FloatingWindow} from "./FloatingWindow.js";
@@ -27,27 +27,30 @@ export class StandbyMenu {
         let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.2);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
-        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Calamitas Caeli");
+        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Tutorial (easy)");
         stage1Button.onClick = () => {
-            this.clickedStageButton(p5, stageCode.TORNADO);
+            this.clickedStageButton(p5, stageGroup.TORNADO);
         };
 
-        let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Ira Ignis");
+        let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Storm (hard)");
         stage2Button.onClick = () => {
-            this.clickedStageButton(p5, stageCode.VOLCANO);
+            this.clickedStageButton(p5, stageGroup.VOLCANO);
         };
 
-        let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Locus Lapsus");
+        // earthquake + landslide
+        let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Earthquake");
         stage3Button.onClick = () => {
             this.setFloatingWindow(p5, "lock");
         };
 
-        let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Stage 4");
+        // landslide + random lightning attack
+        let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Rainstorm");
         stage4Button.onClick = () => {
             this.setFloatingWindow(p5, "lock");
         };
 
-        let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Ultima Unda");
+        // earthquake induced tsunami + rainstorm + landslide + random lighting + tornado
+        let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Tsunami");
         stage5Button.onClick = () => {
             this.setFloatingWindow(p5, "lock");
         };
@@ -101,13 +104,13 @@ export class StandbyMenu {
         }
     }
 
-    clickedStageButton(p5, stageCode) {
-        if (this.gameState.isStageCleared(stageCode)) {
+    clickedStageButton(p5, stageGroup) {
+        if (this.gameState.isStageCleared(stageGroup)) {
             this.setFloatingWindow(p5, "clear");
             return;
         }
         this.gameState.setState(stateCode.PLAY);
-        this.gameState.currentStageCode = stageCode;
+        this.gameState.currentStageGroup = stageGroup;
     }
 
     setFloatingWindow(p5, str) {

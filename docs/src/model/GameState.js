@@ -13,7 +13,7 @@ export const stateCode = {
 
 // game stages are now grouped and the code refers to affiliated group
 // the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
-export const stageCode = {
+export const stageGroup = {
     NO_STAGE: 0,
     TORNADO: 1,
     VOLCANO: 2,
@@ -24,7 +24,7 @@ export class GameState {
     constructor(p5) {
         this.p5 = p5;
         this.state = stateCode.MENU; // default
-        this.currentStageCode = stageCode.NO_STAGE; // no stage is selected
+        this.currentStageGroup = stageGroup.NO_STAGE; // no stage is selected
         this.currentStage = null;
         this.inventory = new Inventory(this.p5);
         this.playerCanClick = true; // set this to false during end turn enemy activity
@@ -59,36 +59,36 @@ export class GameState {
     }
 
     setStageCleared(playBoard) {
-        if (this.clearedStages.has(playBoard.stageCode)) {
-            this.clearedStages.set(playBoard.stageCode, this.clearedStages.get(playBoard.stageCode) + 1);
+        if (this.clearedStages.has(playBoard.stageGroup)) {
+            this.clearedStages.set(playBoard.stageGroup, this.clearedStages.get(playBoard.stageGroup) + 1);
         } else {
-            this.clearedStages.set(playBoard.stageCode, 1);
+            this.clearedStages.set(playBoard.stageGroup, 1);
         }
     }
 
-    isStageCleared(stageCode) {
-        let index = this.clearedStages.get(stageCode);
-        return index !== undefined && index >= this.gsf.stageClasses[stageCode].length;
+    isStageCleared(stageGroup) {
+        let index = this.clearedStages.get(stageGroup);
+        return index !== undefined && index >= this.gsf.stageClasses[stageGroup].length;
     }
 
     // invoked by controller.
     newGameStage() {
-        return this.gsf.newGameStage(this.currentStageCode, this);
+        return this.gsf.newGameStage(this.currentStageGroup, this);
     }
 }
 
 class GameStageFactory {
     constructor() {
         this.stageClasses = Array.from({length: 20}, () => []);
-        this.stageClasses[stageCode.TORNADO].push(Tornado1PlayBoard);
-        this.stageClasses[stageCode.TORNADO].push(Tornado2PlayBoard);
-        this.stageClasses[stageCode.VOLCANO].push(Volcano1PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
+        this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
     }
 
     // allocate game stage dynamically
     newGameStage(newStage, gameState) {
-        let StageClasses = this.stageClasses[gameState.currentStageCode];
-        let index = gameState.clearedStages.get(gameState.currentStageCode);
+        let StageClasses = this.stageClasses[gameState.currentStageGroup];
+        let index = gameState.clearedStages.get(gameState.currentStageGroup);
         let StageClass = StageClasses[index !== undefined ? index : 0];
         return StageClass ? new StageClass(gameState) : null;
     }

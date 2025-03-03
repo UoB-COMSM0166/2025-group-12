@@ -1,4 +1,4 @@
-import {stageCode, stateCode} from "../GameState.js";
+import {stageGroup, stateCode} from "../GameState.js";
 import {PlayBoard} from "../Play.js";
 import {myutil} from "../../../lib/myutil.js";
 import {BoardCells} from "../BoardCells.js";
@@ -6,7 +6,6 @@ import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
 import {Tornado} from "../../items/Tornado.js";
-import {Mob} from "../../items/Mob.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Bush} from "../../items/Bush.js";
@@ -15,7 +14,8 @@ import {Grass} from "../../items/Grass.js";
 export class Tornado1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.TORNADO;
+        this.stageGroup = stageGroup.TORNADO;
+        this.stageNumbering = "1-1";
         // grid parameters
         this.gridSize = 6;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);

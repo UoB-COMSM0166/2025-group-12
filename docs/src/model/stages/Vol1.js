@@ -1,4 +1,4 @@
-import {stageCode} from "../GameState.js";
+import {stageGroup} from "../GameState.js";
 import {PlayBoard} from "../Play.js";
 import {myutil} from "../../../lib/myutil.js";
 import {BoardCells} from "../BoardCells.js";
@@ -12,7 +12,8 @@ import {FloatingWindow} from "../FloatingWindow.js";
 export class Volcano1PlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageCode = stageCode.VOLCANO;
+        this.stageGroup = stageGroup.VOLCANO;
+        this.stageNumbering = "2-1";
         // grid parameters
         this.gridSize = 10;
         [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);

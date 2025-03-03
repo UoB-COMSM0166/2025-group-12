@@ -15,7 +15,7 @@ export class Tree extends Plant {
         this.maxHealth = 3;
         this.status = true;
 
-        // passive: only lose 1 health when attacked by Tornado.
+        // passive: lose up to 2 health when attacked by Tornado.
         // implemented in plantAttackedByTornado of PlantEnemyInteraction
 
         // active: can recharge a nearby plant's health by 1. with bush and grass.

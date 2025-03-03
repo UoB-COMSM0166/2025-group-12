@@ -1,4 +1,4 @@
-import {stateCode, stageCode, GameState} from "../model/GameState.js";
+import {stateCode, stageGroup, GameState} from "../model/GameState.js";
 import {StartMenu} from "../model/Menu.js";
 import {StandbyMenu} from "../model/Standby.js";
 import {InputHandler} from "./input.js";
@@ -77,11 +77,11 @@ export class Controller {
     // when shift to PLAY from STANDBY, create the new play board
     setPlayStage(p5) {
         if (this.gameState.getState() === stateCode.PLAY
-            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageCode !== this.gameState.currentStageCode)) {
+            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageGroup !== this.gameState.currentStageGroup)) {
             this.menus[stateCode.PLAY] = this.gameState.newGameStage();
             this.menus[stateCode.PLAY].setup(p5);
             this.gameState.currentStage = this.menus[stateCode.PLAY];
-            this.gameState.currentStageCode = this.menus[stateCode.PLAY].stageCode;
+            this.gameState.currentStageGroup = this.menus[stateCode.PLAY].stageGroup;
         }
     }
 
