@@ -117,7 +117,7 @@ export class PlayBoard {
             // to dev team: quick skip current stage
             if (event.key === "c" && !this.skip) {
                 this.skip = true;
-                this.gameState.setStageCleared(this);
+                this.stageClearSettings(p5);
                 this.gameState.setState(stateCode.FINISH);
             }
             // info box arrows
@@ -473,23 +473,7 @@ export class PlayBoard {
         this.turn++;
         this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
         if (this.turn === this.maxTurn + 1) {
-
-            // when a stage is cleared:
-            // 1. store all living plants, this comes after seeds have grown
-            let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
-            for (let cws of cellsWithPlant) {
-                this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
-            }
-
-            // 2. remove all seeds from inventory
-            this.gameState.inventory.removeAllSeeds();
-
-            // 3. set current stage cleared
-            this.gameState.setStageCleared(this);
-
-            // 4. reset action listener
-            this.gameState.setPlayerCanClick(true);
-
+            this.stageClearSettings(p5);
             return;
         } else {
             this.endTurn = false;
@@ -499,6 +483,21 @@ export class PlayBoard {
         this.nextTurnItems(p5);
 
         // set action listener active
+        this.gameState.setPlayerCanClick(true);
+    }
+
+    stageClearSettings(p5){
+        // when a stage is cleared:    
+        // 1. store all living plants, this comes after seeds have grown
+        let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
+        for (let cws of cellsWithPlant) {
+            this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
+        }
+        // 2. remove all seeds from inventory
+        this.gameState.inventory.removeAllSeeds();
+        // 3. set current stage cleared
+        this.gameState.setStageCleared(this);
+        // 4. reset action listener
         this.gameState.setPlayerCanClick(true);
     }
 

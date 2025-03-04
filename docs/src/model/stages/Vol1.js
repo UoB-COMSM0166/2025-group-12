@@ -49,10 +49,14 @@ export class Volcano1PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
+        if(this.turn === 2){
+            Bandit.createNewBandit(p5, this, 3, 3);
+        }else{
         myutil.generateRandomEnemy(p5, this);
         myutil.generateRandomEnemy(p5, this);
         myutil.generateRandomEnemy(p5, this);
         myutil.generateRandomEnemy(p5, this);
+        }
     }
 
     modifyBoard(p5, code) {

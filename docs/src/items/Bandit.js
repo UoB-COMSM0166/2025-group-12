@@ -109,11 +109,12 @@ export class Bandit extends Enemy {
                 if (this.cell.x + dx < 0 || this.cell.x + dx >= playBoard.gridSize || this.cell.y + dy < 0 || this.cell.y + dy >= playBoard.gridSize) {
                     continue;
                 }
-                // the target cell must not be occupied by another enemy already
+                // the target cell must not be occupied by another enemy or plant already
                 if (G.edges().find(e => {
                     return e.from() === this.cell.x + this.cell.y * playBoard.gridSize
                         && e.to() === (this.cell.x + dx) + (this.cell.y + dy) * playBoard.gridSize
-                }).weight < 100) {
+                }).weight < 100 && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).plant === null
+                && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).seed === null) {
                     possibleDirections.push([dx, dy]);
                 }
             }
