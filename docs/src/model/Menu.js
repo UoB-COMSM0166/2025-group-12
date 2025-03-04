@@ -20,15 +20,15 @@ export class StartMenu {
         let newGameButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, this.languageManager.getText('newGame'));
         newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
 
-        let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('loadGame'));
-        loadGameButton.onClick = () => GameSave.load(this.gameState);
+        // let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('loadGame'));
+        // loadGameButton.onClick = () => GameSave.load(this.gameState);
 
-        let optionsButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
-        optionsButton.onClick = () => {
-            this.gameState.showOptions = !this.gameState.showOptions;
-        }
+        // let optionsButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
+        // optionsButton.onClick = () => {
+        //     this.gameState.showOptions = !this.gameState.showOptions;
+        // }
 
-        this.buttons.push(newGameButton, loadGameButton, optionsButton);
+        this.buttons.push(newGameButton);
     }
 
     handleClick(p5) {
