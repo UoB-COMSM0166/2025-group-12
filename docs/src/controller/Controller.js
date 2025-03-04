@@ -87,6 +87,15 @@ export class Controller {
 
     // deal with 1. player-movable switching, 2. data transferring when switching menu
     setData(p5, newState) {
+        // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
+        if (newState === stateCode.FINISH) {
+            console.log("finish")
+            this.menus[stateCode.PLAY] = null;
+            this.gameState.setState(stateCode.STANDBY);
+            this.gameState.setPlayerCanClick(true);
+            return;
+        }
+
         // if movables has objects to move, skip other phases
         if (newState === stateCode.PLAY && !this.gameState.playerCanClick) {
             this.handleMovables(p5);
@@ -107,14 +116,6 @@ export class Controller {
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
             // destroy the play board
             this.menus[stateCode.PLAY] = null;
-            return;
-        }
-
-        // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
-        if (newState === stateCode.FINISH) {
-            this.menus[stateCode.PLAY] = null;
-            this.gameState.setState(stateCode.STANDBY);
-            this.gameState.setPlayerCanClick(true);
             return;
         }
 

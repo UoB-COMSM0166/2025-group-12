@@ -1,5 +1,8 @@
 import {CanvasSize} from "../src/CanvasSize.js"
 import {FloatingWindow} from "../src/model/FloatingWindow.js";
+import {terrainTypes} from "../src/items/ItemTypes.js";
+import {Bandit} from "../src/items/Bandit.js";
+import {Tornado} from "../src/items/Tornado.js";
 
 export class myutil {
     static mod2PiPositive(x) {
@@ -101,6 +104,34 @@ export class myutil {
             console.error("playBoard does not have game over floating window?");
         }
         playBoard.isGameOver = true;
+    }
+
+    static generateRandomEnemy(p5, playBoard){
+        let count = 0;
+        while(count<20){
+            let x = Math.floor(Math.random() * playBoard.gridSize);
+            let y = Math.floor(Math.random() * playBoard.gridSize);
+            let cell = playBoard.boardObjects.getCell(x, y);
+            if(cell.plant === null && cell.enemy=== null && cell.terrain.terrainType === terrainTypes.STEPPE){
+                let r = Math.floor(Math.random() * 2);
+                switch(r){
+                    case 0: Bandit.createNewBandit(p5, playBoard, x, y); break;
+                    case 1: Tornado.createNewTornado(p5, playBoard, x, y, myutil.randomDirection()); break;
+                }
+                return;
+            }
+            count++; // prevent infinite loops
+        }
+    }
+
+    static randomDirection(){
+        let r = Math.floor(Math.random() * 4);
+        switch (r){
+            case 0: return 'u';
+            case 1: return 'd';
+            case 2: return 'l';
+            case 3: return 'r';
+        }
     }
 
     // convert canvas position into cell index

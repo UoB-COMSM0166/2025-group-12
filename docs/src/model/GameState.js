@@ -3,6 +3,8 @@ import {Tornado1PlayBoard} from "./stages/Tor1.js";
 import {Tornado2PlayBoard} from "./stages/Tor2.js";
 import {Volcano1PlayBoard} from "./stages/Vol1.js";
 import {LanguageManager} from "../LanguageManager.js";
+import {Tornado3PlayBoard} from "./stages/Tor3.js";
+import * as playboard from "./GameState.js";
 
 export const stateCode = {
     MENU: 1,
@@ -82,6 +84,7 @@ class GameStageFactory {
         this.stageClasses = Array.from({length: 20}, () => []);
         this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
         this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
     }
 

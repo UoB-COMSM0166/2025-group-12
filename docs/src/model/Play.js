@@ -7,7 +7,7 @@ import {Seed} from "../items/Seed.js";
 import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
-import {plantTypes} from "../items/ItemTypes.js";
+import {enemyTypes, itemTypes, plantTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 
 export class PlayBoard {
@@ -62,6 +62,8 @@ export class PlayBoard {
         this.allFloatingWindows = null;
 
         this.isGameOver = false;
+
+        this.skip = false;
     }
 
     /* public methods */
@@ -104,19 +106,31 @@ export class PlayBoard {
 
         // a keyboard shortcut to activate plant skill
         window.addEventListener("keyup", (event) => {
+            // active skill
             if (event.key === "e" && this.infoBox.activateButton !== null) {
                 this.infoBox.activateButton._onClick(p5);
             }
-            if(event.key === "a" && this.selectedCell.length !== 0){
+            // turn button
+            if (event.key === " " && this.gameState.playerCanClick && this.floatingWindow === null) {
+                this.buttons.find(b => b.text.startsWith("turn"))._onClick();
+            }
+            // to dev team: quick skip current stage
+            if (event.key === "c" && !this.skip) {
+                this.skip = true;
+                this.gameState.setStageCleared(this);
+                this.gameState.setState(stateCode.FINISH);
+            }
+            // info box arrows
+            if (event.key === "a" && this.selectedCell.length !== 0) {
                 this.infoBox.clickLeftArrow(p5);
             }
-            if(event.key === "ArrowLeft" && this.selectedCell.length !== 0){
+            if (event.key === "ArrowLeft" && this.selectedCell.length !== 0) {
                 this.infoBox.clickLeftArrow(p5);
             }
-            if(event.key === "d" && this.selectedCell.length !== 0){
+            if (event.key === "d" && this.selectedCell.length !== 0) {
                 this.infoBox.clickRightArrow(p5);
             }
-            if(event.key === "ArrowRight" && this.selectedCell.length !== 0){
+            if (event.key === "ArrowRight" && this.selectedCell.length !== 0) {
                 this.infoBox.clickRightArrow(p5);
             }
         })
@@ -171,6 +185,7 @@ export class PlayBoard {
             p5.cursor(p5.ARROW);
         }
 
+        // stage number text
         let [stageNumberingX, stageNumberingY] = myutil.relative2absolute(0.38, 0.04);
         p5.textSize(20);
         p5.fill('red');
@@ -189,14 +204,45 @@ export class PlayBoard {
         // draw plants according to board objects
         this.drawAllPlants(p5);
 
+        // tornado arrows first
+        for (let movable of this.movables) {
+            if (!movable.isMoving && movable.type === itemTypes.ENEMY && movable.enemyType === enemyTypes.TORNADO) {
+                let direction = movable.cell.enemy.direction;
+                let x = movable.cell.enemy.x;
+                let y = movable.cell.enemy.y;
+                let angle;
+                if (direction[0] === 0 && direction[1] === -1) {
+                    angle = p5.radians(330); // Up-right
+                } else if (direction[0] === 0 && direction[1] === 1) {
+                    angle = p5.radians(150); // Down-left
+                } else if (direction[0] === -1 && direction[1] === 0) {
+                    angle = p5.radians(210); // Up-left
+                } else if (direction[0] === 1 && direction[1] === 0) {
+                    angle = p5.radians(30); // Down-right
+                }
+                let offset = 10;
+                let dx = offset * Math.cos(angle);
+                let dy = offset * Math.sin(angle);
+                p5.push();
+                p5.translate(x + dx, y + dy);
+                p5.rotate(angle + p5.HALF_PI);
+                p5.imageMode(p5.CENTER);
+                p5.image(p5.images.get("alertArrow"), 0, 0, 30, 30);
+                p5.pop();
+            }
+        }
         // draw all movables according to this.movables
         for (let movable of this.movables) {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
+        }
+        // health bar last
+        for (let movable of this.movables) {
             if (movable.health !== undefined) {
                 myutil.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
             }
         }
+
 
         // draw inventory
         this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
@@ -241,6 +287,7 @@ export class PlayBoard {
     /* ----------------------------------- */
     /* ----------------------------------- */
     /* ----------------------------------- */
+
     /* ----------------------------------- */
 
     drawGrid(p5) {
@@ -404,9 +451,6 @@ export class PlayBoard {
             }
         }
 
-        // reevaluate plants' skills
-        this.reevaluatePlantSkills();
-
         // update seed status
         let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
         for (let cws of cellsWithSeed) {
@@ -418,6 +462,12 @@ export class PlayBoard {
                 cws.plant = grown;
             }
         }
+
+        // reevaluate plants' skills, after seeds have grown up
+        this.reevaluatePlantSkills();
+
+        // also, reconstruct ecosystem
+        this.boardObjects.reconstructEcosystem();
 
         // set turn and counter
         this.turn++;

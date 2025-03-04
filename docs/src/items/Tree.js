@@ -33,9 +33,9 @@ export class Tree extends Plant {
 
     getPassiveString() {
         if (this.hasExtended) {
-            return "The tree stops an incoming tornado from nearby 8 cells and lose 1 HP.";
+            return "The tree stops an incoming tornado from nearby 8 cells and lose up to 2 HP.";
         }
-        return "The Tree stops an incoming tornado and lose 1 HP.";
+        return "The Tree stops an incoming tornado and lose up tp 2 HP.";
     }
 
     getActiveString() {

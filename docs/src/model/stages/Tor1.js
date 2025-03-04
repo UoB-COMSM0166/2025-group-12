@@ -6,7 +6,6 @@ import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
 import {Tornado} from "../../items/Tornado.js";
-import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Bush} from "../../items/Bush.js";
 import {Grass} from "../../items/Grass.js";
@@ -52,30 +51,25 @@ export class Tornado1PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
-        if (this.turn === 1) {
-        } else if (this.turn === 2) {
+        if (this.turn === 2) {
             Tornado.createNewTornado(p5, this, 0, 4, 'd');
-        } else if (this.turn === 3) {
-            Tornado.createNewTornado(p5, this, 3, 0, 'r');
         }
     }
 
     modifyBoard(p5, code) {
-        if (this.turn === 1) {
-            if (code === 102) {
-                Tornado.createNewTornado(p5, this, 0, 4, 'd');
-                return;
-            }
-            if (code === 103) {
-                this.boardObjects.plantCell(this, 2, 4, new Bush(p5));
-                this.boardObjects.plantCell(this, 3, 4, new Grass(p5));
-                return;
-            }
-        } else if (this.turn === 2) {
-            if (code === 201) {
-                this.gameState.inventory.pushItem2Inventory(p5, "Tree", 1);
-            }
+        if (code === 102) {
+            Tornado.createNewTornado(p5, this, 0, 4, 'd');
+            return;
         }
+        if (code === 103) {
+            this.boardObjects.plantCell(this, 2, 4, new Bush(p5));
+            this.boardObjects.plantCell(this, 3, 4, new Grass(p5));
+            return;
+        }
+        if (code === 201) {
+            this.gameState.inventory.pushItem2Inventory(p5, "Tree", 1);
+        }
+
     }
 
     setFloatingWindow(p5) {
@@ -131,6 +125,11 @@ export class Tornado1PlayBoard extends PlayBoard {
             if (this.allFloatingWindows.has("300")) {
                 this.floatingWindow = this.allFloatingWindows.get("300");
                 this.allFloatingWindows.delete("300");
+                return;
+            }
+            if (this.floatingWindow === null && this.selectedCell.length !== 0 && !this.allFloatingWindows.has("300") && this.allFloatingWindows.has("301")) {
+                this.floatingWindow = this.allFloatingWindows.get("301");
+                this.allFloatingWindows.delete("301");
                 return;
             }
         }
@@ -236,9 +235,19 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("300", new FloatingWindow(p5, "lu", "{white:Click this cell to check}\\{white:relevant information.}", {
-            x: myutil.relative2absolute(0.64, 0.56)[0],
-            y: myutil.relative2absolute(0.64, 0.56)[1],
+        afw.set("300", new FloatingWindow(p5, "lu", "{white:You can click a cell to check relevant}\\{white:information from left bottom box.}", {
+            x: myutil.relative2absolute(0.69, 0.58)[0],
+            y: myutil.relative2absolute(0.69, 0.58)[1],
+            fontSize: 16,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("301", new FloatingWindow(p5, "dc", "{white:Click arrows or press }{red:A, D, }\\{red:<- or ->}{white: keys to turn pages.}", {
+            x: myutil.relative2absolute(0.1, 0.6)[0],
+            y: myutil.relative2absolute(0.1, 0.6)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
