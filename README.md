@@ -13,7 +13,7 @@ Include a demo video of your game here (you don't have to wait until the end, yo
 ## Your Group
 
 Add a group photo here!
-![Group Photo](week01-research/images/Group_photo.JPG)
+![Group Photo](documents/week01-research/images/Group_photo.JPG)
 
 
 Chin Wei Liu, rq24239@bristol.ac.uk, Chin-pro, manager
