@@ -208,8 +208,8 @@ export class myutil {
 
     static commonFloatingWindows(p5, afw){
         afw.set("000", new FloatingWindow(p5, null, "{white:Stage Cleared!}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
             fontSize: 20,
             padding: 10,
             spacingRatio: 0.3,
@@ -218,8 +218,8 @@ export class myutil {
         }));
 
         afw.set("001", new FloatingWindow(p5, null, "{white:Game Over}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
             fontSize: 20,
             padding: 10,
             spacingRatio: 0.3,
@@ -297,7 +297,7 @@ export class myutil {
             playerCanClick: false
         }));
 
-        afw.set("053", new FloatingWindow(p5, null, "{white:You cannot recharge a plant not injured!}", {
+        afw.set("053", new FloatingWindow(p5, null, "{white:You cannot heal a plant not injured!}", {
             x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
             y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
             fontSize: 20,

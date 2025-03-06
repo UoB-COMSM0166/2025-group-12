@@ -4,7 +4,8 @@ import {Tornado2PlayBoard} from "./stages/Tor2.js";
 import {Volcano1PlayBoard} from "./stages/Vol1.js";
 import {LanguageManager} from "../LanguageManager.js";
 import {Tornado3PlayBoard} from "./stages/Tor3.js";
-import * as playboard from "./GameState.js";
+import {Tornado4PlayBoard} from "./stages/Tor4.js";
+import {Tornado5PlayBoard} from "./stages/Tor5.js";
 
 export const stateCode = {
     MENU: 1,
@@ -17,8 +18,11 @@ export const stateCode = {
 // the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
 export const stageGroup = {
     NO_STAGE: 0,
-    TORNADO: 1,
-    VOLCANO: 2,
+    TORNADO: 1,     // 5 stages expected
+    VOLCANO: 2,     // 1
+    EARTHQUAKE: 4,  // 5?
+    RAINSTORM: 8,   // 5?
+    TSUNAMI: 16     // 1
 }
 
 // game state should not handle any switching logic but only stores information
@@ -40,12 +44,8 @@ export class GameState {
     }
 
     setState(newState) {
-        if (Object.values(stateCode).includes(newState)) {
-            console.log(`Game state changed to: ${Object.keys(stateCode).find(key => stateCode[key] === newState)}`);
-            this.state = newState;
-        } else {
-            console.error("Invalid state:", newState);
-        }
+        console.log(`Game state changed to: ${Object.keys(stateCode).find(key => stateCode[key] === newState)}`);
+        this.state = newState;
     }
 
     getState() {
@@ -73,6 +73,11 @@ export class GameState {
         return index !== undefined && index >= this.gsf.stageClasses[stageGroup].length;
     }
 
+    isSpecificStageCleared(stageGroup, numbering) {
+        let index = this.clearedStages.get(stageGroup);
+        return index !== undefined && index >= numbering;
+    }
+
     // invoked by controller.
     newGameStage() {
         return this.gsf.newGameStage(this.currentStageGroup, this);
@@ -85,6 +90,8 @@ class GameStageFactory {
         this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
         this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
     }
 

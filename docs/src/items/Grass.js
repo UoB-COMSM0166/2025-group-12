@@ -30,9 +30,9 @@ export class Grass extends Plant {
 
     getActiveString() {
         if (this.hasActive) {
-            return "The Grass can send your animal friends to attack a nearby group of bandits.";
+            return "Send animal friends to attack a nearby group of bandits.";
         }
-        return "The Grass has no active skill now.";
+        return "No active skill now.";
     }
 
     reevaluateSkills(playBoard, cell) {

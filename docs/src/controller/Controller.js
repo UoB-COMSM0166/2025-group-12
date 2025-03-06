@@ -89,7 +89,6 @@ export class Controller {
     setData(p5, newState) {
         // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
         if (newState === stateCode.FINISH) {
-            console.log("finish")
             this.menus[stateCode.PLAY] = null;
             this.gameState.setState(stateCode.STANDBY);
             this.gameState.setPlayerCanClick(true);

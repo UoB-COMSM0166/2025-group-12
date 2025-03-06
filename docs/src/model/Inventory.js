@@ -150,6 +150,12 @@ export class Inventory {
         this.updateInventoryHeight();
     }
 
+    // to set item to a specific number.
+    setItemOfInventory(p5, name, number){
+        this.items.set(name, number);
+        this.updateInventoryHeight();
+    }
+
     // with prototypes, we can find seed or plant type given a name,
     // while name is a concrete String rather than a reference
     // so we can create it multiple times.

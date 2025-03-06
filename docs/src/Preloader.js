@@ -20,6 +20,7 @@ export function preloader(p5) {
     images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));
     images.set("alertArrow", p5.loadImage(basePath + "alertArrow.png"));
     images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
+    images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
 
     return images;
 }

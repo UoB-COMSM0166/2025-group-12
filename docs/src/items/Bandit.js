@@ -3,7 +3,8 @@ import {PlayBoard} from "../model/Play.js";
 import {myutil} from "../../lib/myutil.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {DijkstraSP, EdgeWeightedDigraph, DirectedEdge} from "../controller/GraphSP.js";
-import {enemyTypes} from "./ItemTypes.js";
+import {enemyTypes, terrainTypes} from "./ItemTypes.js";
+import {Terrain} from "./Terrain.js";
 
 export class Bandit extends Enemy {
     constructor(p5, x, y) {
@@ -29,6 +30,9 @@ export class Bandit extends Enemy {
     }
 
     static createNewBandit(p5, playBoard, i, j) {
+        if(playBoard.boardObjects.getCell(i,j).enemy !== null){
+            return;
+        }
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let bandit = new Bandit(p5, avgX, avgY);
         playBoard.movables.push(bandit);
@@ -251,4 +255,18 @@ export class Bandit extends Enemy {
         return G;
     }
 
+}
+
+export class Lumbering extends Terrain {
+    constructor(p5) {
+        super();
+        this.name = "Lumbering";
+        this.color = "black";
+        this.terrainType = terrainTypes.LUMBERING;
+        this.img = p5.images.get(`${this.name}`);
+    }
+
+    getWeight() {
+        return 0;
+    }
 }

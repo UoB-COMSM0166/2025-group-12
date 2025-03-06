@@ -1,4 +1,4 @@
-import {enemyTypes, itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
+import {enemyTypes, itemTypes, plantTypes, seedTypes, terrainTypes} from "../items/ItemTypes.js";
 import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
 import {Bandit} from "../items/Bandit.js";
@@ -360,7 +360,8 @@ class Cell {
             return false;
         }
 
-        if (this.terrain.name === "Mountain" || this.terrain.name === "PlayerBase") {
+        if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
+        || this.terrain.terrainType === terrainTypes.LUMBERING) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }

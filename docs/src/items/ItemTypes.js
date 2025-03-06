@@ -21,12 +21,13 @@ export let terrainTypes = {
     RUIN: 0,
     BASE: 1,
     MOUNTAIN: 2,
-    RIVER: 4,
-    BRIDGE: 8,
-    STEPPE: 16
+    RIVER: 3,
+    BRIDGE: 4,
+    STEPPE: 5,
+    LUMBERING: 6
 }
 
-// notice: the order of end turn action refers to below ordering.
+// notice: the order of end turn actions refers to below ordering.
 export let enemyTypes = {
     TORNADO: 100,
     BANDIT: 200

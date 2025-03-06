@@ -9,10 +9,11 @@ import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
 import {enemyTypes, itemTypes, plantTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
+import {Screen} from "./Screen.js";
 
-export class PlayBoard {
+export class PlayBoard extends Screen {
     constructor(gameState) {
-        this.gameState = gameState;
+        super(gameState);
         this.stageGroup = stageGroup.NO_STAGE;
         this.stageNumbering = "0-0";
         this.canvasWidth = CanvasSize.getSize()[0];
@@ -29,8 +30,6 @@ export class PlayBoard {
         this.gridSize = 8;
         this.cellWidth = myutil.relative2absolute(1 / 16, 1 / 9)[0];
         this.cellHeight = myutil.relative2absolute(1 / 16, 1 / 9)[1];
-
-        this.buttons = [];
 
         // store all movable objects including enemies
         // objects in this array MUST have boolean fields hasMoved and isMoving!!!!!
@@ -57,9 +56,6 @@ export class PlayBoard {
         // to implement plant active skills.
         // I have a strong feeling that we need refactoring
         this.awaitCell = false;
-
-        this.floatingWindow = null;
-        this.allFloatingWindows = null;
 
         this.isGameOver = false;
 
@@ -147,7 +143,6 @@ export class PlayBoard {
     }
 
     handleClick(p5) {
-
         if (this.handleFloatingWindow()) {
             return;
         }
@@ -263,32 +258,18 @@ export class PlayBoard {
             this.gameState.setPlayerCanClick(true);
         }
 
-        // draw floating window
-        this.setFloatingWindow(p5);
-        if (this.floatingWindow !== null) {
-            if (this.floatingWindow.isFading) {
-                this.floatingWindow.fadeOut();
-                if (this.floatingWindow.hasFadedOut()) {
-                    this.floatingWindow = null;
-                } else {
-                    this.floatingWindow.draw();
-                }
-            } else {
-                this.floatingWindow.draw();
-            }
-        }
+        this.drawFloatingWindow(p5);
     }
 
-    /* ----------------------------------- */
-    /* ----------------------------------- */
-    /* ----------------------------------- */
-    /* ----------------------------------- */
-    /* below can be treated as black boxes */
-    /* ----------------------------------- */
-    /* ----------------------------------- */
-    /* ----------------------------------- */
-
-    /* ----------------------------------- */
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // below can be treated as black boxes //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
 
     drawGrid(p5) {
         p5.stroke(0);
@@ -486,7 +467,7 @@ export class PlayBoard {
         this.gameState.setPlayerCanClick(true);
     }
 
-    stageClearSettings(p5){
+    stageClearSettings(p5) {
         // when a stage is cleared:    
         // 1. store all living plants, this comes after seeds have grown
         let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();

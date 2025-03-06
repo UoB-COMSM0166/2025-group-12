@@ -33,16 +33,16 @@ export class Tree extends Plant {
 
     getPassiveString() {
         if (this.hasExtended) {
-            return "The tree stops an incoming tornado from nearby 8 cells and lose up to 2 HP.";
+            return "Stops an incoming tornado from nearby 8 cells and lose up to 2 HP.";
         }
-        return "The Tree stops an incoming tornado and lose up tp 2 HP.";
+        return "Stops an incoming tornado and lose up to 2 HP.";
     }
 
     getActiveString() {
         if (this.hasActive) {
-            return "The Tree can recharge a plant's HP by 1.";
+            return "Heal a nearby plant's HP by 1.";
         }
-        return "The Tree has no active skill now.";
+        return "No active skill now.";
     }
 
     reevaluateSkills(playBoard, cell) {

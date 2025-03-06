@@ -37,6 +37,9 @@ export class Tornado extends Enemy {
     }
 
     static createNewTornado(p5, playBoard, i, j, direction) {
+        if(playBoard.boardObjects.getCell(i,j).enemy !== null){
+            return;
+        }
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
         let tornado = new Tornado(p5, avgX, avgY, direction);
         playBoard.movables.push(tornado);

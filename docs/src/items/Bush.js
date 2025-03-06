@@ -20,11 +20,11 @@ export class Bush extends Plant {
     }
 
     getPassiveString() {
-        return "The Bush extends nearby Trees' passive ability to adjacent 8 cells.";
+        return "Extends nearby Trees' passive ability to adjacent 8 cells.";
     }
 
     getActiveString() {
-        return "The Bush has no active skill.";
+        return "No active skill.";
     }
 
     reevaluateSkills(playBoard, cell) {
