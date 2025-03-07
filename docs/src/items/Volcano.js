@@ -10,6 +10,12 @@ export class Lava extends Enemy{
 
 }
 
+
+// need modification:
+// when S and F are have the same X coordinate ( they are vertically stacked)
+// then the parabola collapse.
+// should shift to direct line equation in this case.
+
 export class VolcanicBomb{
     constructor(x1, y1, x2, y2){
         this.x1 = x1;
@@ -30,6 +36,9 @@ export class VolcanicBomb{
         this.isMoving = false;
         this.hasMoved = true;
         this.moveSpeed = 10;
+
+        this.tS = this.reparametrization(x1, y1);
+        this.tF = this.reparametrization(x2, y2);
     }
 
     movements(p5, playBoard){
@@ -70,11 +79,9 @@ export class VolcanicBomb{
     }
 
     reached(){
-        if(this.x1 > this.x2){
-            return this.x <= this.x2;
-        }else{
-            return this.x >= this.x2;
-        }
+        let parameter = this.reparametrization(this.x, this.y);
+        if(this.tS > this.tF) return parameter <= this.tF;
+        else return parameter >= this.tF;
     }
 
     getY(x) {
@@ -102,6 +109,30 @@ export class VolcanicBomb{
         p5.fill(0);
         p5.ellipse(this.x, this.y, 10, 10);
         p5.text("P", this.x - 15, this.y);
+    }
+
+    integrate(f, a, b) {
+        let steps = 1000;
+        let dx = (b - a) / steps;
+        let sum = 0;
+
+        for (let i = 1; i <= steps; i++) {
+            let x1 = a + (i - 1) * dx;
+            let x2 = a + i * dx;
+            sum += (f(x1) + f(x2)) / 2 * dx;  // Trapezoidal rule
+        }
+
+        return sum;
+    }
+
+    reparametrization(x, y) {
+        if (Math.abs(y - this.getY(x)) > 1e-6) {
+            console.error("Point (x, y) is not on the parabola!");
+            return null;
+        }
+
+        // Integrate from vertex h to x
+        return this.integrate(u => Math.sqrt(1 + (2 * this.a * (u - this.h)) ** 2), this.h, x);
     }
 
 }
