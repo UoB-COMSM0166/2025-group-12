@@ -6,6 +6,8 @@ import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
 import {FloatingWindow} from "../FloatingWindow.js";
+import {Bandit} from "../../items/Bandit.js";
+import {Tornado} from "../../items/Tornado.js";
 
 export class Tornado4PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -47,8 +49,35 @@ export class Tornado4PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
-        myutil.generateRandomEnemy(p5, this);
-        myutil.generateRandomEnemy(p5, this);
+        switch (this.turn) {
+            case 2:
+                Bandit.createNewBandit(p5, this, 0, 9);
+                Bandit.createNewBandit(p5, this, 1, 9);
+                break;
+            case 4:
+                Bandit.createNewBandit(p5, this, 2, 7);
+                Bandit.createNewBandit(p5, this, 7, 7);
+                break;
+            case 5:
+                Tornado.createNewTornado(p5, this, 0, 4, "d");
+                break;
+            case 6:
+                Bandit.createNewBandit(p5, this, 2, 3);
+                break;
+            case 7:
+                Bandit.createNewBandit(p5, this, 6, 4);
+                Bandit.createNewBandit(p5, this, 4, 5);
+                break;
+            case 8:
+                Tornado.createNewTornado(p5, this, 8, 4, "u");
+                Tornado.createNewTornado(p5, this, 2, 4, "d");
+                break;
+            case 10:
+                Bandit.createNewBandit(p5, this, 2, 8);
+                Tornado.createNewTornado(p5, this, 4, 2, "r");
+                Tornado.createNewTornado(p5, this, 7, 4, "u");
+                Tornado.createNewTornado(p5, this, 3, 4, "d");
+        }
     }
 
     modifyBoard(p5, code) {

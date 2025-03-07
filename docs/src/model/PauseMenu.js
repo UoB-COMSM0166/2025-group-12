@@ -33,12 +33,10 @@ export class PauseMenu {
 
         let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Quit");
         escapeButton.onClick = () => {
-            escapeButton.onClick = () => {
-                this.gameState.togglePaused();
-                this.gameState.setState(stateCode.STANDBY);
-                this.gameState.setPlayerCanClick(true);
-            };
-        }
+            this.gameState.togglePaused();
+            this.gameState.setState(stateCode.STANDBY);
+            this.gameState.setPlayerCanClick(true);
+        };
         this.buttons.push(continueButton, saveGameButton, escapeButton);
     }
 
