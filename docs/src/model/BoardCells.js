@@ -361,7 +361,7 @@ class Cell {
         }
 
         if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
-        || this.terrain.terrainType === terrainTypes.LUMBERING) {
+            || this.terrain.terrainType === terrainTypes.LUMBERING|| this.terrain.terrainType === terrainTypes.VOLCANO) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }

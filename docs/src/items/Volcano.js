@@ -1,9 +1,21 @@
 import {Terrain} from "./Terrain.js";
 import {Enemy} from "./Enemy.js";
 import {myutil} from "../../lib/myutil.js";
+import { terrainTypes } from "./ItemTypes.js";
+import { plantEnemyInteractions } from "./PlantEnemyInter.js";
 
 export class Volcano extends Terrain{
+    constructor(p5) {
+        super();
+        this.name = "Volcano";
+        this.color = "black";
+        this.terrainType = terrainTypes.VOLCANO;
+        this.img = p5.images.get(`${this.name}`);
+    }
 
+    getWeight() {
+        return 2000;
+    }
 }
 
 export class Lava extends Enemy{
@@ -17,7 +29,15 @@ export class Lava extends Enemy{
 // should shift to direct line equation in this case.
 
 export class VolcanicBomb{
-    constructor(x1, y1, x2, y2){
+    constructor(p5, i1, j1, i2, j2, x1, y1, x2, y2){
+        this.name = "Bomb";
+        this.img = p5.images.get(`${this.name}`);
+
+        this.i1 = i1;
+        this.j1 = j1;
+        this.i2 = i2;
+        this.j2 = j2;
+
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -33,9 +53,10 @@ export class VolcanicBomb{
         this.x = x1;
         this.y = y1;
         this.status = true;
+        this.countdown = 1;
         this.isMoving = false;
         this.hasMoved = true;
-        this.moveSpeed = 10;
+        this.moveSpeed = 5;
 
         this.tS = this.reparametrization(x1, y1);
         this.tF = this.reparametrization(x2, y2);
@@ -50,6 +71,13 @@ export class VolcanicBomb{
             this.isMoving = false;
             this.hasMoved = true;
             this.status = false;
+
+            // if a plant is on the dest cell:
+            let cell = playBoard.boardObjects.getCell(this.i2, this.j2);
+            if(cell.plant !== null){
+                plantEnemyInteractions.plantIsAttacked(playBoard, cell.plant, 1);
+            }
+
             return false;
         }
         // during movement
@@ -105,10 +133,6 @@ export class VolcanicBomb{
 
         p5.ellipse(this.x2, this.y2, 10, 10);
         p5.text("F", this.x2 + 5, this.y2);
-
-        p5.fill(0);
-        p5.ellipse(this.x, this.y, 10, 10);
-        p5.text("P", this.x - 15, this.y);
     }
 
     integrate(f, a, b) {
@@ -119,7 +143,7 @@ export class VolcanicBomb{
         for (let i = 1; i <= steps; i++) {
             let x1 = a + (i - 1) * dx;
             let x2 = a + i * dx;
-            sum += (f(x1) + f(x2)) / 2 * dx;  // Trapezoidal rule
+            sum += (f(x1) + f(x2)) / 2 * dx;
         }
 
         return sum;

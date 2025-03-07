@@ -24,7 +24,8 @@ export let terrainTypes = {
     RIVER: 3,
     BRIDGE: 4,
     STEPPE: 5,
-    LUMBERING: 6
+    LUMBERING: 6,
+    VOLCANO: 7,
 }
 
 // notice: the order of end turn actions refers to below ordering.

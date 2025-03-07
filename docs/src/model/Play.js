@@ -229,7 +229,7 @@ export class PlayBoard extends Screen {
         }
         // draw all movables according to this.movables
         for (let movable of this.movables) {
-            if(movable instanceof VolcanicBomb){movable.draw(p5);continue;}
+            if(movable instanceof VolcanicBomb && !movable.isMoving){movable.draw(p5);continue;}
 
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
