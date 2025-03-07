@@ -10,6 +10,7 @@ import {PlantActive} from "../items/PlantActive.js";
 import {enemyTypes, itemTypes, plantTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
+import {VolcanicBomb} from "../items/Volcano.js";
 
 export class PlayBoard extends Screen {
     constructor(gameState) {
@@ -228,6 +229,8 @@ export class PlayBoard extends Screen {
         }
         // draw all movables according to this.movables
         for (let movable of this.movables) {
+            if(movable instanceof VolcanicBomb){movable.draw(p5);continue;}
+
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
         }

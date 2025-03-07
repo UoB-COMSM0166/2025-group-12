@@ -8,6 +8,7 @@ import {Mountain} from "../../items/Mountain.js";
 import {Tornado} from "../../items/Tornado.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
+import {VolcanicBomb} from "../../items/Volcano.js";
 
 export class Volcano1PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -49,14 +50,14 @@ export class Volcano1PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
-        if(this.turn === 2){
-            Bandit.createNewBandit(p5, this, 3, 3);
-        }else{
-        myutil.generateRandomEnemy(p5, this);
-        myutil.generateRandomEnemy(p5, this);
-        myutil.generateRandomEnemy(p5, this);
-        myutil.generateRandomEnemy(p5, this);
-        }
+        let i1 = Math.floor(Math.random() * this.gridSize);
+        let j1 = Math.floor(Math.random() * this.gridSize);
+        let i2 = Math.floor(Math.random() * this.gridSize);
+        let j2 = Math.floor(Math.random() * this.gridSize);
+        let [avgX1, avgY1] = myutil.cellIndex2Pos(p5, this, i1, j1, p5.CENTER);
+        let [avgX2, avgY2] = myutil.cellIndex2Pos(p5, this, i2, j2, p5.CENTER);
+        let bomb = new VolcanicBomb(avgX1, avgY1, avgX2, avgY2);
+        this.movables.push(bomb)
     }
 
     modifyBoard(p5, code) {

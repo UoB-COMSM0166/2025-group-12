@@ -41,10 +41,6 @@ export class Bandit extends Enemy {
     }
 
     movements(p5, playBoard) {
-        if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of Tornado has received invalid PlayBoard.');
-            return false;
-        }
         if (!this.status || this.hasMoved) {
             return false;
         }

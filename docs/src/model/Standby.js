@@ -24,7 +24,7 @@ export class StandbyMenu extends Screen {
         let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.2);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
-        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Storm");
+        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Tornado");
         stage1Button.onClick = () => {
             this.clickedStageButton(p5, stageGroup.TORNADO);
         };
