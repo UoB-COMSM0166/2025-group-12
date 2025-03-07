@@ -129,7 +129,7 @@ export class PlayBoard extends Screen {
             if (event.key === "ArrowRight" && this.selectedCell.length !== 0) {
                 this.infoBox.clickRightArrow(p5);
             }
-        })
+        });
 
         // setup stage terrain
         this.setStageTerrain(p5);

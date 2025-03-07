@@ -72,26 +72,29 @@ export class myutil {
 
     static drawActionPoints(p5, playBoard) {
         if (playBoard.hasActionPoints) {
-            let x = playBoard.gameState.inventory.inventoryX;
-            let y = playBoard.gameState.inventory.inventoryY + playBoard.gameState.inventory.inventoryHeight + playBoard.gameState.inventory.padding;
-            let width = playBoard.gameState.inventory.inventoryWidth;
-            let height = playBoard.gameState.inventory.itemHeight;
-            p5.stroke(0);
+            let [x, y] = myutil.relative2absolute(0.9, 0.5);
+            let width = playBoard.gameState.inventory.inventoryWidth/2;
+            let height = playBoard.gameState.inventory.inventoryWidth/2;
+            p5.stroke("#DDDDDD");
             p5.strokeWeight(2);
-            p5.fill(255, 255, 255, 0);
+            p5.fill("#DDDDDD");
             p5.rect(x, y, width, height, 20);
 
             let p = playBoard.actionPoints / playBoard.maxActionPoints;
 
             p5.noStroke();
-            p5.fill("green");
-            p5.rect(x, y, width * p, height, 20);
-
-            for (let i = 1; i < playBoard.maxActionPoints; i++) {
-                p5.stroke(0);
-                p5.strokeWeight(1);
-                p5.line(x + i * width / playBoard.maxActionPoints, y, x + i * width / playBoard.maxActionPoints, y + height);
+            if(playBoard.actionPoints !== 0){
+                p5.fill("#6699FF");
             }
+            else{
+                p5.fill("rgba(102,153,255,0.5)");
+            }
+            p5.rect(x, y, width, height, 20);
+
+            p5.fill(255);
+            p5.textSize(18);
+            p5.textAlign(p5.CENTER, p5.CENTER);
+            p5.text(playBoard.actionPoints + " / " + playBoard.maxActionPoints,x + width / 2, y + height / 2);
         }
     }
 
