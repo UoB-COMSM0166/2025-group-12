@@ -132,13 +132,8 @@ export class Controller {
                 movable.movements(p5, this.menus[stateCode.PLAY]);
                 return;
             }
-            // delete dead movable object, a safe-lock
-            if (!movable.status) {
-                let index = this.menus[stateCode.PLAY].movables.indexOf(movable);
-                if (index !== -1) {
-                    this.menus[stateCode.PLAY].movables.splice(index, 1);
-                }
-            }
+            // don't delete dead movable object here, it distorts the iterator
+            // encapsulate delete within each class
         }
         // all moved, if it not end turn, set player can click
         if (!this.menus[stateCode.PLAY].endTurn) {

@@ -129,7 +129,7 @@ export class BoardCells {
 
         if (e !== null) {
             //return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
-            return `terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
+            return `terrain ${t.name} and has a ${e.name} of health ${e.health}.`;
         }
 
         if (s !== null) {
@@ -138,7 +138,7 @@ export class BoardCells {
         }
 
         //return `cell at (${x},${y}) is of terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
-        return `terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
+        return `terrain ${t.name} and has a plant ${p.name} of health ${p.health}.`;
     }
 
     // when a new plant is placed at (x,y), recursively find an ecosystem.
@@ -246,14 +246,6 @@ export class BoardCells {
         return tmpArray;
     }
 
-    disableHighlight() {
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                this.getCell(i, j).highlight = false;
-            }
-        }
-    }
-
     loadBoard(savedBoard, gameState) {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -279,7 +271,6 @@ class Cell {
     // we will manually set terrain for all stages
     // but the right to plant is handed over to player.
     constructor(x, y, terrain) {
-
         if (terrain.type !== itemTypes.TERRAIN) {
             console.error(`failed to set cell at (${x},${y}) since the input is not terrain.`);
             return;
@@ -292,7 +283,6 @@ class Cell {
         this._seed = null;
         this._enemy = null;
         this.isEcoSphere = false;
-        this.highlight = false;
     }
 
     // however we still need to change terrain

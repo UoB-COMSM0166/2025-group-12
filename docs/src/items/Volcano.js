@@ -1,10 +1,10 @@
 import {Terrain} from "./Terrain.js";
 import {Enemy} from "./Enemy.js";
 import {myutil} from "../../lib/myutil.js";
-import { terrainTypes } from "./ItemTypes.js";
-import { plantEnemyInteractions } from "./PlantEnemyInter.js";
+import {enemyTypes, enemyTypes as enenemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
+import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 
-export class Volcano extends Terrain{
+export class Volcano extends Terrain {
     constructor(p5) {
         super();
         this.name = "Volcano";
@@ -18,7 +18,7 @@ export class Volcano extends Terrain{
     }
 }
 
-export class Lava extends Enemy{
+export class Lava extends Enemy {
 
 }
 
@@ -28,10 +28,12 @@ export class Lava extends Enemy{
 // then the parabola collapse.
 // should shift to direct line equation in this case.
 
-export class VolcanicBomb{
-    constructor(p5, i1, j1, i2, j2, x1, y1, x2, y2){
+export class VolcanicBomb extends Enemy {
+    constructor(p5, i1, j1, i2, j2, x1, y1, x2, y2) {
+        super();
         this.name = "Bomb";
         this.img = p5.images.get(`${this.name}`);
+        this.enemyType = enemyTypes.BOMB;
 
         this.i1 = i1;
         this.j1 = j1;
@@ -62,7 +64,7 @@ export class VolcanicBomb{
         this.tF = this.reparametrization(x2, y2);
     }
 
-    movements(p5, playBoard){
+    movements(p5, playBoard) {
         if (!this.status || this.hasMoved) {
             return false;
         }
@@ -71,13 +73,8 @@ export class VolcanicBomb{
             this.isMoving = false;
             this.hasMoved = true;
             this.status = false;
-
-            // if a plant is on the dest cell:
-            let cell = playBoard.boardObjects.getCell(this.i2, this.j2);
-            if(cell.plant !== null){
-                plantEnemyInteractions.plantIsAttacked(playBoard, cell.plant, 1);
-            }
-
+            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            this.hit(p5, playBoard);
             return false;
         }
         // during movement
@@ -86,17 +83,55 @@ export class VolcanicBomb{
             return true;
         }
         // before movement
-        if (this.isMoving === false) {
+        if (this.countdown > 0) {
+            this.countdown--;
+            this.hasMoved = true;
+            return false;
+        }
+        if (this.countdown === 0) {
             this.isMoving = true;
             this.move(this.moveSpeed);
             return true;
         }
     }
 
-    move(moveSpeed){
-        let direction =  Math.sign(this.x2 - this.x1) ;
+    hit(p5, playBoard) {
+        let cell = playBoard.boardObjects.getCell(this.i2, this.j2);
+
+        // if hit player base:
+        if (cell.terrain.terrainType === terrainTypes.BASE) {
+            let cwt = [];
+            for (let c of playBoard.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
+                if (c.plant !== null && c.plant.plantType === plantTypes.TREE) {
+                    cwt.push(c);
+                }
+            }
+            // 1. if a tree is nearby, hit one randomly.
+            if (cwt.length !== 0) {
+                plantEnemyInteractions.plantIsAttacked(playBoard, cwt[Math.floor(Math.random() * cwt.length)].plant, 1);
+            }
+            // 2. no tree nearby, game over.
+            else {
+                myutil.gameOver(playBoard);
+            }
+            return;
+        }
+
+        // if hit a plant or seed:
+        if (cell.plant !== null) {
+            plantEnemyInteractions.plantIsAttacked(playBoard, cell.plant, 1);
+            return;
+        }
+        if (cell.seed !== null) {
+            plantEnemyInteractions.plantIsAttacked(playBoard, cell.seed, 1);
+            return;
+        }
+    }
+
+    move(moveSpeed) {
+        let direction = Math.sign(this.x2 - this.x1);
         let distLeft = moveSpeed;
-        while(distLeft>0){
+        while (distLeft > 0) {
             let x = this.x + direction;
             let y = this.getY(x);
             let dist = Math.abs(Math.sqrt(myutil.euclideanDistance(this.x, this.y, x, y)));
@@ -106,9 +141,9 @@ export class VolcanicBomb{
         }
     }
 
-    reached(){
+    reached() {
         let parameter = this.reparametrization(this.x, this.y);
-        if(this.tS > this.tF) return parameter <= this.tF;
+        if (this.tS > this.tF) return parameter <= this.tF;
         else return parameter >= this.tF;
     }
 
@@ -117,6 +152,10 @@ export class VolcanicBomb{
     }
 
     draw(p5) {
+
+        // change this to a bomb alert later
+
+
         p5.stroke(2);
         p5.noFill();
         p5.beginShape();

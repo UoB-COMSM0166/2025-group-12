@@ -167,11 +167,6 @@ export class PlayBoard extends Screen {
 
         // click any grid cell to display info box
         this.clickedCell(p5);
-
-        // disable highlight if no cell is clicked
-        if(this.selectedCell.length === 0) {
-            this.boardObjects.disableHighlight();
-        }
     }
 
     draw(p5) {

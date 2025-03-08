@@ -60,19 +60,36 @@ export class Volcano1PlayBoard extends PlayBoard {
     }
 
     nextTurnItems(p5) {
+        //this.generateRandomVolBomb(p5);
+        this.generateVolBomb(p5, 4,4);
+        this.generateVolBomb(p5, 0,7);
+    }
+
+    generateRandomVolBomb(p5){
         let i1 = Math.floor(Math.random() * 3);
         let j1 = Math.floor(Math.random() * 3);
         let i2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
-        //let j2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
-        let j2 = 0;
+        let j2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
         while(i1-j1 === i2 - j2){
-             i1 = Math.floor(Math.random() * 3);
-             j1 = Math.floor(Math.random() * 3);
+            i1 = Math.floor(Math.random() * 3);
+            j1 = Math.floor(Math.random() * 3);
         }
         let [x1, y1] = myutil.cellIndex2Pos(p5, this, i1, j1, p5.CENTER);
         let [x2, y2] = myutil.cellIndex2Pos(p5, this, i2, j2, p5.CENTER);
-        
         let bomb = new VolcanicBomb(p5, i1, j1, i2, j2, x1, y1, x2, y2);
+        this.movables.push(bomb);
+    }
+
+    generateVolBomb(p5, i, j){
+        let i1 = Math.floor(Math.random() * 3);
+        let j1 = Math.floor(Math.random() * 3);
+        while(i1-j1 === i - j){
+            i1 = Math.floor(Math.random() * 3);
+            j1 = Math.floor(Math.random() * 3);
+        }
+        let [x1, y1] = myutil.cellIndex2Pos(p5, this, i1, j1, p5.CENTER);
+        let [x2, y2] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
+        let bomb = new VolcanicBomb(p5, i1, j1, i, j, x1, y1, x2, y2);
         this.movables.push(bomb);
     }
 

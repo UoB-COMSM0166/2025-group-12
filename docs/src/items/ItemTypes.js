@@ -30,6 +30,7 @@ export let terrainTypes = {
 
 // notice: the order of end turn actions refers to below ordering.
 export let enemyTypes = {
+    BOMB: 10,
     TORNADO: 100,
     BANDIT: 200
 }

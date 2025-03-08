@@ -30,7 +30,7 @@ export class Tornado extends Enemy {
 
         this.cell = null;
         this.targetCell = null;
-        this.countdown = 1;
+        this.countdown = 0;
         this.isMoving = false;
         this.hasMoved = true;
         this.moveSpeed = 5;
@@ -61,9 +61,10 @@ export class Tornado extends Enemy {
         }
         if (this.countdown > 0) {
             this.countdown--;
+            this.hasMoved = true;
+            return false;
         }
         if (this.countdown === 0) {
-            // the Tornado blows!
             if (this.cell) {
                 this.cell.enemy = null;
                 this.cell = null;
