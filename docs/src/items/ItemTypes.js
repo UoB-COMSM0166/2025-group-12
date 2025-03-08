@@ -9,12 +9,14 @@ export let itemTypes = {
 export let plantTypes = {
     TREE: 2,
     BUSH: 4,
-    GRASS: 6
+    GRASS: 6,
+    FIRE_HERB: 8,
 }
 export let seedTypes = {
     TREE: 3,
     BUSH: 5,
-    GRASS: 7
+    GRASS: 7,
+    FIRE_HERB: 9,
 }
 
 export let terrainTypes = {
@@ -26,11 +28,13 @@ export let terrainTypes = {
     STEPPE: 5,
     LUMBERING: 6,
     VOLCANO: 7,
+    LAVA: 8,
 }
 
 // notice: the order of end turn actions refers to below ordering.
 export let enemyTypes = {
     BOMB: 10,
     TORNADO: 100,
-    BANDIT: 200
+    BANDIT: 200,
+    LAVA: 300,
 }

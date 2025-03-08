@@ -12,4 +12,8 @@ export class Plant {
     getActiveString() {
         console.error("getActiveString not overridden.");
     }
+
+    reevaluateSkills(playBoard, cell) {
+        console.error("reevaluateSkills not overridden.");
+    }
 }

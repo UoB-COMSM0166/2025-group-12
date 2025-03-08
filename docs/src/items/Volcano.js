@@ -1,7 +1,7 @@
 import {Terrain} from "./Terrain.js";
 import {Enemy} from "./Enemy.js";
 import {myutil} from "../../lib/myutil.js";
-import {enemyTypes, enemyTypes as enenemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
+import {enemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 
 export class Volcano extends Terrain {

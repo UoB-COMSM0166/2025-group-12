@@ -4,6 +4,7 @@ import {Grass, GrassSeed} from "../items/Grass.js";
 import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js"
 import {itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
+import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
 
 export class Inventory {
     constructor(p5) {
@@ -23,6 +24,22 @@ export class Inventory {
         this.inventoryX = CanvasSize.getSize()[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
+    }
+
+    // with prototypes, we can find seed or plant type given a name,
+    // while name is a concrete String rather than a reference
+    // so we can create it multiple times.
+    initPrototypes(p5) {
+        return new Map([
+            ["Tree", new Tree(p5)],
+            ["Bush", new Bush(p5)],
+            ["Grass", new Grass(p5)],
+            ["FireHerb", new FireHerb(p5)],
+            ["TreeSeed", new TreeSeed(p5)],
+            ["BushSeed", new BushSeed(p5)],
+            ["GrassSeed", new GrassSeed(p5)],
+            ["FireHerbSeed", new FireHerbSeed(p5)],
+        ]);
     }
 
     draw(p5) {
@@ -67,9 +84,10 @@ export class Inventory {
         // clear item when clicked somewhere else
         this.selectedItem = null;
 
+        let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
         // record when an inventory item is clicked
         let index = 0;
-        for (let [key, value] of this.items.entries()) {
+        for (let [key, value] of visibleItems) {
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
             if (p5.mouseX >= this.itemX && p5.mouseX <= this.itemX + this.itemWidth &&
                 p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - this.itemInter)) {
@@ -117,6 +135,8 @@ export class Inventory {
                 return new Bush(p5);
             } else if (item.plantType === plantTypes.GRASS) {
                 return new Grass(p5);
+            }else if( item.plantType === plantTypes.FIRE_HERB){
+                return new FireHerb(p5);
             }
         } else if (item.type === itemTypes.SEED) {
             if (item.seedType === seedTypes.TREE) {
@@ -125,6 +145,8 @@ export class Inventory {
                 return new BushSeed(p5);
             } else if (item.seedType === seedTypes.GRASS) {
                 return new GrassSeed(p5);
+            }else if (item.seedType === seedTypes.FIRE_HERB) {
+                return new FireHerbSeed(p5);
             }
         } else {
             console.error("input of createItem is not a unknown?");
@@ -154,20 +176,6 @@ export class Inventory {
     setItemOfInventory(p5, name, number){
         this.items.set(name, number);
         this.updateInventoryHeight();
-    }
-
-    // with prototypes, we can find seed or plant type given a name,
-    // while name is a concrete String rather than a reference
-    // so we can create it multiple times.
-    initPrototypes(p5) {
-        return new Map([
-            ["Tree", new Tree(p5)],
-            ["Bush", new Bush(p5)],
-            ["Grass", new Grass(p5)],
-            ["TreeSeed", new TreeSeed(p5)],
-            ["BushSeed", new BushSeed(p5)],
-            ["GrassSeed", new GrassSeed(p5)]
-        ]);
     }
 
     // store inventory items so next method can load it

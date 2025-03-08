@@ -35,6 +35,9 @@ export class Volcano1PlayBoard extends PlayBoard {
         this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 5);
         this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 5);
         this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 5);
+
+        this.gameState.inventory.pushItem2Inventory(p5, "FireHerb", 5);
+        this.gameState.inventory.pushItem2Inventory(p5, "FireHerbSeed", 5);
     }
 
     // set stage terrain, called when the stage is loaded or reset
@@ -61,16 +64,16 @@ export class Volcano1PlayBoard extends PlayBoard {
 
     nextTurnItems(p5) {
         //this.generateRandomVolBomb(p5);
-        this.generateVolBomb(p5, 4,4);
-        this.generateVolBomb(p5, 0,7);
+        this.generateVolBomb(p5, 4, 4);
+        this.generateVolBomb(p5, 0, 7);
     }
 
-    generateRandomVolBomb(p5){
+    generateRandomVolBomb(p5) {
         let i1 = Math.floor(Math.random() * 3);
         let j1 = Math.floor(Math.random() * 3);
         let i2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
         let j2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
-        while(i1-j1 === i2 - j2){
+        while (i1 - j1 === i2 - j2) {
             i1 = Math.floor(Math.random() * 3);
             j1 = Math.floor(Math.random() * 3);
         }
@@ -80,10 +83,10 @@ export class Volcano1PlayBoard extends PlayBoard {
         this.movables.push(bomb);
     }
 
-    generateVolBomb(p5, i, j){
+    generateVolBomb(p5, i, j) {
         let i1 = Math.floor(Math.random() * 3);
         let j1 = Math.floor(Math.random() * 3);
-        while(i1-j1 === i - j){
+        while (i1 - j1 === i - j) {
             i1 = Math.floor(Math.random() * 3);
             j1 = Math.floor(Math.random() * 3);
         }
@@ -97,6 +100,13 @@ export class Volcano1PlayBoard extends PlayBoard {
     }
 
     setFloatingWindow(p5) {
+        if (this.turn === 1) {
+            if (this.allFloatingWindows.has("100")) {
+                this.floatingWindow = this.allFloatingWindows.get("100");
+                this.allFloatingWindows.delete("100");
+                return;
+            }
+        }
         if (this.turn === this.maxTurn + 1) {
             if (this.allFloatingWindows.has("000")) {
                 this.floatingWindow = this.allFloatingWindows.get("000");
@@ -110,6 +120,16 @@ export class Volcano1PlayBoard extends PlayBoard {
         let afw = new Map();
 
         myutil.commonFloatingWindows(p5, afw);
+
+        afw.set("100", new FloatingWindow(p5, "rc", "{white:You have more than 6 kind of items in your inventory. Scroll}\\{red:mouse wheel}{white: when your mouse is hovering over the inventory.}", {
+            x: myutil.relative2absolute(0.6, 0.15)[0],
+            y: myutil.relative2absolute(0.6, 0.15)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
 
         this.allFloatingWindows = afw;
     }
