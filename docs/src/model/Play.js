@@ -229,7 +229,10 @@ export class PlayBoard extends Screen {
         }
         // draw all movables according to this.movables
         for (let movable of this.movables) {
-            if(movable instanceof VolcanicBomb && !movable.isMoving){movable.draw(p5);continue;}
+            if (movable instanceof VolcanicBomb && !movable.isMoving) {
+                movable.draw(p5);
+                continue;
+            }
 
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
@@ -282,12 +285,7 @@ export class PlayBoard extends Screen {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 let cell = this.boardObjects.getCell(i, j);
-                if(cell.terrain.name === 'Lava'){
-                    img = p5.images.get('Lava');
-                }
-                else{
-                    img = p5.images.get("ground");
-                }
+                img = p5.images.get(`${cell.terrain.name}`);
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
                 p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
@@ -303,7 +301,7 @@ export class PlayBoard extends Screen {
         }
 
         // if skill is activated and awaiting target, set highlight on
-        if(this.awaitCell) {
+        if (this.awaitCell) {
             for (let i = 0; i < this.boardObjects.size; i++) {
                 for (let j = 0; j < this.boardObjects.size; j++) {
                     if (PlantActive.activeRange1(i, j, this.selectedCell[0], this.selectedCell[1])) {
@@ -317,18 +315,6 @@ export class PlayBoard extends Screen {
         }
 
         p5.strokeWeight(0);
-
-        // terrain images
-        for (let i = this.gridSize - 1; i >= 0; i--) {
-            for (let j = this.gridSize - 1; j >= 0; j--) {
-                let cell = this.boardObjects.getCell(i, j);
-                if (cell.terrain.name === "Steppe") continue;
-                let [x1, y1] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNER);
-                if(cell.terrain.name !== "Lava"){
-                    p5.image(cell.terrain.img, x1 - this.cellWidth / 4, y1, this.cellWidth / 2, this.cellHeight / 2);
-                }
-            }
-        }
     }
 
     drawAllPlants(p5) {
