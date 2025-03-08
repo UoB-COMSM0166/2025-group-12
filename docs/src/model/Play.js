@@ -277,10 +277,17 @@ export class PlayBoard extends Screen {
     drawGrid(p5) {
         p5.stroke(0);
         p5.strokeWeight(2);
-        let img = p5.images.get("ground");
+        let img;
 
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
+                let cell = this.boardObjects.getCell(i, j);
+                if(cell.terrain.name === 'Lava'){
+                    img = p5.images.get('Lava');
+                }
+                else{
+                    img = p5.images.get("ground");
+                }
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
                 p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
@@ -317,7 +324,9 @@ export class PlayBoard extends Screen {
                 let cell = this.boardObjects.getCell(i, j);
                 if (cell.terrain.name === "Steppe") continue;
                 let [x1, y1] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNER);
-                p5.image(cell.terrain.img, x1 - this.cellWidth / 4, y1, this.cellWidth / 2, this.cellHeight / 2);
+                if(cell.terrain.name !== "Lava"){
+                    p5.image(cell.terrain.img, x1 - this.cellWidth / 4, y1, this.cellWidth / 2, this.cellHeight / 2);
+                }
             }
         }
     }
