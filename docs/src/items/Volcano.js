@@ -3,6 +3,8 @@ import {Enemy} from "./Enemy.js";
 import {myutil} from "../../lib/myutil.js";
 import {enemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
+import {Seed} from "./Seed.js";
+import {Plant} from "./Plant.js";
 
 export class Volcano extends Terrain {
     constructor(p5) {
@@ -18,8 +20,49 @@ export class Volcano extends Terrain {
     }
 }
 
-export class Lava extends Enemy {
+export class Lava extends Terrain {
+    constructor(p5) {
+        super();
+        this.name = "Lava";
+        this.color = "black";
+        this.terrainType = terrainTypes.LAVA;
+        this.img = p5.images.get(`${this.name}`);
 
+        this.countdown = 3;
+        this.hasSolidified = false;
+
+        this.plant = null;
+
+        this.weight = 1000;
+    }
+
+    setCountdown(num){
+        this.countdown = num;
+    }
+
+    setPlant(p5, plant){
+        if(plant instanceof Seed){
+            this.plant = plant.constructor(p5);
+        }else if(plant instanceof Plant){
+            this.plant = new plant.seed(p5);
+        }
+    }
+
+    solidify(p5){
+        console.log("trigger")
+        if(this.countdown > 0){
+            this.countdown--;
+        }else{
+            this.name = "LavaS";
+            this.img = p5.images.get(`${this.name}`);
+            this.hasSolidified = true;
+            this.weight = 0;
+        }
+    }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 

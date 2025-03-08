@@ -11,6 +11,8 @@ export class FireHerb extends Plant {
         this.plantType = plantTypes.FIRE_HERB;
         this.img = p5.images.get(`${this.name}`);
 
+        this.seed = FireHerbSeed;
+
         this.health = 1;
         this.maxHealth = 1;
         this.status = true;

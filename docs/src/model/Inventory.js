@@ -118,7 +118,7 @@ export class Inventory {
     }
 
     // return a new item according to its name.
-    // use prototypes for type lookup
+    // use prototypes for type lookup and creation
     createItem(p5, name) {
         // fetch an instance from item prototypes
         let item = this.itemPrototypes.get(name);
@@ -127,31 +127,7 @@ export class Inventory {
             return null;
         }
 
-        // item is either a plant or seed
-        if (item.type === itemTypes.PLANT) {
-            if (item.plantType === plantTypes.TREE) {
-                return new Tree(p5);
-            } else if (item.plantType === plantTypes.BUSH) {
-                return new Bush(p5);
-            } else if (item.plantType === plantTypes.GRASS) {
-                return new Grass(p5);
-            }else if( item.plantType === plantTypes.FIRE_HERB){
-                return new FireHerb(p5);
-            }
-        } else if (item.type === itemTypes.SEED) {
-            if (item.seedType === seedTypes.TREE) {
-                return new TreeSeed(p5);
-            } else if (item.seedType === seedTypes.BUSH) {
-                return new BushSeed(p5);
-            } else if (item.seedType === seedTypes.GRASS) {
-                return new GrassSeed(p5);
-            }else if (item.seedType === seedTypes.FIRE_HERB) {
-                return new FireHerbSeed(p5);
-            }
-        } else {
-            console.error("input of createItem is not a unknown?");
-            return null;
-        }
+        return new item.constructor(p5);
     }
 
     // add item into the inventory.

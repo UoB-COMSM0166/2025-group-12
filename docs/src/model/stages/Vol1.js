@@ -8,7 +8,9 @@ import {Mountain} from "../../items/Mountain.js";
 import {Tornado} from "../../items/Tornado.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
-import {VolcanicBomb, Volcano} from "../../items/Volcano.js";
+import {Lava, VolcanicBomb, Volcano} from "../../items/Volcano.js";
+import {enemyTypes} from "../../items/ItemTypes.js";
+import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
 
 export class Volcano1PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -25,6 +27,8 @@ export class Volcano1PlayBoard extends PlayBoard {
         // turn counter
         this.turn = 1;
         this.maxTurn = 15;
+
+        this.lava = [];
     }
 
     // set stage inventory at entering, called by controller
@@ -66,6 +70,55 @@ export class Volcano1PlayBoard extends PlayBoard {
         //this.generateRandomVolBomb(p5);
         this.generateVolBomb(p5, 4, 4);
         this.generateVolBomb(p5, 0, 7);
+
+        if(this.turn === 2){
+            Bandit.createNewBandit(p5, this, 7,0);
+        }
+
+        if(this.turn === 3){
+            this.generateLava(p5, 5, 0);
+            this.generateLava(p5, 5, 1);
+            this.generateLava(p5, 5, 2);
+            this.generateLava(p5, 6, 0);
+            this.generateLava(p5, 6, 1);
+            this.generateLava(p5, 6, 2);
+            this.generateLava(p5, 7, 0);
+            this.generateLava(p5, 7, 1);
+            this.generateLava(p5, 7, 2);
+            this.generateLava(p5, 8, 0);
+            this.generateLava(p5, 8, 1);
+            this.generateLava(p5, 8, 2);
+        }
+
+        this.solidifyLava(p5);
+    }
+
+    generateLava(p5, i, j){
+        let cell = this.boardObjects.getCell(i,j);
+        let l = new Lava(p5);
+
+        cell.terrain = l;
+        this.lava.push(l);
+
+        // kill plant and store its seed
+        if(cell.plant !== null){
+            l.setPlant(p5, cell.plant);
+        }else if(cell.seed !== null){
+            l.setPlant(p5, cell.seed);
+        }
+
+        // kill bandit on this cell
+        if(cell.enemy !== null && cell.enemy.enemyType === enemyTypes.BANDIT){
+            cell.enemy.status = false;
+            plantEnemyInteractions.findEnemyAndDelete(this, cell.enemy);
+        }
+    }
+
+    solidifyLava(p5){
+        this.lava = this.lava.map(lava => {
+            lava.solidify(p5);
+            return lava;
+        });
     }
 
     generateRandomVolBomb(p5) {

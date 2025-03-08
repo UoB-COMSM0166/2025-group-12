@@ -11,6 +11,8 @@ export class Grass extends Plant {
         this.plantType = plantTypes.GRASS;
         this.img = p5.images.get(`${this.name}`);
 
+        this.seed = GrassSeed;
+
         this.health = 1;
         this.maxHealth = 1;
         this.status = true;

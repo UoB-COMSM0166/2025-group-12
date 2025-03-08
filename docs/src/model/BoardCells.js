@@ -283,6 +283,8 @@ class Cell {
         this._seed = null;
         this._enemy = null;
         this.isEcoSphere = false;
+
+        this.lava = null;
     }
 
     // however we still need to change terrain

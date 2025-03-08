@@ -12,6 +12,8 @@ export function preloader(p5) {
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
     images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
+    images.set("Lava", p5.loadImage(basePath + "Lava.png"));
+    images.set("LavaS", p5.loadImage(basePath + "LavaS.png"));
 
     images.set("Tree", p5.loadImage(basePath + "Tree.png"));
     images.set("Bush", p5.loadImage(basePath + "Bush.png"));

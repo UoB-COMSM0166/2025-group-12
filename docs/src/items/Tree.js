@@ -11,6 +11,8 @@ export class Tree extends Plant {
         this.plantType = plantTypes.TREE;
         this.img = p5.images.get(`${this.name}`);
 
+        this.seed = TreeSeed;
+
         this.health = 3;
         this.maxHealth = 3;
         this.status = true;
