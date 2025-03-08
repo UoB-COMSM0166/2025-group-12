@@ -7,7 +7,7 @@ export class Grass extends Plant {
     constructor(p5) {
         super();
         this.name = "Grass";
-        this.color = "blue";
+        this.color = "rgb(195,251,180)";
         this.plantType = plantTypes.GRASS;
         this.img = p5.images.get(`${this.name}`);
 
@@ -62,7 +62,7 @@ export class GrassSeed extends Seed {
     constructor(p5) {
         super();
         this.name = "GrassSeed";
-        this.color = "blue";
+        this.color = "rgb(195,251,180)";
         this.seedType = seedTypes.GRASS;
         this.countdown = 1;
         this.img = this.img = p5.images.get("Seed");
