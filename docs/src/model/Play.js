@@ -167,6 +167,11 @@ export class PlayBoard extends Screen {
 
         // click any grid cell to display info box
         this.clickedCell(p5);
+
+        // disable highlight if no cell is clicked
+        if(this.selectedCell.length === 0) {
+            this.boardObjects.disableHighlight();
+        }
     }
 
     draw(p5) {
@@ -229,7 +234,7 @@ export class PlayBoard extends Screen {
         }
         // draw all movables according to this.movables
         for (let movable of this.movables) {
-            if(movable instanceof VolcanicBomb){movable.draw(p5);continue;}
+            if(movable instanceof VolcanicBomb && !movable.isMoving){movable.draw(p5);continue;}
 
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
@@ -294,6 +299,22 @@ export class PlayBoard extends Screen {
                 p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
             }
         }
+
+        // draw highlight separately to avoid edge problem
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
+                if(this.boardObjects.getCell(i, j).highlight){
+                    p5.stroke('rgb(255,238,0)');
+                }
+                else{
+                    p5.stroke('rgba(255,255,255,0)');
+                }
+                p5.strokeWeight(2);
+                p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+            }
+        }
+
         p5.strokeWeight(0);
 
         // terrain images
@@ -329,14 +350,30 @@ export class PlayBoard extends Screen {
     // set the clicked cell to draw info box
     clickedCell(p5) {
         let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        let previousCell = this.selectedCell;
         if (index[0] === -1) {
             this.selectedCell = [];
         } else {
+            // if selected cell change, disable previous highlight
             this.selectedCell = [index[0], index[1]];
+            if(previousCell[0] !== this.selectedCell[0] || previousCell[1] !== this.selectedCell[1]) {
+                this.boardObjects.disableHighlight();
+            }
             // a shortcut to direct to plant active skill page
             let cell = this.boardObjects.getCell(index[0], index[1]);
             if (cell.plant !== null && cell.plant.hasActive) {
                 this.infoBox.setStatus(p5, 'a');
+                // highlight
+                this.boardObjects.highlight = true;
+                for (let i = 0; i < this.boardObjects.size; i++) {
+                    for (let j = 0; j < this.boardObjects.size; j++) {
+                        if (myutil.manhattanDistance(i, j, index[0], index[1]) <= 2
+                            || myutil.euclideanDistance(i, j, index[0], index[1]) < 2
+                        ){
+                            this.boardObjects.getCell(i, j).highlight = true;
+                        }
+                    }
+                }
             }
         }
     }

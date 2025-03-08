@@ -4,6 +4,7 @@ import {Seed} from "../items/Seed.js";
 import {Bandit} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
+import {myutil} from "../../lib/myutil.js";
 
 export class BoardCells {
     constructor(size) {
@@ -246,6 +247,14 @@ export class BoardCells {
         return tmpArray;
     }
 
+    disableHighlight() {
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                this.getCell(i, j).highlight = false;
+            }
+        }
+    }
+
     loadBoard(savedBoard, gameState) {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
@@ -284,6 +293,7 @@ class Cell {
         this._seed = null;
         this._enemy = null;
         this.isEcoSphere = false;
+        this.highlight = false;
     }
 
     // however we still need to change terrain
@@ -361,7 +371,7 @@ class Cell {
         }
 
         if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
-        || this.terrain.terrainType === terrainTypes.LUMBERING) {
+            || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }

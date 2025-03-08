@@ -11,6 +11,7 @@ export function preloader(p5) {
     images.set("Steppe", p5.loadImage(basePath + "Steppe.png"));
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
+    images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
 
     images.set("Tree", p5.loadImage(basePath + "Tree.png"));
     images.set("Bush", p5.loadImage(basePath + "Bush.png"));
@@ -21,6 +22,7 @@ export function preloader(p5) {
     images.set("alertArrow", p5.loadImage(basePath + "alertArrow.png"));
     images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
     images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
+    images.set("Bomb", p5.loadImage(basePath + "Bomb.png"));
 
     return images;
 }
