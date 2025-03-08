@@ -109,7 +109,6 @@ export class BoardCells {
 
     // return a descriptive string
     getCellString(x, y) {
-
         if (this.getCell(x, y) === null) {
             return `cell at (${x},${y}) is null!`
         }

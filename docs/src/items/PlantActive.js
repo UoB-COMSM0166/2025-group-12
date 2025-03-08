@@ -10,9 +10,7 @@ export class PlantActive {
             return false;
         }
 
-        if (myutil.manhattanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) > 2
-            && myutil.euclideanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) >= 2
-        ) {
+        if (!PlantActive.activeRange1(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y)) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
             return false;
         }
@@ -48,9 +46,7 @@ export class PlantActive {
 
         // a basic version, no animal friends.
 
-        if (myutil.manhattanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) > 2
-            && myutil.euclideanDistance(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y) >= 2
-        ) {
+        if (!PlantActive.activeRange1(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y)) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
             return false;
         }
@@ -69,5 +65,9 @@ export class PlantActive {
         }
         spellCasterCell.plant.useLeft--;
         return true;
+    }
+
+    static activeRange1(i1, j1, i2, j2){
+        return myutil.manhattanDistance(i1, j1, i2, j2) <= 2;
     }
 }
