@@ -270,7 +270,7 @@ export class PlayBoard extends Screen {
         this.drawFloatingWindow(p5);
 
         // draw shadow plant
-        if(this.shadowPlant !== null) {
+        if (this.shadowPlant !== null) {
             let [avgX, avgY] = [p5.mouseX, p5.mouseY];
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.push();
@@ -439,8 +439,10 @@ export class PlayBoard extends Screen {
         // clicked item from inventory or clicked somewhere else:
         // handle inventory clicks later to prevent unintentional issues
         this.gameState.inventory.handleClick(p5);
-        if(this.gameState.inventory.selectedItem !== null && index[0] === -1) {
+        if (this.gameState.inventory.selectedItem !== null && index[0] === -1) {
             this.shadowPlant = this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem);
+        } else {
+            this.shadowPlant = null;
         }
     }
 
