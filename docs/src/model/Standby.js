@@ -26,7 +26,8 @@ export class StandbyMenu extends Screen {
 
         let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Tornado");
         stage1Button.onClick = () => {
-            this.clickedStageButton(p5, stageGroup.TORNADO);
+            // this.gameState.setState(stateCode.LEVEL);
+             this.clickedStageButton(p5, stageGroup.TORNADO);
         };
 
         let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Volcano");
