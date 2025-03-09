@@ -10,6 +10,7 @@ import {Tornado5PlayBoard} from "./stages/Tor5.js";
 export const stateCode = {
     MENU: 1,
     STANDBY: 2,
+    LEVEL: 3,
     PLAY: 4,
     FINISH: 8
 };

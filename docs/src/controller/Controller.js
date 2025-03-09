@@ -4,6 +4,7 @@ import {StandbyMenu} from "../model/Standby.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 import {Options} from "../model/Options.js";
+import {LevelSelection} from "../model/LevelSelection.js";
 
 // controller should never invoke any specific field but only encapsulated methods.
 export class Controller {
@@ -13,6 +14,7 @@ export class Controller {
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
             [stateCode.STANDBY]: new StandbyMenu(this.gameState),
+            [stateCode.LEVEL]: new LevelSelection(this.gameState),
             [stateCode.PLAY]: null
         };
 
@@ -69,6 +71,7 @@ export class Controller {
             p5.pop();
             this.pauseMenu.draw(p5);
         }
+
         if (this.gameState.showOptions) {
             this.options.draw(p5);
         }
