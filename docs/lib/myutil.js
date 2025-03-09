@@ -188,6 +188,19 @@ export class myutil {
         }
     }
 
+    static isPointInQuad(px, py, x1, y1, x2, y2, x3, y3, x4, y4) {
+        function crossProduct(xa, ya, xb, yb, xc, yc) {
+            return (xb - xa) * (yc - ya) - (yb - ya) * (xc - xa);
+        }
+
+        let c1 = crossProduct(x1, y1, x2, y2, px, py);
+        let c2 = crossProduct(x2, y2, x3, y3, px, py);
+        let c3 = crossProduct(x3, y3, x4, y4, px, py);
+        let c4 = crossProduct(x4, y4, x1, y1, px, py);
+
+        return (c1 > 0 && c2 > 0 && c3 > 0 && c4 > 0) || (c1 < 0 && c2 < 0 && c3 < 0 && c4 < 0);
+    }
+
     // the coordinate transformation is
     // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) ) ( x )
     // (  ) = (                                   ) (   )
