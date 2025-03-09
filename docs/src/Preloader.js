@@ -1,4 +1,4 @@
-export function preloader(p5) {
+export function loadImages(p5) {
     const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
 
     let images = new Map();
@@ -27,4 +27,13 @@ export function preloader(p5) {
     images.set("Bomb", p5.loadImage(basePath + "Bomb.png"));
 
     return images;
+}
+
+export function loadSounds(p5) {
+    const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/sounds/" : "./assets/sounds/";
+
+    let sounds = new Map();
+    sounds.set("click", p5.loadSound(basePath + "click.mp3"));
+    sounds.get("click").setVolume(0.5);
+    return sounds;
 }

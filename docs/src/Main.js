@@ -1,11 +1,13 @@
 import {Controller} from "./controller/Controller.js";
 import {CanvasSize} from "./CanvasSize.js";
-import {preloader} from "./Preloader.js";
+import {loadImages, loadSounds} from "./Preloader.js";
 
 new p5((p) => {
 
     p.preload = () => {
-        p.images = preloader(p);
+        p.images = loadImages(p);
+        p.soundFormats('mp3');
+        p.mySounds = loadSounds(p);
     };
 
     p.setup = () => {

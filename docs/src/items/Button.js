@@ -45,6 +45,7 @@ export class Button {
     mouseClick(p5) {
         if (this.hasMouseOver(p5)) {
             this._onClick(p5);
+            p5.mySounds.get("click").play();
             return true;
         }
         return false;
