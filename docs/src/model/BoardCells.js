@@ -34,7 +34,7 @@ export class BoardCells {
             return false;
         }
 
-        // seeds grow faster in eco1
+        // seeds grow faster in eco[0]
         if (item instanceof Seed) {
             cell.seed = item;
             if (cell.isEco[0]) {
@@ -170,25 +170,36 @@ export class BoardCells {
     }
 
     // recursively set ecosystem, starting from (x,y).
-    setEcoSphereDFS(x, y) {
+    setEcoSphereDFS(x, y, ...num) {
         // the cell itself is set to eco.
         let cell = this.getCell(x, y);
-        cell.isEco[0] = true;
+        for(let n of num){
+            cell.isEco[n] = true;
+        }
 
         // recursively lookup 4 surrounding cells.
         for (let adCell of this.getAdjacent4Cells(x, y)) {
-            if (adCell.isEco[0]) {
+            if (this.hasFullEco(adCell)) {
                 continue;
             }
             if (adCell.plant !== null) {
-                this.setEcoSphereDFS(adCell.x, adCell.y);
+                this.setEcoSphereDFS(adCell.x, adCell.y, num);
             }
         }
 
         // what's left from the 8 adjacent cells are also set to eco.
         for (let adCell of this.getAdjacent8Cells(x, y)) {
-            adCell.isEco[0] = true;
+            for(let n of num){
+                adCell.isEco[n] = true;
+            }
         }
+    }
+
+    hasFullEco(cell, ...num){
+        for(let n of num){
+            if(!cell.isEco[n]) return false;
+        }
+        return true;
     }
 
     // when a plant is removed, an existing ecosystem may get destroyed.
@@ -294,9 +305,6 @@ class Cell {
             return;
         }
         this._terrain = terrain;
-        if(this._terrain instanceof Lava && this.isEco[1]){
-            this._terrain.countdown = 1;
-        }
     }
 
     get terrain() {

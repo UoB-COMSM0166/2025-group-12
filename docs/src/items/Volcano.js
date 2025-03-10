@@ -28,7 +28,7 @@ export class Lava extends Terrain {
         this.terrainType = terrainTypes.LAVA;
         this.img = p5.images.get(`${this.name}`);
 
-        this.countdown = 3;
+        this.countdown = 1;
         this.hasSolidified = false;
 
         this.plant = null;
@@ -49,7 +49,6 @@ export class Lava extends Terrain {
     }
 
     solidify(p5){
-        console.log("trigger")
         if(this.countdown > 0){
             this.countdown--;
         }else{
