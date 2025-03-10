@@ -3,7 +3,7 @@ import {Button} from "../items/Button.js";
 import {GameSave} from "./GameSave.js";
 import {stageGroup, stateCode} from "./GameState.js";
 
-export class LevelSelection {
+export class Map {
     constructor(gameState) {
         this.gameState = gameState;
         this.buttons = [];
