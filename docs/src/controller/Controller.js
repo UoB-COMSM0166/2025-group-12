@@ -4,7 +4,7 @@ import {StandbyMenu} from "../model/Standby.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 import {Options} from "../model/Options.js";
-import {Map} from "../model/Map.js";
+import {GameMap} from "../model/GameMap.js";
 
 // controller should never invoke any specific field but only encapsulated methods.
 export class Controller {
@@ -14,7 +14,7 @@ export class Controller {
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
             [stateCode.STANDBY]: new StandbyMenu(this.gameState),
-            [stateCode.MAP]: new Map(this.gameState),
+            [stateCode.MAP]: new GameMap(this.gameState),
             [stateCode.PLAY]: null
         };
 
