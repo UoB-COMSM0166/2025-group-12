@@ -326,6 +326,17 @@ export class PlayBoard extends Screen {
             }
         }
 
+        // mouse cell interaction
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
+                if(myutil.isPointInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)) {
+                    p5.stroke('rgb(255,238,0)');
+                    p5.strokeWeight(2);
+                    p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+                }
+            }
+        }
         p5.strokeWeight(0);
     }
 

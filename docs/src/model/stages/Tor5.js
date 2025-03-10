@@ -6,6 +6,8 @@ import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
 import {FloatingWindow} from "../FloatingWindow.js";
+import {Bandit, Lumbering} from "../../items/Bandit.js";
+import {Tornado} from "../../items/Tornado.js";
 
 export class Tornado5PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -42,12 +44,44 @@ export class Tornado5PlayBoard extends PlayBoard {
             }
         }
         this.boardObjects.setCell(4, 4, new PlayerBase(p5));
-        this.boardObjects.setCell(4, 5, new Mountain(p5));
-        this.boardObjects.setCell(5, 5, new Mountain(p5));
+        this.boardObjects.setCell(7, 5, new Mountain(p5));
+        this.boardObjects.setCell(7, 6, new Mountain(p5));
+        this.boardObjects.setCell(1, 1, new Lumbering(p5));
+        this.boardObjects.setCell(7, 7, new Lumbering(p5));
+        this.boardObjects.setCell(7, 2, new Lumbering(p5));
     }
 
     nextTurnItems(p5) {
-
+        switch (this.turn) {
+            case 2:
+                Bandit.createNewBandit(p5, this, 1, 2);
+                break;
+            case 4:
+                Bandit.createNewBandit(p5, this, 1, 2);
+                Bandit.createNewBandit(p5, this, 7, 8);
+                break;
+            case 5:
+                Tornado.createNewTornado(p5, this, 0, 4, "d");
+                break;
+            case 6:
+                Bandit.createNewBandit(p5, this, 7, 3);
+                break;
+            case 7:
+                Bandit.createNewBandit(p5, this, 8, 7);
+                Bandit.createNewBandit(p5, this, 8, 8);
+                break;
+            case 8:
+                Tornado.createNewTornado(p5, this, 8, 4, "u");
+                Tornado.createNewTornado(p5, this, 2, 4, "d");
+                break;
+            case 10:
+                Bandit.createNewBandit(p5, this, 2, 2);
+                Tornado.createNewTornado(p5, this, 4, 2, "r");
+                Tornado.createNewTornado(p5, this, 7, 4, "u");
+                Tornado.createNewTornado(p5, this, 2, 4, "d");
+                Tornado.createNewTornado(p5, this, 4, 8, "l");
+                break;
+        }
     }
 
     modifyBoard(p5, code) {
