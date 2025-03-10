@@ -38,3 +38,27 @@ export let enemyTypes = {
     BANDIT: 200,
     LAVA: 300,
 }
+
+function isTree(plantTypes){
+    return plantTypes === plantTypes.TREE;
+}
+
+function isTreeSeed(seedTypes){
+    return seedTypes === seedTypes.TREE;
+}
+
+function isBush(plantTypes){
+    return plantTypes === plantTypes.BUSH;
+}
+
+function isBushSeed(seedTypes){
+    return seedTypes === seedTypes.BUSH;
+}
+
+function isGrass(plantTypes){
+    return plantTypes === plantTypes.GRASS || plantTypes === plantTypes.FIRE_HERB;
+}
+
+function isGrassSeed(seedTypes){
+    return seedTypes === seedTypes.GRASS || seedTypes === seedTypes.FIRE_HERB;
+}

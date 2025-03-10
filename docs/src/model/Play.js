@@ -62,7 +62,7 @@ export class PlayBoard extends Screen {
 
         this.skip = false;
 
-        // shadowPlant
+        // set cursor style when dragging item
         this.shadowPlant = null;
     }
 
@@ -271,11 +271,10 @@ export class PlayBoard extends Screen {
 
         // draw shadow plant
         if (this.shadowPlant !== null) {
-            let [avgX, avgY] = [p5.mouseX, p5.mouseY];
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.push();
             p5.tint(255, 180);
-            p5.image(this.shadowPlant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+            p5.image(this.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
             p5.pop();
         }
     }
@@ -302,7 +301,7 @@ export class PlayBoard extends Screen {
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
                 p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
-                if (this.boardObjects.getCell(i, j).isEcoSphere) {
+                if (this.boardObjects.getCell(i, j).isEcoSphere()) {
                     p5.fill('rgba(0%, 0%, 100%, 0.5)');
                 } else {
                     p5.fill(0, 0, 0, 0);
@@ -533,14 +532,6 @@ export class PlayBoard extends Screen {
 
     nextTurnItems(p5) {
         console.error("nextTurnEnemies is not overridden!");
-    }
-
-    setFloatingWindow(p5) {
-        console.error("setFloatingWindow is not overridden!");
-    }
-
-    initAllFloatingWindows(p5) {
-        console.error("initAllFloatingWindows is not overridden!");
     }
 
     // set stage inventory at entering, called by controller

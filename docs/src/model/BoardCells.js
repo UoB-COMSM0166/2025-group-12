@@ -5,6 +5,7 @@ import {Bandit} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {myutil} from "../../lib/myutil.js";
+import {Lava} from "../items/Volcano.js";
 
 export class BoardCells {
     constructor(size) {
@@ -33,10 +34,10 @@ export class BoardCells {
             return false;
         }
 
-        // the implementation of ecosystem skill
+        // seeds grow faster in eco1
         if (item instanceof Seed) {
             cell.seed = item;
-            if (cell.isEcoSphere) {
+            if (cell.isEco[0]) {
                 cell.seed.countdown = cell.seed.countdown - 1 < 1 ? 1 : cell.seed.countdown - 1;
             }
             return true;
@@ -45,7 +46,7 @@ export class BoardCells {
         cell.plant = item;
 
         // if plant is placed on an ecosystem, it expands the ecosystem.
-        if (cell.isEcoSphere) {
+        if (cell.isEcoSphere()) {
             this.setEcoSphereDFS(x, y);
             return true;
         }
@@ -172,11 +173,11 @@ export class BoardCells {
     setEcoSphereDFS(x, y) {
         // the cell itself is set to eco.
         let cell = this.getCell(x, y);
-        cell.isEcoSphere = true;
+        cell.isEco[0] = true;
 
         // recursively lookup 4 surrounding cells.
         for (let adCell of this.getAdjacent4Cells(x, y)) {
-            if (adCell.isEcoSphere === true) {
+            if (adCell.isEco[0]) {
                 continue;
             }
             if (adCell.plant !== null) {
@@ -186,7 +187,7 @@ export class BoardCells {
 
         // what's left from the 8 adjacent cells are also set to eco.
         for (let adCell of this.getAdjacent8Cells(x, y)) {
-            adCell.isEcoSphere = true;
+            adCell.isEco[0] = true;
         }
     }
 
@@ -195,7 +196,7 @@ export class BoardCells {
         // 1. remove all ecosystem markers
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
-                this.getCell(i, j).isEcoSphere = false;
+                this.getCell(i, j).isEco = new Array(this.getCell(i, j).isEco.length).fill(false);
             }
         }
         // 2. loop through all remaining plants and try to reconstruct ecosystem
@@ -282,9 +283,7 @@ class Cell {
         this._plant = null;
         this._seed = null;
         this._enemy = null;
-        this.isEcoSphere = false;
-
-        this.lava = null;
+        this.isEco = [false, false];
     }
 
     // however we still need to change terrain
@@ -295,6 +294,9 @@ class Cell {
             return;
         }
         this._terrain = terrain;
+        if(this._terrain instanceof Lava && this.isEco[1]){
+            this._terrain.countdown = 1;
+        }
     }
 
     get terrain() {
@@ -342,11 +344,21 @@ class Cell {
         return this._enemy;
     }
 
+    isEcoSphere(){
+        return this.isEco.findIndex(e => e === true) !== -1;
+    }
+
     getEcoString() {
-        if (this.isEcoSphere) {
-            return "The cell is in an ecosystem and seeds planted here will grow faster.";
+        let str = "";
+        if(this.isEco.findIndex(e => e === true) === -1){
+            return "The cell is not in an ecosystem or the ecosystem has no effect.";
         }
-        return "The cell is not in an ecosystem.";
+        else if (this.isEco[0]) {
+            str += "Seeds planted here will grow faster. ";
+        } else if (this.isEco[1]) {
+            str += "Lava will solidify faster. ";
+        }
+        return str;
     }
 
     // check if plant or seed is compatible with the terrain, or if the cell is occupied by another plant.
