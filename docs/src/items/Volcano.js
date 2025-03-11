@@ -5,6 +5,7 @@ import {enemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {Seed} from "./Seed.js";
 import {Plant} from "./Plant.js";
+import { baseType } from "./ItemTypes.js";
 
 export class Volcano extends Terrain {
     constructor(p5) {
@@ -76,6 +77,7 @@ export class VolcanicBomb extends Enemy {
         super();
         this.name = "Bomb";
         this.img = p5.images.get(`${this.name}`);
+        this.alertImg = p5.images.get("Alert");
         this.enemyType = enemyTypes.BOMB;
 
         this.i1 = i1;
@@ -132,6 +134,7 @@ export class VolcanicBomb extends Enemy {
             return false;
         }
         if (this.countdown === 0) {
+            this.img = p5.images.get(`${this.name}`);
             this.isMoving = true;
             this.move(this.moveSpeed);
             return true;
@@ -141,7 +144,37 @@ export class VolcanicBomb extends Enemy {
     hit(p5, playBoard) {
         let cell = playBoard.boardObjects.getCell(this.i2, this.j2);
 
-        // if hit player base:
+        // 1.1. hit a cell with a Tree, hit it.
+        if (cell.plant !== null && baseType(cell.plant) === plantTypes.TREE) {
+            plantEnemyInteractions.plantIsAttacked(playBoard, cell.plant, 1);
+            return;
+        }
+
+        // 2.1. hit a cell with a plant (not Tree), look for a random nearby tree
+        if(cell.plant !== null || cell.seed !== null){
+            let cwt = [];
+            for (let c of playBoard.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
+                if (c.plant !== null && c.plant.plantType === plantTypes.TREE) {
+                    cwt.push(c);
+                }
+            }
+            // 2.2. if a tree is nearby, hit one randomly.
+            if (cwt.length !== 0) {
+                plantEnemyInteractions.plantIsAttacked(playBoard, cwt[Math.floor(Math.random() * cwt.length)].plant, 1);
+                return;
+            }
+            // 2.3 no tree, hit the plant itself.
+            if (cell.plant !== null) {
+                plantEnemyInteractions.plantIsAttacked(playBoard, cell.plant, 1);
+                return;
+            }
+            if (cell.seed !== null) {
+                plantEnemyInteractions.plantIsAttacked(playBoard, cell.seed, 1);
+                return;
+            }
+        }
+
+        // 3.1 hit a cell which is playerbase:
         if (cell.terrain.terrainType === terrainTypes.BASE) {
             let cwt = [];
             for (let c of playBoard.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
@@ -149,26 +182,17 @@ export class VolcanicBomb extends Enemy {
                     cwt.push(c);
                 }
             }
-            // 1. if a tree is nearby, hit one randomly.
+            // 3.2. if a tree is nearby, hit one randomly.
             if (cwt.length !== 0) {
                 plantEnemyInteractions.plantIsAttacked(playBoard, cwt[Math.floor(Math.random() * cwt.length)].plant, 1);
+                return;
             }
-            // 2. no tree nearby, game over.
-            else {
-                myutil.gameOver(playBoard);
-            }
+            // 3.3. no tree nearby, game over.
+            myutil.gameOver(playBoard);
             return;
         }
 
-        // if hit a plant or seed:
-        if (cell.plant !== null) {
-            plantEnemyInteractions.plantIsAttacked(playBoard, cell.plant, 1);
-            return;
-        }
-        if (cell.seed !== null) {
-            plantEnemyInteractions.plantIsAttacked(playBoard, cell.seed, 1);
-            return;
-        }
+        
     }
 
     move(moveSpeed) {
@@ -195,10 +219,8 @@ export class VolcanicBomb extends Enemy {
     }
 
     draw(p5) {
-
-        // change this to a bomb alert later
-
-
+        // parabola
+        /*
         p5.stroke(2);
         p5.noFill();
         p5.beginShape();
@@ -215,6 +237,15 @@ export class VolcanicBomb extends Enemy {
 
         p5.ellipse(this.x2, this.y2, 10, 10);
         p5.text("F", this.x2 + 5, this.y2);
+        */
+        if(this.isMoving){
+            let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+            p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
+        }else{
+            let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+            p5.image(this.alertImg, this.x2 - imgSize / 2, this.y2 - imgSize / 2, imgSize, imgSize);
+        }
+       
     }
 
     integrate(f, a, b) {

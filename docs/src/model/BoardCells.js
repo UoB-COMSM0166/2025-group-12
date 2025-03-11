@@ -5,6 +5,7 @@ import {Bandit} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {UnionFind} from "../controller/UnionFind.js";
+import { myutil } from "../../lib/myutil.js";
 
 export class BoardCells {
     constructor(size) {
@@ -39,6 +40,10 @@ export class BoardCells {
             if (cell.ecosystem !== null && cell.ecosystem.growFaster) {
                 cell.seed.countdown = cell.seed.countdown - 1 < 1 ? 1 : cell.seed.countdown - 1;
             }
+            if(cell.terrain.terrainType === terrainTypes.LAVA){
+                cell.seed.countdown = 1;
+            }
+
             return true;
         }
 
@@ -368,12 +373,28 @@ class Cell {
         }
 
         if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
-            || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO) {
+            || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO
+            || (this.terrain.terrainType === terrainTypes.LAVA && this.terrain.name === "Lava")) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }
         return true;
     }
+
+    drawTerrain(p5, playBoard){
+        let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, playBoard, this.x, this.y, p5.CORNERS);
+        p5.image(this.terrain.img, x1 - playBoard.cellWidth / 2, y1, playBoard.cellWidth, playBoard.cellHeight);
+
+        if (this.ecosystem !== null && playBoard.ecoDisplay) {
+            p5.fill('rgba(0%, 0%, 100%, 0.5)');
+        } else {
+            p5.fill(0, 0, 0, 0);
+        }
+        p5.stroke(0);
+        p5.strokeWeight(2);
+        p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+
 
     saveCell() {
         let tmpObj = {

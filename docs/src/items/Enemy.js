@@ -6,4 +6,8 @@ export class Enemy {
         this.y = y;
         this.type = itemTypes.ENEMY;
     }
+
+    draw(p5){
+        console.log("draw not implemented.");
+    }
 }

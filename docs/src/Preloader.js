@@ -3,6 +3,7 @@ export function loadImages(p5) {
 
     let images = new Map();
 
+    images.set("Alert", p5.loadImage(basePath + "Alert.png"));
     images.set("leftarrow", p5.loadImage(basePath + "leftarrow.png"));
     images.set("rightarrow", p5.loadImage(basePath + "rightarrow.png"));
     images.set("panther", p5.loadImage(basePath + "panther.png"));

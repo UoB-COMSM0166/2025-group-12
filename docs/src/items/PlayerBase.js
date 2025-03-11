@@ -1,5 +1,6 @@
 import {terrainTypes} from "./ItemTypes.js";
 import {Terrain} from "./Terrain.js";
+import { myutil } from "../../lib/myutil.js";
 
 export class PlayerBase extends Terrain {
     constructor(p5) {
