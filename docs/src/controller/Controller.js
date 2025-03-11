@@ -93,6 +93,7 @@ export class Controller {
         // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
         if (newState === stateCode.FINISH) {
             this.menus[stateCode.PLAY] = null;
+            this.gameState.inventory.scrollIndex = 0;
             this.gameState.setState(stateCode.STANDBY);
             this.gameState.setPlayerCanClick(true);
             return;
@@ -106,6 +107,7 @@ export class Controller {
 
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === stateCode.STANDBY && newState === stateCode.PLAY) {
+            this.gameState.inventory.scrollIndex = 0;
             this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
             this.menus[stateCode.PLAY].setStageInventory(p5);
             return;
@@ -115,6 +117,7 @@ export class Controller {
         if (this.saveState === stateCode.PLAY && newState === stateCode.STANDBY) {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
+            this.gameState.inventory.scrollIndex = 0;
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
             // destroy the play board
             this.menus[stateCode.PLAY] = null;

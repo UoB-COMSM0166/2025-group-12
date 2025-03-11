@@ -120,6 +120,12 @@ export class Volcano1PlayBoard extends PlayBoard {
             for (let adCell of this.boardObjects.getAdjacent4Cells(cell.x, cell.y)) {
                 // if the cell is in ecosystem with 'rejectLava', skip.
                 if(adCell.ecosystem !== null && adCell.ecosystem.rejectLava) continue;
+                // if expands to player base, game over.
+                if (adCell.terrain.terrainType === terrainTypes.BASE) {
+                    myutil.gameOver(this);
+                    return;
+                }
+                // it expands to normal terrain.
                 if(adCell.terrain.terrainType === terrainTypes.STEPPE){
                     this.generateLava(p5, adCell.x, adCell.y);
                 }

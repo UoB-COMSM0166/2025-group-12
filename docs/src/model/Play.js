@@ -112,6 +112,10 @@ export class PlayBoard extends Screen {
             if (event.key === "e" && this.infoBox.activateButton !== null) {
                 this.infoBox.activateButton._onClick(p5);
             }
+            // 
+            if (event.key === "e" && this.infoBox.displayButton !== null) {
+                this.infoBox.displayButton._onClick(p5);
+            }
             // turn button
             if (event.key === " " && this.gameState.playerCanClick && this.floatingWindow === null) {
                 this.buttons.find(b => b.text.startsWith("turn"))._onClick();
@@ -239,13 +243,7 @@ export class PlayBoard extends Screen {
         }
         // draw all movables according to this.movables
         for (let movable of this.movables) {
-            if (movable instanceof VolcanicBomb && !movable.isMoving) {
-                movable.draw(p5);
-                continue;
-            }
-
-            let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-            p5.image(movable.img, movable.x - imgSize / 2, movable.y - imgSize, imgSize, imgSize);
+            movable.draw(p5);
         }
         // health bar last
         for (let movable of this.movables) {
@@ -303,19 +301,7 @@ export class PlayBoard extends Screen {
 
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
-                let cell = this.boardObjects.getCell(i, j);
-                img = p5.images.get(`${cell.terrain.name}`);
-                let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
-                p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
-
-                if (this.boardObjects.getCell(i, j).ecosystem !== null && this.ecoDisplay) {
-                    p5.fill('rgba(0%, 0%, 100%, 0.5)');
-                } else {
-                    p5.fill(0, 0, 0, 0);
-                }
-                p5.stroke(0);
-                p5.strokeWeight(2);
-                p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+                this.boardObjects.getCell(i, j).drawTerrain(p5, this);
             }
         }
 

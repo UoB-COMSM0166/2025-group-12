@@ -29,6 +29,11 @@ export class Bandit extends Enemy {
         this.moveSpeed = 5;
     }
 
+    draw(p5){
+        let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
+        p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
+    }
+
     static createNewBandit(p5, playBoard, i, j) {
         if(playBoard.boardObjects.getCell(i,j).enemy !== null){
             return;

@@ -57,16 +57,16 @@ export class Tornado3PlayBoard extends PlayBoard {
     nextTurnItems(p5) {
         if (this.turn === 2) {
             Bandit.createNewBandit(p5, this, 1, 2);
-            Tornado.createNewTornado(p5, this, 0, 4, 'd');
+            Tornado.createNewTornado(p5, this, 0, 4, 'd', 1);
         }
         if (this.turn === 3) {
-            Tornado.createNewTornado(p5, this, 0, 5, 'd');
+            Tornado.createNewTornado(p5, this, 0, 5, 'd', 1);
         }
         if (this.turn === 4) {
-            Tornado.createNewTornado(p5, this, 4, 0, 'r');
+            Tornado.createNewTornado(p5, this, 4, 0, 'r', 1);
         }
         if (this.turn === 5) {
-            Tornado.createNewTornado(p5, this, 0, 5, 'd');
+            Tornado.createNewTornado(p5, this, 0, 5, 'd', 1);
         }
     }
 
