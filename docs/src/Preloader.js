@@ -25,7 +25,7 @@ export function loadImages(p5) {
     images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
     images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
     images.set("Bomb", p5.loadImage(basePath + "Bomb.png"));
-
+    images.set("GameMap", p5.loadImage(basePath + "GameMap.png"));
     return images;
 }
 

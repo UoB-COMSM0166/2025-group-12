@@ -72,15 +72,12 @@ export class myutil {
 
     static drawActionPoints(p5, playBoard) {
         if (playBoard.hasActionPoints) {
-            let [x, y] = myutil.relative2absolute(0.9, 0.5);
-            let width = playBoard.gameState.inventory.inventoryWidth/2;
-            let height = playBoard.gameState.inventory.inventoryWidth/2;
+            let [x, y] = myutil.relative2absolute(0.6, 0.01);
+            let [width, height] = myutil.relative2absolute(0.07 * 9 / 16, 0.07);
             p5.stroke("#DDDDDD");
             p5.strokeWeight(2);
             p5.fill("#DDDDDD");
             p5.rect(x, y, width, height, 20);
-
-            let p = playBoard.actionPoints / playBoard.maxActionPoints;
 
             p5.noStroke();
             if(playBoard.actionPoints !== 0){
@@ -92,7 +89,7 @@ export class myutil {
             p5.rect(x, y, width, height, 20);
 
             p5.fill(255);
-            p5.textSize(18);
+            p5.textSize(15);
             p5.textAlign(p5.CENTER, p5.CENTER);
             p5.text(playBoard.actionPoints + " / " + playBoard.maxActionPoints,x + width / 2, y + height / 2);
         }

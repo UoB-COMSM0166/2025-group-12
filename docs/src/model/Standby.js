@@ -26,7 +26,6 @@ export class StandbyMenu extends Screen {
 
         let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Tornado");
         stage1Button.onClick = () => {
-            // this.gameState.setState(stateCode.LEVEL);
              this.clickedStageButton(p5, stageGroup.TORNADO);
         };
 
@@ -54,7 +53,8 @@ export class StandbyMenu extends Screen {
         // earthquake induced tsunami + rainstorm + landslide + random lighting + tornado
         let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Tsunami");
         stage5Button.onClick = () => {
-            this.copyFloatingWindow(p5, "lock");
+            this.gameState.setState(stateCode.MAP);
+            // this.copyFloatingWindow(p5, "lock");
         };
 
         this.buttons.push(escapeButton, stage1Button, stage2Button, stage3Button, stage4Button, stage5Button);
