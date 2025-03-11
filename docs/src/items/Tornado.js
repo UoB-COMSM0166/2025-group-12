@@ -5,10 +5,9 @@ import {PlayBoard} from "../model/Play.js";
 import {myutil} from "../../lib/myutil.js";
 
 export class Tornado extends Enemy {
-    constructor(p5, x, y, direction) {
+    constructor(p5, x, y, direction, countdown = 0) {
         super(x, y);
         this.name = "Tornado";
-        this.img = p5.images.get(`${this.name}`);
         this.enemyType = enemyTypes.TORNADO;
 
         this.health = 3;
@@ -30,10 +29,16 @@ export class Tornado extends Enemy {
 
         this.cell = null;
         this.targetCell = null;
-        this.countdown = 0;
+        this.countdown = countdown;
         this.isMoving = false;
         this.hasMoved = true;
         this.moveSpeed = 5;
+
+        if(this.countdown>0){
+            this.img = p5.images.get("Alert");
+        }else{
+            this.img = p5.images.get(`${this.name}`);
+        }
     }
 
     draw(p5){
@@ -41,12 +46,12 @@ export class Tornado extends Enemy {
         p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
     }
 
-    static createNewTornado(p5, playBoard, i, j, direction) {
+    static createNewTornado(p5, playBoard, i, j, direction, countdown = 0) {
         if(playBoard.boardObjects.getCell(i,j).enemy !== null){
             return;
         }
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
-        let tornado = new Tornado(p5, avgX, avgY, direction);
+        let tornado = new Tornado(p5, avgX, avgY, direction, countdown);
         playBoard.movables.push(tornado);
         playBoard.boardObjects.getCell(i, j).enemy = tornado;
         tornado.cell = playBoard.boardObjects.getCell(i, j);
@@ -67,14 +72,18 @@ export class Tornado extends Enemy {
         if (this.countdown > 0) {
             this.countdown--;
             this.hasMoved = true;
+
+            if(this.countdown <= 1) this.img = p5.images.get(`${this.name}`);
+
             return false;
         }
         if (this.countdown === 0) {
-            if (this.cell) {
+            if (this.cell !== null) {
                 this.cell.enemy = null;
                 this.cell = null;
             }
             this.isMoving = true;
+            this.img = p5.images.get(`${this.name}`);
             this.moveAndInvokeTornado(p5, playBoard);
             return true;
         }
