@@ -10,8 +10,9 @@ export class Icon {
         this.isHovered = false;
         this.modifier = 1
         this._onClick = (p5) => {
-
+            this.modifier = 1.2;
         };
+        this.hasClikced = false;
     }
 
     update() {
@@ -25,13 +26,14 @@ export class Icon {
     draw(p5) {
         p5.push();
         this.isHovered = this.hasMouseOver(p5);
-        if (this.isHovered) {
-            p5.tint(255, 128);
-        }
         p5.image(this.image, this.x, this.y, this.width * this.modifier, this.height * this.modifier);
         p5.drawingContext.shadowBlur = this.isHovered ? 15 : 5;
         p5.drawingContext.shadowColor = p5.color(0, 0, 0, 50);
         p5.pop();
+    }
+
+    set onClick(func) {
+        this._onClick = func;
     }
 
     hasMouseOver(p5) {
