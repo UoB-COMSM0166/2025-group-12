@@ -195,6 +195,10 @@ export class InfoBox {
         } else if (this.infoStatus !== 'a' && this.recordStatus === 'a') {
             this.deleteActivateButton(p5);
         }
+
+        if(this.infoStatus === 'e') this.setEcoDisplayButton(p5);
+        else this.deleteDisplayButton(p5);
+
         this.recordStatus = newStatus;
     }
 
@@ -221,5 +225,24 @@ export class InfoBox {
         }
         this.playBoard.buttons.splice(this.playBoard.buttons.findIndex(button => button === this.activateButton), 1);
         this.activateButton = null;
+    }
+
+    setEcoDisplayButton(p5){
+        let [buttonWidth, buttonHeight] = myutil.relative2absolute(5 / 64, 0.04);
+        let buttonX = this.boxX + this.boxWidth / 2 - buttonWidth / 2;
+        let buttonY = this.playBoard.canvasHeight - buttonHeight - 2 * this.paddingY;
+        let display = new Button(buttonX, buttonY, buttonWidth, buttonHeight, "display");
+        display.onClick = () => {
+            this.playBoard.ecoDisplay = !this.playBoard.ecoDisplay;
+        };
+        this.playBoard.buttons.push(display);
+        this.displayButton = display;
+    }
+
+    deleteDisplayButton(p5){
+        if(this.displayButton === null) return;
+
+        this.playBoard.buttons.splice(this.playBoard.buttons.findIndex(button => button === this.displayButton), 1);
+        this.displayButton = null;
     }
 }

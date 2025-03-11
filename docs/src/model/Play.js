@@ -58,6 +58,8 @@ export class PlayBoard extends Screen {
         // I have a strong feeling that we need refactoring
         this.awaitCell = false;
 
+        this.ecoDisplay = true;
+
         this.isGameOver = false;
 
         this.skip = false;
@@ -306,7 +308,7 @@ export class PlayBoard extends Screen {
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
                 p5.image(img, x1 - this.cellWidth / 2, y1, this.cellWidth, this.cellHeight);
 
-                if (this.boardObjects.getCell(i, j).ecosystem !== null) {
+                if (this.boardObjects.getCell(i, j).ecosystem !== null && this.ecoDisplay) {
                     p5.fill('rgba(0%, 0%, 100%, 0.5)');
                 } else {
                     p5.fill(0, 0, 0, 0);
