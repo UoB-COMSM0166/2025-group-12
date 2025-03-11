@@ -3,16 +3,30 @@ export class UnionFind {
     constructor(N) {
         this.id = new Array(N);
         this.size = new Array(N).fill(1);
-        this._count = N;
+        this.count = N;
 
         for (let i = 0; i < this.id.length; i++) {
             this.id[i] = i;
         }
     }
 
-    get count() {
-        return this._count;
+    // the number of connected components
+    countComponents() {
+        return this.count;
     }
+
+    // get all entries that are connected with entry x
+    getComponent(x) {
+        let root = this.find(x);
+        let connected = [];
+        for (let i = 0; i < this.id.length; i++) {
+            if (this.find(i) === root) {
+                connected.push(i);
+            }
+        }
+        return connected;
+    }
+
 
     connected(p, q) {
         return this.find(p) === this.find(q);
@@ -38,6 +52,6 @@ export class UnionFind {
             this.id[qRoot] = pRoot;
             this.size[pRoot] += this.size[qRoot];
         }
-        this._count--;
+        this.count--;
     }
 }

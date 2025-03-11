@@ -1,3 +1,6 @@
+import {Plant} from "./Plant.js";
+import {Seed} from "./Seed.js";
+
 export let itemTypes = {
     PLANT: 2,
     SEED: 4,
@@ -39,26 +42,22 @@ export let enemyTypes = {
     LAVA: 300,
 }
 
-function isTree(plantTypes){
-    return plantTypes === plantTypes.TREE;
-}
-
-function isTreeSeed(seedTypes){
-    return seedTypes === seedTypes.TREE;
-}
-
-function isBush(plantTypes){
-    return plantTypes === plantTypes.BUSH;
-}
-
-function isBushSeed(seedTypes){
-    return seedTypes === seedTypes.BUSH;
-}
-
-function isGrass(plantTypes){
-    return plantTypes === plantTypes.GRASS || plantTypes === plantTypes.FIRE_HERB;
-}
-
-function isGrassSeed(seedTypes){
-    return seedTypes === seedTypes.GRASS || seedTypes === seedTypes.FIRE_HERB;
+export function baseType(plantOrSeed){
+    if(plantOrSeed instanceof Plant){
+        if(plantOrSeed.plantType === plantTypes.TREE){
+            return plantTypes.TREE;
+        }else if(plantOrSeed.plantType === plantTypes.BUSH){
+            return plantTypes.BUSH;
+        }else if(plantOrSeed.plantType === plantTypes.GRASS || plantOrSeed.plantType === plantTypes.FIRE_HERB){
+            return plantTypes.GRASS;
+        }
+    }else if (plantOrSeed instanceof Seed){
+        if(plantOrSeed.seedType === seedTypes.TREE){
+            return seedTypes.TREE;
+        }else if (plantOrSeed.seedType === seedTypes.BUSH){
+            return seedTypes.BUSH;
+        }else if (plantOrSeed.seedType === seedTypes.GRASS || plantOrSeed.seedType === seedTypes.FIRE_HERB){
+            return seedTypes.GRASS;
+        }
+    }
 }

@@ -8,7 +8,6 @@ export class InputHandler {
         this.gamepadKeys = [];
         this.gamepad;
         window.addEventListener('keydown', e => {
-            console.log(e.key);
             if ((e.key === 'w' ||
                     e.key === 'a' ||
                     e.key === 's' ||

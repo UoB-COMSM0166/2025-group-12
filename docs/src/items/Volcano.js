@@ -36,22 +36,22 @@ export class Lava extends Terrain {
         this.weight = 1000;
     }
 
-    setCountdown(num){
+    setCountdown(num) {
         this.countdown = num;
     }
 
-    setPlant(p5, plant){
-        if(plant instanceof Seed){
+    setPlant(p5, plant) {
+        if (plant instanceof Seed) {
             this.plant = plant.constructor(p5);
-        }else if(plant instanceof Plant){
+        } else if (plant instanceof Plant) {
             this.plant = new plant.seed(p5);
         }
     }
 
-    solidify(p5){
-        if(this.countdown > 0){
+    solidify(p5) {
+        if (this.countdown > 0) {
             this.countdown--;
-        }else{
+        } else {
             this.name = "LavaS";
             this.img = p5.images.get(`${this.name}`);
             this.hasSolidified = true;

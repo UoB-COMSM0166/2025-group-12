@@ -188,7 +188,7 @@ export class myutil {
         }
     }
 
-    static isPointInQuad(px, py, x1, y1, x2, y2, x3, y3, x4, y4) {
+    static isCursorInQuad(px, py, x1, y1, x2, y2, x3, y3, x4, y4) {
         function crossProduct(xa, ya, xb, yb, xc, yc) {
             return (xb - xa) * (yc - ya) - (yb - ya) * (xc - xa);
         }

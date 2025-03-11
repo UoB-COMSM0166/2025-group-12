@@ -18,7 +18,7 @@ new p5((p) => {
     };
 
     p.mouseWheel = (event) => {
-        p.controller.scrollListener(event);
+        p.controller.scrollListener(p, event);
     }
 
     p.mouseClicked = () => {

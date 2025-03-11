@@ -53,10 +53,10 @@ export class Controller {
         }
     }
 
-    scrollListener(event) {
+    scrollListener(p5, event) {
         let currentMenu = this.menus[this.gameState.getState()];
         if (currentMenu && currentMenu.handleScroll) {
-            currentMenu.handleScroll(event);
+            currentMenu.handleScroll(p5, event);
         }
     }
 

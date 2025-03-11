@@ -19,7 +19,7 @@ export class plantEnemyInteractions {
         let cell = cells.find(c => c.plant === plant);
         if (cell !== null) {
             cell.removePlant();
-            playBoard.boardObjects.reconstructEcosystem();
+            playBoard.boardObjects.setEcosystem();
         }
     }
 

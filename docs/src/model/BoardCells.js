@@ -1,11 +1,10 @@
-import {enemyTypes, itemTypes, plantTypes, seedTypes, terrainTypes} from "../items/ItemTypes.js";
+import {baseType, enemyTypes, itemTypes, plantTypes, seedTypes, terrainTypes} from "../items/ItemTypes.js";
 import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
 import {Bandit} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
-import {myutil} from "../../lib/myutil.js";
-import {Lava} from "../items/Volcano.js";
+import {UnionFind} from "../controller/UnionFind.js";
 
 export class BoardCells {
     constructor(size) {
@@ -34,10 +33,10 @@ export class BoardCells {
             return false;
         }
 
-        // seeds grow faster in eco[0]
+        // the implementation of ecosystem skill: grow faster
         if (item instanceof Seed) {
             cell.seed = item;
-            if (cell.isEco[0]) {
+            if (cell.ecosystem !== null && cell.ecosystem.growFaster) {
                 cell.seed.countdown = cell.seed.countdown - 1 < 1 ? 1 : cell.seed.countdown - 1;
             }
             return true;
@@ -45,24 +44,15 @@ export class BoardCells {
 
         cell.plant = item;
 
-        // if plant is placed on an ecosystem, it expands the ecosystem.
-        if (cell.isEcoSphere()) {
-            this.setEcoSphereDFS(x, y);
-            return true;
-        }
-        // if ecosystem is not built, first try to build one.
-        let components = new Map();
-        components.set(item.name, cell);
-        if (this.findEcoSphereDFS(x, y, components)) {
-            console.log("ecosystem built!");
-            this.setEcoSphereDFS(x, y);
-        }
+        // reconstruct ecosystem for every transplanting
+        this.setEcosystem();
+
         return true;
     }
 
     removePlant(x, y) {
         this.getCell(x, y).removePlant();
-        this.reconstructEcosystem();
+        this.setEcosystem();
     }
 
     getCell(x, y) {
@@ -142,84 +132,92 @@ export class BoardCells {
         return `terrain ${t.name} and has a plant ${p.name} of health ${p.health}.`;
     }
 
-    // when a new plant is placed at (x,y), recursively find an ecosystem.
-    // MUST CREATE COMPONENTS AS A MAP, AND STORE THE NEW PLANT TO IT BEFORE INVOKING!!!!!!
-    findEcoSphereDFS(x, y, components) {
-        if (!(components instanceof Map)) {
-            console.error("findEcoSphereDFS is mis-invoked since input component is not a map.");
-            return false;
-        }
-        // when tree bush grass are all found, exit and return true
-        if (components.size === 3) {
-            return true;
-        }
-        let adjacentCells = this.getAdjacent4Cells(x, y, components);
-        for (let cell of adjacentCells) {
-            if (cell.plant === null) {
-                continue;
-            }
-            if (components.has(cell.plant.name)) {
-                continue;
-            }
-            components.set(cell.plant.name, cell);
-            if (this.findEcoSphereDFS(cell.x, cell.y, components)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    setEcosystem() {
+        let allPlants = this.getAllCellsWithPlant();
+        let uf = new UnionFind(allPlants.length);
 
-    // recursively set ecosystem, starting from (x,y).
-    setEcoSphereDFS(x, y, ...num) {
-        // the cell itself is set to eco.
-        let cell = this.getCell(x, y);
-        for(let n of num){
-            cell.isEco[n] = true;
-        }
+        let cellIndexMap = new Map(); // the variables of UF data structure are integers
+        allPlants.forEach((c, index) => cellIndexMap.set(c, index));
 
-        // recursively lookup 4 surrounding cells.
-        for (let adCell of this.getAdjacent4Cells(x, y)) {
-            if (this.hasFullEco(adCell)) {
-                continue;
-            }
-            if (adCell.plant !== null) {
-                this.setEcoSphereDFS(adCell.x, adCell.y, num);
+        // step1: construct UF. if one plant is in adjacent 8 of another, they are connected.
+        for (let i = 0; i < allPlants.length; i++) {
+            for (let j = i + 1; j < allPlants.length; j++) {
+                let cell1 = allPlants[i];
+                let cell2 = allPlants[j];
+                if (Math.abs(cell1.x - cell2.x) <= 1 && Math.abs(cell1.y - cell2.y) <= 1) {
+                    uf.union(i, j);
+                }
             }
         }
 
-        // what's left from the 8 adjacent cells are also set to eco.
-        for (let adCell of this.getAdjacent8Cells(x, y)) {
-            for(let n of num){
-                adCell.isEco[n] = true;
+        // step2: get all connected components.
+        let connectedComponents = new Map(); // <RootID, componentArray>
+        for (let i = 0; i < allPlants.length; i++) {
+            let root = uf.find(i);
+            if (connectedComponents.has(root)) continue;
+            connectedComponents.set(root, uf.getComponent(i).map(index => allPlants[index]));
+        }
+
+        // step3: Determine which components qualify for an ecosystem
+        let ecosystemQualification = new Map();
+
+        for (let [root, component] of connectedComponents.entries()) {
+
+            // 1. loop through all plants
+            for (let cell of component) {
+                let plantTypesSet = new Set();
+                plantTypesSet.add(baseType(cell.plant));
+                // 2. loop through 4 adjacent cells
+                for (let adCell of this.getAdjacent4Cells(cell.x, cell.y)) {
+                    if (adCell.plant === null) continue;
+                    plantTypesSet.add(baseType(adCell.plant));
+                    // 3. further loop through 4 adjacent cells
+                    for (let adAdCell of this.getAdjacent4Cells(adCell.x, adCell.y)) {
+                        if (adAdCell.plant === null) continue;
+                        plantTypesSet.add(baseType(adAdCell.plant));
+                    }
+                }
+                // If 3 different plant types exist, mark as ecosystem
+                if (plantTypesSet.size >= 3) {
+                    console.log("qualify?")
+                    console.log(plantTypesSet)
+                    ecosystemQualification.set(root, true);
+                    break;
+                }
             }
         }
-    }
 
-    hasFullEco(cell, ...num){
-        for(let n of num){
-            if(!cell.isEco[n]) return false;
-        }
-        return true;
-    }
+        // step4: create and assign ecosystem.
+        for (let [root, component] of connectedComponents.entries()) {
+            if (!ecosystemQualification.get(root)) continue;
 
-    // when a plant is removed, an existing ecosystem may get destroyed.
-    reconstructEcosystem() {
-        // 1. remove all ecosystem markers
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                this.getCell(i, j).isEco = new Array(this.getCell(i, j).isEco.length).fill(false);
-            }
-        }
-        // 2. loop through all remaining plants and try to reconstruct ecosystem
-        let remainingPlants = this.getAllCellsWithPlant();
-        for (let cell of remainingPlants) {
-            let components = new Map();
-            components.set(cell.plant.name, cell);
-            if (this.findEcoSphereDFS(cell.x, cell.y, components)) {
-                this.setEcoSphereDFS(cell.x, cell.y);
+            let ecosystem = this.createEcosystem(component);
+            for (let cell of component) {
+                cell.ecosystem = ecosystem;
+                for (let adCell of this.getAdjacent8Cells(cell.x, cell.y)) {
+                    // tiebreaker: when two ecosystems are overlapped but not connected
+                    if (adCell.ecosystem !== null && adCell.ecosystem !== ecosystem && adCell.ecosystem.countPlants >= ecosystem.countPlants) {
+                        continue;
+                    }
+                    adCell.ecosystem = ecosystem;
+                }
             }
         }
     }
+
+    createEcosystem(component) {
+        let ecosystem = new Ecosystem(component.length);
+
+        // Assign special abilities
+        for (let cell of component) {
+            if (cell.plant.plantType === plantTypes.FIRE_HERB && component.length >= 10) {
+                ecosystem.rejectLava = true;
+                ecosystem.strengthenGrass = true;
+            }
+        }
+        return ecosystem;
+    }
+
 
     getAdjacent8Cells(x, y) {
         let cells = [];
@@ -294,7 +292,7 @@ class Cell {
         this._plant = null;
         this._seed = null;
         this._enemy = null;
-        this.isEco = [false, false];
+        this.ecosystem = null;
     }
 
     // however we still need to change terrain
@@ -352,21 +350,11 @@ class Cell {
         return this._enemy;
     }
 
-    isEcoSphere(){
-        return this.isEco.findIndex(e => e === true) !== -1;
-    }
-
     getEcoString() {
-        let str = "";
-        if(this.isEco.findIndex(e => e === true) === -1){
-            return "The cell is not in an ecosystem or the ecosystem has no effect.";
+        if (this.ecosystem === null) {
+            return "The cell is not in an ecosystem.";
         }
-        else if (this.isEco[0]) {
-            str += "Seeds planted here will grow faster. ";
-        } else if (this.isEco[1]) {
-            str += "Lava will solidify faster. ";
-        }
-        return str;
+        return this.ecosystem.getEcoString();
     }
 
     // check if plant or seed is compatible with the terrain, or if the cell is occupied by another plant.
@@ -411,4 +399,22 @@ class Cell {
         return tmpObj;
     }
 
+}
+
+class Ecosystem {
+    constructor(countPlants) {
+        this.countPlants = countPlants;
+        this.growFaster = true;
+        this.rejectLava = false;
+        this.strengthenGrass = false;
+    }
+
+    getEcoString() {
+        let str = "";
+        // str += `${this.countPlants} plants in this ecosystem. `;
+        if (this.growFaster) str += "Seeds sowed here will grow faster. "
+        if (this.rejectLava) str += "Lava expanded here will stop. "
+        if (this.strengthenGrass) str += "Grass deals more damage to bandits. "
+        return str;
+    }
 }
