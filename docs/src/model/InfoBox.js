@@ -104,6 +104,7 @@ export class InfoBox {
                 // reset the info status to prevent unintentional bugs
                 playBoard.infoBox.resetStatus();
                 playBoard.infoBox.deleteActivateButton(p5, this);
+                playBoard.infoBox.deleteDisplayButton(p5);
             }
         }
         return false;
@@ -223,7 +224,10 @@ export class InfoBox {
         if (this.activateButton === null) {
             return;
         }
-        this.playBoard.buttons.splice(this.playBoard.buttons.findIndex(button => button === this.activateButton), 1);
+        let index = this.playBoard.buttons.findIndex(button => button === this.activateButton);
+        if(index != -1){
+            this.playBoard.buttons.splice(index, 1);
+        }
         this.activateButton = null;
     }
 
@@ -241,8 +245,11 @@ export class InfoBox {
 
     deleteDisplayButton(p5){
         if(this.displayButton === null) return;
-
-        this.playBoard.buttons.splice(this.playBoard.buttons.findIndex(button => button === this.displayButton), 1);
+        
+        let index = this.playBoard.buttons.findIndex(button => button === this.displayButton);
+        if(index != -1){
+            this.playBoard.buttons.splice(index, 1);
+        }
         this.displayButton = null;
     }
 }

@@ -112,6 +112,10 @@ export class PlayBoard extends Screen {
             if (event.key === "e" && this.infoBox.activateButton !== null) {
                 this.infoBox.activateButton._onClick(p5);
             }
+            // 
+            if (event.key === "e" && this.infoBox.displayButton !== null) {
+                this.infoBox.displayButton._onClick(p5);
+            }
             // turn button
             if (event.key === " " && this.gameState.playerCanClick && this.floatingWindow === null) {
                 this.buttons.find(b => b.text.startsWith("turn"))._onClick();
