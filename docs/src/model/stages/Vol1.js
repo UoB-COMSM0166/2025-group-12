@@ -9,7 +9,7 @@ import {Tornado} from "../../items/Tornado.js";
 import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Lava, VolcanicBomb, Volcano} from "../../items/Volcano.js";
-import {enemyTypes} from "../../items/ItemTypes.js";
+import {enemyTypes, terrainTypes} from "../../items/ItemTypes.js";
 import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
 
 export class Volcano1PlayBoard extends PlayBoard {
@@ -27,8 +27,6 @@ export class Volcano1PlayBoard extends PlayBoard {
         // turn counter
         this.turn = 1;
         this.maxTurn = 15;
-
-        this.lava = [];
     }
 
     // set stage inventory at entering, called by controller
@@ -61,50 +59,41 @@ export class Volcano1PlayBoard extends PlayBoard {
         this.boardObjects.setCell(2, 0, new Volcano(p5));
         this.boardObjects.setCell(0, 2, new Volcano(p5));
 
-        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
+        this.boardObjects.setCell(8, 8, new PlayerBase(p5));
         this.boardObjects.setCell(4, 5, new Mountain(p5));
         this.boardObjects.setCell(5, 5, new Mountain(p5));
     }
 
     nextTurnItems(p5) {
-        //this.generateRandomVolBomb(p5);
-        this.generateVolBomb(p5, 4, 4);
-        this.generateVolBomb(p5, 0, 7);
+        this.generateRandomVolBomb(p5);
+        this.generateVolBomb(p5, 8, 8);
 
         if (this.turn === 2) {
-            Bandit.createNewBandit(p5, this, 7, 0);
+            this.generateLava(p5, 3, 3);
+            this.generateLava(p5, 3, 2);
+            this.generateLava(p5, 3, 1);
+            this.generateLava(p5, 3, 0);
+            this.generateLava(p5, 2, 3);
+            this.generateLava(p5, 1, 3);
+            this.generateLava(p5, 0, 3);
+        }else{
+            this.expandLava(p5);
         }
-
-        if (this.turn === 3) {
-            this.generateLava(p5, 5, 0);
-            this.generateLava(p5, 5, 1);
-            this.generateLava(p5, 5, 2);
-            this.generateLava(p5, 6, 0);
-            this.generateLava(p5, 6, 1);
-            this.generateLava(p5, 6, 2);
-            this.generateLava(p5, 7, 0);
-            this.generateLava(p5, 7, 1);
-            this.generateLava(p5, 7, 2);
-            this.generateLava(p5, 8, 0);
-            this.generateLava(p5, 8, 1);
-            this.generateLava(p5, 8, 2);
-        }
-
-        this.solidifyLava(p5);
     }
 
     generateLava(p5, i, j) {
         let cell = this.boardObjects.getCell(i, j);
-        let l = new Lava(p5);
-
-        cell.terrain = l;
-        this.lava.push(l);
+        let lava = new Lava(p5);
+        lava.cell = cell;
+        cell.terrain = lava;
 
         // kill plant and store its seed
         if (cell.plant !== null) {
-            l.setPlant(p5, cell.plant);
+            lava.storeSeed(p5, cell.plant);
+            cell.removePlant();
         } else if (cell.seed !== null) {
-            l.setPlant(p5, cell.seed);
+            lava.storeSeed(p5, cell.seed);
+            cell.removeSeed();
         }
 
         // kill bandit on this cell
@@ -114,11 +103,34 @@ export class Volcano1PlayBoard extends PlayBoard {
         }
     }
 
-    solidifyLava(p5) {
-        this.lava = this.lava.map(lava => {
-            lava.solidify(p5);
-            return lava;
-        });
+    expandLava(p5){
+        // find all lava
+        let cells = [];
+        for(let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let cell = this.boardObjects.getCell(i, j);
+                if(cell.terrain.terrainType === terrainTypes.LAVA && cell.terrain.name === "Lava"){
+                    cells.push(cell);
+                }
+            }
+        }
+
+        // expand them
+        for (let cell of cells) {
+            for (let adCell of this.boardObjects.getAdjacent4Cells(cell.x, cell.y)) {
+                // if the cell is in ecosystem with 'rejectLava', skip.
+                if(adCell.ecosystem !== null && adCell.ecosystem.rejectLava) continue;
+                if(adCell.terrain.terrainType === terrainTypes.STEPPE){
+                    this.generateLava(p5, adCell.x, adCell.y);
+                }
+            }
+        }
+
+        // solidify lava
+        for (let cell of cells) {
+            cell.terrain.solidify(p5);
+        }
+
     }
 
     generateRandomVolBomb(p5) {

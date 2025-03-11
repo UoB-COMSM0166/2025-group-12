@@ -179,8 +179,6 @@ export class BoardCells {
                 }
                 // If 3 different plant types exist, mark as ecosystem
                 if (plantTypesSet.size >= 3) {
-                    console.log("qualify?")
-                    console.log(plantTypesSet)
                     ecosystemQualification.set(root, true);
                     break;
                 }

@@ -31,20 +31,17 @@ export class Lava extends Terrain {
         this.countdown = 1;
         this.hasSolidified = false;
 
-        this.plant = null;
+        this.seed = null;
+        this.cell = null;
 
         this.weight = 1000;
     }
 
-    setCountdown(num) {
-        this.countdown = num;
-    }
-
-    setPlant(p5, plant) {
+    storeSeed(p5, plant) {
         if (plant instanceof Seed) {
-            this.plant = plant.constructor(p5);
+            this.seed = plant.constructor(p5);
         } else if (plant instanceof Plant) {
-            this.plant = new plant.seed(p5);
+            this.seed = new plant.seed(p5);
         }
     }
 
@@ -55,6 +52,10 @@ export class Lava extends Terrain {
             this.name = "LavaS";
             this.img = p5.images.get(`${this.name}`);
             this.hasSolidified = true;
+            if (this.seed !== null) {
+                this.seed.countdown = 1;
+                this.cell.seed = this.seed;
+            }
             this.weight = 0;
         }
     }
