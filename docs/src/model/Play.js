@@ -529,7 +529,7 @@ export class PlayBoard extends Screen {
     // this does not activate skill immediately, but go to awaiting status
     activatePlantSkill(p5) {
         let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
-        if (spellCaster.plant.type === plantTypes.TREE || spellCaster.plant.type === plantTypes.GRASS) {
+        if (spellCaster.plant.plantType === plantTypes.TREE || spellCaster.plant.plantType === plantTypes.GRASS) {
             this.awaitCell = true;
         }
     }
