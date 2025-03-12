@@ -35,6 +35,16 @@ export class Controller {
         this.options.setup(p5);
     }
 
+    reset(p5) {
+        for (let menu of Object.values(this.menus)) {
+            if (menu && menu.reset) {
+                menu.reset(p5);
+            }
+        }
+       // this.pauseMenu.reset(p5);
+        this.options.reset(p5);
+    }
+
     clickListener(p5) {
         if (this.gameState.paused) {
             this.pauseMenu.handleClick(p5);

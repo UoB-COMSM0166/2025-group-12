@@ -3,6 +3,7 @@ import {stateCode} from "./GameState.js";
 import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
 import {LanguageManager} from "../LanguageManager.js";
+import {MenuItem} from "../items/MenuItem.js";
 
 export class StartMenu {
     constructor(gameState) {
@@ -14,21 +15,26 @@ export class StartMenu {
     setup(p5) {
 
         let [buttonWidth, buttonHeight] = myutil.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = myutil.relative2absolute(0.5, 0.6);
+        let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.6);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
-        let newGameButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, this.languageManager.getText('newGame'));
+        let newGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, this.languageManager.getText('newGame'));
         newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
 
-        // let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('loadGame'));
-        // loadGameButton.onClick = () => GameSave.load(this.gameState);
 
-        // let optionsButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
-        // optionsButton.onClick = () => {
-        //     this.gameState.showOptions = !this.gameState.showOptions;
-        // }
+        let optionsButton = new MenuItem(buttonX - buttonWidth / 2, buttonY +  buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
+        optionsButton.onClick = () => {
+            this.gameState.showOptions = !this.gameState.showOptions;
+        }
 
-        this.buttons.push(newGameButton);
+        let continueButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Other");
+
+        this.buttons.push(newGameButton, optionsButton, continueButton);
+    }
+
+    reset(p5){
+        this.buttons = [];
+        this.setup(p5);
     }
 
     handleClick(p5) {
@@ -46,6 +52,9 @@ export class StartMenu {
         p5.text(this.languageManager.getText('startMenu'), textX, textY);
 
         for (let button of this.buttons) {
+            if(button.update){
+                button.update(p5);
+            }
             button.draw(p5);
         }
     }
