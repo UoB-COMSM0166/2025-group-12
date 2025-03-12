@@ -5,6 +5,7 @@ import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js"
 import {itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
 import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
+import {Bamboo, BambooSeed} from "../items/Bamboo.js";
 
 export class Inventory {
     constructor(p5) {
@@ -35,10 +36,12 @@ export class Inventory {
             ["Bush", new Bush(p5)],
             ["Grass", new Grass(p5)],
             ["FireHerb", new FireHerb(p5)],
+            ["Bamboo", new Bamboo(p5)],
             ["TreeSeed", new TreeSeed(p5)],
             ["BushSeed", new BushSeed(p5)],
             ["GrassSeed", new GrassSeed(p5)],
             ["FireHerbSeed", new FireHerbSeed(p5)],
+            ["BambooSeed", new BambooSeed(p5)],
         ]);
     }
 
@@ -131,15 +134,15 @@ export class Inventory {
     }
 
     // add item into the inventory.
-    pushItem2Inventory(p5, name, number) {
+    pushItem2Inventory(p5, name, quantity) {
         // if the item is already in inventory:
         if (this.items.has(name)) {
-            this.items.set(name, this.items.get(name) + number);
+            this.items.set(name, this.items.get(name) + quantity);
             return;
         }
         // if the item is not in inventory:
         if (this.createItem(p5, name) !== null) {
-            this.items.set(name, number);
+            this.items.set(name, quantity);
         }
         // if the item is invalid:
         // do nothing. createItem has printed error info.
@@ -149,8 +152,8 @@ export class Inventory {
     }
 
     // to set item to a specific number.
-    setItemOfInventory(p5, name, number){
-        this.items.set(name, number);
+    setItemOfInventory(p5, name, quantity){
+        this.items.set(name, quantity);
         this.updateInventoryHeight();
     }
 
@@ -186,10 +189,13 @@ export class Inventory {
         }))
     }
 
-    // when a stage is cleared, remove all seeds from inventory.
-    removeAllSeeds() {
+    // when a stage is cleared, remove all seeds and bamboo from inventory.
+    removeAllSeedsAndBamboo() {
         for (let [name, instance] of this.itemPrototypes.entries()) {
             if (instance.type === itemTypes.SEED) {
+                this.items.delete(name);
+            }
+            if(instance.type === itemTypes.PLANT && instance.plantType === plantTypes.BAMBOO){
                 this.items.delete(name);
             }
         }

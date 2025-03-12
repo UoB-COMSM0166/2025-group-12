@@ -297,7 +297,6 @@ export class PlayBoard extends Screen {
     drawGrid(p5) {
         p5.stroke(0);
         p5.strokeWeight(2);
-        let img;
 
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
@@ -319,7 +318,7 @@ export class PlayBoard extends Screen {
             }
         }
 
-        // mouse cell interaction
+        // highlight the cell mouse hovering on
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
@@ -510,8 +509,8 @@ export class PlayBoard extends Screen {
         for (let cws of cellsWithPlant) {
             this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
         }
-        // 2. remove all seeds from inventory
-        this.gameState.inventory.removeAllSeeds();
+        // 2. remove all seeds and bamboo from inventory
+        this.gameState.inventory.removeAllSeedsAndBamboo();
         // 3. set current stage cleared
         this.gameState.setStageCleared(this);
         // 4. reset action listener

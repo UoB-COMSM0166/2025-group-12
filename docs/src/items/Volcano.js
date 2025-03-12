@@ -34,8 +34,6 @@ export class Lava extends Terrain {
 
         this.seed = null;
         this.cell = null;
-
-        this.weight = 1000;
     }
 
     storeSeed(p5, plant) {
@@ -62,7 +60,7 @@ export class Lava extends Terrain {
     }
 
     getWeight() {
-        return this.weight;
+        return 1000;
     }
 }
 

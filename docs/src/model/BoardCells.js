@@ -6,6 +6,8 @@ import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {UnionFind} from "../controller/UnionFind.js";
 import { myutil } from "../../lib/myutil.js";
+import {Bamboo} from "../items/Bamboo.js";
+import {Hill} from "../items/Earthquake.js";
 
 export class BoardCells {
     constructor(size) {
@@ -372,6 +374,17 @@ class Cell {
             return false;
         }
 
+        // bamboo only compatible on hills.
+        if(item instanceof Bamboo){
+            if(this.terrain instanceof Hill){
+                return true;
+            }else{
+                playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
+                return false;
+            }
+        }
+
+        // other plants
         if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
             || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO
             || (this.terrain.terrainType === terrainTypes.LAVA && this.terrain.name === "Lava")) {

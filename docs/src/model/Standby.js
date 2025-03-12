@@ -41,7 +41,11 @@ export class StandbyMenu extends Screen {
         // earthquake + landslide
         let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Earthquake");
         stage3Button.onClick = () => {
-            this.copyFloatingWindow(p5, "lock");
+            if (!this.gameState.isStageCleared(stageGroup.VOLCANO)) {
+                this.copyFloatingWindow(p5, "lock");
+                return;
+            }
+            this.clickedStageButton(p5, stageGroup.EARTHQUAKE);
         };
 
         // landslide + random lightning attack

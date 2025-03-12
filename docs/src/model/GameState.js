@@ -6,6 +6,7 @@ import {LanguageManager} from "../LanguageManager.js";
 import {Tornado3PlayBoard} from "./stages/Tor3.js";
 import {Tornado4PlayBoard} from "./stages/Tor4.js";
 import {Tornado5PlayBoard} from "./stages/Tor5.js";
+import {Earthquake1PlayBoard} from "./stages/Ear1.js";
 
 export const stateCode = {
     MENU: 1,
@@ -93,7 +94,10 @@ class GameStageFactory {
         this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
+
         this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
+
+        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
     }
 
     // allocate game stage dynamically

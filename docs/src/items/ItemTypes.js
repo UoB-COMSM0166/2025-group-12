@@ -10,41 +10,42 @@ export let itemTypes = {
 
 // notice: the order of plants and seed in the inventory follows below ordering.
 export let plantTypes = {
-    TREE: 2,
-    BUSH: 4,
-    GRASS: 6,
-    FIRE_HERB: 8,
+    BAMBOO: 2,
+    TREE: 4,
+    BUSH: 6,
+    GRASS: 8,
+    FIRE_HERB: 10,
 }
 export let seedTypes = {
-    TREE: 3,
-    BUSH: 5,
-    GRASS: 7,
-    FIRE_HERB: 9,
+    BAMBOO: 3,
+    TREE: 5,
+    BUSH: 7,
+    GRASS: 9,
+    FIRE_HERB: 11,
 }
 
 export let terrainTypes = {
-    RUIN: 0,
     BASE: 1,
     MOUNTAIN: 2,
-    RIVER: 3,
-    BRIDGE: 4,
-    STEPPE: 5,
-    LUMBERING: 6,
-    VOLCANO: 7,
-    LAVA: 8,
+    STEPPE: 3,
+    LUMBERING: 4,
+    VOLCANO: 5,
+    LAVA: 6,
+    HILL: 7,
+    LANDSLIDE: 8,
 }
 
 // notice: the order of end turn actions refers to below ordering.
 export let enemyTypes = {
-    BOMB: 10,
-    TORNADO: 100,
-    BANDIT: 200,
-    LAVA: 300,
+    EARTHQUAKE: 100,
+    BOMB: 200,
+    TORNADO: 300,
+    BANDIT: 400,
 }
 
 export function baseType(plantOrSeed){
     if(plantOrSeed instanceof Plant){
-        if(plantOrSeed.plantType === plantTypes.TREE){
+        if(plantOrSeed.plantType === plantTypes.TREE || plantOrSeed.plantType === plantTypes.BAMBOO){
             return plantTypes.TREE;
         }else if(plantOrSeed.plantType === plantTypes.BUSH){
             return plantTypes.BUSH;
@@ -52,7 +53,7 @@ export function baseType(plantOrSeed){
             return plantTypes.GRASS;
         }
     }else if (plantOrSeed instanceof Seed){
-        if(plantOrSeed.seedType === seedTypes.TREE){
+        if(plantOrSeed.seedType === seedTypes.TREE || plantOrSeed.seedType === seedTypes.BAMBOO){
             return seedTypes.TREE;
         }else if (plantOrSeed.seedType === seedTypes.BUSH){
             return seedTypes.BUSH;
