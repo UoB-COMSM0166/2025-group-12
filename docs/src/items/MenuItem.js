@@ -62,14 +62,23 @@ export class MenuItem {
         p5.textAlign(p5.LEFT, p5.CENTER);
         p5.noStroke();
         p5.fill(255, 215, 0, this.highlightAlpha);
-        p5.rect(this.defaultX, this.y, this.width * 0.1, this.height, this.width * 0.025, 0, 0, this.width * 0.025);
 
-        let gradientWidth = this.width - this.width * 0.1;
-        for (let i = 0; i < gradientWidth; i++) {
-            let alpha = p5.map(i, 0, gradientWidth, this.highlightAlpha, 0);
-            p5.noStroke();
-            p5.fill(255, 215, 0, alpha);
-            p5.rect(this.defaultX + this.width * 0.1 + i, this.y, 1, this.height);
+        for (let i = 0; i < this.width; i++) {
+            let alpha = p5.map(i, 0, this.width, this.highlightAlpha, 0);
+            p5.stroke(255, 215, 0, alpha);
+
+            let topY, bottomY;
+            let r = this.width * 0.03;
+            if(i < r){
+                let angle = p5.acos((r-i)/r);
+                topY = this.y + r - (r * p5.sin(angle));
+                bottomY = this.y + this.height - r + (r * p5.sin(angle));
+            }
+            else{
+                topY = this.y;
+                bottomY = this.y + this.height;
+            }
+            p5.line(this.defaultX + i, topY, this.defaultX + i, bottomY);
         }
 
         p5.fill(255);
