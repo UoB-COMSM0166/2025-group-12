@@ -11,6 +11,13 @@ export class Screen {
         console.error("setup not implemented!");
     }
 
+    reset(p5){
+        this.buttons = [];
+        this.floatingWindow = null;
+        this.allFloatingWindows = null;
+        this.setup(p5);
+    }
+
     handleClick(p5) {
         console.error("handleClick not implemented!");
     }

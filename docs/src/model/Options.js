@@ -3,6 +3,8 @@ import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
 import {GameState, stateCode} from "./GameState.js";
 import {LanguageManager} from "../LanguageManager.js";
+import {CanvasSize} from "../CanvasSize.js";
+import {Checkbox} from "../items/Checkbox.js";
 
 export class Options {
     constructor(controller) {
@@ -28,13 +30,37 @@ export class Options {
             this.languageManager.setLanguage('zh');
             this.controller.menus[stateCode.MENU].updateText();
         }
-        this.buttons.push(englishButton,chineseButton);
+
+        let [checkboxWidth, checkboxHeight] = myutil.relative2absolute(0.001 * 9, 0.001 * 16);
+        let fullScreenCheckbox = new Checkbox(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, checkboxWidth, checkboxHeight, 'Fullscreen');
+        fullScreenCheckbox.onClick = () => {
+            if(fullScreenCheckbox.isChecked){
+                myutil.exitFullscreen();
+                p5.resizeCanvas(1280, 720);
+                CanvasSize.setSize(1280, 720);
+                this.controller.reset(p5);
+            }
+            else{
+                let screenWidth = window.screen.width;
+                let screenHeight = window.screen.height;
+                myutil.enterFullscreen();
+                p5.resizeCanvas(screenWidth, screenHeight);
+                CanvasSize.setSize(screenWidth, screenHeight);
+                this.controller.reset(p5);
+            }
+            fullScreenCheckbox.isChecked = !fullScreenCheckbox.isChecked;
+        }
+        this.buttons.push(englishButton, chineseButton, fullScreenCheckbox);
+    }
+
+    reset(p5){
+
     }
 
     handleClick(p5) {
         for (let button of this.buttons) {
             if (button.mouseClick(p5)) {
-                this.controller.gameState.showOptions = !this.controller.gameState.showOptions;
+                // this.controller.gameState.showOptions = !this.controller.gameState.showOptions;
                 return;
             }
         }
