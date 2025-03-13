@@ -236,20 +236,36 @@ export class Bandit extends Enemy {
         for (let cwe of cellsWithEnemy) {
             let x = cwe.x;
             let y = cwe.y;
+            
             if (cwe.enemy && cwe.enemy.enemyType === enemyTypes.TORNADO) {
-                for (let i = 0; i < playBoard.gridSize; i++) {
-                    G.setWeight(i + y * playBoard.gridSize, i + 1 + y * playBoard.gridSize, 10, 'a');
+                for (let i = 0; i < N - 1; i++) { 
+                    if (G.adj[i + y * N]?.find(e => e.to() === (i + 1) + y * N)) {
+                        G.setWeight(i + y * N, (i + 1) + y * N, 10, 'a');
+                    }
                 }
-                for (let j = 0; j < playBoard.gridSize; j++) {
-                    G.setWeight(x + j * playBoard.gridSize, x + (j + 1) * playBoard.gridSize, 10, 'a');
+                for (let j = 0; j < N - 1; j++) { 
+                    if (G.adj[x + j * N]?.find(e => e.to() === x + (j + 1) * N)) {
+                        G.setWeight(x + j * N, x + (j + 1) * N, 10, 'a');
+                    }
                 }
             }
-            // set edges connecting cells with other enemies high enough to avoid clash
+        
+            // Avoid enemy clashes
             if (x !== this.cell.x || y !== this.cell.y) {
-                G.setWeight(x + y * playBoard.gridSize, (x - 1) + y * playBoard.gridSize, 1000, "ab");
-                G.setWeight(x + y * playBoard.gridSize, (x + 1) + y * playBoard.gridSize, 1000, "ab");
-                G.setWeight(x + y * playBoard.gridSize, x + (y - 1) * playBoard.gridSize, 1000, "ab");
-                G.setWeight(x + y * playBoard.gridSize, x + (y + 1) * playBoard.gridSize, 1000, "ab");
+                let directions = [
+                    [(x - 1), y],
+                    [(x + 1), y],
+                    [x, (y - 1)],
+                    [x, (y + 1)]
+                ];
+                
+                for (let [nx, ny] of directions) {
+                    if (nx >= 0 && nx < N && ny >= 0 && ny < N) {
+                        if (G.adj[x + y * N]?.find(e => e.to() === nx + ny * N)) {
+                            G.setWeight(x + y * N, nx + ny * N, 1000, "ab");
+                        }
+                    }
+                }
             }
         }
 

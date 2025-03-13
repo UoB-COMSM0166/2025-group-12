@@ -69,7 +69,6 @@ export class EdgeWeightedDigraph {
 
     addEdge(e) {
         let v = e.from();
-        //if (this.adj[v] === undefined) this.adj[v] = [];
         this.adj[v].push(e);
         this.E++;
     }
@@ -102,6 +101,10 @@ export class EdgeWeightedDigraph {
             } else if (mode === "ab") {
                 // append to both directions
                 edge.weight += weight;
+                //console.log(this.adj[w].find(e => e.to() === v))
+                console.log(this.adj[w]);
+                console.log(`v = ${v}, w = ${w}`)
+                console.log("---------------")
                 this.adj[w].find(e => e.to() === v).weight += weight;
             } else {
                 edge.weight = weight;
