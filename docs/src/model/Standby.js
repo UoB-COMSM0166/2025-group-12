@@ -135,7 +135,7 @@ export class StandbyMenu extends Screen {
             playerCanClick: false
         }));
 
-        afw.set("moreTutorial", new FloatingWindow(p5, null, "{white:Click 'Storm' again to continue tutorial.}", {
+        afw.set("moreTutorial", new FloatingWindow(p5, null, "{white:Click 'Tornado' again to continue tutorial.}", {
             x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
             y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,

@@ -69,7 +69,6 @@ export class EdgeWeightedDigraph {
 
     addEdge(e) {
         let v = e.from();
-        //if (this.adj[v] === undefined) this.adj[v] = [];
         this.adj[v].push(e);
         this.E++;
     }
