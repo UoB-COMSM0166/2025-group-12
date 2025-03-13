@@ -38,7 +38,11 @@ export class Earthquake1PlayBoard extends PlayBoard {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 if (j <= 1) {
-                    this.boardObjects.setCell(i, j, new Hill(p5));
+                    if (j === 0) {
+                        this.boardObjects.setCell(i, j, new Hill(p5, true));
+                    } else {
+                        this.boardObjects.setCell(i, j, new Hill(p5));
+                    }
                 } else {
                     this.boardObjects.setCell(i, j, new Steppe(p5));
                 }
@@ -78,14 +82,34 @@ export class Earthquake1PlayBoard extends PlayBoard {
     nextTurnItems(p5) {
         this.setAndResolveCounter(p5);
 
-        if (this.turn === 2) {
+        if (this.turn === 2 || this.turn === 4 || this.turn === 6 || this.turn === 8 || this.turn === 10) {
             Earthquake.createNewEarthquake(p5, this);
         }
 
         if (this.turn === 3 || this.turn === 5 || this.turn === 7 || this.turn === 9 || this.turn === 11) {
-            let r = Math.floor(Math.random() * this.boardObjects.size);
-            this.slide(p5, this.boardObjects.getCell(r, 0), this.boardObjects.getCell(r, 3)).then();
+            this.generateSlide(p5);
         }
+    }
+
+    generateSlide(p5) {
+        let hills = [];
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let cell = this.boardObjects.getCell(i, j);
+                if (cell.terrain instanceof Hill && cell.terrain.canSlide) {
+                    hills.push(this.boardObjects.getCell(i, j));
+                }
+            }
+        }
+
+        let cell = hills[Math.floor(Math.random() * hills.length)];
+        for (let adCell of this.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
+            if (adCell.plant !== null && baseType(adCell.plant) === plantTypes.TREE && adCell.ecosystem !== null) {
+                return;
+            }
+        }
+        this.slide(p5, this.boardObjects.getCell(cell.x, cell.y), this.boardObjects.getCell(cell.x, 3)).then();
+
     }
 
     async slide(p5, cell, finalCell) {

@@ -77,12 +77,14 @@ export class Earthquake extends Enemy {
 }
 
 export class Hill extends Terrain{
-    constructor(p5) {
+    constructor(p5, canSlide = false) {
         super();
         this.name = "Hill";
         this.color = "black";
         this.terrainType = terrainTypes.HILL;
         this.img = p5.images.get(`${this.name}`);
+
+        this.canSlide = canSlide;
     }
 
     getWeight() {
