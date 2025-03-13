@@ -15,8 +15,8 @@ export class Tornado4PlayBoard extends PlayBoard {
         this.stageGroup = stageGroup.TORNADO;
         this.stageNumbering = "1-4";
         // grid parameters
-        this.gridSize = 10;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        this.gridSize =8;
+        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16 * 1.5, 1 / 9 * 1.5);
 
         // board objects array
         this.boardObjects = new BoardCells(this.gridSize);
@@ -60,24 +60,24 @@ export class Tornado4PlayBoard extends PlayBoard {
                 Bandit.createNewBandit(p5, this, 2, 1);
                 break;
             case 5:
-                Tornado.createNewTornado(p5, this, 0, 4, "d");
+                Tornado.createNewTornado(p5, this, 0, 4, "d", 1);
                 break;
             case 6:
-                Bandit.createNewBandit(p5, this, 7, 8);
+                Bandit.createNewBandit(p5, this, 6, 7);
                 break;
             case 7:
-                Bandit.createNewBandit(p5, this, 8, 7);
-                Bandit.createNewBandit(p5, this, 8, 8);
+                Bandit.createNewBandit(p5, this, 7, 6);
+                Bandit.createNewBandit(p5, this, 7, 7);
                 break;
             case 8:
-                Tornado.createNewTornado(p5, this, 8, 4, "u");
-                Tornado.createNewTornado(p5, this, 2, 4, "d");
+                Tornado.createNewTornado(p5, this, 7, 4, "u", 1);
+                Tornado.createNewTornado(p5, this, 2, 4, "d", 1);
                 break;
             case 10:
                 Bandit.createNewBandit(p5, this, 2, 2);
-                Tornado.createNewTornado(p5, this, 4, 2, "r");
-                Tornado.createNewTornado(p5, this, 7, 4, "u");
-                Tornado.createNewTornado(p5, this, 3, 4, "d");
+                Tornado.createNewTornado(p5, this, 4, 2, "r", 1);
+                Tornado.createNewTornado(p5, this, 7, 4, "u", 1);
+                Tornado.createNewTornado(p5, this, 2, 4, "d", 1);
         }
     }
 
