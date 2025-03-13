@@ -60,7 +60,7 @@ export class PlantActive {
         target.health--;
         if (target.health === 0) {
             target.status = false;
-            plantEnemyInteractions.findEnemyAndDelete(playBoard, target);
+            plantEnemyInteractions.findMovableAndDelete(playBoard, target);
             targetCell.enemy = null;
         }
         spellCasterCell.plant.useLeft--;

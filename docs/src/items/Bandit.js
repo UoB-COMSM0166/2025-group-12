@@ -132,7 +132,7 @@ export class Bandit extends Enemy {
             // if no way out, the bandit dies of forest insects and animal attacks.
             // they may deserve a better ending? refactor
             this.status = false;
-            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
             return;
         }
 

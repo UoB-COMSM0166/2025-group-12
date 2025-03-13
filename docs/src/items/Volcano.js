@@ -116,7 +116,7 @@ export class VolcanicBomb extends Enemy {
             this.isMoving = false;
             this.hasMoved = true;
             this.status = false;
-            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
             this.hit(p5, playBoard);
             return false;
         }

@@ -38,9 +38,10 @@ export let terrainTypes = {
 // notice: the order of end turn actions refers to below ordering.
 export let enemyTypes = {
     EARTHQUAKE: 100,
-    BOMB: 200,
-    TORNADO: 300,
-    BANDIT: 400,
+    SLIDE: 200,
+    BOMB: 300,
+    TORNADO: 400,
+    BANDIT: 500,
 }
 
 export function baseType(plantOrSeed){

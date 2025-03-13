@@ -8,13 +8,15 @@ import {Mountain} from "../../items/Mountain.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Bandit, Lumbering} from "../../items/Bandit.js";
 import {Tornado} from "../../items/Tornado.js";
-import {baseType, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
+import {baseType, enemyTypes, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
 import {Earthquake, Hill, Landslide} from "../../items/Earthquake.js";
+import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
+import {Enemy} from "../../items/Enemy.js";
+import {EarthquakePlayBoard} from "./EarthquakePlayboard.js";
 
-export class Earthquake1PlayBoard extends PlayBoard {
+export class Earthquake1PlayBoard extends EarthquakePlayBoard {
     constructor(gameState) {
         super(gameState);
-        this.stageGroup = stageGroup.EARTHQUAKE;
         this.stageNumbering = "3-1";
         // grid parameters
         this.gridSize = 8;
@@ -52,31 +54,6 @@ export class Earthquake1PlayBoard extends PlayBoard {
         this.boardObjects.setCell(4, 3, new PlayerBase(p5));
         this.boardObjects.setCell(3, 4, new PlayerBase(p5));
         this.boardObjects.setCell(4, 4, new PlayerBase(p5));
-
-    }
-
-    setAndResolveCounter(p5) {
-        let cells = this.boardObjects.getAllCellsWithPlant();
-
-        // increment counters.
-        for (let cwp of cells) {
-            if (cwp.plant.earthCounter === undefined) {
-                cwp.plant.earthCounter = 1;
-            } else {
-                cwp.plant.earthCounter++;
-            }
-        }
-
-        if (this.hasBamboo !== undefined && this.hasBamboo) return;
-
-        // if a tree has a counter=10, insert bamboo into inventory.
-        for (let cwp of cells) {
-            if (cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
-                this.modifyBoard(p5, "bamboo");
-                this.hasBamboo = true;
-                break;
-            }
-        }
     }
 
     nextTurnItems(p5) {
@@ -88,66 +65,6 @@ export class Earthquake1PlayBoard extends PlayBoard {
 
         if (this.turn === 3 || this.turn === 5 || this.turn === 7 || this.turn === 9 || this.turn === 11) {
             this.generateSlide(p5);
-        }
-    }
-
-    generateSlide(p5) {
-        let hills = [];
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                let cell = this.boardObjects.getCell(i, j);
-                if (cell.terrain instanceof Hill && cell.terrain.canSlide) {
-                    hills.push(this.boardObjects.getCell(i, j));
-                }
-            }
-        }
-
-        let cell = hills[Math.floor(Math.random() * hills.length)];
-        for (let adCell of this.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
-            if (adCell.plant !== null && baseType(adCell.plant) === plantTypes.TREE && adCell.ecosystem !== null) {
-                return;
-            }
-        }
-        this.slide(p5, this.boardObjects.getCell(cell.x, cell.y), this.boardObjects.getCell(cell.x, 3)).then();
-
-    }
-
-    async slide(p5, cell, finalCell) {
-        while (true) {
-            // some terrain can block landslide
-            if (cell instanceof Mountain) {
-                return;
-            }
-
-            // kill plants and bandit on this cell:
-            if (cell.plant !== null) cell.removePlant();
-            else if (cell.seed !== null) cell.removeSeed();
-            else if (cell.enemy instanceof Bandit) cell.enemy = null;
-
-            // if cell is player base, game over.
-            if (cell.terrain.terrainType === terrainTypes.BASE) {
-                myutil.gameOver(this);
-                return;
-            }
-
-            cell.terrain = new Landslide(p5);
-            // place exit condition here to ensure final cell is included
-            if (cell === finalCell) return;
-
-            // find next cell
-            let direction = [0, 0];
-            if (finalCell.x - cell.x !== 0) {
-                direction[0] = (finalCell.x - cell.x) / Math.abs(finalCell.x - cell.x);
-            }
-            if (finalCell.y - cell.y !== 0) {
-                direction[1] = (finalCell.y - cell.y) / Math.abs(finalCell.y - cell.y);
-            }
-            if (direction[0] !== 0 && direction[1] !== 0) {
-                direction[Math.floor(Math.random() * 2)] = 0;
-            }
-            cell = this.boardObjects.getCell(cell.x + direction[0], cell.y + direction[1]);
-
-            await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
 

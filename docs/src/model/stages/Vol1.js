@@ -99,7 +99,7 @@ export class Volcano1PlayBoard extends PlayBoard {
         // kill bandit on this cell
         if (cell.enemy !== null && cell.enemy.enemyType === enemyTypes.BANDIT) {
             cell.enemy.status = false;
-            plantEnemyInteractions.findEnemyAndDelete(this, cell.enemy);
+            plantEnemyInteractions.findMovableAndDelete(this, cell.enemy);
         }
     }
 

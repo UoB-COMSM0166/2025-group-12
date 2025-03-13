@@ -8,6 +8,10 @@ export class Enemy {
     }
 
     draw(p5){
-        console.log("draw not implemented.");
+        console.error("draw not implemented.");
+    }
+
+    movements(p5, playBoard) {
+        console.error("movements not implemented.");
     }
 }

@@ -37,7 +37,7 @@ export class Earthquake extends Enemy {
             this.hasMoved = true;
             this.status = false;
             this.hit(p5, playBoard);
-            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
             return false;
         }
         // during movement
@@ -76,7 +76,7 @@ export class Earthquake extends Enemy {
 
 }
 
-export class Hill extends Terrain{
+export class Hill extends Terrain {
     constructor(p5, canSlide = false) {
         super();
         this.name = "Hill";
@@ -92,7 +92,7 @@ export class Hill extends Terrain{
     }
 }
 
-export class Landslide extends Terrain{
+export class Landslide extends Terrain {
     constructor(p5) {
         super();
         this.name = "Landslide";

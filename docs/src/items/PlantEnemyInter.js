@@ -23,8 +23,8 @@ export class plantEnemyInteractions {
         }
     }
 
-    static findEnemyAndDelete(playBoard, enemy) {
-        let index = playBoard.movables.findIndex(e => e === enemy);
+    static findMovableAndDelete(playBoard, movable) {
+        let index = playBoard.movables.findIndex(e => e === movable);
         if (index === -1) {
             return;
         }
@@ -67,7 +67,7 @@ export class plantEnemyInteractions {
                 tornado.status = false;
             }
             if (tornado.status === false) {
-                plantEnemyInteractions.findEnemyAndDelete(playBoard, tornado);
+                plantEnemyInteractions.findMovableAndDelete(playBoard, tornado);
             }
         }
 
@@ -100,7 +100,7 @@ export class plantEnemyInteractions {
                 plantEnemyInteractions.findPlantAndDelete(playBoard, plant);
             }
             if (tornado.status === false) {
-                plantEnemyInteractions.findEnemyAndDelete(playBoard, tornado);
+                plantEnemyInteractions.findMovableAndDelete(playBoard, tornado);
             }
         }
 

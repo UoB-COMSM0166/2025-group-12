@@ -114,7 +114,7 @@ export class Tornado extends Enemy {
             // 1. check current cell to perform Tornado-terrain interaction.
             if (cell.terrain.name === "Mountain") {
                 this.status = false;
-                plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+                plantEnemyInteractions.findMovableAndDelete(playBoard, this);
                 return;
             }
 
@@ -153,7 +153,7 @@ export class Tornado extends Enemy {
             if (cell.enemy && cell.enemy.name === "Bandit") {
                 cell.enemy.health = 0;
                 cell.enemy.status = false;
-                plantEnemyInteractions.findEnemyAndDelete(playBoard, cell.enemy);
+                plantEnemyInteractions.findMovableAndDelete(playBoard, cell.enemy);
                 cell.enemy = null;
             }
 
@@ -162,7 +162,7 @@ export class Tornado extends Enemy {
         // if the tornado goes out of the grid, it dies anyway.
         if (index[0] === -1) {
             this.status = false;
-            plantEnemyInteractions.findEnemyAndDelete(playBoard, this);
+            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
         }
     }
 }

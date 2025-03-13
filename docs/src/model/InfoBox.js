@@ -6,6 +6,7 @@ export class InfoBox {
         this.infoStatus = 't'; // by default prints terrain & ( enemy | seed )
         this.recordStatus = 't'; // if record!='a' && status = 'a', init button, vice versa.
         this.activateButton = null;
+        this.displayButton = null;
 
         this.playBoard = playBoard;
         [this.boxWidth, this.boxHeight] = myutil.relative2absolute(0.18, 1 / 4);
@@ -225,7 +226,7 @@ export class InfoBox {
             return;
         }
         let index = this.playBoard.buttons.findIndex(button => button === this.activateButton);
-        if(index != -1){
+        if(index !== -1){
             this.playBoard.buttons.splice(index, 1);
         }
         this.activateButton = null;
@@ -235,19 +236,27 @@ export class InfoBox {
         let [buttonWidth, buttonHeight] = myutil.relative2absolute(5 / 64, 0.04);
         let buttonX = this.boxX + this.boxWidth / 2 - buttonWidth / 2;
         let buttonY = this.playBoard.canvasHeight - buttonHeight - 2 * this.paddingY;
-        let display = new Button(buttonX, buttonY, buttonWidth, buttonHeight, "display");
+
+        let text = this.playBoard.ecoDisplay? "display off" : "display on";
+
+        let display = new Button(buttonX, buttonY, buttonWidth, buttonHeight, text);
         display.onClick = () => {
             this.playBoard.ecoDisplay = !this.playBoard.ecoDisplay;
+            this.toggleEcoDisplayButtonText();
         };
         this.playBoard.buttons.push(display);
         this.displayButton = display;
+    }
+
+    toggleEcoDisplayButtonText() {
+        this.displayButton.text = this.playBoard.ecoDisplay? "display off" : "display on";
     }
 
     deleteDisplayButton(p5){
         if(this.displayButton === null) return;
         
         let index = this.playBoard.buttons.findIndex(button => button === this.displayButton);
-        if(index != -1){
+        if(index !== -1){
             this.playBoard.buttons.splice(index, 1);
         }
         this.displayButton = null;
