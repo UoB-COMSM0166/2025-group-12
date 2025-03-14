@@ -107,6 +107,16 @@ export class EdgeWeightedDigraph {
             }
         }
     }
+
+    hasEdge(v, w){
+        return this.adj[v]?.find(e => e.to() === w);
+    }
+
+    setWeightIfHasEdge(v, w, weight, mode){
+        if(this.hasEdge(v, w)){
+            this.setWeight(v, w, weight, mode);
+        }
+    }
 }
 
 export class DirectedEdge {

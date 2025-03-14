@@ -102,6 +102,6 @@ export class Landslide extends Terrain {
     }
 
     getWeight() {
-        return 1000;
+        return 0;
     }
 }

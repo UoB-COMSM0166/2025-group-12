@@ -13,10 +13,9 @@ export class Bamboo extends Plant {
 
         this.seed = BambooSeed;
 
-        this.health = 3;
-        this.maxHealth = 3;
+        this.health = 4;
+        this.maxHealth = 4;
         this.status = true;
-
     }
 
     getPassiveString() {

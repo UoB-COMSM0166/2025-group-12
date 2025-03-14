@@ -376,7 +376,7 @@ class Cell {
 
         // bamboo only compatible on hills.
         if(item instanceof Bamboo){
-            if(this.terrain instanceof Hill){
+            if(this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.LANDSLIDE){
                 return true;
             }else{
                 playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
@@ -387,7 +387,8 @@ class Cell {
         // other plants
         if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
             || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO
-            || (this.terrain.terrainType === terrainTypes.LAVA && this.terrain.name === "Lava")) {
+            || (this.terrain.terrainType === terrainTypes.LAVA && this.terrain.name === "Lava")
+            || this.terrain.terrainType === terrainTypes.LANDSLIDE ) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }
