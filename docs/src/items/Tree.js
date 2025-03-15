@@ -1,4 +1,4 @@
-import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
+import {baseType, itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
 import {Plant} from "./Plant.js";
 import {Seed} from "./Seed.js";
 import {PlayBoard} from "../model/Play.js";
@@ -64,7 +64,7 @@ export class Tree extends Plant {
         let adjacentCells = playBoard.boardObjects.getAdjacent4Cells(cell.x, cell.y);
         // when a bush is next to this tree, it gains extended passive skill.
         for (let adCell of adjacentCells) {
-            if (adCell.plant !== null && adCell.plant.name === "Bush") {
+            if (adCell.plant !== null && baseType(adCell.plant) === plantTypes.BUSH) {
                 this.hasExtended = true;
                 break;
             }
@@ -72,7 +72,7 @@ export class Tree extends Plant {
         // when a bush and a grass is next to this tree, it gains active.
         if (this.hasExtended) {
             for (let adCell of adjacentCells) {
-                if (adCell.plant !== null && adCell.plant.name === "Grass") {
+                if (adCell.plant !== null && baseType(adCell.plant) === plantTypes.GRASS) {
                     this.hasActive = true;
                     break;
                 }

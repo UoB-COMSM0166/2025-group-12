@@ -16,7 +16,7 @@ export class Tornado4PlayBoard extends PlayBoard {
         this.stageNumbering = "1-4";
         // grid parameters
         this.gridSize =8;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16 * 1.5, 1 / 9 * 1.5);
+        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
         this.boardObjects = new BoardCells(this.gridSize);

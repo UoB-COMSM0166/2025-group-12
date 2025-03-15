@@ -239,31 +239,19 @@ export class Bandit extends Enemy {
             
             if (cwe.enemy && cwe.enemy.enemyType === enemyTypes.TORNADO) {
                 for (let i = 0; i < N - 1; i++) { 
-                    if (G.adj[i + y * N]?.find(e => e.to() === (i + 1) + y * N)) {
-                        G.setWeight(i + y * N, (i + 1) + y * N, 10, 'a');
-                    }
+                    G.setWeightIfHasEdge(i + y * N, (i + 1) + y * N, 10, 'a');
                 }
                 for (let j = 0; j < N - 1; j++) { 
-                    if (G.adj[x + j * N]?.find(e => e.to() === x + (j + 1) * N)) {
-                        G.setWeight(x + j * N, x + (j + 1) * N, 10, 'a');
-                    }
+                    G.setWeightIfHasEdge(x + j * N, x + (j + 1) * N, 10, 'a');
                 }
             }
         
             // Avoid enemy clashes
             if (x !== this.cell.x || y !== this.cell.y) {
-                let directions = [
-                    [(x - 1), y],
-                    [(x + 1), y],
-                    [x, (y - 1)],
-                    [x, (y + 1)]
-                ];
-                
-                for (let [nx, ny] of directions) {
-                    if (nx >= 0 && nx < N && ny >= 0 && ny < N) {
-                        if (G.adj[x + y * N]?.find(e => e.to() === nx + ny * N)) {
-                            G.setWeight(x + y * N, nx + ny * N, 1000, "ab");
-                        }
+                let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                for (let [dx, dy] of directions) {
+                    if (x + dx >= 0 && x + dx < N && y + dy >= 0 && y + dy < N) {
+                        G.setWeightIfHasEdge(x + y * N, x + dx + (y + dy) * N, 1000, "ab");
                     }
                 }
             }

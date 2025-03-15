@@ -1,11 +1,7 @@
 import {stageGroup} from "../GameState.js";
 import {PlayBoard} from "../Play.js";
 import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
 import {Bandit, Lumbering} from "../../items/Bandit.js";
 import {Tornado} from "../../items/Tornado.js";
 import {baseType, enemyTypes, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
@@ -52,7 +48,7 @@ export class EarthquakePlayBoard extends PlayBoard {
 
         // if a tree has a counter=10, insert bamboo into inventory.
         for (let cwp of cells) {
-            if (cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
+            if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
                 this.modifyBoard(p5, "bamboo");
                 this.hasBamboo = true;
                 break;
@@ -78,7 +74,7 @@ export class EarthquakePlayBoard extends PlayBoard {
             }
         }
 
-        this.movables.push(new slideAnimation(this.boardObjects.getCell(cell.x, cell.y), this.boardObjects.getCell(cell.x, 3)));
+        this.movables.push(new slideAnimation(this.boardObjects.getCell(cell.x, cell.y), this.boardObjects.getCell(cell.x, 5)));
     }
 }
 
