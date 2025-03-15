@@ -42,7 +42,7 @@ export class GameSave {
             gameState.loaded = false;
 
         } else {
-            console.log('Save data not found!');
+            console.error('Save data not found!');
         }
     }
 

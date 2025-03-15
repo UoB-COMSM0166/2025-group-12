@@ -12,11 +12,28 @@ import {baseType, enemyTypes, plantTypes, terrainTypes} from "../../items/ItemTy
 import {Earthquake, Hill, Landslide} from "../../items/Earthquake.js";
 import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
 import {Enemy} from "../../items/Enemy.js";
+import {Bamboo} from "../../items/Bamboo.js";
 
 export class EarthquakePlayBoard extends PlayBoard {
     constructor(gameState) {
         super(gameState);
         this.stageGroup = stageGroup.EARTHQUAKE;
+    }
+
+    spreadBamboo(p5, cell){
+        if(!cell.plant && !cell.seed) {
+            cell.plant = new Bamboo(p5);
+        }
+
+        for (let adCell of this.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
+            if(adCell.plant || adCell.seed) continue;
+
+            if(adCell.terrian.terrianType === terrainTypes.LANDSLIDE){
+                adCell.plant = new Bamboo(p5);
+                this.spreadBamboo(p5, adCell);
+            }
+        }
+
     }
 
     setAndResolveCounter(p5) {
@@ -62,14 +79,6 @@ export class EarthquakePlayBoard extends PlayBoard {
         }
 
         this.movables.push(new slideAnimation(this.boardObjects.getCell(cell.x, cell.y), this.boardObjects.getCell(cell.x, 3)));
-    }
-
-    modifyBoard(p5, code) {
-        if (code === "bamboo") {
-            this.floatingWindow = this.allFloatingWindows.get("bamboo");
-            this.allFloatingWindows.delete("bamboo");
-            this.gameState.inventory.pushItem2Inventory(p5, "Bamboo", 1);
-        }
     }
 }
 

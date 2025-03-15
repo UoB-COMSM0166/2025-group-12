@@ -1,6 +1,5 @@
 import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
 import {Plant} from "./Plant.js";
-import {PlayBoard} from "../model/Play.js";
 import {Seed} from "./Seed.js";
 
 export class Bamboo extends Plant {
@@ -16,15 +15,14 @@ export class Bamboo extends Plant {
         this.health = 3;
         this.maxHealth = 3;
         this.status = true;
-
     }
 
     getPassiveString() {
-        return "Bamboo's passive skill. Not implemented.";
+        return "Automatically spreads to all nearby landslide terrain and repair local environment."
     }
 
     getActiveString() {
-        return "Bamboo's active skill. Not implemented.";
+        return "No active skill.";
     }
 
     reevaluateSkills(playBoard, cell) {

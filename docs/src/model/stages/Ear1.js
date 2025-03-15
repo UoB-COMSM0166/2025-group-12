@@ -66,6 +66,13 @@ export class Earthquake1PlayBoard extends EarthquakePlayBoard {
         if (this.turn === 3 || this.turn === 5 || this.turn === 7 || this.turn === 9 || this.turn === 11) {
             this.generateSlide(p5);
         }
+
+        // spread bamboo after generating slide
+        for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
+            if(cwp.plant.plantType === plantTypes.BAMBOO){
+                this.spreadBamboo(p5, cwp);
+            }
+        }
     }
 
     modifyBoard(p5, code) {

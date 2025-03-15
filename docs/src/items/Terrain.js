@@ -7,6 +7,6 @@ export class Terrain {
     }
 
     getWeight() {
-        console.log("getWeight not implemented.");
+        console.error("getWeight not implemented.");
     }
 }

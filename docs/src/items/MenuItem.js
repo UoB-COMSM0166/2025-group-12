@@ -11,7 +11,7 @@ export class MenuItem {
         this.height = height;
         this.hovering = false;
         this._onClick = (p5) => {
-            console.log("button's onClick function is not overridden");
+            console.error("button's onClick function is not overridden");
         };
     }
 
