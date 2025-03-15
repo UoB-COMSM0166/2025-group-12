@@ -24,12 +24,11 @@ export class EarthquakePlayBoard extends PlayBoard {
         for (let adCell of this.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
             if(adCell.plant || adCell.seed) continue;
 
-            if(adCell.terrian.terrianType === terrainTypes.LANDSLIDE){
+            if(adCell.terrain.terrainType === terrainTypes.LANDSLIDE){
                 adCell.plant = new Bamboo(p5);
                 this.spreadBamboo(p5, adCell);
             }
         }
-
     }
 
     setAndResolveCounter(p5) {

@@ -374,7 +374,7 @@ class Cell {
             return false;
         }
 
-        // bamboo only compatible on hills.
+        // bamboo compatible on hill and landslide.
         if(item instanceof Bamboo){
             if(this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.LANDSLIDE){
                 return true;
