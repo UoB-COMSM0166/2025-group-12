@@ -106,7 +106,7 @@ class slideAnimation extends Enemy {
         // kill plants and bandit on this cell:
         if (this.cell.plant !== null) this.cell.removePlant();
         else if (this.cell.seed !== null) this.cell.removeSeed();
-        else if (this.cell.enemy.enemyType === enemyTypes.BANDIT) this.cell.enemy = null;
+        else if (this.cell.enemy?.enemyType === enemyTypes.BANDIT) this.cell.enemy = null;
 
         // if cell is player base, game over.
         if (this.cell.terrain.terrainType === terrainTypes.BASE) {
