@@ -58,9 +58,9 @@ export class Tornado4PlayBoard extends PlayBoard {
             case 4:
                 Bandit.createNewBandit(p5, this, 1, 2);
                 Bandit.createNewBandit(p5, this, 2, 1);
+                Tornado.createNewTornado(p5, this, 0, 4, "d", 1);
                 break;
             case 5:
-                Tornado.createNewTornado(p5, this, 0, 4, "d", 1);
                 break;
             case 6:
                 Bandit.createNewBandit(p5, this, 6, 7);
@@ -68,16 +68,19 @@ export class Tornado4PlayBoard extends PlayBoard {
             case 7:
                 Bandit.createNewBandit(p5, this, 7, 6);
                 Bandit.createNewBandit(p5, this, 7, 7);
+                Tornado.createNewTornado(p5, this, 7, 4, "u", 1);
+                Tornado.createNewTornado(p5, this, 2, 4, "d", 1);
                 break;
             case 8:
+                break;
+            case 9:
+                Tornado.createNewTornado(p5, this, 4, 2, "r", 1);
                 Tornado.createNewTornado(p5, this, 7, 4, "u", 1);
                 Tornado.createNewTornado(p5, this, 2, 4, "d", 1);
                 break;
             case 10:
                 Bandit.createNewBandit(p5, this, 2, 2);
-                Tornado.createNewTornado(p5, this, 4, 2, "r", 1);
-                Tornado.createNewTornado(p5, this, 7, 4, "u", 1);
-                Tornado.createNewTornado(p5, this, 2, 4, "d", 1);
+                break;
         }
     }
 
