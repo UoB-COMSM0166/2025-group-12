@@ -5,9 +5,6 @@ import {Bandit} from "../src/items/Bandit.js";
 import {Tornado} from "../src/items/Tornado.js";
 
 export class myutil {
-    static mod2PiPositive(x) {
-        return (((x % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI)) / Math.PI;
-    }
 
     static relative2absolute(xPercent, yPercent) {
 
@@ -305,6 +302,26 @@ export class myutil {
             playerCanClick: false
         }));
 
+        afw.set("020", new FloatingWindow(p5, null, "{white:This will reset current turn. Click reset again if you are sure to proceed.}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("021", new FloatingWindow(p5, null, "{white:This will undo last action. Click undo again if you are sure to proceed.}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
         afw.set("050", new FloatingWindow(p5, null, "{white:Invalid target!}", {
             x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
             y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
@@ -336,6 +353,16 @@ export class myutil {
         }));
 
         afw.set("053", new FloatingWindow(p5, null, "{white:You cannot heal a plant not injured!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: false
+        }));
+
+        afw.set("099", new FloatingWindow(p5, null, "{white:You have cleared the game!}", {
             x: myutil.relative2absolute(1 / 2, 1 / 6)[0],
             y: myutil.relative2absolute(1 / 2, 1 / 6)[1],
             fontSize: 20,

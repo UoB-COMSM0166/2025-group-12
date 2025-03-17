@@ -35,7 +35,7 @@ export class InfoBox {
             info = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).plant.getActiveString();
         } else if (this.infoStatus === 'e') {
             title = "Ecosystem";
-            info = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).getEcoString();
+            info = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).getEcoString(this.playBoard);
         }
 
         p5.fill(255);
@@ -53,16 +53,16 @@ export class InfoBox {
         p5.image(p5.images.get("rightarrow"), this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
 
         // draw a box to highlight arrow
-        if(this.boxX + this.boxWidth / 3 - arrowSize / 2 < p5.mouseX &&  p5.mouseX < this.boxX + this.boxWidth / 3 - arrowSize / 2 + arrowSize
-        && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize){
-            p5.fill(0,0,0, 0);
+        if (this.boxX + this.boxWidth / 3 - arrowSize / 2 < p5.mouseX && p5.mouseX < this.boxX + this.boxWidth / 3 - arrowSize / 2 + arrowSize
+            && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize) {
+            p5.fill(0, 0, 0, 0);
             p5.stroke(100);
             p5.strokeWeight(2);
             p5.rect(this.boxX + this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
         }
-        if(this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 < p5.mouseX &&  p5.mouseX < this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 + arrowSize
-            && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize){
-            p5.fill(0,0,0, 0);
+        if (this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 < p5.mouseX && p5.mouseX < this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 + arrowSize
+            && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize) {
+            p5.fill(0, 0, 0, 0);
             p5.stroke(100);
             p5.strokeWeight(2);
             p5.rect(this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
@@ -72,28 +72,44 @@ export class InfoBox {
         let cell = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
         let pages;
         let currentPage;
-        if(cell.plant === null){
+        if (cell.plant === null) {
             pages = 2;
-            switch (this.infoStatus){
-                case 't': currentPage = 1; break;
-                case 'e': currentPage = 2; break;
-                default: currentPage = 1; break;
+            switch (this.infoStatus) {
+                case 't':
+                    currentPage = 1;
+                    break;
+                case 'e':
+                    currentPage = 2;
+                    break;
+                default:
+                    currentPage = 1;
+                    break;
             }
-        }else{
+        } else {
             pages = 4;
-            switch (this.infoStatus){
-                case 't': currentPage = 1; break;
-                case 'p': currentPage = 2; break;
-                case 'a': currentPage = 3; break;
-                case 'e': currentPage = 4; break;
-                default: currentPage = 1; break;
+            switch (this.infoStatus) {
+                case 't':
+                    currentPage = 1;
+                    break;
+                case 'p':
+                    currentPage = 2;
+                    break;
+                case 'a':
+                    currentPage = 3;
+                    break;
+                case 'e':
+                    currentPage = 4;
+                    break;
+                default:
+                    currentPage = 1;
+                    break;
             }
         }
         p5.textSize(18);
         p5.fill(255);
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);
-        p5.text(`${currentPage}/${pages}`,this.boxX +  this.boxWidth / 2 - arrowSize / 2, this.boxY - 2*arrowSize /3  - this.paddingY);
+        p5.text(`${currentPage}/${pages}`, this.boxX + this.boxWidth / 2 - arrowSize / 2, this.boxY - 2 * arrowSize / 3 - this.paddingY);
     }
 
     // clicked info box arrows when info box exists in play board
@@ -129,12 +145,12 @@ export class InfoBox {
     }
 
     // separate the two functions to incorporate keyboard shortcut
-    clickLeftArrow(p5){
+    clickLeftArrow(p5) {
         this.infoBoxFSM(p5, 'p');
         return true;
     }
 
-    clickRightArrow(p5){
+    clickRightArrow(p5) {
         this.infoBoxFSM(p5, 'n');
         return true;
     }
@@ -198,7 +214,7 @@ export class InfoBox {
             this.deleteActivateButton(p5);
         }
 
-        if(this.infoStatus === 'e') this.setEcoDisplayButton(p5);
+        if (this.infoStatus === 'e') this.setEcoDisplayButton(p5);
         else this.deleteDisplayButton(p5);
 
         this.recordStatus = newStatus;
@@ -226,18 +242,18 @@ export class InfoBox {
             return;
         }
         let index = this.playBoard.buttons.findIndex(button => button === this.activateButton);
-        if(index !== -1){
+        if (index !== -1) {
             this.playBoard.buttons.splice(index, 1);
         }
         this.activateButton = null;
     }
 
-    setEcoDisplayButton(p5){
+    setEcoDisplayButton(p5) {
         let [buttonWidth, buttonHeight] = myutil.relative2absolute(5 / 64, 0.04);
         let buttonX = this.boxX + this.boxWidth / 2 - buttonWidth / 2;
         let buttonY = this.playBoard.canvasHeight - buttonHeight - 2 * this.paddingY;
 
-        let text = this.playBoard.ecoDisplay? "display off" : "display on";
+        let text = this.playBoard.ecoDisplay ? "display off" : "display on";
 
         let display = new Button(buttonX, buttonY, buttonWidth, buttonHeight, text);
         display.onClick = () => {
@@ -249,14 +265,14 @@ export class InfoBox {
     }
 
     toggleEcoDisplayButtonText() {
-        this.displayButton.text = this.playBoard.ecoDisplay? "display off" : "display on";
+        this.displayButton.text = this.playBoard.ecoDisplay ? "display off" : "display on";
     }
 
-    deleteDisplayButton(p5){
-        if(this.displayButton === null) return;
-        
+    deleteDisplayButton(p5) {
+        if (this.displayButton === null) return;
+
         let index = this.playBoard.buttons.findIndex(button => button === this.displayButton);
-        if(index !== -1){
+        if (index !== -1) {
             this.playBoard.buttons.splice(index, 1);
         }
         this.displayButton = null;

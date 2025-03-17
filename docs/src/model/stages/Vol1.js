@@ -5,8 +5,6 @@ import {BoardCells} from "../BoardCells.js";
 import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Mountain} from "../../items/Mountain.js";
-import {Tornado} from "../../items/Tornado.js";
-import {Bandit} from "../../items/Bandit.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Lava, VolcanicBomb, Volcano} from "../../items/Volcano.js";
 import {enemyTypes, terrainTypes} from "../../items/ItemTypes.js";
@@ -76,7 +74,7 @@ export class Volcano1PlayBoard extends PlayBoard {
             this.generateLava(p5, 2, 3);
             this.generateLava(p5, 1, 3);
             this.generateLava(p5, 0, 3);
-        }else{
+        } else {
             this.expandLava(p5);
         }
     }
@@ -103,13 +101,13 @@ export class Volcano1PlayBoard extends PlayBoard {
         }
     }
 
-    expandLava(p5){
+    expandLava(p5) {
         // find all lava
         let cells = [];
-        for(let i = 0; i < this.gridSize; i++) {
+        for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 let cell = this.boardObjects.getCell(i, j);
-                if(cell.terrain.terrainType === terrainTypes.LAVA && cell.terrain.name === "Lava"){
+                if (cell.terrain.terrainType === terrainTypes.LAVA && cell.terrain.name === "Lava") {
                     cells.push(cell);
                 }
             }
@@ -119,14 +117,14 @@ export class Volcano1PlayBoard extends PlayBoard {
         for (let cell of cells) {
             for (let adCell of this.boardObjects.getAdjacent4Cells(cell.x, cell.y)) {
                 // if the cell is in ecosystem with 'rejectLava', skip.
-                if(adCell.ecosystem !== null && adCell.ecosystem.rejectLava) continue;
+                if (adCell.ecosystem !== null && adCell.ecosystem.rejectLava) continue;
                 // if expands to player base, game over.
                 if (adCell.terrain.terrainType === terrainTypes.BASE) {
                     myutil.gameOver(this);
                     return;
                 }
                 // it expands to normal terrain.
-                if(adCell.terrain.terrainType === terrainTypes.STEPPE){
+                if (adCell.terrain.terrainType === terrainTypes.STEPPE) {
                     this.generateLava(p5, adCell.x, adCell.y);
                 }
             }

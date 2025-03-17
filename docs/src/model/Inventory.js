@@ -6,6 +6,7 @@ import {myutil} from "../../lib/myutil.js"
 import {itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
 import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
 import {Bamboo, BambooSeed} from "../items/Bamboo.js";
+import {Plum, PlumSeed} from "../items/Blizzard.js";
 
 export class Inventory {
     constructor(p5) {
@@ -38,10 +39,12 @@ export class Inventory {
             ["FireHerb", new FireHerb(p5)],
             ["Bamboo", new Bamboo(p5)],
             ["TreeSeed", new TreeSeed(p5)],
+            ["Plum", new Plum(p5)],
             ["BushSeed", new BushSeed(p5)],
             ["GrassSeed", new GrassSeed(p5)],
             ["FireHerbSeed", new FireHerbSeed(p5)],
             ["BambooSeed", new BambooSeed(p5)],
+            ["PlumSeed", new PlumSeed(p5)],
         ]);
     }
 
@@ -152,7 +155,7 @@ export class Inventory {
     }
 
     // to set item to a specific number.
-    setItemOfInventory(p5, name, quantity){
+    setItemOfInventory(p5, name, quantity) {
         this.items.set(name, quantity);
         this.updateInventoryHeight();
     }
@@ -195,7 +198,7 @@ export class Inventory {
             if (instance.type === itemTypes.SEED) {
                 this.items.delete(name);
             }
-            if(instance.type === itemTypes.PLANT && instance.plantType === plantTypes.BAMBOO){
+            if (instance.type === itemTypes.PLANT && instance.plantType === plantTypes.BAMBOO) {
                 this.items.delete(name);
             }
         }

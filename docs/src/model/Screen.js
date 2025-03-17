@@ -11,7 +11,7 @@ export class Screen {
         console.error("setup not implemented!");
     }
 
-    reset(p5){
+    reset(p5) {
         this.buttons = [];
         this.floatingWindow = null;
         this.allFloatingWindows = null;
@@ -44,7 +44,7 @@ export class Screen {
     }
 
     // general logic
-    drawFloatingWindow(p5){
+    drawFloatingWindow(p5) {
         this.setFloatingWindow(p5);
         if (this.floatingWindow !== null) {
             if (this.floatingWindow.isFading) {

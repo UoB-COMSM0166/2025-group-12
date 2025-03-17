@@ -7,10 +7,11 @@ import {Seed} from "../items/Seed.js";
 import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
-import {enemyTypes, itemTypes, plantTypes} from "../items/ItemTypes.js";
+import {baseType, enemyTypes, itemTypes, plantTypes, terrainTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
 import {VolcanicBomb} from "../items/Volcano.js";
+import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
 
 export class PlayBoard extends Screen {
     constructor(gameState) {
@@ -418,7 +419,7 @@ export class PlayBoard extends Screen {
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
-                if (this.boardObjects.plantCell(this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
+                if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     this.shadowPlant = null;
                     if (this.hasActionPoints) {
@@ -471,9 +472,9 @@ export class PlayBoard extends Screen {
         let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
         for (let cws of cellsWithSeed) {
             let grown = cws.seed.grow(p5);
-            if (grown instanceof Seed) {
+            if (grown.type === itemTypes.SEED) {
                 cws.seed = grown;
-            } else if (grown instanceof Plant) {
+            } else if (grown.type === itemTypes.PLANT) {
                 cws.removeSeed();
                 cws.plant = grown;
             }
@@ -515,6 +516,40 @@ export class PlayBoard extends Screen {
         this.gameState.setStageCleared(this);
         // 4. reset action listener
         this.gameState.setPlayerCanClick(true);
+    }
+
+    setAndResolveCounter(p5) {
+        let cells = this.boardObjects.getAllCellsWithPlant();
+
+        // increment earth counters, decrement cold counters.
+        for (let cwp of cells) {
+            if (cwp.plant.earthCounter === undefined) {
+                cwp.plant.earthCounter = 1;
+            } else {
+                cwp.plant.earthCounter++;
+            }
+            if (cwp.terrain.terrainType === terrainTypes.SNOWFIELD) {
+                if (cwp.plant.coldCounter === undefined) {
+                    cwp.plant.coldCounter = 2;
+                } else {
+                    cwp.plant.coldCounter--;
+                    if (cwp.plant.coldCounter <= 0) {
+                        plantEnemyInteractions.findPlantAndDelete(this, cwp.plant);
+                    }
+                }
+            }
+        }
+
+        if (!this.hasBamboo) {
+            // if a tree has a counter=10, insert bamboo into inventory.
+            for (let cwp of cells) {
+                if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
+                    this.modifyBoard(p5, "bamboo");
+                    this.hasBamboo = true;
+                    break;
+                }
+            }
+        }
     }
 
     // when a new plant is placed or removed,

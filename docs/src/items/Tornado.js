@@ -34,20 +34,20 @@ export class Tornado extends Enemy {
         this.hasMoved = true;
         this.moveSpeed = 5;
 
-        if(this.countdown>0){
+        if (this.countdown > 0) {
             this.img = p5.images.get("Alert");
-        }else{
+        } else {
             this.img = p5.images.get(`${this.name}`);
         }
     }
 
-    draw(p5){
+    draw(p5) {
         let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
         p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
     }
 
     static createNewTornado(p5, playBoard, i, j, direction, countdown = 0) {
-        if(playBoard.boardObjects.getCell(i,j).enemy !== null){
+        if (playBoard.boardObjects.getCell(i, j).enemy !== null) {
             return;
         }
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
@@ -62,19 +62,17 @@ export class Tornado extends Enemy {
             console.error('movements of Tornado has received invalid PlayBoard.');
             return false;
         }
-        if (this.status === false) {
+        if (!this.status) {
             return false;
         }
-        if (this.isMoving === true) {
+        if (this.isMoving) {
             this.moveAndInvokeTornado(p5, playBoard);
             return true;
         }
         if (this.countdown > 0) {
             this.countdown--;
             this.hasMoved = true;
-
-            if(this.countdown <= 1) this.img = p5.images.get(`${this.name}`);
-
+            if (this.countdown <= 1) this.img = p5.images.get(`${this.name}`);
             return false;
         }
         if (this.countdown === 0) {

@@ -7,6 +7,8 @@ import {Tornado3PlayBoard} from "./stages/Tor3.js";
 import {Tornado4PlayBoard} from "./stages/Tor4.js";
 import {Tornado5PlayBoard} from "./stages/Tor5.js";
 import {Earthquake1PlayBoard} from "./stages/Ear1.js";
+import {Blizzard1PlayBoard} from "./stages/Bli1.js";
+import {Tsunami1PlayBoard} from "./stages/Tsu1.js";
 
 export const stateCode = {
     MENU: 1,
@@ -23,7 +25,7 @@ export const stageGroup = {
     TORNADO: 1,     // 5 stages expected
     VOLCANO: 2,     // 1
     EARTHQUAKE: 4,  // 5?
-    RAINSTORM: 8,   // 5?
+    BLIZZARD: 8,   // 5?
     TSUNAMI: 16     // 1
 }
 
@@ -98,6 +100,10 @@ class GameStageFactory {
         this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
 
         this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
+
+        this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
+
+        this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
     }
 
     // allocate game stage dynamically

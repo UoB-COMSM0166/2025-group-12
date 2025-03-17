@@ -3,7 +3,6 @@ import {PlayBoard} from "../Play.js";
 import {myutil} from "../../../lib/myutil.js";
 import {Mountain} from "../../items/Mountain.js";
 import {Bandit, Lumbering} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
 import {baseType, enemyTypes, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
 import {Earthquake, Hill, Landslide} from "../../items/Earthquake.js";
 import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
@@ -16,41 +15,17 @@ export class EarthquakePlayBoard extends PlayBoard {
         this.stageGroup = stageGroup.EARTHQUAKE;
     }
 
-    spreadBamboo(p5, cell){
-        if(!cell.plant && !cell.seed) {
+    spreadBamboo(p5, cell) {
+        if (!cell.plant && !cell.seed) {
             cell.plant = new Bamboo(p5);
         }
 
         for (let adCell of this.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
-            if(adCell.plant || adCell.seed) continue;
+            if (adCell.plant || adCell.seed) continue;
 
-            if(adCell.terrain.terrainType === terrainTypes.LANDSLIDE){
+            if (adCell.terrain.terrainType === terrainTypes.LANDSLIDE) {
                 adCell.plant = new Bamboo(p5);
                 this.spreadBamboo(p5, adCell);
-            }
-        }
-    }
-
-    setAndResolveCounter(p5) {
-        let cells = this.boardObjects.getAllCellsWithPlant();
-
-        // increment counters.
-        for (let cwp of cells) {
-            if (cwp.plant.earthCounter === undefined) {
-                cwp.plant.earthCounter = 1;
-            } else {
-                cwp.plant.earthCounter++;
-            }
-        }
-
-        if (this.hasBamboo !== undefined && this.hasBamboo) return;
-
-        // if a tree has a counter=10, insert bamboo into inventory.
-        for (let cwp of cells) {
-            if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
-                this.modifyBoard(p5, "bamboo");
-                this.hasBamboo = true;
-                break;
             }
         }
     }
@@ -60,7 +35,7 @@ export class EarthquakePlayBoard extends PlayBoard {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 let cell = this.boardObjects.getCell(i, j);
-                if (cell.terrain instanceof Hill && cell.terrain.canSlide) {
+                if (cell.terrain.terrainType === terrainTypes.HILL && cell.terrain.canSlide) {
                     hills.push(this.boardObjects.getCell(i, j));
                 }
             }
@@ -91,7 +66,8 @@ class slideAnimation extends Enemy {
         this.accumulate = 0;
     }
 
-    draw(){}
+    draw() {
+    }
 
     movements(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
@@ -111,11 +87,11 @@ class slideAnimation extends Enemy {
 
     move(p5, playBoard) {
         this.accumulate += 1;
-        if(this.accumulate >= 20){
+        if (this.accumulate >= 20) {
             this.slide(p5, playBoard);
             this.accumulate = 0;
         }
-        if(!this.isMoving){
+        if (!this.isMoving) {
             this.hasMoved = true;
             plantEnemyInteractions.findMovableAndDelete(playBoard, this);
         }
@@ -123,14 +99,14 @@ class slideAnimation extends Enemy {
 
     slide(p5, playBoard) {
         // some terrain can block landslide
-        if (this.cell instanceof Mountain) {
+        if (this.cell.terrain.terrainType === terrainTypes.MOUNTAIN) {
             this.isMoving = false;
         }
 
         // kill plants and bandit on this cell:
         if (this.cell.plant !== null) this.cell.removePlant();
         else if (this.cell.seed !== null) this.cell.removeSeed();
-        else if (this.cell.enemy instanceof Bandit) this.cell.enemy = null;
+        else if (this.cell.enemy.enemyType === enemyTypes.BANDIT) this.cell.enemy = null;
 
         // if cell is player base, game over.
         if (this.cell.terrain.terrainType === terrainTypes.BASE) {

@@ -1,6 +1,5 @@
 import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
 import {Plant} from "./Plant.js";
-import {PlayBoard} from "../model/Play.js";
 import {Seed} from "./Seed.js";
 
 export class Bush extends Plant {
