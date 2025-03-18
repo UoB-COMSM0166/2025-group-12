@@ -80,6 +80,26 @@ export class Tree extends Plant {
         }
 
     }
+
+    stringify() {
+        const object = {
+            health: this.health,
+            hasActive: this.hasActive,
+            hasExtended: this.hasExtended,
+            useLeft: this.useLeft = 1,
+        }
+        return JSON.stringify(object);
+    }
+
+    parse(json, p5) {
+        const object = JSON.parse(json);
+        let tree = new Tree(p5);
+        tree.health = object.health;
+        tree.hasActive = object.hasActive;
+        tree.hasExtended = object.hasExtended;
+        tree.useLeft = object.useLeft;
+        return tree;
+    }
 }
 
 export class TreeSeed extends Seed {
@@ -99,5 +119,19 @@ export class TreeSeed extends Seed {
         } else {
             return this;
         }
+    }
+
+    stringify() {
+        const object = {
+            countdown: this.countdown,
+        }
+        return JSON.stringify(object);
+    }
+
+    parse(json, p5) {
+        const object = JSON.parse(json);
+        let treeSeed = new TreeSeed(p5);
+        treeSeed.countdown = object.countdown;
+        return treeSeed;
     }
 }
