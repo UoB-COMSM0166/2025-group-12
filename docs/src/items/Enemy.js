@@ -1,7 +1,9 @@
 import {itemTypes} from "./ItemTypes.js";
+import {Movable} from "./Movable.js";
 
-export class Enemy {
+export class Enemy extends Movable {
     constructor(x, y) {
+        super();
         this.x = x;
         this.y = y;
         this.type = itemTypes.ENEMY;

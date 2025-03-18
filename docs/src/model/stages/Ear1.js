@@ -69,7 +69,7 @@ export class Earthquake1PlayBoard extends EarthquakePlayBoard {
 
         // spread bamboo after generating slide
         for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
-            if(cwp.plant.plantType === plantTypes.BAMBOO){
+            if (cwp.plant.plantType === plantTypes.BAMBOO) {
                 this.spreadBamboo(p5, cwp);
             }
         }

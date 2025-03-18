@@ -51,7 +51,8 @@ export class Tornado2PlayBoard extends PlayBoard {
         this.boardObjects.setCell(0, 4, new Lumbering(p5));
     }
 
-    nextTurnItems(p5) {}
+    nextTurnItems(p5) {
+    }
 
     modifyBoard(p5, code) {
         if (code === 103) {

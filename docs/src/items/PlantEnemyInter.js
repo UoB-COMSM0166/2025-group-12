@@ -1,4 +1,4 @@
-import {itemTypes, plantTypes} from "./ItemTypes.js";
+import {enemyTypes, itemTypes, plantTypes} from "./ItemTypes.js";
 import {PlayBoard} from "../model/Play.js";
 import {Tornado} from "./Tornado.js";
 import {Plant} from "./Plant.js";
@@ -44,15 +44,15 @@ export class plantEnemyInteractions {
             console.error("plantAttackedByTornado has received invalid board.");
             return;
         }
-        if (!(tornado instanceof Tornado)) {
+        if (!(tornado.enemyType === enemyTypes.TORNADO)) {
             console.error("plantAttackedByTornado has received invalid tornado.");
             return;
         }
 
         let plant = null, seed = null;
-        if (item instanceof Plant) {
+        if (item.type === itemTypes.PLANT) {
             plant = item;
-        } else if (item instanceof Seed) {
+        } else if (item.type === itemTypes.SEED) {
             seed = item;
         } else {
             console.error("plantAttackedByTornado has received invalid plant or seed.");
@@ -74,7 +74,7 @@ export class plantEnemyInteractions {
         if (plant !== null) {
             // if a tree is attacked by a tornado
             if (plant.plantType === plantTypes.TREE && plant.name === "Tree") {
-                for (let i = 0; i<2 && plant.health > 0 && tornado.health > 0; i++) {
+                for (let i = 0; i < 2 && plant.health > 0 && tornado.health > 0; i++) {
                     plant.health--;
                     tornado.health--;
                 }
@@ -111,14 +111,14 @@ export class plantEnemyInteractions {
             console.error("plantAttacked1 has received invalid board.");
             return;
         }
-        if (item instanceof Plant) {
+        if (item.type === itemTypes.PLANT) {
             item.health -= lost;
             if (item.health <= 0) {
                 item.health = 0;
                 item.status = false;
                 plantEnemyInteractions.findPlantAndDelete(playBoard, item);
             }
-        } else if (item instanceof Seed) {
+        } else if (item.type === itemTypes.SEED) {
             item.health = 0;
             item.status = false;
             plantEnemyInteractions.findSeedAndDelete(playBoard, item);

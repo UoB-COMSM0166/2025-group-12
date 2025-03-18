@@ -15,6 +15,7 @@ export let plantTypes = {
     BUSH: 6,
     GRASS: 8,
     FIRE_HERB: 10,
+    PLUM: 12,
 }
 export let seedTypes = {
     BAMBOO: 3,
@@ -22,6 +23,7 @@ export let seedTypes = {
     BUSH: 7,
     GRASS: 9,
     FIRE_HERB: 11,
+    PLUM: 13,
 }
 
 export let terrainTypes = {
@@ -33,6 +35,7 @@ export let terrainTypes = {
     LAVA: 6,
     HILL: 7,
     LANDSLIDE: 8,
+    SNOWFIELD: 9,
 }
 
 // notice: the order of end turn actions refers to below ordering.
@@ -41,24 +44,25 @@ export let enemyTypes = {
     SLIDE: 200,
     BOMB: 300,
     TORNADO: 400,
-    BANDIT: 500,
+    BLIZZARD: 500,
+    BANDIT: 600,
 }
 
-export function baseType(plantOrSeed){
-    if(plantOrSeed instanceof Plant){
-        if(plantOrSeed.plantType === plantTypes.TREE || plantOrSeed.plantType === plantTypes.BAMBOO){
+export function baseType(plantOrSeed) {
+    if (plantOrSeed.type === itemTypes.PLANT) {
+        if (plantOrSeed.plantType === plantTypes.TREE || plantOrSeed.plantType === plantTypes.BAMBOO) {
             return plantTypes.TREE;
-        }else if(plantOrSeed.plantType === plantTypes.BUSH){
+        } else if (plantOrSeed.plantType === plantTypes.BUSH || plantOrSeed.plantType === plantTypes.PLUM) {
             return plantTypes.BUSH;
-        }else if(plantOrSeed.plantType === plantTypes.GRASS || plantOrSeed.plantType === plantTypes.FIRE_HERB){
+        } else if (plantOrSeed.plantType === plantTypes.GRASS || plantOrSeed.plantType === plantTypes.FIRE_HERB) {
             return plantTypes.GRASS;
         }
-    }else if (plantOrSeed instanceof Seed){
-        if(plantOrSeed.seedType === seedTypes.TREE || plantOrSeed.seedType === seedTypes.BAMBOO){
+    } else if (plantOrSeed.type === itemTypes.SEED) {
+        if (plantOrSeed.seedType === seedTypes.TREE || plantOrSeed.seedType === seedTypes.BAMBOO) {
             return seedTypes.TREE;
-        }else if (plantOrSeed.seedType === seedTypes.BUSH){
+        } else if (plantOrSeed.seedType === seedTypes.BUSH || plantOrSeed.seedType === seedTypes.PLUM) {
             return seedTypes.BUSH;
-        }else if (plantOrSeed.seedType === seedTypes.GRASS || plantOrSeed.seedType === seedTypes.FIRE_HERB){
+        } else if (plantOrSeed.seedType === seedTypes.GRASS || plantOrSeed.seedType === seedTypes.FIRE_HERB) {
             return seedTypes.GRASS;
         }
     }

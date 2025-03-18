@@ -2,8 +2,6 @@ import {baseType, enemyTypes, itemTypes, plantTypes, terrainTypes} from "./ItemT
 import {Enemy} from "./Enemy.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {Terrain} from "./Terrain.js";
-import {Seed} from "./Seed.js";
-import {Plant} from "./Plant.js";
 
 export class Earthquake extends Enemy {
     constructor() {
@@ -80,7 +78,6 @@ export class Hill extends Terrain {
     constructor(p5, canSlide = false) {
         super();
         this.name = "Hill";
-        this.color = "black";
         this.terrainType = terrainTypes.HILL;
         this.img = p5.images.get(`${this.name}`);
 
@@ -96,7 +93,6 @@ export class Landslide extends Terrain {
     constructor(p5) {
         super();
         this.name = "Landslide";
-        this.color = "black";
         this.terrainType = terrainTypes.LANDSLIDE;
         this.img = p5.images.get(`${this.name}`);
     }

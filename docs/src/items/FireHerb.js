@@ -1,6 +1,5 @@
 import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
 import {Plant} from "./Plant.js";
-import {PlayBoard} from "../model/Play.js";
 import {Seed} from "./Seed.js";
 
 export class FireHerb extends Plant {
@@ -19,7 +18,6 @@ export class FireHerb extends Plant {
 
         // no passive or active skill
         // it only affects the ecosystem
-        //
     }
 
     getPassiveString() {

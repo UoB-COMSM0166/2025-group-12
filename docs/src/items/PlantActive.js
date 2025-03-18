@@ -67,7 +67,7 @@ export class PlantActive {
         return true;
     }
 
-    static activeRange1(i1, j1, i2, j2){
+    static activeRange1(i1, j1, i2, j2) {
         return myutil.manhattanDistance(i1, j1, i2, j2) <= 2;
     }
 }

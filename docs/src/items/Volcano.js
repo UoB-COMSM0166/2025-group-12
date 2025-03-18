@@ -1,17 +1,14 @@
 import {Terrain} from "./Terrain.js";
 import {Enemy} from "./Enemy.js";
 import {myutil} from "../../lib/myutil.js";
-import {enemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
+import {enemyTypes, itemTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
-import {Seed} from "./Seed.js";
-import {Plant} from "./Plant.js";
-import { baseType } from "./ItemTypes.js";
+import {baseType} from "./ItemTypes.js";
 
 export class Volcano extends Terrain {
     constructor(p5) {
         super();
         this.name = "Volcano";
-        this.color = "black";
         this.terrainType = terrainTypes.VOLCANO;
         this.img = p5.images.get(`${this.name}`);
     }
@@ -25,7 +22,6 @@ export class Lava extends Terrain {
     constructor(p5) {
         super();
         this.name = "Lava";
-        this.color = "black";
         this.terrainType = terrainTypes.LAVA;
         this.img = p5.images.get(`${this.name}`);
 
@@ -37,9 +33,9 @@ export class Lava extends Terrain {
     }
 
     storeSeed(p5, plant) {
-        if (plant instanceof Seed) {
+        if (plant.type === itemTypes.SEED) {
             this.seed = plant.constructor(p5);
-        } else if (plant instanceof Plant) {
+        } else if (plant.type === itemTypes.PLANT) {
             this.seed = new plant.seed(p5);
         }
     }
@@ -149,7 +145,7 @@ export class VolcanicBomb extends Enemy {
         }
 
         // 2.1. hit a cell with a plant (not Tree), look for a random nearby tree
-        if(cell.plant !== null || cell.seed !== null){
+        if (cell.plant !== null || cell.seed !== null) {
             let cwt = [];
             for (let c of playBoard.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
                 if (c.plant !== null && c.plant.plantType === plantTypes.TREE) {
@@ -190,7 +186,7 @@ export class VolcanicBomb extends Enemy {
             return;
         }
 
-        
+
     }
 
     move(moveSpeed) {
@@ -236,14 +232,14 @@ export class VolcanicBomb extends Enemy {
         p5.ellipse(this.x2, this.y2, 10, 10);
         p5.text("F", this.x2 + 5, this.y2);
         */
-        if(this.isMoving){
+        if (this.isMoving) {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
-        }else{
+        } else {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.image(this.alertImg, this.x2 - imgSize / 2, this.y2 - imgSize / 2, imgSize, imgSize);
         }
-       
+
     }
 
     integrate(f, a, b) {

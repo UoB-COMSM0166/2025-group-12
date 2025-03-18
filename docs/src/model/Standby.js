@@ -49,16 +49,23 @@ export class StandbyMenu extends Screen {
         };
 
         // landslide + random lightning attack
-        let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Rainstorm");
+        let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Blizzard");
         stage4Button.onClick = () => {
-            this.copyFloatingWindow(p5, "lock");
+            if (!this.gameState.isStageCleared(stageGroup.EARTHQUAKE)) {
+                this.copyFloatingWindow(p5, "lock");
+                return;
+            }
+            this.clickedStageButton(p5, stageGroup.BLIZZARD);
         };
 
         // earthquake induced tsunami + rainstorm + landslide + random lighting + tornado
         let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Tsunami");
         stage5Button.onClick = () => {
-            //this.gameState.setState(stateCode.MAP);
-            this.copyFloatingWindow(p5, "lock");
+            if (!this.gameState.isStageCleared(stageGroup.BLIZZARD)) {
+                this.copyFloatingWindow(p5, "lock");
+                return;
+            }
+            this.clickedStageButton(p5, stageGroup.TSUNAMI);
         };
 
         this.buttons.push(escapeButton, stage1Button, stage2Button, stage3Button, stage4Button, stage5Button);

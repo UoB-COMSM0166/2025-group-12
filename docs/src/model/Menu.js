@@ -22,7 +22,7 @@ export class StartMenu {
         newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
 
 
-        let optionsButton = new MenuItem(buttonX - buttonWidth / 2, buttonY +  buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
+        let optionsButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
         optionsButton.onClick = () => {
             this.gameState.showOptions = !this.gameState.showOptions;
         }
@@ -32,7 +32,7 @@ export class StartMenu {
         this.buttons.push(newGameButton, optionsButton, continueButton);
     }
 
-    reset(p5){
+    reset(p5) {
         this.buttons = [];
         this.setup(p5);
     }
@@ -52,7 +52,7 @@ export class StartMenu {
         p5.text(this.languageManager.getText('startMenu'), textX, textY);
 
         for (let button of this.buttons) {
-            if(button.update){
+            if (button.update) {
                 button.update(p5);
             }
             button.draw(p5);
@@ -66,7 +66,7 @@ export class StartMenu {
         }
     }
 
-    updateText(){
+    updateText() {
         this.buttons[0].text = this.languageManager.getText('newGame');
         this.buttons[1].text = this.languageManager.getText('loadGame');
         this.buttons[2].text = this.languageManager.getText('options');

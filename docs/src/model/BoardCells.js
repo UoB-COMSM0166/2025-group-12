@@ -5,9 +5,12 @@ import {Bandit} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {UnionFind} from "../controller/UnionFind.js";
-import { myutil } from "../../lib/myutil.js";
+import {myutil} from "../../lib/myutil.js";
 import {Bamboo} from "../items/Bamboo.js";
 import {Hill} from "../items/Earthquake.js";
+import {stageGroup} from "./GameState.js";
+import {Plum} from "../items/Blizzard.js";
+import {Steppe} from "../items/Steppe.js";
 
 export class BoardCells {
     constructor(size) {
@@ -24,10 +27,10 @@ export class BoardCells {
     }
 
     // plant on a cell
-    plantCell(playBoard, x, y, item) {
+    plantCell(p5, playBoard, x, y, item) {
         let cell = this.getCell(x, y);
 
-        if (!(item instanceof Plant) && !(item instanceof Seed)) {
+        if (item.type !== itemTypes.PLANT && item.type !== itemTypes.SEED) {
             console.error("plantCell received invalid input.");
             return false;
         }
@@ -37,12 +40,12 @@ export class BoardCells {
         }
 
         // the implementation of ecosystem skill: grow faster
-        if (item instanceof Seed) {
+        if (item.type === itemTypes.SEED) {
             cell.seed = item;
             if (cell.ecosystem !== null && cell.ecosystem.growFaster) {
                 cell.seed.countdown = cell.seed.countdown - 1 < 1 ? 1 : cell.seed.countdown - 1;
             }
-            if(cell.terrain.terrainType === terrainTypes.LAVA){
+            if (cell.terrain.terrainType === terrainTypes.LAVA) {
                 cell.seed.countdown = 1;
             }
 
@@ -53,6 +56,15 @@ export class BoardCells {
 
         // reconstruct ecosystem for every transplanting
         this.setEcosystem();
+
+        // plums dissolve snowfield
+        if (item.plantType === plantTypes.PLUM) {
+            for (let nCell of this.getNearbyCells(cell.x, cell.y, Plum.plumRange)) {
+                if (nCell.terrain.terrainType === terrainTypes.SNOWFIELD) {
+                    nCell.terrain = new Steppe(p5);
+                }
+            }
+        }
 
         return true;
     }
@@ -217,7 +229,7 @@ export class BoardCells {
         for (let cell of component) {
             if (cell.plant.plantType === plantTypes.FIRE_HERB && component.length >= 10) {
                 ecosystem.rejectLava = true;
-                ecosystem.strengthenGrass = true;
+                ecosystem.withstandSnow = true;
             }
         }
         return ecosystem;
@@ -245,6 +257,18 @@ export class BoardCells {
         for (let [i, j] of directions) {
             if (0 <= x + i && x + i < this.size && 0 <= y + j && y + j < this.size) {
                 cells.push(this.getCell(x + i, y + j));
+            }
+        }
+        return cells;
+    }
+
+    getNearbyCells(x, y, range) {
+        let cells = [];
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.size; j++) {
+                if (range(x, y, i, j)) {
+                    cells.push(this.getCell(i, j));
+                }
             }
         }
         return cells;
@@ -355,11 +379,11 @@ class Cell {
         return this._enemy;
     }
 
-    getEcoString() {
+    getEcoString(playBoard) {
         if (this.ecosystem === null) {
             return "The cell is not in an ecosystem.";
         }
-        return this.ecosystem.getEcoString();
+        return this.ecosystem.getEcoString(playBoard);
     }
 
     // check if plant or seed is compatible with the terrain, or if the cell is occupied by another plant.
@@ -374,11 +398,21 @@ class Cell {
             return false;
         }
 
-        // bamboo compatible on hill and landslide.
-        if(item instanceof Bamboo){
-            if(this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.LANDSLIDE){
+        // bamboo
+        if (item?.plantType === plantTypes.BAMBOO) {
+            if (this.terrain.terrainType === terrainTypes.STEPPE || this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.LANDSLIDE) {
                 return true;
-            }else{
+            } else {
+                playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
+                return false;
+            }
+        }
+
+        // plum
+        if (item?.plantType === plantTypes.PLUM) {
+            if (this.terrain.terrainType === terrainTypes.STEPPE || this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.SNOWFIELD) {
+                return true;
+            } else {
                 playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
                 return false;
             }
@@ -388,14 +422,14 @@ class Cell {
         if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
             || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO
             || (this.terrain.terrainType === terrainTypes.LAVA && this.terrain.name === "Lava")
-            || this.terrain.terrainType === terrainTypes.LANDSLIDE ) {
+            || this.terrain.terrainType === terrainTypes.LANDSLIDE || this.terrain.terrainType === terrainTypes.SNOWFIELD) {
             playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
             return false;
         }
         return true;
     }
 
-    drawTerrain(p5, playBoard){
+    drawTerrain(p5, playBoard) {
         let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, playBoard, this.x, this.y, p5.CORNERS);
         p5.image(this.terrain.img, x1 - playBoard.cellWidth / 2, y1, playBoard.cellWidth, playBoard.cellHeight);
 
@@ -440,14 +474,24 @@ class Ecosystem {
         this.growFaster = true;
         this.rejectLava = false;
         this.strengthenGrass = false;
+        this.withstandSnow = false;
     }
 
-    getEcoString() {
+    getEcoString(playBoard) {
         let str = "";
         // str += `${this.countPlants} plants in this ecosystem. `;
-        if (this.growFaster) str += "Seeds sowed here will grow faster. "
-        if (this.rejectLava) str += "Lava expanded here will stop. "
-        if (this.strengthenGrass) str += "Grass deals more damage to bandits. "
+        if (this.growFaster) {
+            str += "Seeds sowed here will grow faster. "
+        }
+        if (this.rejectLava && (playBoard.stageGroup === stageGroup.VOLCANO || playBoard.stageGroup === stageGroup.TSUNAMI)) {
+            str += "Lava expanded here will stop. "
+        }
+        if (this.strengthenGrass) {
+            str += "Grass deals more damage to bandits. "
+        }
+        if (this.withstandSnow && (playBoard.stageGroup === stageGroup.VOLCANO || playBoard.stageGroup === stageGroup.TSUNAMI)) {
+            str += "Withstand blizzard. "
+        }
         return str;
     }
 }

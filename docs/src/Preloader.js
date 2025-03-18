@@ -16,6 +16,7 @@ export function loadImages(p5) {
     images.set("LavaS", p5.loadImage(basePath + "LavaSTest.png"));
     images.set("Landslide", p5.loadImage(basePath + "Landslide.png"));
     images.set("Hill", p5.loadImage(basePath + "Hill.png"));
+    images.set("Snowfield", p5.loadImage(basePath + "Snowfield.png"));
 
     images.set("Tree", p5.loadImage(basePath + "Tree.png"));
     images.set("Bush", p5.loadImage(basePath + "Bush.png"));
@@ -23,12 +24,15 @@ export function loadImages(p5) {
     images.set("Seed", p5.loadImage(basePath + "Seed.png"));
     images.set("FireHerb", p5.loadImage(basePath + "FireHerb.png"));
     images.set("Bamboo", p5.loadImage(basePath + "Bamboo.png"));
+    images.set("Plum", p5.loadImage(basePath + "Plum.png"));
 
     images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));
     images.set("alertArrow", p5.loadImage(basePath + "alertArrow.png"));
     images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
     images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
     images.set("Bomb", p5.loadImage(basePath + "Bomb.png"));
+    images.set("Blizzard", p5.loadImage(basePath + "Blizzard.png"));
+
     images.set("GameMap", p5.loadImage(basePath + "GameMap.png"));
     return images;
 }

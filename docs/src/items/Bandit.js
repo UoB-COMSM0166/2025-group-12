@@ -1,5 +1,4 @@
 import {Enemy} from "./Enemy.js";
-import {PlayBoard} from "../model/Play.js";
 import {myutil} from "../../lib/myutil.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {DijkstraSP, EdgeWeightedDigraph, DirectedEdge} from "../controller/GraphSP.js";
@@ -29,13 +28,13 @@ export class Bandit extends Enemy {
         this.moveSpeed = 5;
     }
 
-    draw(p5){
+    draw(p5) {
         let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
         p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
     }
 
     static createNewBandit(p5, playBoard, i, j) {
-        if(playBoard.boardObjects.getCell(i,j).enemy !== null){
+        if (playBoard.boardObjects.getCell(i, j).enemy !== null) {
             return;
         }
         let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
@@ -116,10 +115,10 @@ export class Bandit extends Enemy {
                 }
                 // the target cell must not be occupied by another enemy or plant already
                 if (G.edges().find(e => {
-                    return e.from() === this.cell.x + this.cell.y * playBoard.gridSize
-                        && e.to() === (this.cell.x + dx) + (this.cell.y + dy) * playBoard.gridSize
-                }).weight < 100 && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).plant === null
-                && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).seed === null) {
+                        return e.from() === this.cell.x + this.cell.y * playBoard.gridSize
+                            && e.to() === (this.cell.x + dx) + (this.cell.y + dy) * playBoard.gridSize
+                    }).weight < 100 && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).plant === null
+                    && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).seed === null) {
                     possibleDirections.push([dx, dy]);
                 }
             }
@@ -236,16 +235,16 @@ export class Bandit extends Enemy {
         for (let cwe of cellsWithEnemy) {
             let x = cwe.x;
             let y = cwe.y;
-            
+
             if (cwe.enemy && cwe.enemy.enemyType === enemyTypes.TORNADO) {
-                for (let i = 0; i < N - 1; i++) { 
+                for (let i = 0; i < N - 1; i++) {
                     G.setWeightIfHasEdge(i + y * N, (i + 1) + y * N, 10, 'a');
                 }
-                for (let j = 0; j < N - 1; j++) { 
+                for (let j = 0; j < N - 1; j++) {
                     G.setWeightIfHasEdge(x + j * N, x + (j + 1) * N, 10, 'a');
                 }
             }
-        
+
             // Avoid enemy clashes
             if (x !== this.cell.x || y !== this.cell.y) {
                 let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
@@ -266,7 +265,6 @@ export class Lumbering extends Terrain {
     constructor(p5) {
         super();
         this.name = "Lumbering";
-        this.color = "black";
         this.terrainType = terrainTypes.LUMBERING;
         this.img = p5.images.get(`${this.name}`);
     }
