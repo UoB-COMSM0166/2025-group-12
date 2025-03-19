@@ -1,4 +1,4 @@
-import {itemTypes} from "./ItemTypes.js";
+import {itemTypes, terrainTypes} from "./ItemTypes.js";
 
 export class Terrain {
     constructor() {
@@ -8,5 +8,12 @@ export class Terrain {
 
     getWeight() {
         console.error("getWeight not implemented.");
+    }
+
+    stringify() {
+        const object = {
+            terrainType: this.terrainType,
+        }
+        return JSON.stringify(object);
     }
 }

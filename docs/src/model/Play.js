@@ -67,6 +67,9 @@ export class PlayBoard extends Screen {
 
         // set cursor style when dragging item
         this.shadowPlant = null;
+
+        // save last state
+        this.lastState = null;
     }
 
     /* public methods */
@@ -79,6 +82,14 @@ export class PlayBoard extends Screen {
         escapeButton.onClick = () => {
             this.gameState.setState(stateCode.STANDBY);
         };
+
+        // undo
+        let [undoX, undoY] = myutil.relative2absolute(0.1, 0.01);
+        let [undoWidth, undoHeight] = myutil.relative2absolute(0.09, 0.07);
+        let undoButton = new Button(undoX, undoY, undoWidth, undoHeight, "Undo");
+        undoButton.onClick = () => {
+            this.undoMove(p5);
+        }
 
         // turn button
         let [turnWidth, turnHeight] = myutil.relative2absolute(5 / 32, 0.07);
@@ -105,7 +116,7 @@ export class PlayBoard extends Screen {
             this.gameState.setPlayerCanClick(false);
         }
 
-        this.buttons.push(escapeButton, turnButton);
+        this.buttons.push(escapeButton, turnButton, undoButton);
 
         // a keyboard shortcut to activate plant skill
         window.addEventListener("keyup", (event) => {
@@ -182,6 +193,11 @@ export class PlayBoard extends Screen {
 
         // click any grid cell to display info box
         this.clickedCell(p5);
+    }
+
+    undoMove(p5){
+        this.boardObjects = BoardCells.parse(this.lastState, p5);
+        this.actionPoints += 1;
     }
 
     draw(p5) {
@@ -419,6 +435,7 @@ export class PlayBoard extends Screen {
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
+                this.lastState = this.boardObjects.stringify();
                 if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     this.shadowPlant = null;

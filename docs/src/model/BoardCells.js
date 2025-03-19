@@ -1,16 +1,23 @@
 import {baseType, enemyTypes, itemTypes, plantTypes, seedTypes, terrainTypes} from "../items/ItemTypes.js";
 import {Plant} from "../items/Plant.js";
 import {Seed} from "../items/Seed.js";
-import {Bandit} from "../items/Bandit.js";
+import {Bandit, Lumbering} from "../items/Bandit.js";
 import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {UnionFind} from "../controller/UnionFind.js";
 import {myutil} from "../../lib/myutil.js";
 import {Bamboo} from "../items/Bamboo.js";
-import {Hill} from "../items/Earthquake.js";
+import {Hill, Landslide} from "../items/Earthquake.js";
 import {stageGroup} from "./GameState.js";
-import {Plum} from "../items/Blizzard.js";
+import {Plum, Snowfield} from "../items/Blizzard.js";
 import {Steppe} from "../items/Steppe.js";
+import {Tree} from "../items/Tree.js";
+import {Grass} from "../items/Grass.js";
+import {Terrain} from "../items/Terrain.js";
+import {Bush} from "../items/Bush.js";
+import {Lava, Volcano} from "../items/Volcano.js";
+import {PlayerBase} from "../items/PlayerBase.js";
+import {Mountain} from "../items/Mountain.js";
 
 export class BoardCells {
     constructor(size) {
@@ -274,35 +281,30 @@ export class BoardCells {
         return cells;
     }
 
-    saveBoard() {
-        let tmpArray = Array.from({length: this.size},
-            () => Array.from({length: this.size}, () => null));
-        for (let i = 0; i < tmpArray.length; i++) {
-            for (let j = 0; j < tmpArray[i].length; j++) {
-                tmpArray[i][j] = this.getCell(i, j).saveCell();
+    stringify() {
+        const object = {
+            size: this.size,
+            boardObjects: Array.from({length: this.size},
+                () => Array.from({length: this.size}, () => null))
+        }
+        for (let i = 0; i < object.boardObjects.length; i++) {
+            for (let j = 0; j < object.boardObjects[i].length; j++) {
+                object.boardObjects[i][j] = this.getCell(i, j).stringify();
             }
         }
-        return tmpArray;
+        return JSON.stringify(object);
     }
 
-    loadBoard(savedBoard, gameState) {
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                if (savedBoard[i][j].plantType !== null || savedBoard[i][j].seedType !== null) {
-                    this.plantCell(i, j, gameState.inventory.createItem(gameState.p5, savedBoard[i][j].name));
-                }
-
-                if (savedBoard[i][j].enemyType === enemyTypes.BANDIT) {
-                    Bandit.createNewBandit(gameState.p5, gameState.currentStage, i, j);
-                }
-                if (savedBoard[i][j].enemyType === enemyTypes.TORNADO) {
-                    Tornado.createNewTornado(gameState.p5, gameState.currentStage, i, j, 'd');
-                }
-
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let board = new BoardCells(object.size);
+        for (let i = 0; i < object.size; i++) {
+            for (let j = 0; j < object.size; j++) {
+                board.boardObjects[i][j] = Cell.parse(object.boardObjects[i][j], i, j, p5);
             }
         }
+        return board;
     }
-
 }
 
 class Cell {
@@ -444,28 +446,82 @@ class Cell {
     }
 
 
-    saveCell() {
-        let tmpObj = {
-            name: null,
-            plantType: null,
-            seedType: null,
-            enemyType: null,
+    stringify() {
+        let object = {
+            terrain: this._terrain,
+            plant: this._plant,
+            seed: this._seed,
+            enemy: this._enemy
         }
         if (this.plant) {
-            tmpObj.plantType = this.plant.plantType;
-            tmpObj.name = this.plant.name;
+            object.plant = this._plant.stringify();
         }
         if (this.seed) {
-            tmpObj.seedType = this.seed.seedType;
-            tmpObj.name = this.seed.name;
+            object.seed = this._seed.stringify();
         }
-        if (this.enemy) {
-            tmpObj.enemyType = this.enemy.enemyType;
-            tmpObj.name = this.enemy.name;
+        if (this.terrain) {
+            object.terrain = this._terrain.stringify();
         }
-        return tmpObj;
+        return JSON.stringify(object);
     }
 
+    static parse(json, x, y, p5){
+        let object = JSON.parse(json);
+        let plant;
+        let terrain;
+        if (object.plant) {
+            plant = JSON.parse(object.plant);
+            switch (plant.plantType) {
+                case plantTypes.GRASS:
+                    plant = Grass.parse(object.plant, p5);
+                    break;
+                case plantTypes.TREE:
+                    plant = Tree.parse(object.plant, p5);
+                    break;
+                case plantTypes.BUSH:
+                    plant = Bush.parse(object.plant, p5);
+                    break;
+            }
+        }
+        if(object.terrain){
+            terrain = JSON.parse(object.terrain);
+            switch (terrain.terrainType) {
+                case terrainTypes.STEPPE:
+                    terrain =  new Steppe(p5);
+                    break;
+                case terrainTypes.VOLCANO:
+                    terrain = new Volcano(p5);
+                    break;
+                case terrainTypes.BASE:
+                    terrain = new PlayerBase(p5);
+                    break;
+                case terrainTypes.HILL:
+                    terrain = new Hill(p5);
+                    break;
+                case terrainTypes.LAVA:
+                    terrain = new Lava(p5);
+                    break;
+                case terrainTypes.LANDSLIDE:
+                    terrain = new Landslide(p5);
+                    break;
+                case terrainTypes.LUMBERING:
+                    terrain = new Lumbering(p5);
+                    break;
+                case terrainTypes.SNOWFIELD:
+                    terrain = new Snowfield(p5);
+                    break;
+                case terrainTypes.MOUNTAIN:
+                    terrain = new Mountain(p5);
+                    break;
+            }
+        }
+        let cell = new Cell(x, y, terrain);
+        if(plant != null) {
+            cell.plant = plant;
+
+        }
+        return cell;
+    }
 }
 
 class Ecosystem {

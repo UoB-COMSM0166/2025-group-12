@@ -31,6 +31,21 @@ export class Bush extends Plant {
     reevaluateSkills(playBoard, cell) {
         // do nothing for Bush.
     }
+
+    stringify() {
+        const object = {
+            plantType: this.plantType,
+            health: this.health,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let bush = new Bush(p5);
+        bush.health = object.health;
+        return bush;
+    }
 }
 
 export class BushSeed extends Seed {
@@ -50,5 +65,20 @@ export class BushSeed extends Seed {
         } else {
             return this;
         }
+    }
+
+    stringify() {
+        const object = {
+            seedType: this.seedType,
+            countdown: this.countdown,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let bushSeed = new bushSeed(p5);
+        bushSeed.countdown = object.countdown;
+        return bushSeed;
     }
 }

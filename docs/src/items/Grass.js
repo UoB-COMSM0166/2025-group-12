@@ -58,6 +58,27 @@ export class Grass extends Plant {
             }
         }
     }
+
+    stringify() {
+        const object = {
+            plantType: this.plantType,
+            health: this.health,
+            hasActive: this.hasActive,
+            hasExtended: this.hasExtended,
+            useLeft: this.useLeft = 1,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let grass = new Grass(p5);
+        grass.health = object.health;
+        grass.hasActive = object.hasActive;
+        grass.hasExtended = object.hasExtended;
+        grass.useLeft = object.useLeft;
+        return grass;
+    }
 }
 
 export class GrassSeed extends Seed {
@@ -78,6 +99,21 @@ export class GrassSeed extends Seed {
             return this;
         }
     }
+
+    stringify() {
+        const object = {
+            seedType: this.seedType,
+            countdown: this.countdown,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let grassSeed = new GrassSeed(p5);
+        grassSeed.countdown = object.countdown;
+        return grassSeed;
+    }
 }
 
 export class GrassAnimal {
@@ -95,6 +131,4 @@ export class GrassAnimal {
         this.hasMoved = true;
         this.direction = [];
     }
-
-
 }

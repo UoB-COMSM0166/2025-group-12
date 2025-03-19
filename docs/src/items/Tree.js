@@ -78,11 +78,11 @@ export class Tree extends Plant {
                 }
             }
         }
-
     }
 
     stringify() {
         const object = {
+            plantType: this.plantType,
             health: this.health,
             hasActive: this.hasActive,
             hasExtended: this.hasExtended,
@@ -91,7 +91,7 @@ export class Tree extends Plant {
         return JSON.stringify(object);
     }
 
-    parse(json, p5) {
+    static parse(json, p5) {
         const object = JSON.parse(json);
         let tree = new Tree(p5);
         tree.health = object.health;
@@ -123,12 +123,13 @@ export class TreeSeed extends Seed {
 
     stringify() {
         const object = {
+            seedType: this.seedType,
             countdown: this.countdown,
         }
         return JSON.stringify(object);
     }
 
-    parse(json, p5) {
+    static parse(json, p5) {
         const object = JSON.parse(json);
         let treeSeed = new TreeSeed(p5);
         treeSeed.countdown = object.countdown;
