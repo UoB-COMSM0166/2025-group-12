@@ -201,7 +201,8 @@ export class PlayBoard extends Screen {
         }
         else {
             this.boardObjects = BoardCells.parse(this.lastState, p5);
-            this.actionPoints = Math.max(this.actionPoints++, 3);
+            this.actionPoints = Math.min(this.actionPoints + 1, 3);
+            this.lastState = null;
         }
     }
 
