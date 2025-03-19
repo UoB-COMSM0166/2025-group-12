@@ -196,8 +196,13 @@ export class PlayBoard extends Screen {
     }
 
     undoMove(p5){
-        this.boardObjects = BoardCells.parse(this.lastState, p5);
-        this.actionPoints += 1;
+        if(this.lastState === null){
+            return;
+        }
+        else {
+            this.boardObjects = BoardCells.parse(this.lastState, p5);
+            this.actionPoints = Math.max(this.actionPoints++, 3);
+        }
     }
 
     draw(p5) {

@@ -77,7 +77,7 @@ export class BushSeed extends Seed {
 
     static parse(json, p5) {
         const object = JSON.parse(json);
-        let bushSeed = new bushSeed(p5);
+        let bushSeed = new BushSeed(p5);
         bushSeed.countdown = object.countdown;
         return bushSeed;
     }

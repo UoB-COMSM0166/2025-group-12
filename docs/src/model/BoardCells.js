@@ -11,10 +11,10 @@ import {Hill, Landslide} from "../items/Earthquake.js";
 import {stageGroup} from "./GameState.js";
 import {Plum, Snowfield} from "../items/Blizzard.js";
 import {Steppe} from "../items/Steppe.js";
-import {Tree} from "../items/Tree.js";
-import {Grass} from "../items/Grass.js";
+import {Tree, TreeSeed} from "../items/Tree.js";
+import {Grass, GrassSeed} from "../items/Grass.js";
 import {Terrain} from "../items/Terrain.js";
-import {Bush} from "../items/Bush.js";
+import {Bush, BushSeed} from "../items/Bush.js";
 import {Lava, Volcano} from "../items/Volcano.js";
 import {PlayerBase} from "../items/PlayerBase.js";
 import {Mountain} from "../items/Mountain.js";
@@ -457,7 +457,9 @@ class Cell {
             object.plant = this._plant.stringify();
         }
         if (this.seed) {
+            console.log(this.seed);
             object.seed = this._seed.stringify();
+            console.log(object.seed);
         }
         if (this.terrain) {
             object.terrain = this._terrain.stringify();
@@ -465,10 +467,11 @@ class Cell {
         return JSON.stringify(object);
     }
 
-    static parse(json, x, y, p5){
+    static parse(json, x, y, p5) {
         let object = JSON.parse(json);
         let plant;
         let terrain;
+        let seed;
         if (object.plant) {
             plant = JSON.parse(object.plant);
             switch (plant.plantType) {
@@ -483,11 +486,11 @@ class Cell {
                     break;
             }
         }
-        if(object.terrain){
+        if (object.terrain) {
             terrain = JSON.parse(object.terrain);
             switch (terrain.terrainType) {
                 case terrainTypes.STEPPE:
-                    terrain =  new Steppe(p5);
+                    terrain = new Steppe(p5);
                     break;
                 case terrainTypes.VOLCANO:
                     terrain = new Volcano(p5);
@@ -515,9 +518,28 @@ class Cell {
                     break;
             }
         }
+        if (object.seed) {
+            seed = JSON.parse(object.seed);
+            console.log(seed);
+            switch (seed.seedType) {
+                case seedTypes.GRASS:
+                    seed = GrassSeed.parse(object.seed, p5);
+                    break;
+                case seedTypes.TREE:
+                    seed = TreeSeed.parse(object.seed, p5);
+                    break;
+                case seedTypes.BUSH:
+                    seed = BushSeed.parse(object.seed, p5);
+                    break;
+            }
+        }
         let cell = new Cell(x, y, terrain);
-        if(plant != null) {
+        if (plant != null) {
             cell.plant = plant;
+
+        }
+        if (seed != null) {
+            cell.seed = seed;
 
         }
         return cell;
