@@ -464,7 +464,13 @@ class Cell {
         if (this.terrain) {
             object.terrain = this._terrain.stringify();
         }
-        return JSON.stringify(object);
+        // return JSON.stringify(object);
+        JSON.stringify(object, function(key, value) {
+            if (key === '_pixelsState' || key === 'cell') {  // 或其他會導致循環的屬性
+                return undefined;
+            }
+            return value;
+        });
     }
 
     static parse(json, x, y, p5) {
