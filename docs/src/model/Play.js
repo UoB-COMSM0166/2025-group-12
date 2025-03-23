@@ -7,10 +7,17 @@ import {Seed} from "../items/Seed.js";
 import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
-import {baseType, enemyTypes, itemTypes, plantTypes, terrainTypes} from "../items/ItemTypes.js";
+import {
+    baseType,
+    enemyTypes,
+    itemTypes as TerrainTypes,
+    itemTypes,
+    plantTypes,
+    terrainTypes
+} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
-import {VolcanicBomb} from "../items/Volcano.js";
+import {VolcanicBomb, Volcano} from "../items/Volcano.js";
 import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
 
 export class PlayBoard extends Screen {
@@ -195,15 +202,13 @@ export class PlayBoard extends Screen {
         this.clickedCell(p5);
     }
 
-    undoMove(p5){
-        if(this.lastState === null){
+    undoMove(p5) {
+        if (this.lastState === null) {
             return;
         }
-        else {
-            this.boardObjects = BoardCells.parse(this.lastState, p5);
-            this.actionPoints = Math.min(this.actionPoints + 1, 3);
-            this.lastState = null;
-        }
+        this.boardObjects = BoardCells.parse(this.lastState, p5);
+        this.actionPoints = Math.min(this.actionPoints + 1, 3);
+        this.lastState = null;
     }
 
     draw(p5) {
@@ -326,7 +331,10 @@ export class PlayBoard extends Screen {
                 this.boardObjects.getCell(i, j).drawTerrain(p5, this);
             }
         }
-
+        if(this.boardObjects.getCell(2, 2).terrain.terrainType === terrainTypes.VOLCANO) {
+            let [x1, y1] = myutil.cellIndex2Pos(p5, this, 2, 2, p5.CORNERS);
+            p5.image(p5.images.get("Volcano"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight/2 + 1, this.cellWidth * 3, this.cellHeight * 3);
+        }
         // if skill is activated and awaiting target, set highlight on
         if (this.awaitCell) {
             for (let i = 0; i < this.boardObjects.size; i++) {
@@ -441,7 +449,12 @@ export class PlayBoard extends Screen {
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
-                this.lastState = this.boardObjects.stringify();
+                try {
+                    // TODO: need to save all object
+                    this.lastState = this.boardObjects.stringify();
+                } catch {
+                    this.lastState = null;
+                }
                 if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     this.shadowPlant = null;

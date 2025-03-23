@@ -434,7 +434,6 @@ class Cell {
     drawTerrain(p5, playBoard) {
         let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, playBoard, this.x, this.y, p5.CORNERS);
         p5.image(this.terrain.img, x1 - playBoard.cellWidth / 2, y1, playBoard.cellWidth, playBoard.cellHeight);
-
         if (this.ecosystem !== null && playBoard.ecoDisplay) {
             p5.fill('rgba(0%, 0%, 100%, 0.5)');
         } else {
@@ -464,13 +463,7 @@ class Cell {
         if (this.terrain) {
             object.terrain = this._terrain.stringify();
         }
-        // return JSON.stringify(object);
-        JSON.stringify(object, function(key, value) {
-            if (key === '_pixelsState' || key === 'cell') {  // 或其他會導致循環的屬性
-                return undefined;
-            }
-            return value;
-        });
+        return JSON.stringify(object);
     }
 
     static parse(json, x, y, p5) {
