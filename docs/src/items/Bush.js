@@ -37,6 +37,8 @@ export class Bush extends Plant {
             plantType: this.plantType,
             health: this.health,
         }
+        if (this.earthCounter) object.earthCounter = this.earthCounter;
+        if (this.coldCounter) object.coldCounter = this.coldCounter;
         return JSON.stringify(object);
     }
 
@@ -44,6 +46,8 @@ export class Bush extends Plant {
         const object = JSON.parse(json);
         let bush = new Bush(p5);
         bush.health = object.health;
+        bush.earthCounter = object.earthCounter;
+        bush.coldCounter = object.coldCounter;
         return bush;
     }
 }
@@ -65,14 +69,6 @@ export class BushSeed extends Seed {
         } else {
             return this;
         }
-    }
-
-    stringify() {
-        const object = {
-            seedType: this.seedType,
-            countdown: this.countdown,
-        }
-        return JSON.stringify(object);
     }
 
     static parse(json, p5) {

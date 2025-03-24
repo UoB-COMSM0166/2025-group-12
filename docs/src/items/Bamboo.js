@@ -28,6 +28,25 @@ export class Bamboo extends Plant {
     reevaluateSkills(playBoard, cell) {
 
     }
+
+    stringify() {
+        const object = {
+            plantType: this.plantType,
+            health: this.health,
+        }
+        if (this.earthCounter) object.earthCounter = this.earthCounter;
+        if (this.coldCounter) object.coldCounter = this.coldCounter;
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let bamboo = new Bamboo(p5);
+        bamboo.health = object.health;
+        bamboo.earthCounter = object.earthCounter;
+        bamboo.coldCounter = object.coldCounter;
+        return bamboo;
+    }
 }
 
 export class BambooSeed extends Seed {
@@ -47,5 +66,12 @@ export class BambooSeed extends Seed {
         } else {
             return this;
         }
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let bambooSeed = new BambooSeed(p5);
+        bambooSeed.countdown = object.countdown;
+        return bambooSeed;
     }
 }

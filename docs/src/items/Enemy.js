@@ -9,7 +9,7 @@ export class Enemy extends Movable {
         this.type = itemTypes.ENEMY;
     }
 
-    draw(p5){
+    draw(p5) {
         console.error("draw not implemented.");
     }
 

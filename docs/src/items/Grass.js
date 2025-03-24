@@ -63,10 +63,10 @@ export class Grass extends Plant {
         const object = {
             plantType: this.plantType,
             health: this.health,
-            hasActive: this.hasActive,
-            hasExtended: this.hasExtended,
-            useLeft: this.useLeft = 1,
+            useLeft: this.useLeft,
         }
+        if (this.earthCounter) object.earthCounter = this.earthCounter;
+        if (this.coldCounter) object.coldCounter = this.coldCounter;
         return JSON.stringify(object);
     }
 
@@ -74,9 +74,9 @@ export class Grass extends Plant {
         const object = JSON.parse(json);
         let grass = new Grass(p5);
         grass.health = object.health;
-        grass.hasActive = object.hasActive;
-        grass.hasExtended = object.hasExtended;
         grass.useLeft = object.useLeft;
+        grass.earthCounter = object.earthCounter;
+        grass.coldCounter = object.coldCounter;
         return grass;
     }
 }
@@ -98,14 +98,6 @@ export class GrassSeed extends Seed {
         } else {
             return this;
         }
-    }
-
-    stringify() {
-        const object = {
-            seedType: this.seedType,
-            countdown: this.countdown,
-        }
-        return JSON.stringify(object);
     }
 
     static parse(json, p5) {

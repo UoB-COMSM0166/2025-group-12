@@ -3,15 +3,19 @@ import {myutil} from "../../lib/myutil.js";
 import {Button} from "../items/Button.js";
 import {stateCode, stageGroup} from "./GameState.js";
 import {BoardCells} from "./BoardCells.js";
-import {Seed} from "../items/Seed.js";
-import {Plant} from "../items/Plant.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
 import {baseType, enemyTypes, itemTypes, plantTypes, terrainTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
-import {VolcanicBomb} from "../items/Volcano.js";
 import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
+import {Inventory} from "./Inventory.js";
+import {Bandit} from "../items/Bandit.js";
+import {Tornado} from "../items/Tornado.js";
+import {VolcanicBomb} from "../items/Volcano.js";
+import {Earthquake} from "../items/Earthquake.js";
+import {Blizzard} from "../items/Blizzard.js";
+import {SlideAnimation} from "../items/SlideAnimation.js";
 
 export class PlayBoard extends Screen {
     constructor(gameState) {
@@ -69,7 +73,7 @@ export class PlayBoard extends Screen {
         this.shadowPlant = null;
 
         // save last state
-        this.lastState = null;
+        this.undoStack = [];
     }
 
     /* public methods */
@@ -88,7 +92,7 @@ export class PlayBoard extends Screen {
         let [undoWidth, undoHeight] = myutil.relative2absolute(0.09, 0.07);
         let undoButton = new Button(undoX, undoY, undoWidth, undoHeight, "Undo");
         undoButton.onClick = () => {
-            this.undoMove(p5);
+            this.undo(p5);
         }
 
         // turn button
@@ -124,7 +128,7 @@ export class PlayBoard extends Screen {
             if (event.key === "e" && this.infoBox.activateButton !== null) {
                 this.infoBox.activateButton._onClick(p5);
             }
-            // 
+            // toggle display ecosystem
             if (event.key === "e" && this.infoBox.displayButton !== null) {
                 this.infoBox.displayButton._onClick(p5);
             }
@@ -195,14 +199,57 @@ export class PlayBoard extends Screen {
         this.clickedCell(p5);
     }
 
-    undoMove(p5){
-        if(this.lastState === null){
-            return;
+    stringify() {
+        let status = {
+            boardObjects: this.boardObjects.stringify(),
+            inventory: this.gameState.inventory.stringify(),
+            movables: JSON.stringify(this.movables.map(movable => movable.stringify())),
+            actionPoints: this.actionPoints,
         }
-        else {
-            this.boardObjects = BoardCells.parse(this.lastState, p5);
-            this.actionPoints = Math.min(this.actionPoints + 1, 3);
-            this.lastState = null;
+        this.undoStack.push(JSON.stringify(status));
+    }
+
+    undo(p5) {
+        if (this.undoStack.length === 0) return;
+
+        let status = JSON.parse(this.undoStack.pop());
+
+        // reset board
+        this.boardObjects = BoardCells.parse(status.boardObjects, p5, this);
+        // reset action points
+        this.actionPoints = status.actionPoints;
+        // reset plant skills
+        this.reevaluatePlantSkills();
+        // reset ecosystem
+        this.boardObjects.setEcosystem();
+        // reset inventory
+        this.gameState.inventory = Inventory.parse(status.inventory, p5);
+
+        // reset movables, need to put movable with cell to the correct cell
+        this.movables = JSON.parse(status.movables).map(json => {
+            const movable = JSON.parse(json);
+            switch (movable.enemyType) {
+                case enemyTypes.BANDIT:
+                    return Bandit.parse(json, p5, this);
+                case enemyTypes.TORNADO:
+                    return Tornado.parse(json, p5, this);
+                case enemyTypes.BOMB:
+                    return VolcanicBomb.parse(json, p5, this);
+                case enemyTypes.SLIDE:
+                    return SlideAnimation.parse(json, p5, this);
+                case enemyTypes.EARTHQUAKE:
+                    return Earthquake.parse(json, p5, this);
+                case enemyTypes.BLIZZARD:
+                    return Blizzard.parse(json, p5, this);
+                default:
+                    console.warn("Unknown enemy type", movable.enemyType);
+                    return null;
+            }
+        }).filter(Boolean);
+        for (let movable of this.movables) {
+            if (movable.cell) {
+                movable.cell.enemy = movable;
+            }
         }
     }
 
@@ -240,9 +287,9 @@ export class PlayBoard extends Screen {
         // tornado arrows first
         for (let movable of this.movables) {
             if (!movable.isMoving && movable.type === itemTypes.ENEMY && movable.enemyType === enemyTypes.TORNADO) {
-                let direction = movable.cell.enemy.direction;
-                let x = movable.cell.enemy.x;
-                let y = movable.cell.enemy.y;
+                let direction = movable.direction;
+                let x = movable.x;
+                let y = movable.y;
                 let angle;
                 if (direction[0] === 0 && direction[1] === -1) {
                     angle = p5.radians(330); // Up-right
@@ -421,6 +468,8 @@ export class PlayBoard extends Screen {
             if (index[0] === -1) {
                 this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("050"));
             } else {
+                // this branch represents skill has been activated successfully
+                this.stringify();
                 let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
                 let target = this.boardObjects.getCell(index[0], index[1]);
                 if (spellCaster.plant.plantType === plantTypes.TREE) {
@@ -441,7 +490,9 @@ export class PlayBoard extends Screen {
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
-                this.lastState = this.boardObjects.stringify();
+
+                this.stringify();
+
                 if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     this.shadowPlant = null;
@@ -475,6 +526,9 @@ export class PlayBoard extends Screen {
 
     // miscellaneous end turn settings
     endTurnActivity(p5) {
+        // clear undo stack
+        this.undoStack = [];
+
         // reset action points
         this.actionPoints = this.maxActionPoints;
 

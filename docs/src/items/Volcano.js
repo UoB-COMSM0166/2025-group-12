@@ -4,6 +4,12 @@ import {myutil} from "../../lib/myutil.js";
 import {enemyTypes, itemTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
 import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {baseType} from "./ItemTypes.js";
+import {TreeSeed} from "./Tree.js";
+import {BushSeed} from "./Bush.js";
+import {GrassSeed} from "./Grass.js";
+import {FireHerbSeed} from "./FireHerb.js";
+import {BambooSeed} from "./Bamboo.js";
+import {PlumSeed} from "./Blizzard.js";
 
 export class Volcano extends Terrain {
     constructor(p5) {
@@ -29,7 +35,49 @@ export class Lava extends Terrain {
         this.hasSolidified = false;
 
         this.seed = null;
-        this.cell = null;
+        this.cellX = -1;
+        this.cellY = -1;
+
+        this.weight = 1000;
+    }
+
+    stringify() {
+        const object = {
+            terrainType: this.terrainType,
+            name: this.name,
+            countdown: this.countdown,
+            hasSolidified: this.hasSolidified,
+            cellX: this.cellX,
+            cellY: this.cellY,
+            seed: this.seed ? {
+                className: this.seed.constructor.name,
+                countdown: this.seed.countdown
+            } : null
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        const object = JSON.parse(json);
+        const lava = new Lava(p5);
+        lava.name = object.name;
+        lava.img = p5.images.get(lava.name);
+        lava.countdown = object.countdown;
+        lava.hasSolidified = object.hasSolidified;
+        lava.cellX = object.cellX;
+        lava.cellY = object.cellY;
+        if (object.seed) {
+            const SeedRegistry = {TreeSeed, BushSeed, GrassSeed, FireHerbSeed, BambooSeed, PlumSeed};
+            const SeedClass = SeedRegistry[object.seed.className];
+            if (SeedClass) {
+                const seed = new SeedClass(p5);
+                seed.countdown = object.seed.countdown;
+                lava.seed = seed;
+            } else {
+                console.warn(`Seed class ${object.seed.className} not found in registry`);
+            }
+        }
+        return lava;
     }
 
     storeSeed(p5, plant) {
@@ -40,23 +88,25 @@ export class Lava extends Terrain {
         }
     }
 
-    solidify(p5) {
+    solidify(p5, playBoard) {
         if (this.countdown > 0) {
             this.countdown--;
         } else {
             this.name = "LavaS";
             this.img = p5.images.get(`${this.name}`);
             this.hasSolidified = true;
-            if (this.seed !== null) {
+            if (this.seed != null) {
+                console.log(this)
                 this.seed.countdown = 1;
-                this.cell.seed = this.seed;
+                playBoard.boardObjects.getCell(this.cellX, this.cellY).seed = this.seed;
+                this.seed = null;
             }
             this.weight = 0;
         }
     }
 
     getWeight() {
-        return 1000;
+        return this.weight;
     }
 }
 
@@ -67,7 +117,7 @@ export class Lava extends Terrain {
 // should shift to direct line equation in this case.
 
 export class VolcanicBomb extends Enemy {
-    constructor(p5, i1, j1, i2, j2, x1, y1, x2, y2) {
+    constructor(p5, i1, j1, i2, j2, x1, y1, x2, y2, countdown = 1) {
         super();
         this.name = "Bomb";
         this.img = p5.images.get(`${this.name}`);
@@ -94,7 +144,7 @@ export class VolcanicBomb extends Enemy {
         this.x = x1;
         this.y = y1;
         this.status = true;
-        this.countdown = 1;
+        this.countdown = countdown;
         this.isMoving = false;
         this.hasMoved = true;
         this.moveSpeed = 5;
@@ -128,7 +178,7 @@ export class VolcanicBomb extends Enemy {
             return false;
         }
         if (this.countdown === 0) {
-            this.img = p5.images.get(`${this.name}`);
+            //this.img = p5.images.get(`${this.name}`);
             this.isMoving = true;
             this.move(this.moveSpeed);
             return true;
@@ -264,6 +314,27 @@ export class VolcanicBomb extends Enemy {
 
         // Integrate from vertex h to x
         return this.integrate(u => Math.sqrt(1 + (2 * this.a * (u - this.h)) ** 2), this.h, x);
+    }
+
+    stringify() {
+        const object = {
+            enemyType: this.enemyType,
+            i1: this.i1,
+            j1: this.j1,
+            i2: this.i2,
+            j2: this.j2,
+            x1: this.x1,
+            y1: this.y1,
+            x2: this.x2,
+            y2: this.y2,
+            countdown: this.countdown,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        const object = JSON.parse(json);
+        return new VolcanicBomb(p5, object.i1, object.j1, object.i2, object.j2, object.x1, object.y1, object.x2, object.y2, object.countdown);
     }
 
 }

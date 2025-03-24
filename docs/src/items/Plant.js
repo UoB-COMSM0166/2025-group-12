@@ -5,10 +5,9 @@ export class Plant {
         this.type = itemTypes.PLANT;
     }
 
-    stringify(){
-    }
-
-    parse(){
+    stringify() {
+        console.error("stringify not overridden.");
+        return "";
     }
 
     getPassiveString() {

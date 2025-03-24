@@ -72,6 +72,17 @@ export class Earthquake extends Enemy {
         }
     }
 
+    stringify() {
+        const object = {
+            enemyType: this.enemyType,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        return new Earthquake();
+    }
+
 }
 
 export class Hill extends Terrain {

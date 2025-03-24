@@ -259,6 +259,33 @@ export class Bandit extends Enemy {
         return G;
     }
 
+    stringify() {
+        const object = {
+            enemyType: this.enemyType,
+            x: this.x,
+            y: this.y,
+            health: this.health,
+            cellX: this.cell?.x,
+            cellY: this.cell?.y,
+            targetCellX: this.targetCell?.x,
+            targetCellY: this.targetCell?.y,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        const object = JSON.parse(json);
+        let bandit = new Bandit(p5, object.x, object.y);
+        bandit.health = object.health;
+        if (object.cellX != null && object.cellY != null) {  // != null checks both null and undefined
+            bandit.cell = playBoard.boardObjects.getCell(object.cellX, object.cellY);
+        }
+        if (object.targetCellX != null && object.targetCellY != null) {  // != null checks both null and undefined
+            bandit.targetCell = playBoard.boardObjects.getCell(object.targetCellX, object.targetCellY);
+        }
+        return bandit;
+    }
+
 }
 
 export class Lumbering extends Terrain {

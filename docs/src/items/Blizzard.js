@@ -71,7 +71,7 @@ export class Blizzard extends Enemy {
             return true;
         }
         // during movement
-        if(this.isMoving && this.playAnimation < 100) {
+        if (this.isMoving && this.playAnimation < 100) {
             // play animation placeholder
             this.playAnimation += 5;
             return true;
@@ -96,6 +96,23 @@ export class Blizzard extends Enemy {
         if (cell.plant) plantEnemyInteractions.plantIsAttacked(this.playBoard, cell.plant, 1);
 
         if (cell.seed) plantEnemyInteractions.plantIsAttacked(this.playBoard, cell.seed, 1);
+    }
+
+    stringify() {
+        const object = {
+            enemyType: this.enemyType,
+            countdown: this.countdown,
+            cellX: this.cell?.x,
+            cellY: this.cell?.y,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        const object = JSON.parse(json);
+        let blizzard = new Blizzard(p5, playBoard, object.countdown);
+        blizzard.cell = playBoard.boardObjects.getCell(object.cellX, object.cellY);
+        return blizzard;
     }
 
 }
@@ -140,6 +157,25 @@ export class Plum extends Plant {
 
     }
 
+    stringify() {
+        const object = {
+            plantType: this.plantType,
+            health: this.health,
+        }
+        if (this.earthCounter) object.earthCounter = this.earthCounter;
+        if (this.coldCounter) object.coldCounter = this.coldCounter;
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let plum = new Plum(p5);
+        plum.health = object.health;
+        plum.earthCounter = object.earthCounter;
+        plum.coldCounter = object.coldCounter;
+        return plum;
+    }
+
     static plumRange(i0, j0, i1, j1) {
         return myutil.manhattanDistance(i0, j0, i1, j1) <= 2 && myutil.euclideanDistance(i0, j0, i1, j1) <= 2;
     }
@@ -162,5 +198,12 @@ export class PlumSeed extends Seed {
         } else {
             return this;
         }
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let plumSeed = new PlumSeed(p5);
+        plumSeed.countdown = object.countdown;
+        return plumSeed;
     }
 }

@@ -6,5 +6,16 @@ export class Seed {
         this.health = 1;
         this.maxHealth = 1;
         this.status = true;
+
+        this.seedType = 0;
+        this.countdown = -1;
+    }
+
+    stringify() {
+        const object = {
+            seedType: this.seedType,
+            countdown: this.countdown,
+        }
+        return JSON.stringify(object);
     }
 }

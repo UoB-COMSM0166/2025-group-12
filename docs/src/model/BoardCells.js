@@ -1,23 +1,20 @@
 import {baseType, enemyTypes, itemTypes, plantTypes, seedTypes, terrainTypes} from "../items/ItemTypes.js";
-import {Plant} from "../items/Plant.js";
-import {Seed} from "../items/Seed.js";
-import {Bandit, Lumbering} from "../items/Bandit.js";
-import {Tornado} from "../items/Tornado.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {UnionFind} from "../controller/UnionFind.js";
 import {myutil} from "../../lib/myutil.js";
-import {Bamboo} from "../items/Bamboo.js";
-import {Hill, Landslide} from "../items/Earthquake.js";
 import {stageGroup} from "./GameState.js";
-import {Plum, Snowfield} from "../items/Blizzard.js";
+import {Plum, PlumSeed, Snowfield} from "../items/Blizzard.js";
 import {Steppe} from "../items/Steppe.js";
-import {Tree, TreeSeed} from "../items/Tree.js";
-import {Grass, GrassSeed} from "../items/Grass.js";
-import {Terrain} from "../items/Terrain.js";
-import {Bush, BushSeed} from "../items/Bush.js";
 import {Lava, Volcano} from "../items/Volcano.js";
+import {Tree, TreeSeed} from "../items/Tree.js";
+import {Bush, BushSeed} from "../items/Bush.js";
+import {Grass, GrassSeed} from "../items/Grass.js";
+import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
+import {Bamboo, BambooSeed} from "../items/Bamboo.js";
 import {PlayerBase} from "../items/PlayerBase.js";
 import {Mountain} from "../items/Mountain.js";
+import {Lumbering} from "../items/Bandit.js";
+import {Hill, Landslide} from "../items/Earthquake.js";
 
 export class BoardCells {
     constructor(size) {
@@ -295,12 +292,12 @@ export class BoardCells {
         return JSON.stringify(object);
     }
 
-    static parse(json, p5) {
+    static parse(json, p5, playBoard) {
         const object = JSON.parse(json);
         let board = new BoardCells(object.size);
         for (let i = 0; i < object.size; i++) {
             for (let j = 0; j < object.size; j++) {
-                board.boardObjects[i][j] = Cell.parse(object.boardObjects[i][j], i, j, p5);
+                board.boardObjects[i][j] = Cell.parse(object.boardObjects[i][j], i, j, p5, playBoard);
             }
         }
         return board;
@@ -448,106 +445,110 @@ class Cell {
 
     stringify() {
         let object = {
-            terrain: this._terrain,
-            plant: this._plant,
-            seed: this._seed,
-            enemy: this._enemy
+            terrain: null,
+            plant: null,
+            seed: null,
+            enemy: null,
         }
         if (this.plant) {
-            object.plant = this._plant.stringify();
+            object.plant = this.plant.stringify();
         }
         if (this.seed) {
-            console.log(this.seed);
-            object.seed = this._seed.stringify();
-            console.log(object.seed);
+            object.seed = this.seed.stringify();
         }
         if (this.terrain) {
-            object.terrain = this._terrain.stringify();
+            object.terrain = this.terrain.stringify();
         }
-        // return JSON.stringify(object);
-        JSON.stringify(object, function(key, value) {
-            if (key === '_pixelsState' || key === 'cell') {  // 或其他會導致循環的屬性
-                return undefined;
-            }
-            return value;
-        });
+        if (this.enemy) {
+            object.enemy = this.enemy.stringify();
+        }
+        return JSON.stringify(object);
     }
 
-    static parse(json, x, y, p5) {
+    static parse(json, x, y, p5, playBoard) {
         let object = JSON.parse(json);
-        let plant;
-        let terrain;
-        let seed;
+        let plant, terrain, seed;
         if (object.plant) {
             plant = JSON.parse(object.plant);
             switch (plant.plantType) {
-                case plantTypes.GRASS:
-                    plant = Grass.parse(object.plant, p5);
-                    break;
                 case plantTypes.TREE:
                     plant = Tree.parse(object.plant, p5);
                     break;
                 case plantTypes.BUSH:
                     plant = Bush.parse(object.plant, p5);
                     break;
-            }
-        }
-        if (object.terrain) {
-            terrain = JSON.parse(object.terrain);
-            switch (terrain.terrainType) {
-                case terrainTypes.STEPPE:
-                    terrain = new Steppe(p5);
+                case plantTypes.GRASS:
+                    plant = Grass.parse(object.plant, p5);
                     break;
-                case terrainTypes.VOLCANO:
-                    terrain = new Volcano(p5);
+                case plantTypes.FIRE_HERB:
+                    plant = FireHerb.parse(object.plant, p5);
                     break;
-                case terrainTypes.BASE:
-                    terrain = new PlayerBase(p5);
+                case plantTypes.BAMBOO:
+                    plant = Bamboo.parse(object.plant, p5);
                     break;
-                case terrainTypes.HILL:
-                    terrain = new Hill(p5);
-                    break;
-                case terrainTypes.LAVA:
-                    terrain = new Lava(p5);
-                    break;
-                case terrainTypes.LANDSLIDE:
-                    terrain = new Landslide(p5);
-                    break;
-                case terrainTypes.LUMBERING:
-                    terrain = new Lumbering(p5);
-                    break;
-                case terrainTypes.SNOWFIELD:
-                    terrain = new Snowfield(p5);
-                    break;
-                case terrainTypes.MOUNTAIN:
-                    terrain = new Mountain(p5);
+                case plantTypes.PLUM:
+                    plant = Plum.parse(object.plant, p5);
                     break;
             }
         }
         if (object.seed) {
             seed = JSON.parse(object.seed);
-            console.log(seed);
             switch (seed.seedType) {
-                case seedTypes.GRASS:
-                    seed = GrassSeed.parse(object.seed, p5);
-                    break;
                 case seedTypes.TREE:
                     seed = TreeSeed.parse(object.seed, p5);
                     break;
                 case seedTypes.BUSH:
                     seed = BushSeed.parse(object.seed, p5);
                     break;
+                case seedTypes.GRASS:
+                    seed = GrassSeed.parse(object.seed, p5);
+                    break;
+                case seedTypes.FIRE_HERB:
+                    seed = FireHerbSeed.parse(object.seed, p5);
+                    break;
+                case seedTypes.BAMBOO:
+                    seed = BambooSeed.parse(object.seed, p5);
+                    break;
+                case seedTypes.PLUM:
+                    seed = PlumSeed.parse(object.seed, p5);
+                    break;
+            }
+        }
+        if (object.terrain) {
+            terrain = JSON.parse(object.terrain);
+            switch (terrain.terrainType) {
+                case terrainTypes.BASE:
+                    terrain = new PlayerBase(p5);
+                    break;
+                case terrainTypes.MOUNTAIN:
+                    terrain = new Mountain(p5);
+                    break;
+                case terrainTypes.STEPPE:
+                    terrain = new Steppe(p5);
+                    break;
+                case terrainTypes.LUMBERING:
+                    terrain = new Lumbering(p5);
+                    break;
+                case terrainTypes.VOLCANO:
+                    terrain = new Volcano(p5);
+                    break;
+                case terrainTypes.LAVA:
+                    terrain = Lava.parse(object.terrain, p5, playBoard);
+                    break;
+                case terrainTypes.HILL:
+                    terrain = new Hill(p5);
+                    break;
+                case terrainTypes.LANDSLIDE:
+                    terrain = new Landslide(p5);
+                    break;
+                case terrainTypes.SNOWFIELD:
+                    terrain = new Snowfield(p5);
+                    break;
             }
         }
         let cell = new Cell(x, y, terrain);
-        if (plant != null) {
-            cell.plant = plant;
-
-        }
-        if (seed != null) {
-            cell.seed = seed;
-
-        }
+        if (plant) cell.plant = plant;
+        if (seed) cell.seed = seed;
         return cell;
     }
 }

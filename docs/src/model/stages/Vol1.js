@@ -82,7 +82,8 @@ export class Volcano1PlayBoard extends PlayBoard {
     generateLava(p5, i, j) {
         let cell = this.boardObjects.getCell(i, j);
         let lava = new Lava(p5);
-        lava.cell = cell;
+        lava.cellX = cell.x;
+        lava.cellY = cell.y;
         cell.terrain = lava;
 
         // kill plant and store its seed
@@ -132,7 +133,7 @@ export class Volcano1PlayBoard extends PlayBoard {
 
         // solidify lava
         for (let cell of cells) {
-            cell.terrain.solidify(p5);
+            cell.terrain.solidify(p5, this);
         }
 
     }

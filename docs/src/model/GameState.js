@@ -32,11 +32,10 @@ export const stageGroup = {
 // game state should not handle any switching logic but only stores information
 export class GameState {
     constructor(p5) {
-        this.p5 = p5;
         this.state = stateCode.MENU; // default
         this.currentStageGroup = stageGroup.NO_STAGE; // no stage is selected
         this.currentStage = null;
-        this.inventory = new Inventory(this.p5);
+        this.inventory = new Inventory(p5);
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
         this.loaded = false;

@@ -38,8 +38,8 @@ export class Inventory {
             ["Grass", new Grass(p5)],
             ["FireHerb", new FireHerb(p5)],
             ["Bamboo", new Bamboo(p5)],
-            ["TreeSeed", new TreeSeed(p5)],
             ["Plum", new Plum(p5)],
+            ["TreeSeed", new TreeSeed(p5)],
             ["BushSeed", new BushSeed(p5)],
             ["GrassSeed", new GrassSeed(p5)],
             ["FireHerbSeed", new FireHerbSeed(p5)],
@@ -203,5 +203,20 @@ export class Inventory {
             }
         }
         this.updateInventoryHeight();
+    }
+
+    stringify() {
+        const object = {
+            items: Array.from(this.items.entries())
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let inv = new Inventory(p5);
+        inv.items = new Map(object.items);
+        inv.updateInventoryHeight();
+        return inv;
     }
 }

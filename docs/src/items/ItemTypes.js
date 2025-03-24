@@ -1,6 +1,3 @@
-import {Plant} from "./Plant.js";
-import {Seed} from "./Seed.js";
-
 export let itemTypes = {
     PLANT: 2,
     SEED: 4,

@@ -23,12 +23,11 @@ export class Tornado extends Enemy {
         } else if (direction === 'r') {
             this.direction = [1, 0];
         } else {
-            console.error(`invalid direction of Tornado`);
+            console.error(`invalid direction ${direction} of Tornado`);
             return;
         }
 
         this.cell = null;
-        this.targetCell = null;
         this.countdown = countdown;
         this.isMoving = false;
         this.hasMoved = true;
@@ -162,5 +161,36 @@ export class Tornado extends Enemy {
             this.status = false;
             plantEnemyInteractions.findMovableAndDelete(playBoard, this);
         }
+    }
+
+    stringify() {
+        let d;
+        if (this.direction[0] === 0 && this.direction[1] === -1) d = 'u';
+        if (this.direction[0] === 0 && this.direction[1] === 1) d = 'd';
+        if (this.direction[0] === -1 && this.direction[1] === 0) d = 'l';
+        if (this.direction[0] === 1 && this.direction[1] === 0) d = 'r';
+
+        const object = {
+            enemyType: this.enemyType,
+            x: this.x,
+            y: this.y,
+            health: this.health,
+            direction: d,
+            cellX: this.cell?.x,
+            cellY: this.cell?.y,
+            countdown: this.countdown,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        const object = JSON.parse(json);
+        let tornado = new Tornado(p5, object.x, object.y, object.direction, object.countdown);
+
+        if (object.cellX != null && object.cellY != null) { // != null checks both null and undefined
+            tornado.cell = playBoard.boardObjects.getCell(object.cellX, object.cellY);
+        }
+        tornado.health = object.health;
+        return tornado;
     }
 }

@@ -31,6 +31,25 @@ export class FireHerb extends Plant {
     reevaluateSkills(playBoard, cell) {
         // do nothing.
     }
+
+    stringify() {
+        const object = {
+            plantType: this.plantType,
+            health: this.health,
+        }
+        if (this.earthCounter) object.earthCounter = this.earthCounter;
+        if (this.coldCounter) object.coldCounter = this.coldCounter;
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let fireHerb = new FireHerb(p5);
+        fireHerb.health = object.health;
+        fireHerb.earthCounter = object.earthCounter;
+        fireHerb.coldCounter = object.coldCounter;
+        return fireHerb;
+    }
 }
 
 export class FireHerbSeed extends Seed {
@@ -50,5 +69,12 @@ export class FireHerbSeed extends Seed {
         } else {
             return this;
         }
+    }
+
+    static parse(json, p5) {
+        const object = JSON.parse(json);
+        let fireSeed = new FireHerbSeed(p5);
+        fireSeed.countdown = object.countdown;
+        return fireSeed;
     }
 }
