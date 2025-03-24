@@ -16,7 +16,7 @@ export class Volcano extends Terrain {
         super();
         this.name = "Volcano";
         this.terrainType = terrainTypes.VOLCANO;
-        this.img = p5.images.get(`VolcanoTile`);
+        this.img = p5.images.get(`${this.name}`);
     }
 
     getWeight() {

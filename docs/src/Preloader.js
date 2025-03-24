@@ -12,7 +12,7 @@ export function loadImages(p5) {
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
     images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
-    images.set("VolcanoTile", p5.loadImage(basePath + "VolcanoTile.png"));
+    images.set("VolcanoLayer", p5.loadImage(basePath + "VolcanoLayer.png"));
     images.set("Lava", p5.loadImage(basePath + "LavaTest.png"));
     images.set("LavaS", p5.loadImage(basePath + "LavaSTest.png"));
     images.set("Landslide", p5.loadImage(basePath + "Landslide.png"));

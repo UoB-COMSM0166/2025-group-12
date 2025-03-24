@@ -5,20 +5,9 @@ import {stateCode, stageGroup} from "./GameState.js";
 import {BoardCells} from "./BoardCells.js";
 import {InfoBox} from "./InfoBox.js";
 import {PlantActive} from "../items/PlantActive.js";
-import {
-    baseType,
-    enemyTypes,
-    itemTypes as TerrainTypes,
-    itemTypes,
-    plantTypes,
-    terrainTypes
-} from "../items/ItemTypes.js";
+import {baseType, enemyTypes, itemTypes, plantTypes, terrainTypes} from "../items/ItemTypes.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
-<<<<<<< HEAD
-=======
-import {VolcanicBomb, Volcano} from "../items/Volcano.js";
->>>>>>> 901576a69d7fc355b6f46b7b32b0f2d46dc9e685
 import {plantEnemyInteractions} from "../items/PlantEnemyInter.js";
 import {Inventory} from "./Inventory.js";
 import {Bandit} from "../items/Bandit.js";
@@ -210,7 +199,6 @@ export class PlayBoard extends Screen {
         this.clickedCell(p5);
     }
 
-<<<<<<< HEAD
     stringify() {
         let status = {
             boardObjects: this.boardObjects.stringify(),
@@ -263,15 +251,6 @@ export class PlayBoard extends Screen {
                 movable.cell.enemy = movable;
             }
         }
-=======
-    undoMove(p5) {
-        if (this.lastState === null) {
-            return;
-        }
-        this.boardObjects = BoardCells.parse(this.lastState, p5);
-        this.actionPoints = Math.min(this.actionPoints + 1, 3);
-        this.lastState = null;
->>>>>>> 901576a69d7fc355b6f46b7b32b0f2d46dc9e685
     }
 
     draw(p5) {
@@ -396,7 +375,7 @@ export class PlayBoard extends Screen {
         }
         if(this.boardObjects.getCell(2, 2).terrain.terrainType === terrainTypes.VOLCANO) {
             let [x1, y1] = myutil.cellIndex2Pos(p5, this, 2, 2, p5.CORNERS);
-            p5.image(p5.images.get("Volcano"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight/2 + 1, this.cellWidth * 3, this.cellHeight * 3);
+            p5.image(p5.images.get("VolcanoLayer"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight/2 + 1, this.cellWidth * 3, this.cellHeight * 3);
         }
         // if skill is activated and awaiting target, set highlight on
         if (this.awaitCell) {
@@ -514,18 +493,7 @@ export class PlayBoard extends Screen {
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
-<<<<<<< HEAD
-
                 this.stringify();
-
-=======
-                try {
-                    // TODO: need to save all object
-                    this.lastState = this.boardObjects.stringify();
-                } catch {
-                    this.lastState = null;
-                }
->>>>>>> 901576a69d7fc355b6f46b7b32b0f2d46dc9e685
                 if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
                     console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     this.shadowPlant = null;
