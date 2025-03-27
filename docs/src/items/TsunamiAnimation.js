@@ -42,7 +42,6 @@ export class TsunamiAnimation extends Enemy {
             for (let i = 0; i < this.playBoard.gridSize; i++) {
                 for (let j = 0; j <= this.movedLength[i]; j++) {
                     let [avgX, avgY] = myutil.cellIndex2Pos(p5, this.playBoard, i, this.startCol + j, p5.CENTER);
-                    //console.log(`draw cell (${i}, ${this.startCol + j})`)
                     p5.image(this.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
                 }
             }
@@ -96,12 +95,29 @@ export class TsunamiAnimation extends Enemy {
         for (let i = 0; i < this.isMovingArray.length; i++) {
             if (this.isMovingArray[i]) {
                 if (this.movedLength[i] < this.range[i]) {
-                    if (this.startCol !== -1 && playBoard.boardObjects.getCell(i, this.startCol + this.movedLength[i] + 1).terrain.terrainType === terrainTypes.SEA) {
-                        this.range[i] += 1;
-                    } else if (this.startRow !== -1 && playBoard.boardObjects.getCell(this.startRow + this.movedLength[i] + 1, i).terrain.terrainType === terrainTypes.SEA) {
-                        this.range[i] += 1;
+                    let cell;
+                    if (this.startCol !== -1) {
+                        cell = playBoard.boardObjects.getCell(i, this.startCol + this.movedLength[i] + 1);
+                        if (cell.terrain.terrainType === terrainTypes.SEA) this.range[i] += 1;
+
+                    } else {
+                        cell = playBoard.boardObjects.getCell(this.startRow + this.movedLength[i] + 1, i);
+                        if (cell.terrain.terrainType === terrainTypes.SEA) this.range[i] += 1;
                     }
                     this.movedLength[i] += 1;
+
+                    if (cell.plant) {
+                        cell.removePlant();
+                        playBoard.fertilized[cell.x][cell.y] = true;
+                    }
+                    if (cell.seed) {
+                        cell.removeSeed();
+                        playBoard.fertilized[cell.x][cell.y] = true;
+                    }
+                    if (cell.enemy?.enemyType === enemyTypes.BANDIT) {
+                        plantEnemyInteractions.findMovableAndDelete(playBoard, cell.enemy);
+                    }
+
                 } else {
                     this.isMovingArray[i] = false;
                 }
@@ -109,5 +125,20 @@ export class TsunamiAnimation extends Enemy {
         }
 
         if (!this.checkIsMoving()) this.isMoving = false;
+    }
+
+    stringify() {
+        const object = {
+            enemyType: this.enemyType,
+            startCol: this.startCol,
+            startRow: this.startRow,
+            range: this.range,
+        }
+        return JSON.stringify(object);
+    }
+
+    static parse(json, p5, playBoard) {
+        const object = JSON.parse(json);
+        return new TsunamiAnimation(p5, playBoard, object.startCol, object.startRow, object.range);
     }
 }

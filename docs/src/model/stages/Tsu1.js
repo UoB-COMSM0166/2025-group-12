@@ -37,7 +37,15 @@ export class Tsunami1PlayBoard extends PlayBoard {
 
     // set stage inventory at entering, called by controller
     setStageInventory(p5) {
-        this.gameState.inventory.setItemOfInventory(p5, "TreeSeed", 2);
+        this.gameState.inventory.pushItem2Inventory(p5, "Tree", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "Bush", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "Grass", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "FireHerb", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "Bamboo", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "Plum", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 10);
+        this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 10);
     }
 
     // set stage terrain, called when the stage is loaded or reset

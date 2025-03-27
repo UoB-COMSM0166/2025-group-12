@@ -16,6 +16,7 @@ import {VolcanicBomb} from "../items/Volcano.js";
 import {Earthquake} from "../items/Earthquake.js";
 import {Blizzard} from "../items/Blizzard.js";
 import {SlideAnimation} from "../items/SlideAnimation.js";
+import {TsunamiAnimation} from "../items/TsunamiAnimation.js";
 
 export class PlayBoard extends Screen {
     constructor(gameState) {
@@ -241,6 +242,8 @@ export class PlayBoard extends Screen {
                     return Earthquake.parse(json, p5, this);
                 case enemyTypes.BLIZZARD:
                     return Blizzard.parse(json, p5, this);
+                case enemyTypes.TSUNAMI:
+                    return TsunamiAnimation.parse(json, p5, this);
                 default:
                     console.warn("Unknown enemy type", movable.enemyType);
                     return null;

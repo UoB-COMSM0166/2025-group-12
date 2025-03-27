@@ -15,6 +15,7 @@ import {PlayerBase} from "../items/PlayerBase.js";
 import {Mountain} from "../items/Mountain.js";
 import {Lumbering} from "../items/Bandit.js";
 import {Hill, Landslide} from "../items/Earthquake.js";
+import {Sea} from "../items/Sea.js";
 
 export class BoardCells {
     constructor(size) {
@@ -543,6 +544,9 @@ class Cell {
                     break;
                 case terrainTypes.SNOWFIELD:
                     terrain = new Snowfield(p5);
+                    break;
+                case terrainTypes.SEA:
+                    terrain = new Sea(p5);
                     break;
             }
         }

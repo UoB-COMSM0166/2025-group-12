@@ -8,7 +8,7 @@ export function loadImages(p5) {
     images.set("rightarrow", p5.loadImage(basePath + "rightarrow.png"));
     images.set("panther", p5.loadImage(basePath + "panther.png"));
 
-    images.set("Steppe", p5.loadImage(basePath + "SteppeTest.png"));
+    images.set("Steppe", p5.loadImage(basePath + "Steppe.png"));
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
     images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
