@@ -505,6 +505,10 @@ export class PlayBoard extends Screen {
 
                     // remove item from inventory
                     this.gameState.inventory.itemDecrement();
+
+                    // set countdown for seed
+                    this.setSeedCountdown(index[0], index[1]);
+
                     return;
                 }
             } else {
@@ -523,6 +527,10 @@ export class PlayBoard extends Screen {
         } else {
             this.shadowPlant = null;
         }
+    }
+
+    setSeedCountdown(x, y){
+        // used in stage 5
     }
 
     // miscellaneous end turn settings

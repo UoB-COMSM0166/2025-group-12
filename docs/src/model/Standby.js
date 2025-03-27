@@ -31,9 +31,11 @@ export class StandbyMenu extends Screen {
 
         let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Volcano");
         stage2Button.onClick = () => {
-            if (!this.gameState.isStageCleared(stageGroup.TORNADO)) {
-                this.copyFloatingWindow(p5, "lock");
-                return;
+            if (!p5.keyIsPressed || p5.key !== 'v') {
+                if (!this.gameState.isStageCleared(stageGroup.TORNADO)) {
+                    this.copyFloatingWindow(p5, "lock");
+                    return;
+                }
             }
             this.clickedStageButton(p5, stageGroup.VOLCANO);
         };
@@ -41,9 +43,11 @@ export class StandbyMenu extends Screen {
         // earthquake + landslide
         let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Earthquake");
         stage3Button.onClick = () => {
-            if (!this.gameState.isStageCleared(stageGroup.VOLCANO)) {
-                this.copyFloatingWindow(p5, "lock");
-                return;
+            if (!p5.keyIsPressed || p5.key !== 'v') {
+                if (!this.gameState.isStageCleared(stageGroup.VOLCANO)) {
+                    this.copyFloatingWindow(p5, "lock");
+                    return;
+                }
             }
             this.clickedStageButton(p5, stageGroup.EARTHQUAKE);
         };
@@ -51,9 +55,11 @@ export class StandbyMenu extends Screen {
         // landslide + random lightning attack
         let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Blizzard");
         stage4Button.onClick = () => {
-            if (!this.gameState.isStageCleared(stageGroup.EARTHQUAKE)) {
-                this.copyFloatingWindow(p5, "lock");
-                return;
+            if (!p5.keyIsPressed || p5.key !== 'v') {
+                if (!this.gameState.isStageCleared(stageGroup.EARTHQUAKE)) {
+                    this.copyFloatingWindow(p5, "lock");
+                    return;
+                }
             }
             this.clickedStageButton(p5, stageGroup.BLIZZARD);
         };
@@ -61,9 +67,11 @@ export class StandbyMenu extends Screen {
         // earthquake induced tsunami + rainstorm + landslide + random lighting + tornado
         let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Tsunami");
         stage5Button.onClick = () => {
-            if (!this.gameState.isStageCleared(stageGroup.BLIZZARD)) {
-                this.copyFloatingWindow(p5, "lock");
-                return;
+            if (!p5.keyIsPressed || p5.key !== 'v') {
+                if (!this.gameState.isStageCleared(stageGroup.BLIZZARD)) {
+                    this.copyFloatingWindow(p5, "lock");
+                    return;
+                }
             }
             this.clickedStageButton(p5, stageGroup.TSUNAMI);
         };

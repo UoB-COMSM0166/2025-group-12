@@ -25,7 +25,7 @@ export class SlideAnimation extends Enemy {
 
     movements(p5, playBoard) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of Tornado has received invalid PlayBoard.');
+            console.error('movements of SlideAnimation has received invalid PlayBoard.');
             return false;
         }
         if (this.hasMoved) {
