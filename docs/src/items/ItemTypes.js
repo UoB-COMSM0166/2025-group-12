@@ -14,6 +14,7 @@ export let plantTypes = {
     FIRE_HERB: 10,
     PLUM: 12,
     KIKU: 14,
+    PALM: 16,
 
     GRASS: 95,
 }
@@ -25,6 +26,7 @@ export let seedTypes = {
     FIRE_HERB: 11,
     PLUM: 13,
     KIKU: 15,
+    PALM: 17,
 
     GRASS: 95,
 }
@@ -55,7 +57,7 @@ export let enemyTypes = {
 
 export function baseType(plantOrSeed) {
     if (plantOrSeed.type === itemTypes.PLANT) {
-        if (plantOrSeed.plantType === plantTypes.TREE || plantOrSeed.plantType === plantTypes.BAMBOO) {
+        if (plantOrSeed.plantType === plantTypes.TREE || plantOrSeed.plantType === plantTypes.BAMBOO || plantOrSeed.plantType === plantTypes.PALM) {
             return plantTypes.TREE;
         } else if (plantOrSeed.plantType === plantTypes.BUSH || plantOrSeed.plantType === plantTypes.PLUM) {
             return plantTypes.BUSH;
@@ -63,7 +65,7 @@ export function baseType(plantOrSeed) {
             return plantTypes.GRASS;
         }
     } else if (plantOrSeed.type === itemTypes.SEED) {
-        if (plantOrSeed.seedType === seedTypes.TREE || plantOrSeed.seedType === seedTypes.BAMBOO) {
+        if (plantOrSeed.seedType === seedTypes.TREE || plantOrSeed.seedType === seedTypes.BAMBOO || plantOrSeed.plantType === plantTypes.PALM) {
             return seedTypes.TREE;
         } else if (plantOrSeed.seedType === seedTypes.BUSH || plantOrSeed.seedType === seedTypes.PLUM) {
             return seedTypes.BUSH;

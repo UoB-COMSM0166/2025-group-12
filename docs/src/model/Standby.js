@@ -137,7 +137,7 @@ export class StandbyMenu extends Screen {
             padding: 10,
             spacingRatio: 0.3,
             fadingSpeed: 1,
-            playerCanClick: false
+            playerCanClick: true
         }));
 
         afw.set("lock", new FloatingWindow(p5, null, "{white:This stage is locked.}", {
@@ -147,7 +147,7 @@ export class StandbyMenu extends Screen {
             padding: 10,
             spacingRatio: 0.3,
             fadingSpeed: 1,
-            playerCanClick: false
+            playerCanClick: true
         }));
 
         afw.set("moreTutorial", new FloatingWindow(p5, null, "{white:Click 'Tornado' again to continue tutorial.}", {

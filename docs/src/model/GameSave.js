@@ -1,53 +1,42 @@
-import {stageGroup, stateCode} from "./GameState.js";
+import {GameState, stageGroup, stateCode} from "./GameState.js";
+import {Inventory} from "./Inventory.js";
+import {PlayBoard} from "./Play.js";
 
 export class GameSave {
-    static save(gameState) {
-        const saveData = {
-            stageCleared: [false, false, false, false, false],
-            locked: [false, true, true, true, true],
-            state: gameState.state,
-            currentStage: gameState.currentStageGroup,
-            turn: gameState.currentStage.turn,
-            inventory: Array.from(gameState.inventory.saveInventory()),
-            board: null,
-        };
-        if (gameState.currentStage.boardObjects) {
-            saveData.board = gameState.currentStage.boardObjects.saveBoard();
-        }
-        localStorage.setItem("PnP", JSON.stringify(saveData));
-        console.log('Game saved', saveData);
 
+    static saveDataID = "GreenRenaissanceSaveData";
+
+    static save(p5) {
+        let gameState = p5.controller.gameState;
+        let state = {
+            state: gameState.state,
+            currentStageGroup: gameState.currentStageGroup,
+            currentStage: gameState.currentStage != null ? gameState.currentStage.saveGame() : null,
+            inventory: gameState.currentStage != null ? null : gameState.inventory.stringify(), // prevent double storage of inventory
+            clearedStages: JSON.stringify(Array.from(gameState.clearedStages.entries())),
+            saveState: p5.controller.saveState,
+        }
+        localStorage.setItem(GameSave.saveDataID, JSON.stringify(encrypt(JSON.stringify(state))));
+        console.log('Game saved');
     }
 
-    static load(gameState) {
-        let data = localStorage.getItem("PnP");
+    static load(p5) {
+        let data = localStorage.getItem(GameSave.saveDataID);
         if (data) {
-            let loadData = JSON.parse(data);
-            /* first set loaded to true, load basic accordingly, then load saved data
-               set gameState.loaded back to false;
-             */
-            gameState.loaded = true;
-            gameState.setState(loadData.state);
-            gameState.currentStageGroup = loadData.currentStage;
+            let stateObject = JSON.parse(decrypt(JSON.parse(data)));
+            let gameState = p5.controller.gameState;
+            gameState.state = stateObject.state;
+            gameState.currentStageGroup = stateObject.currentStageGroup;
+            gameState.inventory = stateObject.inventory ? Inventory.parse(stateObject.inventory, p5) : null;
+            gameState.clearedStages = new Map(JSON.parse(stateObject.clearedStages));
+            gameState.currentStage = stateObject.currentStage? PlayBoard.loadGame(p5, gameState, stateObject.currentStage) : null;
 
-            // currentStage has changed, but update is in next draw(), code followed needs to wait until it's done
-            setTimeout(() => {
-                let inventoryMap = new Map(loadData.inventory);
-                gameState.inventory.loadInventory(inventoryMap);
-                gameState.currentStage.boardObjects.loadBoard(loadData.board, gameState);
-                gameState.currentStage.turn = loadData.turn;
-                gameState.currentStage.buttons.find(button => button.text.startsWith("turn")).text = gameState.currentStage.getTurnButtonText();
-                console.log('Game load');
-            }, 50);
-            gameState.loaded = false;
-
+            p5.controller.menus[stateCode.PLAY] = gameState.currentStage;
+            p5.controller.saveState = stateObject.saveState;
+            p5.controller.gameState = gameState;
         } else {
             console.error('Save data not found!');
         }
-    }
-
-    static getData() {
-        return JSON.parse(localStorage.getItem("PnP"));
     }
 }
 
@@ -61,29 +50,19 @@ function generateKey(timestamp, keySize) {
 }
 
 function encrypt(input) {
-    let timestamp = Date.now();
-    let keySize = 4;
-    let key = generateKey(timestamp, keySize);
-    let inputBytes = new TextEncoder().encode(input);
-    let encrypted = new Uint8Array(inputBytes.length);
-    for (let i = 0; i < inputBytes.length; i++) {
-        encrypted[i] = inputBytes[i] ^ key[i % key.length];
-    }
-    let result = new Uint8Array(key.length + encrypted.length);
-    result.set(key, 0);
-    result.set(encrypted, key.length);
-
-    return result;
+    const timestamp = Date.now();
+    const keySize = 4;
+    const key = Array.from(generateKey(timestamp, keySize));
+    const inputBytes = Array.from(new TextEncoder().encode(input));
+    const encrypted = inputBytes.map((byte, i) => byte ^ key[i % key.length]);
+    return [...key, ...encrypted]; // simple number[]
 }
 
-function decrypt(encryptedData) {
-    let keySize = 4;
-    let key = encryptedData.slice(0, keySize);
-    let encryptedText = encryptedData.slice(keySize);
-    let decrypted = new Uint8Array(encryptedText.length);
-    for (let i = 0; i < encryptedText.length; i++) {
-        decrypted[i] = encryptedText[i] ^ key[i % key.length];
-    }
-
-    return new TextDecoder().decode(decrypted);
+function decrypt(encryptedArray) {
+    const keySize = 4;
+    const key = encryptedArray.slice(0, keySize);
+    const encrypted = encryptedArray.slice(keySize);
+    const decrypted = encrypted.map((byte, i) => byte ^ key[i % key.length]);
+    return new TextDecoder().decode(new Uint8Array(decrypted));
 }
+

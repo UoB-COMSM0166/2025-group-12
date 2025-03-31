@@ -128,7 +128,10 @@ export class Controller {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;
+            console.log("items", this.gameState.inventory.items)
+            console.log(this.menus[stateCode.PLAY].tmpInventoryItems)
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
+            console.log("items", this.gameState.inventory.items)
             // destroy the play board
             this.menus[stateCode.PLAY] = null;
             return;

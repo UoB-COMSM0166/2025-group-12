@@ -38,7 +38,6 @@ export class GameState {
         this.inventory = new Inventory(p5);
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
-        this.loaded = false;
         this.clearedStages = new Map();
 
         this.gsf = new GameStageFactory();
@@ -109,7 +108,7 @@ class GameStageFactory {
     newGameStage(newStage, gameState) {
         let StageClasses = this.stageClasses[gameState.currentStageGroup];
         let index = gameState.clearedStages.get(gameState.currentStageGroup);
-        let StageClass = StageClasses[index !== undefined ? index : 0];
+        let StageClass = StageClasses[index != null ? index : 0];
         return StageClass ? new StageClass(gameState) : null;
     }
 }

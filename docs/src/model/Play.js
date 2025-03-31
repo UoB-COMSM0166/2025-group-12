@@ -80,6 +80,17 @@ export class PlayBoard extends Screen {
     /* public methods */
 
     setup(p5) {
+        // action listeners
+        this.setupActionListeners(p5);
+
+        // setup stage terrain
+        this.setStageTerrain(p5);
+
+        // initialized all fw
+        this.initAllFloatingWindows(p5);
+    }
+
+    setupActionListeners(p5){
         // escape button
         let [escX, escY] = myutil.relative2absolute(0.01, 0.01);
         let [escWidth, escHeight] = myutil.relative2absolute(0.09, 0.07);
@@ -157,12 +168,6 @@ export class PlayBoard extends Screen {
                 this.infoBox.clickRightArrow(p5);
             }
         });
-
-        // setup stage terrain
-        this.setStageTerrain(p5);
-
-        // initialized all fw
-        this.initAllFloatingWindows(p5);
     }
 
     handleScroll(p5, event) {
@@ -209,6 +214,7 @@ export class PlayBoard extends Screen {
             maxActionPoints: this.maxActionPoints,
         }
         this.undoStack.push(JSON.stringify(status));
+        return status;
     }
 
     undo(p5) {
@@ -256,6 +262,35 @@ export class PlayBoard extends Screen {
                 movable.cell.enemy = movable;
             }
         }
+    }
+
+    saveGame(){
+        let status = this.stringify();
+        status.stageGroup = this.stageGroup;
+        status.stageNumbering = Number(this.stageNumbering.charAt(2));
+        status.turn = this.turn;
+        status.tmpInventoryItems = Array.from(this.tmpInventoryItems.entries());
+        if(this.snowfields !== undefined){
+            status.snowfields = JSON.stringify(this.snowfields);
+        }
+        if(this.fertilized !== undefined){
+            status.fertilized = JSON.stringify(this.fertilized);
+        }
+        return JSON.stringify(status);
+    }
+
+    static loadGame(p5, gameState, status){
+        let statusObject = JSON.parse(status);
+        let playBoard = new gameState.gsf.stageClasses[statusObject.stageGroup][statusObject.stageNumbering - 1](gameState);
+        playBoard.undoStack.push(status);
+        playBoard.undo(p5);
+        playBoard.turn = statusObject.turn;
+        playBoard.tmpInventoryItems = new Map(statusObject.tmpInventoryItems);
+        if(playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);
+        if(playBoard.fertilized) playBoard.fertilized = JSON.parse(statusObject.fertilized);
+        playBoard.setupActionListeners(p5);
+        playBoard.initAllFloatingWindows(p5);
+        return playBoard;
     }
 
     draw(p5) {
@@ -515,7 +550,7 @@ export class PlayBoard extends Screen {
                     this.setSeedCountdown(index[0], index[1]);
 
                     // if kiku is planted, increase upper limit of action points immediately
-                    if(this.boardObjects.getCell(index[0], index[1])?.plant.plantType === plantTypes.KIKU) {
+                    if(this.boardObjects.getCell(index[0], index[1])?.plant?.plantType === plantTypes.KIKU) {
                         this.maxActionPoints++;
                         this.actionPoints++;
                     }
@@ -593,9 +628,6 @@ export class PlayBoard extends Screen {
         // set next turn enemies and new inventory items
         this.nextTurnItems(p5);
 
-        // set action listener active
-        this.gameState.setPlayerCanClick(true);
-
         // count the total number of kiku to determine max action points
         let count = 0;
         for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
@@ -604,6 +636,9 @@ export class PlayBoard extends Screen {
         this.maxActionPoints = 3 + count;
         // reset action points
         this.actionPoints = this.maxActionPoints;
+
+        // set action listener active
+        this.gameState.setPlayerCanClick(true);
     }
 
     stageClearSettings(p5) {

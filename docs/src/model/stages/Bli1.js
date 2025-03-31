@@ -32,14 +32,15 @@ export class Blizzard1PlayBoard extends BlizzardPlayBoard {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 this.boardObjects.setCell(i, j, new Snowfield(p5));
-                this.snowfields.push(this.boardObjects.getCell(i, j));
+                this.snowfields.push([i,j]);
             }
         }
         this.boardObjects.setCell(8, 8, new PlayerBase(p5));
+        this.snowfields = this.snowfields.filter(index => !(index[0] === 8 && index[1] === 8)); // remember to exclude cells with terrain
     }
 
     nextTurnItems(p5) {
-        this.resetSnowfield(p5);
+        this.resetSnowfield(p5, this);
 
         if (this.turn === 2) {
             Blizzard.createNewBlizzard(p5, this, 4, 4, 0);

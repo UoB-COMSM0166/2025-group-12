@@ -1,13 +1,14 @@
 import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
 import {myutil} from "../../../lib/myutil.js";
 import {BoardCells} from "../BoardCells.js";
 import {Steppe} from "../../items/Steppe.js";
 import {PlayerBase} from "../../items/PlayerBase.js";
 import {Sea} from "../../items/Sea.js";
 import {TsunamiAnimation} from "../../items/TsunamiAnimation.js";
+import {Mountain} from "../../items/Mountain.js";
+import {BlizzardPlayBoard} from "./BlizzardPlayboard.js";
 
-export class Tsunami1PlayBoard extends PlayBoard {
+export class Tsunami1PlayBoard extends BlizzardPlayBoard {
     constructor(gameState) {
         super(gameState);
         this.stageGroup = stageGroup.TSUNAMI;
@@ -61,6 +62,8 @@ export class Tsunami1PlayBoard extends PlayBoard {
             }
         }
         this.boardObjects.setCell(8, 15, new PlayerBase(p5));
+        this.boardObjects.setCell(7, 8, new Mountain(p5));
+        this.boardObjects.setCell(7, 9, new PlayerBase(p5));
     }
 
     nextTurnItems(p5) {
