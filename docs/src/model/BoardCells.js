@@ -8,7 +8,7 @@ import {Steppe} from "../items/Steppe.js";
 import {Lava, Volcano} from "../items/Volcano.js";
 import {Tree, TreeSeed} from "../items/Tree.js";
 import {Bush, BushSeed} from "../items/Bush.js";
-import {Grass, GrassSeed} from "../items/Grass.js";
+import {Orchid, OrchidSeed} from "../items/Orchid.js";
 import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
 import {Bamboo, BambooSeed} from "../items/Bamboo.js";
 import {PlayerBase} from "../items/PlayerBase.js";
@@ -478,8 +478,8 @@ class Cell {
                 case plantTypes.BUSH:
                     plant = Bush.parse(object.plant, p5);
                     break;
-                case plantTypes.GRASS:
-                    plant = Grass.parse(object.plant, p5);
+                case plantTypes.ORCHID:
+                    plant = Orchid.parse(object.plant, p5);
                     break;
                 case plantTypes.FIRE_HERB:
                     plant = FireHerb.parse(object.plant, p5);
@@ -501,8 +501,8 @@ class Cell {
                 case seedTypes.BUSH:
                     seed = BushSeed.parse(object.seed, p5);
                     break;
-                case seedTypes.GRASS:
-                    seed = GrassSeed.parse(object.seed, p5);
+                case seedTypes.ORCHID:
+                    seed = OrchidSeed.parse(object.seed, p5);
                     break;
                 case seedTypes.FIRE_HERB:
                     seed = FireHerbSeed.parse(object.seed, p5);
@@ -562,7 +562,7 @@ class Ecosystem {
         this.countPlants = countPlants;
         this.growFaster = true;
         this.rejectLava = false;
-        this.strengthenGrass = false;
+        this.strengthenOrchid = false;
         this.withstandSnow = false;
     }
 
@@ -575,8 +575,8 @@ class Ecosystem {
         if (this.rejectLava && (playBoard.stageGroup === stageGroup.VOLCANO || playBoard.stageGroup === stageGroup.TSUNAMI)) {
             str += "Lava expanded here will stop. "
         }
-        if (this.strengthenGrass) {
-            str += "Grass deals more damage to bandits. "
+        if (this.strengthenOrchid) {
+            str += "Orchid deals more damage to bandits. "
         }
         if (this.withstandSnow && (playBoard.stageGroup === stageGroup.VOLCANO || playBoard.stageGroup === stageGroup.TSUNAMI)) {
             str += "Withstand blizzard. "

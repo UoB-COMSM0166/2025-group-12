@@ -6,7 +6,7 @@ import {plantEnemyInteractions} from "./PlantEnemyInter.js";
 import {baseType} from "./ItemTypes.js";
 import {TreeSeed} from "./Tree.js";
 import {BushSeed} from "./Bush.js";
-import {GrassSeed} from "./Grass.js";
+import {OrchidSeed} from "./Orchid.js";
 import {FireHerbSeed} from "./FireHerb.js";
 import {BambooSeed} from "./Bamboo.js";
 import {PlumSeed} from "./Blizzard.js";
@@ -67,7 +67,7 @@ export class Lava extends Terrain {
         lava.cellX = object.cellX;
         lava.cellY = object.cellY;
         if (object.seed) {
-            const SeedRegistry = {TreeSeed, BushSeed, GrassSeed, FireHerbSeed, BambooSeed, PlumSeed};
+            const SeedRegistry = {TreeSeed, BushSeed, OrchidSeed, FireHerbSeed, BambooSeed, PlumSeed};
             const SeedClass = SeedRegistry[object.seed.className];
             if (SeedClass) {
                 const seed = new SeedClass(p5);

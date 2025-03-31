@@ -30,10 +30,10 @@ export class Tornado3PlayBoard extends PlayBoard {
     setStageInventory(p5) {
         this.gameState.inventory.setItemOfInventory(p5, "Tree", 1);
         this.gameState.inventory.setItemOfInventory(p5, "Bush", 1);
-        this.gameState.inventory.setItemOfInventory(p5, "Grass", 1);
+        this.gameState.inventory.setItemOfInventory(p5, "Orchid", 1);
         this.gameState.inventory.setItemOfInventory(p5, "TreeSeed", 2);
         this.gameState.inventory.setItemOfInventory(p5, "BushSeed", 2);
-        this.gameState.inventory.setItemOfInventory(p5, "GrassSeed", 1);
+        this.gameState.inventory.setItemOfInventory(p5, "OrchidSeed", 1);
     }
 
     // set stage terrain, called when the stage is loaded or reset

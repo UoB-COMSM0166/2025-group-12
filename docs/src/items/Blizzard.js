@@ -134,7 +134,7 @@ export class Plum extends Plant {
     constructor(p5) {
         super();
         this.name = "Plum";
-        this.color = "rgb(126,255,97)";
+        this.color = "rgb(222,111,161)";
         this.plantType = plantTypes.PLUM;
         this.img = p5.images.get(`${this.name}`);
 
@@ -185,7 +185,7 @@ export class PlumSeed extends Seed {
     constructor(p5) {
         super();
         this.name = "PlumSeed";
-        this.color = "rgb(126,255,97)";
+        this.color = "rgb(222,111,161)";
         this.seedType = seedTypes.PLUM;
         this.countdown = 2;
         this.img = this.img = p5.images.get("Seed");

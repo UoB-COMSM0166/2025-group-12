@@ -31,7 +31,7 @@ export class Tornado2PlayBoard extends PlayBoard {
     setStageInventory(p5) {
         this.gameState.inventory.setItemOfInventory(p5, "Tree", 1);
         this.gameState.inventory.pushItem2Inventory(p5, "Bush", 1);
-        this.gameState.inventory.pushItem2Inventory(p5, "Grass", 1);
+        this.gameState.inventory.pushItem2Inventory(p5, "Orchid", 1);
     }
 
     // set stage terrain, called when the stage is loaded or reset
@@ -62,7 +62,7 @@ export class Tornado2PlayBoard extends PlayBoard {
         if (code === 203) {
             this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 1);
             this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 1);
-            this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 1);
+            this.gameState.inventory.pushItem2Inventory(p5, "OrchidSeed", 1);
             return;
         }
         if (code === 204) {
@@ -196,7 +196,7 @@ export class Tornado2PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("103", new FloatingWindow(p5, null, "{white:Try transplant a tree first, then}\\ {white:a bush and a grass next to the tree.}", {
+        afw.set("103", new FloatingWindow(p5, null, "{white:Try transplant a tree first, then}\\ {white:a bush and an orchid next to the tree.}", {
             x: myutil.relative2absolute(1 / 2, 0.15)[0],
             y: myutil.relative2absolute(1 / 2, 0.15)[1],
             fontSize: 16,

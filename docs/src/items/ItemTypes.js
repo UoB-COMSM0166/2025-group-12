@@ -10,17 +10,23 @@ export let plantTypes = {
     BAMBOO: 2,
     TREE: 4,
     BUSH: 6,
-    GRASS: 8,
+    ORCHID: 8,
     FIRE_HERB: 10,
     PLUM: 12,
+    KIKU: 14,
+
+    GRASS: 95,
 }
 export let seedTypes = {
     BAMBOO: 3,
     TREE: 5,
     BUSH: 7,
-    GRASS: 9,
+    ORCHID: 9,
     FIRE_HERB: 11,
     PLUM: 13,
+    KIKU: 15,
+
+    GRASS: 95,
 }
 
 export let terrainTypes = {
@@ -53,7 +59,7 @@ export function baseType(plantOrSeed) {
             return plantTypes.TREE;
         } else if (plantOrSeed.plantType === plantTypes.BUSH || plantOrSeed.plantType === plantTypes.PLUM) {
             return plantTypes.BUSH;
-        } else if (plantOrSeed.plantType === plantTypes.GRASS || plantOrSeed.plantType === plantTypes.FIRE_HERB) {
+        } else if (plantOrSeed.seedType === seedTypes.GRASS || plantOrSeed.plantType === plantTypes.ORCHID || plantOrSeed.plantType === plantTypes.FIRE_HERB || plantOrSeed.seedType === seedTypes.KIKU) {
             return plantTypes.GRASS;
         }
     } else if (plantOrSeed.type === itemTypes.SEED) {
@@ -61,7 +67,7 @@ export function baseType(plantOrSeed) {
             return seedTypes.TREE;
         } else if (plantOrSeed.seedType === seedTypes.BUSH || plantOrSeed.seedType === seedTypes.PLUM) {
             return seedTypes.BUSH;
-        } else if (plantOrSeed.seedType === seedTypes.GRASS || plantOrSeed.seedType === seedTypes.FIRE_HERB) {
+        } else if (plantOrSeed.seedType === seedTypes.GRASS || plantOrSeed.seedType === seedTypes.ORCHID || plantOrSeed.seedType === seedTypes.FIRE_HERB || plantOrSeed.seedType === seedTypes.KIKU) {
             return seedTypes.GRASS;
         }
     }

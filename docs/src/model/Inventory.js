@@ -1,12 +1,13 @@
 import {Tree, TreeSeed} from "../items/Tree.js";
 import {Bush, BushSeed} from "../items/Bush.js";
-import {Grass, GrassSeed} from "../items/Grass.js";
+import {Orchid, OrchidSeed} from "../items/Orchid.js";
 import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js"
 import {itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
 import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
 import {Bamboo, BambooSeed} from "../items/Bamboo.js";
 import {Plum, PlumSeed} from "../items/Blizzard.js";
+import {Kiku, KikuSeed} from "../items/Kiku.js";
 
 export class Inventory {
     constructor(p5) {
@@ -35,16 +36,18 @@ export class Inventory {
         return new Map([
             ["Tree", new Tree(p5)],
             ["Bush", new Bush(p5)],
-            ["Grass", new Grass(p5)],
+            ["Orchid", new Orchid(p5)],
             ["FireHerb", new FireHerb(p5)],
             ["Bamboo", new Bamboo(p5)],
             ["Plum", new Plum(p5)],
+            ["Kiku", new Kiku(p5)],
             ["TreeSeed", new TreeSeed(p5)],
             ["BushSeed", new BushSeed(p5)],
-            ["GrassSeed", new GrassSeed(p5)],
+            ["OrchidSeed", new OrchidSeed(p5)],
             ["FireHerbSeed", new FireHerbSeed(p5)],
             ["BambooSeed", new BambooSeed(p5)],
             ["PlumSeed", new PlumSeed(p5)],
+            ["KikuSeed", new KikuSeed(p5)],
         ]);
     }
 

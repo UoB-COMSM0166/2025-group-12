@@ -31,10 +31,10 @@ export class Volcano1PlayBoard extends PlayBoard {
     setStageInventory(p5) {
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 2);
         this.gameState.inventory.pushItem2Inventory(p5, "Bush", 2);
-        this.gameState.inventory.pushItem2Inventory(p5, "Grass", 2);
+        this.gameState.inventory.pushItem2Inventory(p5, "Orchid", 2);
         this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 5);
         this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 5);
-        this.gameState.inventory.pushItem2Inventory(p5, "GrassSeed", 5);
+        this.gameState.inventory.pushItem2Inventory(p5, "OrchidSeed", 5);
 
         this.gameState.inventory.pushItem2Inventory(p5, "FireHerb", 5);
         this.gameState.inventory.pushItem2Inventory(p5, "FireHerbSeed", 5);

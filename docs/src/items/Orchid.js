@@ -3,15 +3,15 @@ import {Plant} from "./Plant.js";
 import {PlayBoard} from "../model/Play.js";
 import {Seed} from "./Seed.js";
 
-export class Grass extends Plant {
+export class Orchid extends Plant {
     constructor(p5) {
         super();
-        this.name = "Grass";
-        this.color = "rgb(195,251,180)";
-        this.plantType = plantTypes.GRASS;
+        this.name = "Orchid";
+        this.color = "rgb(250,240,180)";
+        this.plantType = plantTypes.ORCHID;
         this.img = p5.images.get(`${this.name}`);
 
-        this.seed = GrassSeed;
+        this.seed = OrchidSeed;
 
         this.health = 1;
         this.maxHealth = 1;
@@ -27,7 +27,7 @@ export class Grass extends Plant {
     }
 
     getPassiveString() {
-        return "The Grass has no passive skill.";
+        return "The Orchid has no passive skill.";
     }
 
     getActiveString() {
@@ -39,18 +39,18 @@ export class Grass extends Plant {
 
     reevaluateSkills(playBoard, cell) {
         if (!(playBoard instanceof PlayBoard)) {
-            console.error('reevaluateSkills of Grass has received invalid PlayBoard.');
+            console.error('reevaluateSkills of Orchid has received invalid PlayBoard.');
             return;
         }
         if (cell.plant !== this) {
-            console.error("reevaluateSkills of Grass has received wrong cell.");
+            console.error("reevaluateSkills of Orchid has received wrong cell.");
             return;
         }
 
         // set all skills to false first.
         this.hasActive = false;
         let adjacentCells = playBoard.boardObjects.getAdjacent4Cells(cell.x, cell.y);
-        // when a Tree is next to this Grass, it gains active skill.
+        // when a Tree is next to this Orchid, it gains active skill.
         for (let adCell of adjacentCells) {
             if (adCell.plant !== null && baseType(adCell.plant) === plantTypes.TREE) {
                 this.hasActive = true;
@@ -72,21 +72,21 @@ export class Grass extends Plant {
 
     static parse(json, p5) {
         const object = JSON.parse(json);
-        let grass = new Grass(p5);
-        grass.health = object.health;
-        grass.useLeft = object.useLeft;
-        grass.earthCounter = object.earthCounter;
-        grass.coldCounter = object.coldCounter;
-        return grass;
+        let orchid = new Orchid(p5);
+        orchid.health = object.health;
+        orchid.useLeft = object.useLeft;
+        orchid.earthCounter = object.earthCounter;
+        orchid.coldCounter = object.coldCounter;
+        return orchid;
     }
 }
 
-export class GrassSeed extends Seed {
+export class OrchidSeed extends Seed {
     constructor(p5) {
         super();
-        this.name = "GrassSeed";
-        this.color = "rgb(195,251,180)";
-        this.seedType = seedTypes.GRASS;
+        this.name = "OrchidSeed";
+        this.color = "rgb(250,240,180)";
+        this.seedType = seedTypes.ORCHID;
         this.countdown = 1;
         this.img = this.img = p5.images.get("Seed");
     }
@@ -94,7 +94,7 @@ export class GrassSeed extends Seed {
     grow(p5) {
         this.countdown--;
         if (this.countdown === 0) {
-            return new Grass(p5);
+            return new Orchid(p5);
         } else {
             return this;
         }
@@ -102,13 +102,13 @@ export class GrassSeed extends Seed {
 
     static parse(json, p5) {
         const object = JSON.parse(json);
-        let grassSeed = new GrassSeed(p5);
-        grassSeed.countdown = object.countdown;
-        return grassSeed;
+        let orchidSeed = new OrchidSeed(p5);
+        orchidSeed.countdown = object.countdown;
+        return orchidSeed;
     }
 }
 
-export class GrassAnimal {
+export class AnimalFriends {
     constructor(p5, target) {
         this.target = target;
         this.x = 0;

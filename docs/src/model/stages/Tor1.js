@@ -8,7 +8,7 @@ import {Mountain} from "../../items/Mountain.js";
 import {Tornado} from "../../items/Tornado.js";
 import {FloatingWindow} from "../FloatingWindow.js";
 import {Bush} from "../../items/Bush.js";
-import {Grass} from "../../items/Grass.js";
+import {Orchid} from "../../items/Orchid.js";
 
 export class Tornado1PlayBoard extends PlayBoard {
     constructor(gameState) {
@@ -63,7 +63,7 @@ export class Tornado1PlayBoard extends PlayBoard {
         }
         if (code === 103) {
             this.boardObjects.plantCell(p5, this, 2, 4, new Bush(p5));
-            this.boardObjects.plantCell(p5, this, 3, 4, new Grass(p5));
+            this.boardObjects.plantCell(p5, this, 3, 4, new Orchid(p5));
             return;
         }
         if (code === 201) {

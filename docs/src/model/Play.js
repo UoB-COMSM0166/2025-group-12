@@ -206,6 +206,7 @@ export class PlayBoard extends Screen {
             inventory: this.gameState.inventory.stringify(),
             movables: JSON.stringify(this.movables.map(movable => movable.stringify())),
             actionPoints: this.actionPoints,
+            maxActionPoints: this.maxActionPoints,
         }
         this.undoStack.push(JSON.stringify(status));
     }
@@ -218,6 +219,7 @@ export class PlayBoard extends Screen {
         // reset board
         this.boardObjects = BoardCells.parse(status.boardObjects, p5, this);
         // reset action points
+        this.maxActionPoints = status.maxActionPoints;
         this.actionPoints = status.actionPoints;
         // reset plant skills
         this.reevaluatePlantSkills();
@@ -480,7 +482,7 @@ export class PlayBoard extends Screen {
                 let target = this.boardObjects.getCell(index[0], index[1]);
                 if (spellCaster.plant.plantType === plantTypes.TREE) {
                     PlantActive.rechargeHP(this, spellCaster, target, 1);
-                } else if (spellCaster.plant.plantType === plantTypes.GRASS) {
+                } else if (spellCaster.plant.plantType === plantTypes.ORCHID) {
                     PlantActive.sendAnimalFriends(this, spellCaster, target);
                 }
             }
@@ -512,6 +514,12 @@ export class PlayBoard extends Screen {
                     // set countdown for seed
                     this.setSeedCountdown(index[0], index[1]);
 
+                    // if kiku is planted, increase upper limit of action points immediately
+                    if(this.boardObjects.getCell(index[0], index[1])?.plant.plantType === plantTypes.KIKU) {
+                        this.maxActionPoints++;
+                        this.actionPoints++;
+                    }
+
                     return;
                 }
             } else {
@@ -540,9 +548,6 @@ export class PlayBoard extends Screen {
     endTurnActivity(p5) {
         // clear undo stack
         this.undoStack = [];
-
-        // reset action points
-        this.actionPoints = this.maxActionPoints;
 
         // remove dead plants and reset plant skill
         let cells = this.boardObjects.getAllCellsWithPlant();
@@ -590,6 +595,15 @@ export class PlayBoard extends Screen {
 
         // set action listener active
         this.gameState.setPlayerCanClick(true);
+
+        // count the total number of kiku to determine max action points
+        let count = 0;
+        for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
+            if(cwp?.plant.plantType === plantTypes.KIKU) count++;
+        }
+        this.maxActionPoints = 3 + count;
+        // reset action points
+        this.actionPoints = this.maxActionPoints;
     }
 
     stageClearSettings(p5) {
@@ -653,7 +667,7 @@ export class PlayBoard extends Screen {
     // this does not activate skill immediately, but go to awaiting status
     activatePlantSkill(p5) {
         let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
-        if (spellCaster.plant.plantType === plantTypes.TREE || spellCaster.plant.plantType === plantTypes.GRASS) {
+        if (spellCaster.plant.plantType === plantTypes.TREE || spellCaster.plant.plantType === plantTypes.ORCHID) {
             this.awaitCell = true;
         }
     }
