@@ -37,7 +37,8 @@ export function loadImages(p5) {
     images.set("Blizzard", p5.loadImage(basePath + "Blizzard.png"));
     images.set("Tsunami", p5.loadImage(basePath + "Tsunami.png"));
 
-    images.set("GameMap", p5.loadImage(basePath + "GameMap.png"));
+    images.set("GameMapBG", p5.loadImage(basePath + "GameMapBG.png"));
+    images.set("Lock", p5.loadImage(basePath + "Lock.png"));
     return images;
 }
 

@@ -1,35 +1,41 @@
 import {Button} from "../items/Button.js";
-import {stateCode} from "./GameState.js";
+import {stageGroup, stateCode} from "./GameState.js";
 import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
 import {LanguageManager} from "../LanguageManager.js";
 import {MenuItem} from "../items/MenuItem.js";
+import {FloatingWindow} from "./FloatingWindow.js";
+import {Screen} from "./Screen.js";
 
-export class StartMenu {
+export class StartMenu extends Screen {
     constructor(gameState) {
-        this.gameState = gameState;
-        this.buttons = [];
+        super(gameState);
         this.languageManager = this.gameState.languageManager;
     }
 
     setup(p5) {
+        this.initAllFloatingWindows(p5);
 
         let [buttonWidth, buttonHeight] = myutil.relative2absolute(0.15, 0.07);
         let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.6);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
-        let newGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, this.languageManager.getText('newGame'));
+        let newGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
         newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
 
+        let loadGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+        loadGameButton.onClick = () => {
+            if(!GameSave.load(p5)){
+                this.copyFloatingWindow(p5, "NoSaveData");
+            }
+        }
 
-        let optionsButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, this.languageManager.getText('options'));
+        let optionsButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Options");
         optionsButton.onClick = () => {
             this.gameState.showOptions = !this.gameState.showOptions;
         }
 
-        let continueButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Other");
-
-        this.buttons.push(newGameButton, optionsButton, continueButton);
+        this.buttons.push(newGameButton, loadGameButton, optionsButton);
     }
 
     reset(p5) {
@@ -38,6 +44,9 @@ export class StartMenu {
     }
 
     handleClick(p5) {
+        if (this.handleFloatingWindow()) {
+            return;
+        }
         for (let button of this.buttons) {
             button.mouseClick(p5);
         }
@@ -57,6 +66,8 @@ export class StartMenu {
             }
             button.draw(p5);
         }
+
+        this.drawFloatingWindow(p5);
     }
 
     changeNewToResume() {
@@ -70,6 +81,21 @@ export class StartMenu {
         this.buttons[0].text = this.languageManager.getText('newGame');
         this.buttons[1].text = this.languageManager.getText('loadGame');
         this.buttons[2].text = this.languageManager.getText('options');
+    }
+
+    copyFloatingWindow(p5, str) {
+        this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get(str));
+    }
+
+    setFloatingWindow(p5) {
+    }
+
+    initAllFloatingWindows(p5) {
+        let afw = new Map();
+
+        myutil.commonFloatingWindows(p5, afw);
+
+        this.allFloatingWindows = afw;
     }
 }
 

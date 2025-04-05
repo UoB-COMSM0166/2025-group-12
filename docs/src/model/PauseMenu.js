@@ -24,14 +24,12 @@ export class PauseMenu {
          loadGameButton.onClick = () => {
              GameSave.load(p5);
              this.gameState.togglePaused();
-             console.log(p5.controller.gameState.currentStage)
          }
 
         let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
         saveGameButton.onClick = () => {
             GameSave.save(p5);
             this.gameState.togglePaused();
-            console.log(p5.controller.gameState.currentStage)
         }
 
         let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Quit");

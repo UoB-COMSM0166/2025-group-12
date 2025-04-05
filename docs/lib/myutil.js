@@ -371,5 +371,25 @@ export class myutil {
             fadingSpeed: 1,
             playerCanClick: false
         }));
+
+        afw.set("NoSaveData", new FloatingWindow(p5, null, "{white:No Save Data Found!}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 2)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 2)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("GameSaved", new FloatingWindow(p5, null, "{white:Game Saved.}", {
+            x: myutil.relative2absolute(1 / 2, 1 / 2)[0],
+            y: myutil.relative2absolute(1 / 2, 1 / 2)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
     }
 }

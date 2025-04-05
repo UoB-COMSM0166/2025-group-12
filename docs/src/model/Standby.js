@@ -4,6 +4,7 @@ import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
+import {MapButton} from "../items/MapButton.js";
 
 export class StandbyMenu extends Screen {
     constructor(gameState) {
@@ -11,28 +12,31 @@ export class StandbyMenu extends Screen {
     }
 
     setup(p5) {
+        this.background = p5.images.get("GameMapBG");
+        this.stage1 = p5.images.get("Tornado");
+        this.stage2 = p5.images.get("VolcanoLayer");
+        this.stage3 = p5.images.get("Landslide");
+        this.stage4 = p5.images.get("Blizzard");
+        this.stage5 = p5.images.get("Tsunami");
+
         this.initAllFloatingWindows(p5);
 
-        let [escX, escY] = myutil.relative2absolute(0.01, 0.01);
-        let [escWidth, escHeight] = myutil.relative2absolute(0.09, 0.07);
-        let escapeButton = new Button(escX, escY, escWidth, escHeight, "Escape");
-        escapeButton.onClick = () => {
-            this.gameState.setState(stateCode.MENU);
-        };
-
-        let [buttonWidth, buttonHeight] = myutil.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = myutil.relative2absolute(0.2, 0.2);
-        let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
-
-        let stage1Button = new Button(buttonX, buttonY + buttonInter * 0, buttonWidth, buttonHeight, "Tornado");
+        let stage1Button = new MapButton(
+            myutil.relative2absolute(0.52, 0.68)[0],
+            myutil.relative2absolute(0.52, 0.68)[1],
+            myutil.relative2absolute(0.05, 0.05)[0], this.stage1, stageGroup.TORNADO);
         stage1Button.onClick = () => {
             this.clickedStageButton(p5, stageGroup.TORNADO);
-        };
+            stage1Button.createNewCircle(p5);
+        }
 
-        let stage2Button = new Button(buttonX, buttonY + buttonInter * 1, buttonWidth, buttonHeight, "Volcano");
+        let stage2Button = new MapButton(
+            myutil.relative2absolute(0.475, 0.475)[0],
+            myutil.relative2absolute(0.475, 0.475)[1],
+            myutil.relative2absolute(0.05, 0.05)[0], this.stage2, stageGroup.VOLCANO);
         stage2Button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (!this.gameState.isStageCleared(stageGroup.TORNADO)) {
+                if (stage2Button.isLocked) {
                     this.copyFloatingWindow(p5, "lock");
                     return;
                 }
@@ -41,10 +45,13 @@ export class StandbyMenu extends Screen {
         };
 
         // earthquake + landslide
-        let stage3Button = new Button(buttonX, buttonY + buttonInter * 2, buttonWidth, buttonHeight, "Earthquake");
+        let stage3Button = new MapButton(
+            myutil.relative2absolute(0.65, 0.3)[0],
+            myutil.relative2absolute(0.65, 0.3)[1],
+            myutil.relative2absolute(0.05, 0.05)[0], this.stage3, stageGroup.EARTHQUAKE);
         stage3Button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (!this.gameState.isStageCleared(stageGroup.VOLCANO)) {
+                if (stage3Button.isLocked) {
                     this.copyFloatingWindow(p5, "lock");
                     return;
                 }
@@ -52,11 +59,13 @@ export class StandbyMenu extends Screen {
             this.clickedStageButton(p5, stageGroup.EARTHQUAKE);
         };
 
-        // landslide + random lightning attack
-        let stage4Button = new Button(buttonX, buttonY + buttonInter * 3, buttonWidth, buttonHeight, "Blizzard");
+        let stage4Button = new MapButton(
+            myutil.relative2absolute(0.15, 0.67)[0],
+            myutil.relative2absolute(0.15, 0.67)[1],
+            myutil.relative2absolute(0.05, 0.05)[0], this.stage4, stageGroup.BLIZZARD);
         stage4Button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (!this.gameState.isStageCleared(stageGroup.EARTHQUAKE)) {
+                if (stage4Button.isLocked) {
                     this.copyFloatingWindow(p5, "lock");
                     return;
                 }
@@ -64,11 +73,13 @@ export class StandbyMenu extends Screen {
             this.clickedStageButton(p5, stageGroup.BLIZZARD);
         };
 
-        // earthquake induced tsunami + rainstorm + landslide + random lighting + tornado
-        let stage5Button = new Button(buttonX, buttonY + buttonInter * 4, buttonWidth, buttonHeight, "Tsunami");
+        let stage5Button = new MapButton(
+            myutil.relative2absolute(0.41, 0.35)[0],
+            myutil.relative2absolute(0.41, 0.35)[1],
+            myutil.relative2absolute(0.05, 0.05)[0], this.stage5, stageGroup.TSUNAMI);
         stage5Button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (!this.gameState.isStageCleared(stageGroup.BLIZZARD)) {
+                if (stage5Button.isLocked) {
                     this.copyFloatingWindow(p5, "lock");
                     return;
                 }
@@ -76,7 +87,7 @@ export class StandbyMenu extends Screen {
             this.clickedStageButton(p5, stageGroup.TSUNAMI);
         };
 
-        this.buttons.push(escapeButton, stage1Button, stage2Button, stage3Button, stage4Button, stage5Button);
+        this.buttons.push(stage1Button, stage2Button, stage3Button, stage4Button, stage5Button);
     }
 
     handleClick(p5) {
@@ -85,23 +96,24 @@ export class StandbyMenu extends Screen {
         }
 
         for (let button of this.buttons) {
-            button.mouseClick(p5);
+            if (button.mouseClick(p5)) {
+                return;
+            }
         }
+
+        this.buttons.forEach(button => button.circle = null);
     }
 
     draw(p5) {
-        p5.background(80);
-        p5.fill(255);
-        p5.textSize(32);
-        p5.textAlign(p5.CENTER, p5.TOP);
-        let [textX, textY] = myutil.relative2absolute(0.5, 0.1);
-        p5.text("Select Stage", textX, textY);
+        let canvasSize = CanvasSize.getSize();
+        p5.image(this.background, 0, 0, canvasSize[0], canvasSize[1]);
 
         for (let button of this.buttons) {
+            if(button.unlock) button.unlock(this.gameState);
             button.draw(p5);
         }
 
-        this.gameState.inventory.draw(p5, CanvasSize.getSize()[0], CanvasSize.getSize()[1]);
+        this.gameState.inventory.draw(p5, myutil.relative2absolute(1, 1)[0], myutil.relative2absolute(1, 1)[1]);
 
         this.drawFloatingWindow(p5);
     }
@@ -163,4 +175,3 @@ export class StandbyMenu extends Screen {
         this.allFloatingWindows = afw;
     }
 }
-

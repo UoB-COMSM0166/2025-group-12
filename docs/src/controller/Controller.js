@@ -4,7 +4,6 @@ import {StandbyMenu} from "../model/Standby.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 import {Options} from "../model/Options.js";
-import {GameMap} from "../model/GameMap.js";
 
 // controller should never invoke any specific field but only encapsulated methods.
 export class Controller {
@@ -14,7 +13,6 @@ export class Controller {
         this.menus = {
             [stateCode.MENU]: new StartMenu(this.gameState),
             [stateCode.STANDBY]: new StandbyMenu(this.gameState),
-            [stateCode.MAP]: new GameMap(this.gameState),
             [stateCode.PLAY]: null
         };
 
@@ -128,10 +126,7 @@ export class Controller {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;
-            console.log("items", this.gameState.inventory.items)
-            console.log(this.menus[stateCode.PLAY].tmpInventoryItems)
             this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
-            console.log("items", this.gameState.inventory.items)
             // destroy the play board
             this.menus[stateCode.PLAY] = null;
             return;
