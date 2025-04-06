@@ -1,8 +1,6 @@
-import {Button} from "../items/Button.js";
 import {stageGroup, stateCode} from "./GameState.js";
 import {myutil} from "../../lib/myutil.js";
 import {GameSave} from "./GameSave.js";
-import {LanguageManager} from "../LanguageManager.js";
 import {MenuItem} from "../items/MenuItem.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
@@ -25,7 +23,7 @@ export class StartMenu extends Screen {
 
         let loadGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
-            if(!GameSave.load(p5)){
+            if (!GameSave.load(p5)) {
                 this.copyFloatingWindow(p5, "NoSaveData");
             }
         }

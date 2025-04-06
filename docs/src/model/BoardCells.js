@@ -17,6 +17,7 @@ import {Lumbering} from "../items/Bandit.js";
 import {Hill, Landslide} from "../items/Earthquake.js";
 import {Sea} from "../items/Sea.js";
 import {Kiku, KikuSeed} from "../items/Kiku.js";
+import {Palm, PalmSeed} from "../items/Palm.js";
 
 export class BoardCells {
     constructor(size) {
@@ -494,6 +495,9 @@ class Cell {
                 case plantTypes.KIKU:
                     plant = Kiku.parse(object.plant, p5);
                     break;
+                case plantTypes.PALM:
+                    plant = Palm.parse(object.plant, p5);
+                    break;
             }
         }
         if (object.seed) {
@@ -520,6 +524,8 @@ class Cell {
                 case seedTypes.KIKU:
                     seed = KikuSeed.parse(object.seed, p5);
                     break;
+                case seedTypes.PALM:
+                    seed = PalmSeed.parse(object.seed, p5);
             }
         }
         if (object.terrain) {

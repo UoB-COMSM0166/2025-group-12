@@ -37,7 +37,7 @@ export class PauseMenu {
             this.gameState.togglePaused();
             if (this.gameState.state === stateCode.PLAY) {
                 this.gameState.setState(stateCode.STANDBY);
-            }else{
+            } else {
                 this.gameState.setState(stateCode.MENU);
             }
             this.gameState.setPlayerCanClick(true);

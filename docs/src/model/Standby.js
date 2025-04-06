@@ -94,7 +94,7 @@ export class StandbyMenu extends Screen {
 
     drawStageInfo(p5, group) {
         let [paddingX, paddingY] = myutil.relative2absolute(1 / 128, 1 / 72);
-        let boxWidth= myutil.relative2absolute(0.15, 1 / 4)[0];
+        let boxWidth = myutil.relative2absolute(0.15, 1 / 4)[0];
         let boxHeight = 10 * paddingY;
         let boxX = myutil.relative2absolute(1, 1)[0] - boxWidth - paddingX;
         let boxY = myutil.relative2absolute(1, 1)[1] - boxHeight - paddingY;
@@ -143,7 +143,7 @@ export class StandbyMenu extends Screen {
         myutil.drawHealthBar(p5, {
             health: progress,
             maxHealth: total
-        }, boxX + 2* paddingX, boxY + 8 * paddingY, boxWidth - 4 * paddingX,  paddingY);
+        }, boxX + 2 * paddingX, boxY + 8 * paddingY, boxWidth - 4 * paddingX, paddingY);
 
     }
 

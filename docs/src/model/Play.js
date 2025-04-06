@@ -90,7 +90,7 @@ export class PlayBoard extends Screen {
         this.initAllFloatingWindows(p5);
     }
 
-    setupActionListeners(p5){
+    setupActionListeners(p5) {
         // escape button
         let [escX, escY] = myutil.relative2absolute(0.01, 0.01);
         let [escWidth, escHeight] = myutil.relative2absolute(0.09, 0.07);
@@ -255,30 +255,30 @@ export class PlayBoard extends Screen {
         }
     }
 
-    saveGame(){
+    saveGame() {
         let status = this.stringify();
         status.stageGroup = this.stageGroup;
         status.stageNumbering = Number(this.stageNumbering.charAt(2));
         status.turn = this.turn;
         status.tmpInventoryItems = Array.from(this.tmpInventoryItems.entries());
-        if(this.snowfields !== undefined){
+        if (this.snowfields !== undefined) {
             status.snowfields = JSON.stringify(this.snowfields);
         }
-        if(this.fertilized !== undefined){
+        if (this.fertilized !== undefined) {
             status.fertilized = JSON.stringify(this.fertilized);
         }
         return JSON.stringify(status);
     }
 
-    static loadGame(p5, gameState, status){
+    static loadGame(p5, gameState, status) {
         let statusObject = JSON.parse(status);
         let playBoard = new gameState.gsf.stageClasses[statusObject.stageGroup][statusObject.stageNumbering - 1](gameState);
         playBoard.undoStack.push(status);
         playBoard.undo(p5);
         playBoard.turn = statusObject.turn;
         playBoard.tmpInventoryItems = new Map(statusObject.tmpInventoryItems);
-        if(playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);
-        if(playBoard.fertilized) playBoard.fertilized = JSON.parse(statusObject.fertilized);
+        if (playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);
+        if (playBoard.fertilized) playBoard.fertilized = JSON.parse(statusObject.fertilized);
         playBoard.setupActionListeners(p5);
         playBoard.initAllFloatingWindows(p5);
         return playBoard;
@@ -404,9 +404,9 @@ export class PlayBoard extends Screen {
                 this.boardObjects.getCell(i, j).drawTerrain(p5, this);
             }
         }
-        if(this.boardObjects.getCell(2, 2).terrain.terrainType === terrainTypes.VOLCANO) {
+        if (this.boardObjects.getCell(2, 2).terrain.terrainType === terrainTypes.VOLCANO) {
             let [x1, y1] = myutil.cellIndex2Pos(p5, this, 2, 2, p5.CORNERS);
-            p5.image(p5.images.get("VolcanoLayer"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight/2 + 1, this.cellWidth * 3, this.cellHeight * 3);
+            p5.image(p5.images.get("VolcanoLayer"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight / 2 + 1, this.cellWidth * 3, this.cellHeight * 3);
         }
         // if skill is activated and awaiting target, set highlight on
         if (this.awaitCell) {
@@ -541,7 +541,7 @@ export class PlayBoard extends Screen {
                     this.setSeedCountdown(index[0], index[1]);
 
                     // if kiku is planted, increase upper limit of action points immediately
-                    if(this.boardObjects.getCell(index[0], index[1])?.plant?.plantType === plantTypes.KIKU) {
+                    if (this.boardObjects.getCell(index[0], index[1])?.plant?.plantType === plantTypes.KIKU) {
                         this.maxActionPoints++;
                         this.actionPoints++;
                     }
@@ -566,7 +566,7 @@ export class PlayBoard extends Screen {
         }
     }
 
-    setSeedCountdown(x, y){
+    setSeedCountdown(x, y) {
         // used in stage 5
     }
 
@@ -622,7 +622,7 @@ export class PlayBoard extends Screen {
         // count the total number of kiku to determine max action points
         let count = 0;
         for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
-            if(cwp?.plant.plantType === plantTypes.KIKU) count++;
+            if (cwp?.plant.plantType === plantTypes.KIKU) count++;
         }
         this.maxActionPoints = 3 + count;
         // reset action points

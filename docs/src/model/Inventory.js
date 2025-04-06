@@ -8,6 +8,7 @@ import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
 import {Bamboo, BambooSeed} from "../items/Bamboo.js";
 import {Plum, PlumSeed} from "../items/Blizzard.js";
 import {Kiku, KikuSeed} from "../items/Kiku.js";
+import {Palm, PalmSeed} from "../items/Palm.js";
 
 export class Inventory {
     constructor(p5) {
@@ -41,6 +42,7 @@ export class Inventory {
             ["Bamboo", new Bamboo(p5)],
             ["Plum", new Plum(p5)],
             ["Kiku", new Kiku(p5)],
+            ["Palm", new Palm(p5)],
             ["TreeSeed", new TreeSeed(p5)],
             ["BushSeed", new BushSeed(p5)],
             ["OrchidSeed", new OrchidSeed(p5)],
@@ -48,6 +50,7 @@ export class Inventory {
             ["BambooSeed", new BambooSeed(p5)],
             ["PlumSeed", new PlumSeed(p5)],
             ["KikuSeed", new KikuSeed(p5)],
+            ["PalmSeed", new PalmSeed(p5)],
         ]);
     }
 

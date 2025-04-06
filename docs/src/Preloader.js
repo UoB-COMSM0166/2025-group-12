@@ -28,6 +28,7 @@ export function loadImages(p5) {
     images.set("Bamboo", p5.loadImage(basePath + "Bamboo.png"));
     images.set("Plum", p5.loadImage(basePath + "Plum.png"));
     images.set("Kiku", p5.loadImage(basePath + "Kiku.png"));
+    images.set("Palm", p5.loadImage(basePath + "Palm.png"));
 
     images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));
     images.set("alertArrow", p5.loadImage(basePath + "alertArrow.png"));

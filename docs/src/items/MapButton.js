@@ -1,5 +1,3 @@
-import {stageGroup} from "../model/GameState.js";
-
 export class MapButton {
     constructor(x, y, size, img, stageGroup) {
         this.x = x;
@@ -43,9 +41,6 @@ export class MapButton {
 
     unlock(gameState) {
         if (gameState.isStageCleared(this.stageGroup - 1)) {
-            if(this.stageGroup === stageGroup.VOLCANO) {
-                console.log(gameState.isStageCleared(stageGroup.TORNADO))
-            }
             this.isLocked = false;
         }
         if (gameState.isStageCleared(this.stageGroup)) {

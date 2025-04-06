@@ -111,32 +111,35 @@ export class TsunamiAnimation extends Enemy {
                     this.movedLength[i] += 1;
 
                     // interact with plant
-                    if(cell.plant || cell.seed){
+                    if (cell.plant || cell.seed) {
                         // decrease max range according to plant health
                         // if the plant is palm, invoke its passive skill (placeholder)
-                        if(cell?.plant.plantType === plantTypes.PALM) {
-
+                        if (cell?.plant.plantType === plantTypes.PALM) {
+                            cell.plant.health--;
+                            if (cell.plant.health === 0) {
+                                plantEnemyInteractions.findPlantAndDelete(playBoard, cell.plant);
+                            }
+                            this.range[i] -= 2;
                         }
                         // else, use health to offset range
-                        else{
+                        else {
                             let health = cell.seed ? 1 : cell.plant.health;
-                            while(health > 0){
-                                this.blocker[i]-=1;
-                                if(this.blocker[i] <= 0){
-                                    this.range[i] -=1;
+                            while (health > 0) {
+                                this.blocker[i] -= 1;
+                                if (this.blocker[i] <= 0) {
+                                    this.range[i] -= 1;
                                     this.blocker[i] = this.blockerLimit;
                                 }
                                 health--;
                             }
-                        }
-
-                        if (cell.plant) {
-                            cell.removePlant();
-                            playBoard.fertilized[cell.x][cell.y] = true;
-                        }
-                        if (cell.seed) {
-                            cell.removeSeed();
-                            playBoard.fertilized[cell.x][cell.y] = true;
+                            if (cell.plant) {
+                                cell.removePlant();
+                                playBoard.fertilized[cell.x][cell.y] = true;
+                            }
+                            if (cell.seed) {
+                                cell.removeSeed();
+                                playBoard.fertilized[cell.x][cell.y] = true;
+                            }
                         }
                     }
 
@@ -146,7 +149,7 @@ export class TsunamiAnimation extends Enemy {
                     }
 
                     // interact with terrain
-                    switch(cell.terrain.terrainType){
+                    switch (cell.terrain.terrainType) {
                         case terrainTypes.BASE:
                             gameOver = true;
                             break;
@@ -155,14 +158,14 @@ export class TsunamiAnimation extends Enemy {
                             this.range[i] = 0;
                             break;
                         case terrainTypes.LUMBERING:
-                            this.range[i]-=1;
+                            this.range[i] -= 1;
                             break;
                     }
                 } else {
                     this.isMovingArray[i] = false;
                 }
             }
-            if(gameOver) myutil.gameOver(playBoard);
+            if (gameOver) myutil.gameOver(playBoard);
         }
 
         if (!this.checkIsMoving()) this.isMoving = false;
@@ -181,6 +184,6 @@ export class TsunamiAnimation extends Enemy {
 
     static parse(json, p5, playBoard) {
         const object = JSON.parse(json);
-        return  new TsunamiAnimation(p5, playBoard, object.startCol, object.startRow, object.range, object.blockerLimit);
+        return new TsunamiAnimation(p5, playBoard, object.startCol, object.startRow, object.range, object.blockerLimit);
     }
 }
