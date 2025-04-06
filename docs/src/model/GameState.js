@@ -13,7 +13,6 @@ import {Tsunami1PlayBoard} from "./stages/Tsu1.js";
 export const stateCode = {
     MENU: 1,
     STANDBY: 2,
-    MAP: 3,
     PLAY: 4,
     FINISH: 8
 };
@@ -90,6 +89,7 @@ export class GameState {
 class GameStageFactory {
     constructor() {
         this.stageClasses = Array.from({length: 20}, () => []);
+
         this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);

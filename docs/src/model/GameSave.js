@@ -34,6 +34,8 @@ export class GameSave {
             p5.controller.menus[stateCode.PLAY] = gameState.currentStage;
             p5.controller.saveState = stateObject.saveState;
             p5.controller.gameState = gameState;
+
+            if(gameState.state === stateCode.STANDBY) p5.controller.menus[stateCode.STANDBY].setup(p5);
             return true;
         } else {
             console.error('Save data not found!');

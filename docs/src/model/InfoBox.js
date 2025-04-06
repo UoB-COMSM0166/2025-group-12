@@ -12,7 +12,7 @@ export class InfoBox {
         [this.boxWidth, this.boxHeight] = myutil.relative2absolute(0.18, 1 / 4);
         this.boxX = myutil.relative2absolute(1 / 128, 0)[0];
         [this.paddingX, this.paddingY] = myutil.relative2absolute(1 / 128, 1 / 72);
-        this.boxY = this.playBoard.canvasHeight - this.boxHeight - this.paddingY;
+        this.boxY = myutil.relative2absolute(1, 1)[1] - this.boxHeight - this.paddingY;
     }
 
     // left bottom info box

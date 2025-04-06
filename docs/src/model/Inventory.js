@@ -54,7 +54,7 @@ export class Inventory {
     draw(p5) {
         p5.noStroke();
         // Inventory background
-        p5.fill(100);
+        p5.fill(100, 100, 100, 200);
         p5.rect(this.inventoryX, this.inventoryY, this.inventoryWidth, this.inventoryHeight, 10);
 
         // Inventory title text

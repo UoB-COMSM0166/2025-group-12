@@ -1,4 +1,3 @@
-import {CanvasSize} from "../CanvasSize.js";
 import {stageGroup} from "../model/GameState.js";
 
 export class MapButton {
@@ -9,6 +8,7 @@ export class MapButton {
         this.width = size;
         this.height = size;
         this.isLocked = true;
+        this.isCleared = false;
         this.img = img;
         this.isHovered = false;
         this._onClick = (p5) => {
@@ -43,8 +43,16 @@ export class MapButton {
 
     unlock(gameState) {
         if (gameState.isStageCleared(this.stageGroup - 1)) {
+            if(this.stageGroup === stageGroup.VOLCANO) {
+                console.log(gameState.isStageCleared(stageGroup.TORNADO))
+            }
             this.isLocked = false;
         }
+        if (gameState.isStageCleared(this.stageGroup)) {
+            this.isLocked = true;
+            this.isCleared = true;
+        }
+
     }
 
     createNewCircle(p5) {
@@ -98,8 +106,8 @@ class CircleAnimation {
         p5.push();
         p5.translate(this.x + this.size / 2, this.y + this.size / 2);
         p5.strokeWeight(1);
-        p5.stroke('red');
-        p5.fill(255, 0, 0);
+        p5.stroke("rgb(0, 204, 0)");
+        p5.fill("rgb(0, 204, 0)");
         p5.beginShape(p5.TRIANGLE_STRIP);
         for (let i = 0; i <= this.steps * this.tMax; i++) {
             let t = i / this.steps;

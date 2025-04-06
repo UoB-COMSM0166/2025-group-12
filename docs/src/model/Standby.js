@@ -1,4 +1,3 @@
-import {Button} from "../items/Button.js";
 import {stateCode, stageGroup} from "./GameState.js";
 import {CanvasSize} from "../CanvasSize.js";
 import {myutil} from "../../lib/myutil.js";
@@ -9,88 +8,58 @@ import {MapButton} from "../items/MapButton.js";
 export class StandbyMenu extends Screen {
     constructor(gameState) {
         super(gameState);
+        this.background = null;
+        this.selectedStageGroup = stageGroup.NO_STAGE;
     }
 
     setup(p5) {
         this.background = p5.images.get("GameMapBG");
-        this.stage1 = p5.images.get("Tornado");
-        this.stage2 = p5.images.get("VolcanoLayer");
-        this.stage3 = p5.images.get("Landslide");
-        this.stage4 = p5.images.get("Blizzard");
-        this.stage5 = p5.images.get("Tsunami");
 
         this.initAllFloatingWindows(p5);
 
-        let stage1Button = new MapButton(
-            myutil.relative2absolute(0.52, 0.68)[0],
-            myutil.relative2absolute(0.52, 0.68)[1],
-            myutil.relative2absolute(0.05, 0.05)[0], this.stage1, stageGroup.TORNADO);
-        stage1Button.onClick = () => {
-            this.clickedStageButton(p5, stageGroup.TORNADO);
-            stage1Button.createNewCircle(p5);
-        }
+        const buttonConfigs = [
+            {x: 0.52, y: 0.68, image: "Tornado", group: stageGroup.TORNADO},
+            {x: 0.475, y: 0.475, image: "VolcanoLayer", group: stageGroup.VOLCANO},
+            {x: 0.65, y: 0.3, image: "Landslide", group: stageGroup.EARTHQUAKE},
+            {x: 0.18, y: 0.65, image: "Blizzard", group: stageGroup.BLIZZARD},
+            {x: 0.36, y: 0.3, image: "Tsunami", group: stageGroup.TSUNAMI}
+        ];
 
-        let stage2Button = new MapButton(
-            myutil.relative2absolute(0.475, 0.475)[0],
-            myutil.relative2absolute(0.475, 0.475)[1],
-            myutil.relative2absolute(0.05, 0.05)[0], this.stage2, stageGroup.VOLCANO);
-        stage2Button.onClick = () => {
+        this.buttons = buttonConfigs.map(cfg => this.createStageButton(p5, cfg.x, cfg.y, cfg.image, cfg.group));
+    }
+
+    createStageButton(p5, xRatio, yRatio, imgName, group) {
+        let [x, y] = myutil.relative2absolute(xRatio, yRatio);
+        let [size] = myutil.relative2absolute(0.05, 0.05);
+        let button = new MapButton(x, y, size, p5.images.get(imgName), group);
+        button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (stage2Button.isLocked) {
-                    this.copyFloatingWindow(p5, "lock");
+                if (button.isLocked) {
+                    if (button.isCleared) {
+                        this.copyFloatingWindow(p5, "clear");
+                    } else {
+                        this.copyFloatingWindow(p5, "lock");
+                    }
+                    this.selectedStageGroup = stageGroup.NO_STAGE;
                     return;
                 }
             }
-            this.clickedStageButton(p5, stageGroup.VOLCANO);
-        };
-
-        // earthquake + landslide
-        let stage3Button = new MapButton(
-            myutil.relative2absolute(0.65, 0.3)[0],
-            myutil.relative2absolute(0.65, 0.3)[1],
-            myutil.relative2absolute(0.05, 0.05)[0], this.stage3, stageGroup.EARTHQUAKE);
-        stage3Button.onClick = () => {
-            if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (stage3Button.isLocked) {
-                    this.copyFloatingWindow(p5, "lock");
-                    return;
-                }
+            if (this.selectedStageGroup === group) {
+                button.circle = null;
+                this.selectedStageGroup = stageGroup.NO_STAGE;
+                this.clickedStageButton(p5, group);
+            } else {
+                this.selectedStageGroup = group;
+                button.createNewCircle(p5);
             }
-            this.clickedStageButton(p5, stageGroup.EARTHQUAKE);
         };
-
-        let stage4Button = new MapButton(
-            myutil.relative2absolute(0.15, 0.67)[0],
-            myutil.relative2absolute(0.15, 0.67)[1],
-            myutil.relative2absolute(0.05, 0.05)[0], this.stage4, stageGroup.BLIZZARD);
-        stage4Button.onClick = () => {
-            if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (stage4Button.isLocked) {
-                    this.copyFloatingWindow(p5, "lock");
-                    return;
-                }
-            }
-            this.clickedStageButton(p5, stageGroup.BLIZZARD);
-        };
-
-        let stage5Button = new MapButton(
-            myutil.relative2absolute(0.41, 0.35)[0],
-            myutil.relative2absolute(0.41, 0.35)[1],
-            myutil.relative2absolute(0.05, 0.05)[0], this.stage5, stageGroup.TSUNAMI);
-        stage5Button.onClick = () => {
-            if (!p5.keyIsPressed || p5.key !== 'v') {
-                if (stage5Button.isLocked) {
-                    this.copyFloatingWindow(p5, "lock");
-                    return;
-                }
-            }
-            this.clickedStageButton(p5, stageGroup.TSUNAMI);
-        };
-
-        this.buttons.push(stage1Button, stage2Button, stage3Button, stage4Button, stage5Button);
+        return button;
     }
 
     handleClick(p5) {
+        // clear circles for every click
+        this.buttons.forEach(button => button.circle = null);
+
         if (this.handleFloatingWindow()) {
             return;
         }
@@ -101,7 +70,8 @@ export class StandbyMenu extends Screen {
             }
         }
 
-        this.buttons.forEach(button => button.circle = null);
+        // clear selected stage group. if a button is clicked, this line of code will not be reached
+        this.selectedStageGroup = stageGroup.NO_STAGE;
     }
 
     draw(p5) {
@@ -109,20 +79,75 @@ export class StandbyMenu extends Screen {
         p5.image(this.background, 0, 0, canvasSize[0], canvasSize[1]);
 
         for (let button of this.buttons) {
-            if(button.unlock) button.unlock(this.gameState);
+            button.unlock(this.gameState);
             button.draw(p5);
         }
 
         this.gameState.inventory.draw(p5, myutil.relative2absolute(1, 1)[0], myutil.relative2absolute(1, 1)[1]);
 
+        if (this.selectedStageGroup !== stageGroup.NO_STAGE) {
+            this.drawStageInfo(p5, this.selectedStageGroup);
+        }
+
         this.drawFloatingWindow(p5);
     }
 
-    clickedStageButton(p5, stageGroup) {
-        if (this.gameState.isStageCleared(stageGroup)) {
-            this.copyFloatingWindow(p5, "clear");
-            return;
+    drawStageInfo(p5, group) {
+        let [paddingX, paddingY] = myutil.relative2absolute(1 / 128, 1 / 72);
+        let boxWidth= myutil.relative2absolute(0.15, 1 / 4)[0];
+        let boxHeight = 10 * paddingY;
+        let boxX = myutil.relative2absolute(1, 1)[0] - boxWidth - paddingX;
+        let boxY = myutil.relative2absolute(1, 1)[1] - boxHeight - paddingY;
+
+        p5.fill(100, 100, 100, 200);
+        p5.noStroke();
+        p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundness
+
+        let progress = this.gameState.clearedStages.get(group) || 0;
+        let total = this.gameState.gsf.stageClasses[group].length;
+
+        let text = "";
+        let enemy = "";
+        switch (group) {
+            case stageGroup.TORNADO:
+                enemy = "tornado";
+                text = "Calamitas Caeli";
+                break;
+            case stageGroup.VOLCANO:
+                enemy = "volcano";
+                text = "Ira Ignis";
+                break;
+            case stageGroup.EARTHQUAKE:
+                enemy = "earthquake";
+                text = "Locus Lapsus";
+                break;
+            case stageGroup.BLIZZARD:
+                enemy = "blizzard";
+                text = "Nix Nefasta";
+                break;
+            case stageGroup.TSUNAMI:
+                enemy = "tsunami";
+                text = "Ultima Unda";
+                break;
         }
+
+        p5.fill("rgb(255, 255, 128)");
+        p5.textAlign(p5.CENTER, p5.TOP);
+        p5.textSize(20);
+        p5.text(`${enemy}`, boxX + boxWidth / 2, boxY + paddingY);
+        p5.textSize(16);
+        p5.text(`"${text}"`, boxX + boxWidth / 2, boxY + 3 * paddingY);
+        p5.textSize(20);
+        p5.text(`progress:`, boxX + boxWidth / 2, boxY + 5 * paddingY);
+
+        myutil.drawHealthBar(p5, {
+            health: progress,
+            maxHealth: total
+        }, boxX + 2* paddingX, boxY + 8 * paddingY, boxWidth - 4 * paddingX,  paddingY);
+
+    }
+
+    clickedStageButton(p5, stageGroup) {
         this.gameState.setState(stateCode.PLAY);
         this.gameState.currentStageGroup = stageGroup;
     }
