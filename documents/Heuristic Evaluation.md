@@ -80,54 +80,30 @@
 | Tester/Questions | Question 1 | Question 2 | Question 3 | Question 4 | Question 5 | Question 6 | Question 7 | Question 8 | Question 9 | Question 10 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Questions | 1. Think that I would like to use this system frequently. | 2. I found the System unnecessarily complex. | 3. I thought the system was easy to use. | 4. I think that I would need the support of a technical person to be able to use this system. | 5. I found the various functions in this system were well integrated. | 6. I though there was too much inconsistency in this system. | 7. I would imagine to use this system very quickly. | 8. I found the system very cumbersome to use. | 9. I felt confident using the system. | 10. I needed to learn a lot of things before I could get going with this system. |
-| Person 1 
-(Easy level) | 3 | 2 | 2 | 4 | 2 | 4 | 2 | 4 | 4 | 4 |
-| Person 1 
-(Hard level) | 3 | 2 | 2 | 4 | 3 | 3 | 2 | 3 | 2 | 4 |
-| Person 2
-(Easy level) | 2 | 5 | 1 | 5 | 4 | 3 | 2 | 4 | 2 | 4 |
-| Person 2
-(Hard level) | 4 | 2 | 3 | 3 | 4 | 2 | 2 | 2 | 4 | 2 |
-| Person 3
-(Easy level) | 2 | 1 | 1 | 5 | 3 | 1 | 1 | 4 | 2 | 5 |
-| Person 3
-(Hard level) | 3 | 5 | 1 | 5 | 2 | 4 | 2 | 4 | 2 | 5 |
-| Person 4
-(Easy level) | 2 | 3 | 4 | 3 | 5 | 1 | 2 | 3 | 1 | 2 |
-| Person 4
-(Hard level) | 1 | 4 | 1 | 5 | 3 | 1 | 1 | 4 | 1 | 5 |
-| Person 5
-(Easy level) | 4 | 4 | 3 | 3 | 4 | 3 | 5 | 3 | 5 | 4 |
-| Person 5
-(Hard level) | 2 | 3 | 2 | 5 | 4 | 2 | 3 | 3 | 2 | 5 |
-| Person 6
-(Easy level) | 4 | 2 | 4 | 4 | 4 | 3 | 4 | 4 | 5 | 4 |
-| Person 6
-(Hard level) | 3 | 4 | 4 | 4 | 4 | 4 | 3 | 4 | 5 | 4 |
-| Person 7
-(Easy level) | 4 | 2 | 3 | 5 | 4 | 2 | 2 | 2 | 3 | 4 |
-| Person 7
-(Hard level) | 3 | 3 | 3 | 5 | 4 | 3 | 2 | 3 | 2 | 4 |
-| Person 8
-(Easy level) |  |  |  |  |  |  |  |  |  |  |
-| Person 8
-(Hard level) |  |  |  |  |  |  |  |  |  |  |
-| Person 9
-(Easy level) |  |  |  |  |  |  |  |  |  |  |
-| Person 9
-(Hard level) |  |  |  |  |  |  |  |  |  |  |
-| Person 10
-(Easy level) |  |  |  |  |  |  |  |  |  |  |
-| Person 10
-(Hard level) |  |  |  |  |  |  |  |  |  |  |
-| Person 11
-(Easy level) |  |  |  |  |  |  |  |  |  |  |
-| Person 11
-(Hard level) |  |  |  |  |  |  |  |  |  |  |
-| Person 12
-(Easy level) |  |  |  |  |  |  |  |  |  |  |
-| Person 12
-(Hard level) |  |  |  |  |  |  |  |  |  |  |
+| Person 1 (Easy level) | 3 | 2 | 2 | 4 | 2 | 4 | 2 | 4 | 4 | 4 |
+| Person 1 (Hard level) | 3 | 2 | 2 | 4 | 3 | 3 | 2 | 3 | 2 | 4 |
+| Person 2 (Easy level) | 2 | 5 | 1 | 5 | 4 | 3 | 2 | 4 | 2 | 4 |
+| Person 2 (Hard level) | 4 | 2 | 3 | 3 | 4 | 2 | 2 | 2 | 4 | 2 |
+| Person 3 (Easy level) | 2 | 1 | 1 | 5 | 3 | 1 | 1 | 4 | 2 | 5 |
+| Person 3 (Hard level) | 3 | 5 | 1 | 5 | 2 | 4 | 2 | 4 | 2 | 5 |
+| Person 4 (Easy level) | 2 | 3 | 4 | 3 | 5 | 1 | 2 | 3 | 1 | 2 |
+| Person 4 (Hard level) | 1 | 4 | 1 | 5 | 3 | 1 | 1 | 4 | 1 | 5 |
+| Person 5 (Easy level) | 4 | 4 | 3 | 3 | 4 | 3 | 5 | 3 | 5 | 4 |
+| Person 5 (Hard level) | 2 | 3 | 2 | 5 | 4 | 2 | 3 | 3 | 2 | 5 |
+| Person 6 (Easy level) | 4 | 2 | 4 | 4 | 4 | 3 | 4 | 4 | 5 | 4 |
+| Person 6 (Hard level) | 3 | 4 | 4 | 4 | 4 | 4 | 3 | 4 | 5 | 4 |
+| Person 7 (Easy level) | 4 | 2 | 3 | 5 | 4 | 2 | 2 | 2 | 3 | 4 |
+| Person 7 (Hard level) | 3 | 3 | 3 | 5 | 4 | 3 | 2 | 3 | 2 | 4 |
+| Person 8 (Easy level) |  |  |  |  |  |  |  |  |  |  |
+| Person 8 (Hard level) |  |  |  |  |  |  |  |  |  |  |
+| Person 9 (Easy level) |  |  |  |  |  |  |  |  |  |  |
+| Person 9 (Hard level) |  |  |  |  |  |  |  |  |  |  |
+| Person 10 (Easy level) |  |  |  |  |  |  |  |  |  |  |
+| Person 10 (Hard level) |  |  |  |  |  |  |  |  |  |  |
+| Person 11 (Easy level) |  |  |  |  |  |  |  |  |  |  |
+| Person 11 (Hard level) |  |  |  |  |  |  |  |  |  |  |
+| Person 12 (Easy level) |  |  |  |  |  |  |  |  |  |  |
+| Person 12 (Hard level) |  |  |  |  |  |  |  |  |  |  |
 
 ---
 
@@ -135,51 +111,30 @@
 | Tester/Questions | Question 1 | Question 2 | Question 3 | Question 4 | Question 5 | Question 6 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Questions | 1. How mentally demanding was the task? | 2. How physically demanding was the task? | 3. How hurried or rushed was the pace of the task? | 4. How successful were you in accomplishing what you were asked to do? | 5. How hard did you have to work to accomplish your level of performance? | 6. How insecure, discouraged, irritated, stressed, and annoyed were yout? |
-| Person 1
-(Hard level) | 14 | 4 | 3 | 12 | 11 | 5 |
-| Person 2
-(Hard level) | 11 | 7 | 5 | 9 | 14 | 11 |
-| Person 3
-(Hard level) | 15 | 4 | 4 | 10 | 11 | 12 |
-| Person 4
-(Hard level) | 8 | 8 | 1 | 5 | 16 | 13 |
-| Person 5
-(Hard level) | 16 | 8 | 3 | 14 | 15 | 17 |
-| Person 6
-(Hard level) | 6 | 5 | 5 | 2 | 3 | 5 |
-| Person 7
-(Hard level) | 17 | 3 | 4 | 12 | 12 | 11 |
-| Person 8
-(Hard level) |  |  |  |  |  |  |
-| Person 9
-(Hard level) |  |  |  |  |  |  |
-| Person 10
-(Hard level) |  |  |  |  |  |  |
-| Person 11
-(Hard level) |  |  |  |  |  |  |
-| Person 12
-(Hard level) |  |  |  |  |  |  |
-| Person 1
-(Easy level) | 15 | 3 | 2 | 9 | 11 | 12 |
-| Person 2
-(Easy level) | 16 | 2 | 1 | 16 | 15 | 16 |
-| Person 3
-(Easy level) | 10 | 10 | 1 | 1 | 4 | 7 |
-| Person 4
-(Easy level) | 7 | 1 | 2 | 1 | 1 | 7 |
-| Person 5
-(Easy level) | 5 | 5 | 4 | 1 | 1 | 1 |
-| Person 6
-(Easy level) | 3 | 3 | 3 | 2 | 3 | 3 |
-| Person 7
-(Easy level) | 12 | 1 | 1 | 7 | 11 | 10 |
-| Person 8
-(Easy level) |  |  |  |  |  |  |
-| Person 9
-(Easy level) |  |  |  |  |  |  |
-| Person 10
-(Easy level) |  |  |  |  |  |  |
-| Person 11
-(Easy level) |  |  |  |  |  |  |
-| Person 12
-(Easy level) |  |  |  |  |  |  |
+| Person 1 (Easy level) | 15 | 3 | 2 | 9 | 11 | 12 |
+| Person 1 (Hard level) | 14 | 4 | 3 | 12 | 11 | 5 |
+| Person 2 (Easy level) | 16 | 2 | 1 | 16 | 15 | 16 |
+| Person 2 (Hard level) | 11 | 7 | 5 | 9 | 14 | 11 |
+| Person 3 (Easy level) | 10 | 10 | 1 | 1 | 4 | 7 |
+| Person 3 (Hard level) | 15 | 4 | 4 | 10 | 11 | 12 |
+| Person 4 (Easy level) | 7 | 1 | 2 | 1 | 1 | 7 |
+| Person 4 (Hard level) | 8 | 8 | 1 | 5 | 16 | 13 |
+| Person 5 (Easy level) | 5 | 5 | 4 | 1 | 1 | 1 |
+| Person 5 (Hard level) | 16 | 8 | 3 | 14 | 15 | 17 |
+| Person 6 (Easy level) | 3 | 3 | 3 | 2 | 3 | 3 |
+| Person 6 (Hard level) | 6 | 5 | 5 | 2 | 3 | 5 |
+| Person 7 (Easy level) | 12 | 1 | 1 | 7 | 11 | 10 |
+| Person 7 (Hard level) | 17 | 3 | 4 | 12 | 12 | 11 |
+| Person 8 (Easy level) |  |  |  |  |  |  |
+| Person 8 (Hard level) |  |  |  |  |  |  |
+| Person 9 (Easy level) |  |  |  |  |  |  |
+| Person 9 (Hard level) |  |  |  |  |  |  |
+| Person 10 (Easy level) |  |  |  |  |  |  |
+| Person 10 (Hard level) |  |  |  |  |  |  |
+| Person 11 (Easy level) |  |  |  |  |  |  |
+| Person 11 (Hard level) |  |  |  |  |  |  |
+| Person 12 (Easy level) |  |  |  |  |  |  |
+| Person 12 (Hard level) |  |  |  |  |  |  |
+
+---
+
