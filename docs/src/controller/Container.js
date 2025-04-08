@@ -46,6 +46,27 @@ import {SeaModel, SeaLogic, SeaRenderer, SeaSerializer} from "../items/Sea.js";
 import {itemTypes, plantTypes, seedTypes, terrainTypes, movableTypes, baseType} from "../items/ItemTypes.js";
 
 import {InteractionLogic} from "../items/InteractionLogic.js";
+import {GameState, stageGroup, stateCode} from "../model/GameState.js";
+import {Tornado1PlayBoard} from "../model/stages/Tor1.js";
+import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
+import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
+import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
+import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
+import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
+import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
+import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
+import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
+import {InventoryModel, InventoryLogic, InventoryRenderer, InventorySerializer} from "../model/Inventory.js";
+
+import {GameSave} from "../model/GameSave.js";
+import {MenuItem} from "../items/MenuItem.js";
+import {MapButton} from "../items/MapButton.js";
+import {Button} from "../items/Button.js";
+
+import {ScreenModel, ScreenLogic, ScreenRenderer} from "../model/Screen.js";
+import {StartMenuModel, StartMenuLogic, StartMenuRenderer} from "../model/StartMenu.js";
+
+
 
 
 // to achieve loosely coupling we use lazy dependency injection
@@ -75,24 +96,68 @@ export class Container {
         /* importing game state and game menus */
         // --------------------------------------
 
-        this.gameState = gameState;
-        this.stateCode = stateCode;
+
+
+        this.MenuItem = MenuItem;
+        this.Button = Button;
+        this.MapButton = MapButton;
+
+        this.gameStageFactory = new GameStageFactory();
+        this.inventoryModel = Inventory;
+
+        this.GameSave = GameSave;
+        this.GameSave.setup({
+            inventoryParser: ,
+            playBoardParser: ,
+            stateCode: stateCode
+        });
+
+        this.gameState = new GameState(p5, this.gameStageFactory, new this.inventoryModel(p5));
+
+        this.menuModules = [
+            entityObject(StartMenuModel, StartMenuLogic, StartMenuRenderer, null),
+            entityObject(GameMapModel, GameMapLogic, GameMapRenderer, null),
+            entityObject(PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer),
+        ]
+
+        let menuBundle = {
+            MenuItem: this.MenuItem,
+            Button: this.Button,
+            MapButton: this.MapButton,
+        }
+
+        for(let menuModule of menuModules) {
+            let {model, logic, renderer, serializer} = menuModule;
+            if(model.setup) model.setup(menuBundle);
+            if(logic.setup) logic.setup(menuBundle);
+            if(renderer.setup) renderer.setup(menuBundle);
+            renderer.drawFloatingWindow = ScreenRenderer.drawFloatingWindow;
+            if(serializer.setup) serializer.setup(menuBundle);
+
+            ScreenLogic.assertImplementation(assertInterface, logic);
+            ScreenRenderer.assertImplementation(assertInterface, renderer);
+        }
 
         this.menus = {
-            [this.stateCode.MENU]: new StartMenu(this.gameState),
-            [this.stateCode.STANDBY]: new StandbyMenu(this.gameState),
-            [this.stateCode.PLAY]: null
+            [stateCode.MENU]: new StartMenu(this.gameState),
+            [stateCode.STANDBY]: new StandbyMenu(this.gameState),
+            [stateCode.PLAY]: null
         };
 
         this.pauseMenu = new PauseMenu(this.gameState);
-        this.options = new Options(this);
-        // key input
-        this.input = new InputHandler(this.gameState, this.stateCode);
-        this.saveState = this.stateCode.MENU; // default
+        this.input = new InputHandler(this.gameState, stateCode);
+        this.initialState = stateCode.MENU; // default
 
         this.inputHandler = InputHandler; // no setup
 
-        p5.controller = new Controller(this);
+        p5.controller = new Controller({
+            gameState: this.gameState,
+            menus: this.menus,
+            stateCode: stateCode,
+            pauseMenu: this.pauseMenu,
+            input: this.input,
+            initialState: this.initialState,
+        });
 
         // -----------------------------------
         /* importing game entities - plants */
@@ -243,4 +308,32 @@ export class Container {
 
 function entityObject(name, logic, renderer, serializer) {
     return {name: name, logic: logic, renderer: renderer, serializer: serializer};
+}
+
+class GameStageFactory {
+    constructor() {
+        this.stageClasses = Array.from({length: 20}, () => []);
+
+        this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
+
+        this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
+
+        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
+
+        this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
+
+        this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
+    }
+
+    // allocate game stage dynamically
+    newGameStage(newStage, gameState) {
+        let StageClasses = this.stageClasses[gameState.currentStageGroup];
+        let index = gameState.clearedStages.get(gameState.currentStageGroup);
+        let StageClass = StageClasses[index != null ? index : 0];
+        return StageClass ? new StageClass(gameState) : null;
+    }
 }

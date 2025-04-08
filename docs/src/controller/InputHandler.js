@@ -5,7 +5,7 @@ export class InputHandler {
         this.keys = [];
         this.keyboradKeys = [];
         this.gamepadKeys = [];
-        this.gamepad;
+        this.gamepad = null;
         window.addEventListener('keydown', e => {
             if ((e.key === 'w' ||
                     e.key === 'a' ||

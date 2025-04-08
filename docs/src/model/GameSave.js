@@ -1,10 +1,12 @@
-import {GameState, stageGroup, stateCode} from "./GameState.js";
-import {Inventory} from "./Inventory.js";
-import {PlayBoard} from "./Play.js";
-
 export class GameSave {
 
     static saveDataID = "GreenRenaissanceSaveData";
+
+    static setup(bundle){
+        GameSave.inventoryParser = bundle.inventoryParser;
+        GameSave.playBoardParser = bundle.playBoardParser;
+        GameSave.stateCode = bundle.stateCode;
+    }
 
     static save(p5) {
         let gameState = p5.controller.gameState;
@@ -27,15 +29,15 @@ export class GameSave {
             let gameState = p5.controller.gameState;
             gameState.state = stateObject.state;
             gameState.currentStageGroup = stateObject.currentStageGroup;
-            gameState.inventory = stateObject.inventory ? Inventory.parse(stateObject.inventory, p5) : null;
+            gameState.inventory = stateObject.inventory ? GameSave.inventoryParser(stateObject.inventory, p5) : null;
             gameState.clearedStages = new Map(JSON.parse(stateObject.clearedStages));
-            gameState.currentStage = stateObject.currentStage ? PlayBoard.loadGame(p5, gameState, stateObject.currentStage) : null;
+            gameState.currentStage = stateObject.currentStage ? GameSave.playBoardParser(p5, gameState, stateObject.currentStage) : null;
 
-            p5.controller.menus[stateCode.PLAY] = gameState.currentStage;
+            p5.controller.menus[GameSave.stateCode.PLAY] = gameState.currentStage;
             p5.controller.saveState = stateObject.saveState;
             p5.controller.gameState = gameState;
 
-            if (gameState.state === stateCode.STANDBY) p5.controller.menus[stateCode.STANDBY].setup(p5);
+            if (gameState.state === GameSave.stateCode.STANDBY) p5.controller.menus[GameSave.stateCode.STANDBY].setup(p5);
             return true;
         } else {
             console.error('Save data not found!');

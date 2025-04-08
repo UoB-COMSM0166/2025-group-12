@@ -1,6 +1,11 @@
 export class Controller {
-    constructor(container) {
-        this.container = container;
+    constructor(bundle) {
+        this.gameState = bundle.gameState;
+        this.menus = bundle.menus;
+        this.stateCode = bundle.stateCode;
+        this.pauseMenu = bundle.pauseMenu;
+        this.input = bundle.input;
+        this.saveState = bundle.initialState;
     }
 
     setup(p5) {
@@ -10,17 +15,6 @@ export class Controller {
             }
         }
         this.pauseMenu.setup(p5);
-        this.options.setup(p5);
-    }
-
-    reset(p5) {
-        for (let menu of Object.values(this.menus)) {
-            if (menu && menu.reset) {
-                menu.reset(p5);
-            }
-        }
-       // this.pauseMenu.reset(p5);
-        this.options.reset(p5);
     }
 
     clickListener(p5) {
@@ -32,7 +26,6 @@ export class Controller {
             return;
         }
         if (this.gameState.showOptions){
-            this.options.handleClick(p5);
             return;
         }
         let currentMenu = this.menus[this.gameState.getState()];
@@ -58,10 +51,6 @@ export class Controller {
             p5.filter(p5.BLUR, 3);
             p5.pop();
             this.pauseMenu.draw(p5);
-        }
-
-        if (this.gameState.showOptions) {
-            this.options.draw(p5);
         }
     }
 
