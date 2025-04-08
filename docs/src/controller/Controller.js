@@ -1,19 +1,6 @@
 export class Controller {
-    constructor(gameState , stateCode, StartMenu, StandbyMenu, InputHandler, PauseMenu, Options) {
-        this.gameState = gameState;
-        this.stateCode = stateCode;
-
-        this.menus = {
-            [this.stateCode.MENU]: new StartMenu(this.gameState),
-            [this.stateCode.STANDBY]: new StandbyMenu(this.gameState),
-            [this.stateCode.PLAY]: null
-        };
-
-        this.pauseMenu = new PauseMenu(this.gameState);
-        this.options = new Options(this);
-        // key input
-        this.input = new InputHandler(this.gameState, this.stateCode);
-        this.saveState = this.stateCode.MENU; // default
+    constructor(container) {
+        this.container = container;
     }
 
     setup(p5) {

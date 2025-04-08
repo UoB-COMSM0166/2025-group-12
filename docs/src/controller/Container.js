@@ -72,12 +72,27 @@ export class Container {
         this.DijkstraAlgorithm.setup(this.IPQ);
 
         // --------------------------------------
-        /* importing controller and game menus */
+        /* importing game state and game menus */
         // --------------------------------------
+
+        this.gameState = gameState;
+        this.stateCode = stateCode;
+
+        this.menus = {
+            [this.stateCode.MENU]: new StartMenu(this.gameState),
+            [this.stateCode.STANDBY]: new StandbyMenu(this.gameState),
+            [this.stateCode.PLAY]: null
+        };
+
+        this.pauseMenu = new PauseMenu(this.gameState);
+        this.options = new Options(this);
+        // key input
+        this.input = new InputHandler(this.gameState, this.stateCode);
+        this.saveState = this.stateCode.MENU; // default
 
         this.inputHandler = InputHandler; // no setup
 
-        p5.controller = new Controller(new GameState(p5), stateCode, StartMenu, StandbyMenu, this.inputHandler, PauseMenu, Options);
+        p5.controller = new Controller(this);
 
         // -----------------------------------
         /* importing game entities - plants */
