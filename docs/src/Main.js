@@ -1,39 +1,43 @@
 import {Controller} from "./controller/Controller.js";
 import {CanvasSize} from "./CanvasSize.js";
-import {preloader} from "./Preloader.js";
+import {loadImages, loadSounds} from "./Preloader.js";
 
 new p5((p) => {
 
-    p.preload = preloader;
-
-    // record mouse status to prevent redundant clicks
-    let prevMousePressed = false;
-
-    let controller = new Controller();
+    p.preload = () => {
+        p.images = loadImages(p);
+        p.soundFormats('mp3');
+        p.mySounds = loadSounds(p);
+    };
 
     p.setup = () => {
         let canvasSize = CanvasSize.getSize();
         p.createCanvas(canvasSize[0], canvasSize[1]);
-        controller.setup(p);
+        p.controller = new Controller(p);
+        p.controller.setup(p);
     };
 
     p.mouseWheel = (event) => {
-        controller.scrollListener(event);
+        p.controller.scrollListener(p, event);
     }
 
+    p.mouseClicked = () => {
+        p.controller.clickListener(p);
+    }
     p.draw = () => {
-        p.background(100, 100, 100);
+        p.background(100);
+
+        // create play stage
+        p.controller.setPlayStage(p);
+
+        // when game state changes, load or save data accordingly
+        p.controller.setData(p, p.controller.gameState.getState());
 
         // replace following tmp view handling later
-        controller.view(p);
+        p.controller.view(p);
 
-        // handle mouse actions
-        if (p.mouseIsPressed && !prevMousePressed) {
-             controller.clickListener(p);
-        }
-        
+        // keep a copy of current state
+        p.controller.saveState = p.controller.gameState.getState();
 
-        // set mouse status to prevent redundant clicks
-        prevMousePressed = p.mouseIsPressed;
     };
 });

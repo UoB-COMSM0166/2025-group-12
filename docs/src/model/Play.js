@@ -1,236 +1,718 @@
 import {CanvasSize} from "../CanvasSize.js";
+import {myUtil} from "../../lib/myUtil.js";
 import {Button} from "../items/Button.js";
-import {stateCode} from "./GameState.js";
+import {stateCode, stageGroup} from "./GameState.js";
+import {BoardCells} from "./BoardCells.js";
+import {InfoBox} from "./InfoBox.js";
+import {PlantActive} from "../items/PlantActive.js";
+import {baseType, movableTypes, itemTypes, plantTypes, terrainTypes} from "../items/ItemTypes.js";
+import {FloatingWindow} from "./FloatingWindow.js";
+import {Screen} from "./Screen.js";
+import {InteractionLogic} from "../items/InteractionLogic.js";
 import {Inventory} from "./Inventory.js";
+import {Bandit} from "../items/Bandit.js";
+import {Tornado} from "../items/Tornado.js";
+import {VolcanicBomb} from "../items/Volcano.js";
+import {Earthquake} from "../items/Earthquake.js";
+import {Blizzard} from "../items/Blizzard.js";
+import {SlideAnimation} from "../items/SlideAnimation.js";
+import {TsunamiAnimation} from "../items/TsunamiAnimation.js";
 
-export class PlayBoard {
-
-    static inventory = new Inventory();
-
+export class PlayBoard extends Screen {
     constructor(gameState) {
-        this.gameState = gameState;
-
-        this.canvasX = CanvasSize.getSize()[0];
-        this.canvasY = CanvasSize.getSize()[1];
+        super(gameState);
+        this.stageGroup = stageGroup.NO_STAGE;
+        this.stageNumbering = "0-0";
+        this.canvasWidth = CanvasSize.getSize()[0];
+        this.canvasHeight = CanvasSize.getSize()[1];
 
         // transformation parameters
         this.Sx = 0.5;
         this.Sy = 0.5;
-        this.rot = Math.PI/4;
-        this.span = Math.PI/2;
+        this.rot = Math.PI / 6;
+        this.span = 2 * Math.PI / 3;
         this.Hy = 1;
 
         // grid parameters
         this.gridSize = 8;
-        this.cellWidth = 80;
-        this.cellHeight = 80;
+        this.cellWidth = myUtil.relative2absolute(1 / 16, 1 / 9)[0];
+        this.cellHeight = myUtil.relative2absolute(1 / 16, 1 / 9)[1];
 
-        this.buttons = [];
+        // store all movable objects including enemies
+        // objects in this array MUST have boolean fields hasMoved and isMoving!!!!!
+        this.movables = [];
 
-        // information block
+        // board objects array and information box
+        this.boardObjects = new BoardCells(this.gridSize);
         this.selectedCell = [];
-
-        // mimic plants on grid cells
-        this.cellColors = new Map();
+        this.infoBox = new InfoBox(this);
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
-        this.tmpInventoryItems = null;
+        this.tmpInventoryItems = new Map();
+
+        // turn counter
+        this.turn = 1;
+        this.maxTurn = 10;
+        this.endTurn = false;
+        // can place this number of plants every turn
+        this.actionPoints = 3;
+        this.maxActionPoints = 3;
+        this.hasActionPoints = true;
+
+        // to implement plant active skills.
+        // I have a strong feeling that we need refactoring
+        this.awaitCell = false;
+
+        this.ecoDisplay = true;
+
+        this.isGameOver = false;
+
+        this.skip = false;
+
+        // set cursor style when dragging item
+        this.shadowPlant = null;
+
+        // save last state
+        this.undoStack = [];
     }
 
     /* public methods */
 
     setup(p5) {
-        p5.createCanvas(this.canvasX, this.canvasY);
+        // action listeners
+        this.setupActionListeners(p5);
 
-        let escapeButton = new Button(10, 10, 100, 50, "Escape");
-        escapeButton.onClick = () => {this.gameState.setState(stateCode.STANDBY);};
-        this.buttons.push(escapeButton);
+        // setup stage terrain
+        this.setStageTerrain(p5);
+
+        // initialized all fw
+        this.initAllFloatingWindows(p5);
     }
 
-    handleScroll(event) {
-        PlayBoard.inventory.handleScroll(event);
+    setupActionListeners(p5) {
+        // escape button
+        let [escX, escY] = myUtil.relative2absolute(0.01, 0.01);
+        let [escWidth, escHeight] = myUtil.relative2absolute(0.09, 0.07);
+        let escapeButton = new Button(escX, escY, escWidth, escHeight, "Escape");
+        escapeButton.onClick = () => {
+            this.gameState.setState(stateCode.STANDBY);
+        };
+
+        // undo
+        let [undoX, undoY] = myUtil.relative2absolute(0.1, 0.01);
+        let [undoWidth, undoHeight] = myUtil.relative2absolute(0.09, 0.07);
+        let undoButton = new Button(undoX, undoY, undoWidth, undoHeight, "Undo");
+        undoButton.onClick = () => {
+            this.undo(p5);
+        }
+
+        // turn button
+        let [turnWidth, turnHeight] = myUtil.relative2absolute(5 / 32, 0.07);
+        let [turnX, turnY] = myUtil.relative2absolute(0.5, 0.01);
+        let turnButton = new Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
+        turnButton.onClick = () => {
+            this.movables.sort((a, b) => {
+                if (a.movableType !== undefined && b.movableType !== undefined) {
+                    return a.movableType - b.movableType;
+                }
+                if (a.movableType !== undefined) return -1;
+                if (b.movableType !== undefined) return 1;
+                return 0;
+            });
+            // set movable status
+            for (let movable of this.movables) {
+                movable.hasMoved = false;
+            }
+            // when game is not cleared, remember to deal with end turn stuff
+            if (this.turn < this.maxTurn + 1) {
+                this.endTurn = true;
+            }
+            // once player unable to click, controller will loop movables to check if there are anything has not moved
+            this.gameState.setPlayerCanClick(false);
+        }
+
+        this.buttons.push(escapeButton, turnButton, undoButton);
+
+        // a keyboard shortcut to activate plant skill
+        window.addEventListener("keyup", (event) => {
+            // active skill
+            if (event.key === "e" && this.infoBox.activateButton !== null) {
+                this.infoBox.activateButton._onClick(p5);
+            }
+            // toggle display ecosystem
+            if (event.key === "e" && this.infoBox.displayButton !== null) {
+                this.infoBox.displayButton._onClick(p5);
+            }
+            // turn button
+            if (event.key === " " && this.gameState.playerCanClick && this.floatingWindow === null) {
+                this.buttons.find(b => b.text.startsWith("turn"))._onClick();
+            }
+            // to dev team: quick skip current stage
+            if (event.key === "c" && !this.skip) {
+                this.skip = true;
+                this.stageClearSettings(p5);
+                this.gameState.setState(stateCode.FINISH);
+            }
+            // info box arrows
+            if (event.key === "a" && this.selectedCell.length !== 0) {
+                this.infoBox.clickLeftArrow(p5);
+            }
+            if (event.key === "ArrowLeft" && this.selectedCell.length !== 0) {
+                this.infoBox.clickLeftArrow(p5);
+            }
+            if (event.key === "d" && this.selectedCell.length !== 0) {
+                this.infoBox.clickRightArrow(p5);
+            }
+            if (event.key === "ArrowRight" && this.selectedCell.length !== 0) {
+                this.infoBox.clickRightArrow(p5);
+            }
+        });
     }
 
     handleClick(p5) {
-        // clicked inventory, then click a cell
-        if(PlayBoard.inventory.selectedItem !== null){
-            let index = this.mouse2CellIndex(p5);
-            // if a cell is clicked, update this.cellColors.
-            if (index[0] !== -1) {
-                let row = index[0];
-                let col = index[1];
-                this.cellColors.set(`${row},${col}`, PlayBoard.inventory.selectedItem);
-                console.log(`Placed ${PlayBoard.inventory.selectedItem.name} at row ${row}, col ${col}`);
-            }
-            // clear inventory's selected item
-            PlayBoard.inventory.itemDecreament();
+        if (this.handleFloatingWindow()) {
+            return;
         }
-        // handle inventory clicks later to prevent unintentional issues
-        PlayBoard.inventory.handleClick(p5);
+
+        this.handleActiveSkills(p5);
 
         // click any button
         for (let button of this.buttons) {
-            button.mouseClick(p5);
+            if (button.mouseClick(p5) && button === this.infoBox.activateButton) {
+                return;
+            }
         }
 
+        // clicked info box arrows when info box exists
+        if (this.infoBox.handleClickArrow(p5, this)) {
+            return;
+        }
+
+        // inventory item and planting
+        this.handlePlanting(p5);
+
         // click any grid cell to display info box
-        this.clickCells(p5);
+        this.clickedCell(p5);
+    }
+
+    stringify() {
+        let status = {
+            boardObjects: this.boardObjects.stringify(),
+            inventory: this.gameState.inventory.stringify(),
+            movables: JSON.stringify(this.movables.map(movable => movable.stringify())),
+            actionPoints: this.actionPoints,
+            maxActionPoints: this.maxActionPoints,
+        }
+        this.undoStack.push(JSON.stringify(status));
+        return status;
+    }
+
+    undo(p5) {
+        if (this.undoStack.length === 0) return;
+
+        let status = JSON.parse(this.undoStack.pop());
+
+        // reset board
+        this.boardObjects = BoardCells.parse(status.boardObjects, p5, this);
+        // reset action points
+        this.maxActionPoints = status.maxActionPoints;
+        this.actionPoints = status.actionPoints;
+        // reset plant skills
+        this.reevaluatePlantSkills();
+        // reset ecosystem
+        this.boardObjects.setEcosystem();
+        // reset inventory
+        this.gameState.inventory = Inventory.parse(status.inventory, p5);
+
+        // reset movables, need to put movable with cell to the correct cell
+        this.movables = JSON.parse(status.movables).map(json => {
+            const movable = JSON.parse(json);
+            switch (movable.movableType) {
+                case movableTypes.BANDIT:
+                    return Bandit.parse(json, p5, this);
+                case movableTypes.TORNADO:
+                    return Tornado.parse(json, p5, this);
+                case movableTypes.BOMB:
+                    return VolcanicBomb.parse(json, p5, this);
+                case movableTypes.SLIDE:
+                    return SlideAnimation.parse(json, p5, this);
+                case movableTypes.EARTHQUAKE:
+                    return Earthquake.parse(json, p5, this);
+                case movableTypes.BLIZZARD:
+                    return Blizzard.parse(json, p5, this);
+                case movableTypes.TSUNAMI:
+                    return TsunamiAnimation.parse(json, p5, this);
+                default:
+                    console.warn("Unknown enemy type", movable.movableType);
+                    return null;
+            }
+        }).filter(Boolean);
+        for (let movable of this.movables) {
+            if (movable.cell) {
+                movable.cell.enemy = movable;
+            }
+        }
+    }
+
+    saveGame() {
+        let status = this.stringify();
+        status.stageGroup = this.stageGroup;
+        status.stageNumbering = Number(this.stageNumbering.charAt(2));
+        status.turn = this.turn;
+        status.tmpInventoryItems = Array.from(this.tmpInventoryItems.entries());
+        if (this.snowfields !== undefined) {
+            status.snowfields = JSON.stringify(this.snowfields);
+        }
+        if (this.fertilized !== undefined) {
+            status.fertilized = JSON.stringify(this.fertilized);
+        }
+        return JSON.stringify(status);
+    }
+
+    static loadGame(p5, gameState, status) {
+        let statusObject = JSON.parse(status);
+        let playBoard = new gameState.gsf.stageClasses[statusObject.stageGroup][statusObject.stageNumbering - 1](gameState);
+        playBoard.undoStack.push(status);
+        playBoard.undo(p5);
+        playBoard.turn = statusObject.turn;
+        playBoard.tmpInventoryItems = new Map(statusObject.tmpInventoryItems);
+        if (playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);
+        if (playBoard.fertilized) playBoard.fertilized = JSON.parse(statusObject.fertilized);
+        playBoard.setupActionListeners(p5);
+        playBoard.initAllFloatingWindows(p5);
+        return playBoard;
     }
 
     draw(p5) {
-        p5.background(200);
+        p5.background(180);
+
+        // set cursor style
+        if (this.gameState.inventory.selectedItem !== null) {
+            p5.cursor('grab');
+        } else if (this.awaitCell) {
+            p5.cursor('pointer');
+        } else {
+            p5.cursor(p5.ARROW);
+        }
+
+        // stage number text
+        let [stageNumberingX, stageNumberingY] = myUtil.relative2absolute(0.38, 0.04);
+        p5.textSize(20);
+        p5.fill('red');
+        p5.noStroke();
+        p5.textAlign(p5.LEFT, p5.TOP);
+        p5.text(this.stageNumbering, stageNumberingX, stageNumberingY);
 
         // draw stage grid
         this.drawGrid(p5);
 
-        // all buttons
-        for (let button of this.buttons) {
-            button.draw(p5);
-        }
-
         // left bottom corner info box
         if (this.selectedCell.length !== 0) {
-            this.drawInfoBox(p5);
+            this.infoBox.draw(p5, this);
         }
 
-        // Draw placed cell colors
-        for (let [key, value] of this.cellColors.entries()) {
-            let [row, col] = key.split(",").map(Number);
-            let x = -(this.gridSize * this.cellWidth / 2) + col * this.cellWidth;
-            let y = -(this.gridSize * this.cellHeight / 2) + row * this.cellHeight;
+        // draw plants according to board objects
+        this.drawAllPlants(p5);
 
-            // Transform four corners of the cell
-            let x1 = this.newCoorX(x, y) + this.canvasX/2;
-            let y1 = this.newCoorY(x, y) + this.canvasY/2;
-            let x2 = this.newCoorX(x + this.cellWidth, y) + this.canvasX/2;
-            let y2 = this.newCoorY(x + this.cellWidth, y) + this.canvasY/2;
-            let x3 = this.newCoorX(x + this.cellWidth, y + this.cellHeight) + this.canvasX/2;
-            let y3 = this.newCoorY(x + this.cellWidth, y + this.cellHeight) + this.canvasY/2;
-            let x4 = this.newCoorX(x, y + this.cellHeight) + this.canvasX/2;
-            let y4 = this.newCoorY(x, y + this.cellHeight) + this.canvasY/2;
-
-            p5.fill(value.color);
-            p5.noStroke();
-            p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+        // tornado arrows first
+        for (let movable of this.movables) {
+            if (!movable.isMoving && movable.type === itemTypes.ENEMY && movable.movableType === movableTypes.TORNADO) {
+                let direction = movable.direction;
+                let x = movable.x;
+                let y = movable.y;
+                let angle;
+                if (direction[0] === 0 && direction[1] === -1) {
+                    angle = p5.radians(330); // Up-right
+                } else if (direction[0] === 0 && direction[1] === 1) {
+                    angle = p5.radians(150); // Down-left
+                } else if (direction[0] === -1 && direction[1] === 0) {
+                    angle = p5.radians(210); // Up-left
+                } else if (direction[0] === 1 && direction[1] === 0) {
+                    angle = p5.radians(30); // Down-right
+                }
+                let offset = 10;
+                let dx = offset * Math.cos(angle);
+                let dy = offset * Math.sin(angle);
+                p5.push();
+                p5.translate(x + dx, y + dy);
+                p5.rotate(angle + p5.HALF_PI);
+                p5.imageMode(p5.CENTER);
+                p5.image(p5.images.get("alertArrow"), 0, 0, 30, 30);
+                p5.pop();
+            }
         }
+        // draw all movables according to this.movables
+        for (let movable of this.movables) {
+            movable.draw(p5);
+        }
+        // health bar last
+        for (let movable of this.movables) {
+            if (movable.health !== undefined) {
+                myUtil.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
+            }
+        }
+
 
         // draw inventory
-        PlayBoard.inventory.draw(p5, this.canvasX, this.canvasY);
+        this.gameState.inventory.draw(p5, this.canvasWidth, this.canvasHeight);
 
+        // draw action points
+        myUtil.drawActionPoints(p5, this);
+
+        // all buttons
+        // to cascade activate button above info box, place this loop after info box
+        for (let button of this.buttons) {
+            if (!(this.turn === this.maxTurn + 1 && button.text.startsWith("turn"))) {
+                button.draw(p5);
+            }
+        }
+
+        // if game over, set player can click to stop movables updating
+        if (this.isGameOver && !this.gameState.playerCanClick) {
+            this.gameState.setPlayerCanClick(true);
+        }
+
+        this.drawFloatingWindow(p5);
+
+        // draw shadow plant
+        if (this.shadowPlant !== null) {
+            let imgSize = myUtil.relative2absolute(1 / 32, 0)[0];
+            p5.push();
+            p5.tint(255, 180);
+            p5.image(this.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
+            p5.pop();
+        }
     }
 
-    resetBoard(){
-        this.selectedCell = [];
-        this.cellColors = new Map();
-        this.tmpInventoryItems = null;
-    }
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // below can be treated as black boxes //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
+    // ----------------------------------- //
 
-    /* below can be treated as black box */
-
-    drawGrid(p5){
+    drawGrid(p5) {
         p5.stroke(0);
         p5.strokeWeight(2);
 
-        for (let i = 0; i <= this.gridSize; i++) {
-            let x = -(this.gridSize * this.cellWidth / 2) + i * this.cellWidth;
-            let y = -(this.gridSize * this.cellHeight / 2) + i * this.cellHeight;
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                this.boardObjects.getCell(i, j).drawTerrain(p5, this);
+            }
+        }
+        if (this.boardObjects.getCell(2, 2).terrain.terrainType === terrainTypes.VOLCANO) {
+            let [x1, y1] = myUtil.cellIndex2Pos(p5, this, 2, 2, p5.CORNERS);
+            p5.image(p5.images.get("VolcanoLayer"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight / 2 + 1, this.cellWidth * 3, this.cellHeight * 3);
+        }
+        // if skill is activated and awaiting target, set highlight on
+        if (this.awaitCell) {
+            for (let i = 0; i < this.boardObjects.size; i++) {
+                for (let j = 0; j < this.boardObjects.size; j++) {
+                    if (PlantActive.activeRange1(i, j, this.selectedCell[0], this.selectedCell[1])) {
+                        let [x1, y1, x2, y2, x3, y3, x4, y4] = myUtil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
+                        p5.stroke('rgb(255,238,0)');
+                        p5.strokeWeight(2);
+                        p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+                    }
+                }
+            }
+        }
 
-            // transformed top end of vertical line
-            let x1 = this.newCoorX(x, -this.gridSize * this.cellHeight / 2);
-            let y1 = this.newCoorY(x, -this.gridSize * this.cellHeight / 2);
-            // transformed bottom end of vertical line
-            let x2 = this.newCoorX(x, this.gridSize * this.cellHeight / 2);
-            let y2 = this.newCoorY(x, this.gridSize * this.cellHeight / 2);
-            // transformed left end of horizontal line
-            let x3 = this.newCoorX(-this.gridSize * this.cellWidth / 2, y);
-            let y3 = this.newCoorY(-this.gridSize * this.cellWidth / 2, y);
-            // transformed right end of horizontal line
-            let x4 = this.newCoorX(this.gridSize * this.cellWidth / 2, y);
-            let y4 = this.newCoorY(this.gridSize * this.cellWidth / 2, y);
+        // highlight the cell mouse hovering on
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let [x1, y1, x2, y2, x3, y3, x4, y4] = myUtil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
+                if (myUtil.isCursorInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)) {
+                    p5.stroke('rgb(255,238,0)');
+                    p5.strokeWeight(2);
+                    p5.noFill();
+                    p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+                }
+            }
+        }
+        p5.strokeWeight(0);
+    }
 
-            // center the grid cells
-            x1 += this.canvasX / 2;
-            y1 += this.canvasY / 2;
-            x2 += this.canvasX / 2;
-            y2 += this.canvasY / 2;
-            x3 += this.canvasX / 2;
-            y3 += this.canvasY / 2;
-            x4 += this.canvasX / 2;
-            y4 += this.canvasY / 2;
-
-            p5.line(x1, y1, x2, y2);
-            p5.line(x3, y3, x4, y4);
+    drawAllPlants(p5) {
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                let cell = this.boardObjects.getCell(i, j);
+                if (cell.plant !== null) {
+                    let [avgX, avgY] = myUtil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
+                    let imgSize = myUtil.relative2absolute(1 / 32, 0)[0];
+                    p5.image(cell.plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+                    myUtil.drawHealthBar(p5, cell.plant, avgX - 21, avgY - 42, 40, 5);
+                }
+                if (cell.seed !== null) {
+                    let [avgX, avgY] = myUtil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
+                    let imgSize = myUtil.relative2absolute(1 / 32, 0)[0];
+                    p5.image(cell.seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+                }
+            }
         }
     }
 
-    clickCells(p5) {
-        let index = this.mouse2CellIndex(p5);
-        if(index[0] === -1){
+    // set the clicked cell to draw info box
+    clickedCell(p5) {
+        let index = myUtil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        if (index[0] === -1) {
             this.selectedCell = [];
-        }else{
+        } else {
             this.selectedCell = [index[0], index[1]];
+            // a shortcut to direct to plant active skill page
+            let cell = this.boardObjects.getCell(index[0], index[1]);
+            if (cell.plant !== null && cell.plant.hasActive) {
+                this.infoBox.setStatus(p5, 'a');
+            }
         }
     }
 
-    mouse2CellIndex(p5){
-        // edges of the grid under old grid-centered coordinates
-        let leftEdge   =-(this.gridSize * this.cellWidth) / 2;
-        let rightEdge  = (this.gridSize * this.cellWidth) / 2;
-        let topEdge    =-(this.gridSize * this.cellHeight) / 2;
-        let bottomEdge = (this.gridSize * this.cellHeight) / 2;
+    // when floating window is on, click anywhere to disable it.
+    handleFloatingWindow() {
+        if (this.floatingWindow !== null) {
+            // game over
+            if (!this.allFloatingWindows.has("001")) {
+                this.gameState.setState(stateCode.STANDBY);
+                return true;
+            }
+            // game clear
+            if (!this.allFloatingWindows.has("000")) {
+                this.gameState.setState(stateCode.FINISH);
+                return true;
+            }
+            // common floating windows
+            if (!this.floatingWindow.isFading) {
+                this.floatingWindow.isFading = true;
+            }
+            if (!this.floatingWindow.playerCanClick) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        // mouse position under old grid-centered coordinates
-        let oldMouseX = this.oldCoorX(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
-        let oldMouseY = this.oldCoorY(p5.mouseX - this.canvasX / 2, p5.mouseY - this.canvasY / 2);
+    handleActiveSkills(p5) {
+        // when activate button is clicked, system awaits a cell input
+        if (this.awaitCell) {
+            let index = myUtil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+            if (index[0] === -1) {
+                this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("050"));
+            } else {
+                // this branch represents skill has been activated successfully
+                this.stringify();
+                let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+                let target = this.boardObjects.getCell(index[0], index[1]);
+                if (spellCaster.plant.plantType === plantTypes.TREE) {
+                    PlantActive.rechargeHP(this, spellCaster, target, 1);
+                } else if (spellCaster.plant.plantType === plantTypes.ORCHID) {
+                    PlantActive.sendAnimalFriends(this, spellCaster, target);
+                }
+            }
+            this.awaitCell = false;
+        }
 
-        // Check if click is within the grid
-        if (oldMouseX >= leftEdge && oldMouseX <= rightEdge
-            && oldMouseY >= topEdge && oldMouseY <= bottomEdge) {
-            let row = this.gridSize - 1 - Math.floor((oldMouseX + (this.gridSize * this.cellWidth) / 2) / this.cellWidth);
-            let col = this.gridSize - 1 - Math.floor((oldMouseY + (this.gridSize * this.cellHeight) / 2) / this.cellHeight);
-            return [row, col];
-        }else{
-            return [-1];
+        // there might be other types of skill that does not wait one cell,
+        // so separate this chunk of code for easier later refactor.
+    }
+
+    handlePlanting(p5) {
+        let index = myUtil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        // clicked an item from inventory, then clicked a cell:
+        if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
+            if (this.actionPoints > 0) {
+                this.stringify();
+                if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
+                    console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
+                    this.shadowPlant = null;
+                    if (this.hasActionPoints) {
+                        this.actionPoints--;
+                    }
+                    // set plant's skill
+                    this.reevaluatePlantSkills();
+
+                    // remove item from inventory
+                    this.gameState.inventory.itemDecrement();
+
+                    // set countdown for seed
+                    this.setSeedCountdown(index[0], index[1]);
+
+                    // if kiku is planted, increase upper limit of action points immediately
+                    if (this.boardObjects.getCell(index[0], index[1])?.plant?.plantType === plantTypes.KIKU) {
+                        this.maxActionPoints++;
+                        this.actionPoints++;
+                    }
+
+                    return;
+                }
+            } else {
+                if (this.hasActionPoints && this.actionPoints === 0) {
+                    this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("002"));
+                    return;
+                }
+            }
+        }
+
+        // clicked item from inventory or clicked somewhere else:
+        // handle inventory clicks later to prevent unintentional issues
+        this.gameState.inventory.handleClick(p5);
+        if (this.gameState.inventory.selectedItem !== null && index[0] === -1) {
+            this.shadowPlant = this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem);
+        } else {
+            this.shadowPlant = null;
         }
     }
 
-    drawInfoBox(p5) {
-        let boxWidth = 200;
-        let boxHeight = 60;
-        let boxX = 10;
-        let boxY = this.canvasY - boxHeight - 10;
-
-        p5.fill(50);
-        p5.noStroke();
-        p5.rect(boxX, boxY, boxWidth, boxHeight, 10);
-
-        p5.fill(255);
-        p5.textSize(18);
-        p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.text(`Row: ${this.selectedCell[0]}, Col: ${this.selectedCell[1]}`,
-            boxX + boxWidth / 2, boxY + boxHeight / 2);
+    setSeedCountdown(x, y) {
+        // used in stage 5
     }
 
-    // the coordinate transformation is
-    // (x')   ( Sx * cos(rot)  Sy * cos(rot+span) )   ( x )
-    // (  ) = (                                   ) = (   )
-    // (y')   ( Sx * sin(rot)  Sy * sin(rot+span) )   ( y )
+    // miscellaneous end turn settings
+    endTurnActivity(p5) {
+        // clear undo stack
+        this.undoStack = [];
 
-    newCoorX(x, y) {
-        return x * this.Sx * Math.cos(this.rot) + y * this.Sy * Math.cos(this.span + this.rot);
+        // remove dead plants and reset plant skill
+        let cells = this.boardObjects.getAllCellsWithPlant();
+        for (let cell of cells) {
+            // a safe-lock to remove all dead plants
+            if (cell.plant.status === false) {
+                this.boardObjects.removePlant(cell.x, cell.y);
+            }
+            // reset active skill status
+            if (cell.plant.hasActive) {
+                cell.plant.useLeft = cell.plant.maxUse;
+            }
+        }
+
+        // update seed status
+        let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
+        for (let cws of cellsWithSeed) {
+            let grown = cws.seed.grow(p5);
+            if (grown.type === itemTypes.SEED) {
+                cws.seed = grown;
+            } else if (grown.type === itemTypes.PLANT) {
+                cws.removeSeed();
+                cws.plant = grown;
+            }
+        }
+
+        // reevaluate plants' skills, after seeds have grown up
+        this.reevaluatePlantSkills();
+
+        // also, reconstruct ecosystem
+        this.boardObjects.setEcosystem();
+
+        // set turn and counter
+        this.turn++;
+        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
+        if (this.turn === this.maxTurn + 1) {
+            this.stageClearSettings(p5);
+            return;
+        } else {
+            this.endTurn = false;
+        }
+
+        // set next turn enemies and new inventory items
+        this.nextTurnItems(p5);
+
+        // count the total number of kiku to determine max action points
+        let count = 0;
+        for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
+            if (cwp?.plant.plantType === plantTypes.KIKU) count++;
+        }
+        this.maxActionPoints = 3 + count;
+        // reset action points
+        this.actionPoints = this.maxActionPoints;
+
+        // set action listener active
+        this.gameState.setPlayerCanClick(true);
     }
 
-    newCoorY(x, y) {
-        return this.Hy * (x * this.Sx * Math.sin(this.rot) + y * this.Sy * Math.sin(this.span + this.rot));
+    stageClearSettings(p5) {
+        // when a stage is cleared:    
+        // 1. store all living plants, this comes after seeds have grown
+        let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
+        for (let cws of cellsWithPlant) {
+            this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
+        }
+        // 2. remove all seeds and bamboo from inventory
+        this.gameState.inventory.removeAllSeedsAndBamboo();
+        // 3. set current stage cleared
+        this.gameState.setStageCleared(this);
+        // 4. reset action listener
+        this.gameState.setPlayerCanClick(true);
     }
 
-    oldCoorX(newX, newY) {
-        return (newX * Math.cos(this.rot) - (newY / this.Hy) * Math.sin(this.rot)) / this.Sx;
+    setAndResolveCounter(p5) {
+        let cells = this.boardObjects.getAllCellsWithPlant();
+
+        // increment earth counters, decrement cold counters.
+        for (let cwp of cells) {
+            if (cwp.plant.earthCounter === undefined) {
+                cwp.plant.earthCounter = 1;
+            } else {
+                cwp.plant.earthCounter++;
+            }
+            if (cwp.terrain.terrainType === terrainTypes.SNOWFIELD) {
+                if (cwp.plant.coldCounter === undefined) {
+                    cwp.plant.coldCounter = 2;
+                } else {
+                    cwp.plant.coldCounter--;
+                    if (cwp.plant.coldCounter <= 0) {
+                        InteractionLogic.findPlantAndDelete(this, cwp.plant);
+                    }
+                }
+            }
+        }
+
+        if (!this.hasBamboo) {
+            // if a tree has a counter=10, insert bamboo into inventory.
+            for (let cwp of cells) {
+                if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
+                    this.modifyBoard(p5, "bamboo");
+                    this.hasBamboo = true;
+                    break;
+                }
+            }
+        }
     }
 
-    oldCoorY(newX, newY) {
-        return ((newX * Math.cos(this.span + this.rot)) - (newY / this.Hy) * Math.sin(this.span + this.rot)) / this.Sy;
+    // when a new plant is placed or removed,
+    // we need to verify all plant's skill status.
+    reevaluatePlantSkills() {
+        let cells = this.boardObjects.getAllCellsWithPlant();
+        for (let cell of cells) {
+            cell.plant.reevaluateSkills(this, cell);
+        }
     }
 
+    // this does not activate skill immediately, but go to awaiting status
+    activatePlantSkill(p5) {
+        let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
+        if (spellCaster.plant.plantType === plantTypes.TREE || spellCaster.plant.plantType === plantTypes.ORCHID) {
+            this.awaitCell = true;
+        }
+    }
+
+    nextTurnItems(p5) {
+        console.error("nextTurnEnemies is not overridden!");
+    }
+
+    // set stage inventory at entering, called by controller
+    setStageInventory(p5) {
+        console.error("setStageInventory is not overridden!");
+    }
+
+    // set stage terrain, called when the stage is loaded or reset
+    setStageTerrain(p5) {
+        console.error("setStageTerrain is not overridden!");
+    }
+
+    getTurnButtonText() {
+        return `turn ${this.turn} in ${this.maxTurn}`;
+    }
 }
