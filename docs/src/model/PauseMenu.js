@@ -10,7 +10,6 @@ export class PauseMenu {
     }
 
     setup(p5) {
-
         let [buttonWidth, buttonHeight] = myutil.relative2absolute(0.15, 0.07);
         let [buttonX, buttonY] = myutil.relative2absolute(0.5, 0.3);
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
@@ -20,24 +19,27 @@ export class PauseMenu {
             this.gameState.togglePaused();
         }
 
-         let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
-         loadGameButton.onClick = () => {
-             GameSave.load(p5);
-             this.gameState.togglePaused();
-             console.log(p5.controller.gameState.currentStage)
-         }
+        let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+        loadGameButton.onClick = () => {
+            GameSave.load(p5);
+            this.gameState.togglePaused();
+        }
 
         let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
         saveGameButton.onClick = () => {
             GameSave.save(p5);
             this.gameState.togglePaused();
-            console.log(p5.controller.gameState.currentStage)
         }
 
-        let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Quit");
+        let escapeText = this.gameState.state === stateCode.PLAY ? 'Quit' : 'Back';
+        let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, escapeText);
         escapeButton.onClick = () => {
             this.gameState.togglePaused();
-            this.gameState.setState(stateCode.STANDBY);
+            if (this.gameState.state === stateCode.PLAY) {
+                this.gameState.setState(stateCode.STANDBY);
+            } else {
+                this.gameState.setState(stateCode.MENU);
+            }
             this.gameState.setPlayerCanClick(true);
         };
         this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);
@@ -50,10 +52,6 @@ export class PauseMenu {
             }
         }
         this.gameState.togglePaused();
-    }
-
-    handleKey() {
-
     }
 
     draw(p5) {

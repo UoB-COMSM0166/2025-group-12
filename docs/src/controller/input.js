@@ -18,7 +18,7 @@ export class InputHandler {
                 this.keyboradKeys.push(e.key);
             } else if (e.key === 'q') {
                 //
-            } else if (e.key === 'Escape' && this.gameState.state === stateCode.PLAY) {
+            } else if (e.key === 'Escape' && this.gameState.state !== stateCode.MENU) {
                 // pause the game
                 this.gameState.togglePaused();
                 // comment out since code change

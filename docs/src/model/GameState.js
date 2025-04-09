@@ -13,7 +13,6 @@ import {Tsunami1PlayBoard} from "./stages/Tsu1.js";
 export const stateCode = {
     MENU: 1,
     STANDBY: 2,
-    MAP: 3,
     PLAY: 4,
     FINISH: 8
 };
@@ -24,9 +23,9 @@ export const stageGroup = {
     NO_STAGE: 0,
     TORNADO: 1,     // 5 stages expected
     VOLCANO: 2,     // 1
-    EARTHQUAKE: 4,  // 5?
-    BLIZZARD: 8,   // 5?
-    TSUNAMI: 16     // 1
+    EARTHQUAKE: 3,  // 5?
+    BLIZZARD: 4,   // 5?
+    TSUNAMI: 5,     // 1
 }
 
 // game state should not handle any switching logic but only stores information
@@ -39,6 +38,7 @@ export class GameState {
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
         this.clearedStages = new Map();
+        this.clearedStages.set(stageGroup.NO_STAGE, 1);
 
         this.gsf = new GameStageFactory();
         this.languageManager = new LanguageManager();
@@ -89,6 +89,7 @@ export class GameState {
 class GameStageFactory {
     constructor() {
         this.stageClasses = Array.from({length: 20}, () => []);
+
         this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);

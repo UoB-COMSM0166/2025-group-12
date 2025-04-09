@@ -38,6 +38,7 @@ export class Tsunami1PlayBoard extends BlizzardPlayBoard {
 
     // set stage inventory at entering, called by controller
     setStageInventory(p5) {
+        this.gameState.inventory.pushItem2Inventory(p5, "Palm", 10);
         this.gameState.inventory.pushItem2Inventory(p5, "Tree", 10);
         this.gameState.inventory.pushItem2Inventory(p5, "Bush", 10);
         this.gameState.inventory.pushItem2Inventory(p5, "Orchid", 10);
@@ -68,6 +69,9 @@ export class Tsunami1PlayBoard extends BlizzardPlayBoard {
 
     nextTurnItems(p5) {
         if(this.turn === 2) TsunamiAnimation.createNewTsunami(p5, this, 1, -1, 5);
+        if(this.turn === 3) TsunamiAnimation.createNewTsunami(p5, this, 2, -1, 5);
+        if(this.turn === 4) TsunamiAnimation.createNewTsunami(p5, this, 3, -1, 5);
+        if(this.turn === 5) TsunamiAnimation.createNewTsunami(p5, this, 4, -1, 5);
     }
 
     modifyBoard(p5, code) {

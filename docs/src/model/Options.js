@@ -1,8 +1,6 @@
 import {Button} from "../items/Button.js";
 import {myutil} from "../../lib/myutil.js";
-import {GameSave} from "./GameSave.js";
 import {GameState, stateCode} from "./GameState.js";
-import {LanguageManager} from "../LanguageManager.js";
 import {CanvasSize} from "../CanvasSize.js";
 import {Checkbox} from "../items/Checkbox.js";
 
@@ -34,13 +32,12 @@ export class Options {
         let [checkboxWidth, checkboxHeight] = myutil.relative2absolute(0.001 * 9, 0.001 * 16);
         let fullScreenCheckbox = new Checkbox(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, checkboxWidth, checkboxHeight, 'Fullscreen');
         fullScreenCheckbox.onClick = () => {
-            if(fullScreenCheckbox.isChecked){
+            if (fullScreenCheckbox.isChecked) {
                 myutil.exitFullscreen();
                 p5.resizeCanvas(1280, 720);
                 CanvasSize.setSize(1280, 720);
                 this.controller.reset(p5);
-            }
-            else{
+            } else {
                 let screenWidth = window.screen.width;
                 let screenHeight = window.screen.height;
                 myutil.enterFullscreen();
@@ -53,7 +50,7 @@ export class Options {
         this.buttons.push(englishButton, chineseButton, fullScreenCheckbox);
     }
 
-    reset(p5){
+    reset(p5) {
 
     }
 

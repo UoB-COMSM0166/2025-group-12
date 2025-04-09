@@ -29,13 +29,17 @@ export class GameSave {
             gameState.currentStageGroup = stateObject.currentStageGroup;
             gameState.inventory = stateObject.inventory ? Inventory.parse(stateObject.inventory, p5) : null;
             gameState.clearedStages = new Map(JSON.parse(stateObject.clearedStages));
-            gameState.currentStage = stateObject.currentStage? PlayBoard.loadGame(p5, gameState, stateObject.currentStage) : null;
+            gameState.currentStage = stateObject.currentStage ? PlayBoard.loadGame(p5, gameState, stateObject.currentStage) : null;
 
             p5.controller.menus[stateCode.PLAY] = gameState.currentStage;
             p5.controller.saveState = stateObject.saveState;
             p5.controller.gameState = gameState;
+
+            if (gameState.state === stateCode.STANDBY) p5.controller.menus[stateCode.STANDBY].setup(p5);
+            return true;
         } else {
             console.error('Save data not found!');
+            return false;
         }
     }
 }

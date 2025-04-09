@@ -22,6 +22,16 @@ export class Screen {
         console.error("handleClick not implemented!");
     }
 
+    handleScroll(p5, event) {
+        if (!this.gameState) return;
+        if (p5.mouseX >= this.gameState.inventory.inventoryX
+            && p5.mouseX <= this.gameState.inventory.inventoryX + this.gameState.inventory.inventoryWidth
+            && p5.mouseY >= this.gameState.inventory.inventoryY
+            && p5.mouseY <= this.gameState.inventory.inventoryY + this.gameState.inventory.inventoryHeight) {
+            this.gameState.inventory.handleScroll(event);
+        }
+    }
+
     draw(p5) {
         console.error("draw not implemented!");
     }

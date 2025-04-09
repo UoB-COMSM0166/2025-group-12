@@ -14,10 +14,9 @@ export class Button {
     }
 
     draw(p5) {
-        p5.push();
         this.isHovered = this.hasMouseOver(p5);
-        let baseColor = p5.color(100, 150, 255);
-        let hoverColor = p5.color(150, 200, 255);
+        let baseColor = "rgb(100, 150, 255)";
+        let hoverColor = "rgb(150, 200, 255)";
         let buttonColor = this.isHovered ? hoverColor : baseColor;
         p5.drawingContext.shadowBlur = this.isHovered ? 15 : 5;
         p5.drawingContext.shadowColor = p5.color(0, 0, 0, 50);
@@ -30,7 +29,6 @@ export class Button {
         p5.textSize(18);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.text(this.text, this.x + this.width / 2, this.y + this.height / 2);
-        p5.pop();
     }
 
     set onClick(func) {
