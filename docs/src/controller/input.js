@@ -1,8 +1,8 @@
 import {stateCode} from "../model/GameState.js";
 
 export class InputHandler {
-    constructor(gameState) {
-        this.gameState = gameState;
+    constructor(controller) {
+        this.controller = controller;
         this.keys = [];
         this.keyboradKeys = [];
         this.gamepadKeys = [];
@@ -67,8 +67,11 @@ export class InputHandler {
                 } else if (!gamepad.buttons[0].pressed && this.gamepadKeys.includes(' ')) {
                     this.gamepadKeys.splice(this.gamepadKeys.indexOf(' '), 1);
                 }
+
+                if (gamepad.buttons[12].pressed) this.controller.menus[stateCode.MENU].moveSelection(-1, 0);
+                if (gamepad.buttons[13].pressed) this.controller.menus[stateCode.MENU].moveSelection(-1, 0);
             }
+            this.keys = [...new Set([...this.keyboradKeys, ...this.gamepadKeys])];
         }
-        this.keys = [...new Set([...this.keyboradKeys, ...this.gamepadKeys])];
     }
 }

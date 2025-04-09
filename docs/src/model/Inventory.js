@@ -15,6 +15,8 @@ export class Inventory {
         this.selectedItem = null; // a String
         this.scrollIndex = 0;
         this.maxVisibleItems = 6;
+        this.status = [false, false, false, false, false, false];
+        this.index = 0;
 
         // for fast lookup when creating item
         this.itemPrototypes = this.initPrototypes(p5); // Map<String name, Plant/Seed instance>
@@ -66,9 +68,17 @@ export class Inventory {
         // loop inventory items
         let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
         let index = 0;
-        for (let [key, value] of visibleItems) {
+        for (let i = 0; i < visibleItems.length; i++) {
+            let key = visibleItems[i][0];
+            let value = visibleItems[i][1];
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
             let itemInstance = this.itemPrototypes.get(key);
+            if (this.index === i) {
+                p5.stroke(255, 0, 0);
+                p5.strokeWeight(4);
+            } else {
+                p5.stroke(255, 255, 255);
+            }
             p5.fill(itemInstance.color);
             p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - this.itemInter, this.itemInter);
             p5.fill(0);

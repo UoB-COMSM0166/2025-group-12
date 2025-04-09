@@ -1,10 +1,12 @@
-import {stateCode, stageGroup, GameState} from "../model/GameState.js";
+import {GameState, stateCode} from "../model/GameState.js";
 import {StartMenu} from "../model/Menu.js";
 import {StandbyMenu} from "../model/Standby.js";
 import {InputHandler} from "./input.js";
 import {PauseMenu} from "../model/PauseMenu.js";
 import {Options} from "../model/Options.js";
 import {GameMap} from "../model/GameMap.js";
+import {myutil} from "../../lib/myutil.js";
+import {ConsoleState} from "../model/ConsoleState.js";
 
 // controller should never invoke any specific field but only encapsulated methods.
 export class Controller {
@@ -21,8 +23,9 @@ export class Controller {
         this.pauseMenu = new PauseMenu(this.gameState);
         this.options = new Options(this);
         // key input
-        this.input = new InputHandler(this.gameState);
+        this.input = new InputHandler(this);
         this.saveState = stateCode.MENU; // default
+        this.consoleState = new ConsoleState(this.gameState);
     }
 
     setup(p5) {
@@ -85,6 +88,7 @@ export class Controller {
         if (this.gameState.showOptions) {
             this.options.draw(p5);
         }
+        this.consoleState.updateGamepad(this.saveState, currentMenu, p5);
     }
 
     // when shift to PLAY from STANDBY, create the new play board

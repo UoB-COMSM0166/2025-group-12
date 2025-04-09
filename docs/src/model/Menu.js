@@ -10,6 +10,12 @@ export class StartMenu {
         this.gameState = gameState;
         this.buttons = [];
         this.languageManager = this.gameState.languageManager;
+        this.interactives = Array.from({length: 5},
+            () => Array.from({length: 5}, () => null));
+        this.row = 0;
+        this.col = 0;
+        this.x = 640;
+        this.y = 360;
     }
 
     setup(p5) {
@@ -30,6 +36,7 @@ export class StartMenu {
         let continueButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Other");
 
         this.buttons.push(newGameButton, optionsButton, continueButton);
+        this.setupInteractive();
     }
 
     reset(p5) {
@@ -57,6 +64,8 @@ export class StartMenu {
             }
             button.draw(p5);
         }
+
+        p5.circle(this.x, this.y, 10);
     }
 
     changeNewToResume() {
@@ -71,6 +80,25 @@ export class StartMenu {
         this.buttons[1].text = this.languageManager.getText('loadGame');
         this.buttons[2].text = this.languageManager.getText('options');
     }
+
+    setupInteractive() {
+        this.interactives[0][0] = this.buttons[0];
+        this.interactives[1][0] = this.buttons[1];
+        this.interactives[2][0] = this.buttons[2];
+    }
+
+    moveSelection(dRow, dCol) {
+        let newRow = Math.max(0, Math.min(this.row + dRow, this.interactives.length - 1));
+        let newCol = Math.max(0, Math.min(this.col + dCol, this.interactives[newRow].length - 1));
+
+        if(this.interactives[newRow][newCol]){
+            this.interactives[this.row][this.col].isSelected = false;
+            this.row = newRow;
+            this.col = newCol;
+            this.interactives[newRow][newCol].isSelected = true;
+        }
+    }
+
 }
 
 

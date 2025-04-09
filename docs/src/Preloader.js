@@ -38,6 +38,7 @@ export function loadImages(p5) {
     images.set("Tsunami", p5.loadImage(basePath + "Tsunami.png"));
 
     images.set("GameMap", p5.loadImage(basePath + "GameMap.png"));
+    images.set("MountainLayer", p5.loadImage(basePath + "MountainLayer.png"));
     return images;
 }
 

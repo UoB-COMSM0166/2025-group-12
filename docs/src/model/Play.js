@@ -75,6 +75,14 @@ export class PlayBoard extends Screen {
 
         // save last state
         this.undoStack = [];
+
+        this.interactives = Array.from({length: 5},
+            () => Array.from({length: 5}, () => null));
+
+        this.row = 0;
+        this.col = 0;
+        this.x = 640;
+        this.y = 360;
     }
 
     /* public methods */
@@ -392,6 +400,8 @@ export class PlayBoard extends Screen {
             p5.image(this.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
             p5.pop();
         }
+
+        p5.circle(this.x, this.y, 10);
     }
 
     // ----------------------------------- //
@@ -416,6 +426,16 @@ export class PlayBoard extends Screen {
         if(this.boardObjects.getCell(2, 2).terrain.terrainType === terrainTypes.VOLCANO) {
             let [x1, y1] = myutil.cellIndex2Pos(p5, this, 2, 2, p5.CORNERS);
             p5.image(p5.images.get("VolcanoLayer"), x1 - this.cellWidth * 3 / 2, y1 - this.cellHeight * 3 + this.cellHeight/2 + 1, this.cellWidth * 3, this.cellHeight * 3);
+        }
+
+
+        for(let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                if(this.boardObjects.getCell(i, j).terrain.terrainType === terrainTypes.MOUNTAIN){
+                    let [x, y] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
+                    p5.image(p5.images.get("MountainLayer"), x-this.cellWidth/2, y - this.cellHeight + this.cellHeight/2, this.cellWidth, this.cellHeight);
+                }
+            }
         }
         // if skill is activated and awaiting target, set highlight on
         if (this.awaitCell) {
@@ -724,4 +744,8 @@ export class PlayBoard extends Screen {
     getTurnButtonText() {
         return `turn ${this.turn} in ${this.maxTurn}`;
     }
+
+    setupInteractive(){}
+
+    moveSelection(){}
 }
