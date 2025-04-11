@@ -18,11 +18,11 @@ export class StandbyMenu extends Screen {
         this.initAllFloatingWindows(p5);
 
         const buttonConfigs = [
-            {x: 0.52, y: 0.68, image: "Tornado", group: stageGroup.TORNADO},
-            {x: 0.475, y: 0.475, image: "VolcanoLayer", group: stageGroup.VOLCANO},
-            {x: 0.65, y: 0.3, image: "Landslide", group: stageGroup.EARTHQUAKE},
-            {x: 0.18, y: 0.65, image: "Blizzard", group: stageGroup.BLIZZARD},
-            {x: 0.36, y: 0.3, image: "Tsunami", group: stageGroup.TSUNAMI}
+            {x: 0.52, y: 0.68, image: "TornadoIcon", group: stageGroup.TORNADO},
+            {x: 0.475, y: 0.475, image: "VolcanoIcon", group: stageGroup.VOLCANO},
+            {x: 0.65, y: 0.3, image: "EarthquakeIcon", group: stageGroup.EARTHQUAKE},
+            {x: 0.18, y: 0.65, image: "RainIcon", group: stageGroup.BLIZZARD},
+            {x: 0.36, y: 0.3, image: "TsunamiIcon", group: stageGroup.TSUNAMI}
         ];
 
         this.buttons = buttonConfigs.map(cfg => this.createStageButton(p5, cfg.x, cfg.y, cfg.image, cfg.group));
@@ -61,6 +61,7 @@ export class StandbyMenu extends Screen {
         this.buttons.forEach(button => button.circle = null);
 
         if (this.handleFloatingWindow()) {
+            console.log("sholud invoke");
             return;
         }
 
@@ -229,10 +230,17 @@ export class StandbyMenu extends Screen {
     }
 
     setupGamepad(){
-
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+        });
     }
 
     setupMouse() {
+        p5.cursor();
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
     }
 
     cancel(){
