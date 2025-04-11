@@ -40,6 +40,7 @@ export function loadImages(p5) {
 
     images.set("GameMapBG", p5.loadImage(basePath + "GameMapBG.png"));
     images.set("Lock", p5.loadImage(basePath + "Lock.png"));
+    images.set("MountainLayer", p5.loadImage(basePath + "MountainLayer.png"));
     return images;
 }
 

@@ -76,18 +76,19 @@ export class PlayBoard extends Screen {
         // save last state
         this.undoStack = [];
 
-        this.interactives = Array.from({length: 5},
-            () => Array.from({length: 5}, () => null));
-
-        this.row = 0;
-        this.col = 0;
-        this.x = 640;
-        this.y = 360;
+        this.selectInv = false;
+        this.mode = "mouse";
     }
 
     /* public methods */
 
     setup(p5) {
+        // reset position
+        p5.gamepadX = this.canvasWidth / 2;
+        p5.gamepadY = this.canvasHeight / 2;
+        p5.mouseSpeed = 10;
+        this.mode = this.gameState.mode;
+        this.gameState.inventory.mode = this.gameState.mode;
         // action listeners
         this.setupActionListeners(p5);
 
@@ -204,6 +205,74 @@ export class PlayBoard extends Screen {
         this.clickedCell(p5);
     }
 
+    handleGamepad(index){
+        switch (index) {
+            case 1:
+                this.cancel();
+                break;
+            case 3:
+                if(!this.isGameOver && this.floatingWindow == null) {
+                    this.buttons[1].onClick();
+                }
+                break;
+            case 6:
+                if(!this.isGameOver && this.floatingWindow == null) {
+                    this.buttons[2].onClick();
+                }
+                break;
+            case 9:
+                this.gameState.togglePaused();
+                break;
+            case 12:
+                this.gameState.inventory.isSelected = true;
+                this.gameState.inventory.index = Math.max(0, this.gameState.inventory.index-1);
+                if(this.gameState.inventory.index === 0){
+                    const event = {};
+                    event.deltaY = -1;
+                    this.gameState.inventory.handleScroll(event);
+                }
+                break;
+            case 13:
+                this.gameState.inventory.isSelected = true;
+                let visibleItems = Array.from(this.gameState.inventory.items.entries()).slice(this.gameState.inventory.scrollIndex, this.gameState.inventory.scrollIndex + this.gameState.inventory.maxVisibleItems);
+                this.gameState.inventory.index = Math.min(visibleItems.length-1, this.gameState.inventory.index + 1);
+                if(this.gameState.inventory.index === 5) {
+                    const event = {};
+                    event.deltaY = 1;
+                    this.gameState.inventory.handleScroll(event);
+                }
+                break;
+        }
+
+    }
+
+    ;
+
+    handleAnalogStick(axes, p5) {
+        if(this.gameState.paused) return;
+        if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
+            // edges of the grid under old grid-centered coordinates
+            let leftEdge = -(this.gridSize * this.cellWidth) / 2;
+            let rightEdge = (this.gridSize * this.cellWidth) / 2;
+            let topEdge = -(this.gridSize * this.cellHeight) / 2;
+            let bottomEdge = (this.gridSize * this.cellHeight) / 2;
+
+            let updateX = p5.gamepadX + axes[0] * p5.mouseSpeed;
+            let updateY = p5.gamepadY + axes[1] * p5.mouseSpeed;
+
+            // mouse position under old grid-centered coordinates
+            let oldX = myutil.oldCoorX(this, updateX - this.canvasWidth / 2, updateY - this.canvasHeight / 2);
+            let oldY = myutil.oldCoorY(this, updateX - this.canvasWidth / 2, updateY - this.canvasHeight / 2);
+
+            oldX = oldX <= leftEdge ? leftEdge : oldX;
+            oldY = oldY <= topEdge ? topEdge : oldY;
+            oldX = oldX >= rightEdge ? rightEdge : oldX;
+            oldY = oldY >= bottomEdge ? bottomEdge : oldY;
+            p5.gamepadX = myutil.newCoorX(this, oldX, oldY) + this.canvasWidth / 2;
+            p5.gamepadY = myutil.newCoorY(this, oldX, oldY) + this.canvasHeight / 2;
+        }
+    }
+
     stringify() {
         let status = {
             boardObjects: this.boardObjects.stringify(),
@@ -296,12 +365,14 @@ export class PlayBoard extends Screen {
         p5.background(180);
 
         // set cursor style
-        if (this.gameState.inventory.selectedItem !== null) {
-            p5.cursor('grab');
-        } else if (this.awaitCell) {
-            p5.cursor('pointer');
-        } else {
-            p5.cursor(p5.ARROW);
+        if(this.gameState.mode === "mouse"){
+            if (this.gameState.inventory.selectedItem !== null) {
+                p5.cursor('grab');
+            } else if (this.awaitCell) {
+                p5.cursor('pointer');
+            } else {
+                p5.cursor(p5.ARROW);
+            }
         }
 
         // stage number text
@@ -388,11 +459,18 @@ export class PlayBoard extends Screen {
             let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
             p5.push();
             p5.tint(255, 180);
-            p5.image(this.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
+            if(this.gameState.mode === "mouse") p5.image(this.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
+            else {
+                p5.image(this.shadowPlant.img, p5.gamepadX - imgSize / 2, p5.gamepadY - 3 * imgSize / 4, imgSize, imgSize);
+            }
+
             p5.pop();
         }
 
-        p5.circle(this.x, this.y, 10);
+        if(this.gameState.mode === "gamepad"){
+            p5.fill('yellow');
+            p5.circle(p5.gamepadX, p5.gamepadY, 10);
+        }
     }
 
     // ----------------------------------- //
@@ -446,7 +524,9 @@ export class PlayBoard extends Screen {
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = myutil.cellIndex2Pos(p5, this, i, j, p5.CORNERS);
-                if (myutil.isCursorInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)) {
+                let isCursorInQuad = this.gameState.mode === "mouse" ? myutil.isCursorInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)
+                    : myutil.isCursorInQuad(p5.gamepadX, p5.gamepadY, x1, y1, x2, y2, x3, y3, x4, y4)
+                if (isCursorInQuad) {
                     p5.stroke('rgb(255,238,0)');
                     p5.strokeWeight(2);
                     p5.noFill();
@@ -478,7 +558,13 @@ export class PlayBoard extends Screen {
 
     // set the clicked cell to draw info box
     clickedCell(p5) {
-        let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        let index;
+        if(this.gameState.mode === "gamepad") {
+            index = myutil.pos2CellIndex(this, p5.gamepadX, p5.gamepadY);
+        }
+        else{
+            index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        }
         if (index[0] === -1) {
             this.selectedCell = [];
         } else {
@@ -540,7 +626,9 @@ export class PlayBoard extends Screen {
     }
 
     handlePlanting(p5) {
-        let index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        let index;
+        if(this.gameState.mode === "mouse") index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
+        else index = myutil.pos2CellIndex(this, p5.gamepadX, p5.gamepadY);
         // clicked an item from inventory, then clicked a cell:
         if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (this.actionPoints > 0) {
@@ -565,7 +653,6 @@ export class PlayBoard extends Screen {
                         this.maxActionPoints++;
                         this.actionPoints++;
                     }
-
                     return;
                 }
             } else {
@@ -579,7 +666,7 @@ export class PlayBoard extends Screen {
         // clicked item from inventory or clicked somewhere else:
         // handle inventory clicks later to prevent unintentional issues
         this.gameState.inventory.handleClick(p5);
-        if (this.gameState.inventory.selectedItem !== null && index[0] === -1) {
+        if (this.gameState.inventory.selectedItem !== null) {
             this.shadowPlant = this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem);
         } else {
             this.shadowPlant = null;
@@ -736,7 +823,28 @@ export class PlayBoard extends Screen {
         return `turn ${this.turn} in ${this.maxTurn}`;
     }
 
-    setupInteractive(){}
+    setupGamepad(p5){
+        p5.noCursor();
+        this.gameState.inventory.mode = "gamepad";
+        this.mode = "gamepad";
+    }
 
-    moveSelection(){}
+    setupMouse(p5) {
+        p5.cursor();
+        this.gameState.inventory.mode = "mouse";
+        this.mode = "mouse";
+    }
+
+    cancel() {
+        if(this.gameState.paused) this.gameState.togglePaused();
+        else{
+            if(this.gameState.inventory.selectedItem) {
+                this.gameState.inventory.selectedItem = null;
+                this.shadowPlant = null;
+                return;
+            }
+            this.gameState.inventory.index = -1;
+            this.gameState.inventory.isSelected = false;
+        }
+    }
 }

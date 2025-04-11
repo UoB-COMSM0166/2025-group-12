@@ -43,6 +43,7 @@ export class GameState {
         this.gsf = new GameStageFactory();
         this.languageManager = new LanguageManager();
         this.showOptions = false;
+        this.mode = "mouse";
     }
 
     setState(newState) {

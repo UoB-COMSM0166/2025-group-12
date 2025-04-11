@@ -39,6 +39,10 @@ export class MapButton {
         this._onClick = func;
     }
 
+    get onClick() {
+        return this._onClick;
+    }
+
     unlock(gameState) {
         if (gameState.isStageCleared(this.stageGroup - 1)) {
             this.isLocked = false;
@@ -56,8 +60,9 @@ export class MapButton {
     }
 
     hasMouseOver(p5) {
-        return p5.mouseX > this.x && p5.mouseX < this.x + this.width
-            && p5.mouseY > this.y && p5.mouseY < this.y + this.height;
+        let gamepadOver = p5.gamepadX > this.x && p5.gamepadX < this.x + this.width && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
+        return (p5.mouseX > this.x && p5.mouseX < this.x + this.width
+            && p5.mouseY > this.y && p5.mouseY < this.y + this.height) || gamepadOver;
     }
 
     mouseClick(p5) {

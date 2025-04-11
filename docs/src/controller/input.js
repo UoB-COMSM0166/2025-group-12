@@ -1,8 +1,8 @@
 import {stateCode} from "../model/GameState.js";
 
 export class InputHandler {
-    constructor(controller) {
-        this.controller = controller;
+    constructor(gameState) {
+        this.gameState = gameState;
         this.keys = [];
         this.keyboradKeys = [];
         this.gamepadKeys = [];
@@ -43,35 +43,5 @@ export class InputHandler {
         window.addEventListener('gamepaddisconnected', (e) => {
             this.gamepad = null;
         });
-    }
-
-    updateGamepad() {
-        if (this.gamepad) {
-            const gamepads = navigator.getGamepads();
-            const gamepad = gamepads[this.gamepad.index];
-
-            if (gamepad) {
-                const axisX = gamepad.axes[0];
-
-                if (axisX > 0.5 && !this.gamepadKeys.includes('d')) {
-                    this.gamepadKeys.push('d');
-                } else if (axisX < -0.5 && !this.gamepadKeys.includes('a')) {
-                    this.gamepadKeys.push('a');
-                } else if (Math.abs(axisX) < 0.5 && (this.gamepadKeys.includes('a') || this.gamepadKeys.includes('d'))) {
-                    this.gamepadKeys.splice(this.gamepadKeys.indexOf('a'), 1);
-                    this.gamepadKeys.splice(this.gamepadKeys.indexOf('d'), 1);
-                }
-
-                if (gamepad.buttons[0].pressed && !this.gamepadKeys.includes(' ')) {
-                    this.gamepadKeys.push(' ');
-                } else if (!gamepad.buttons[0].pressed && this.gamepadKeys.includes(' ')) {
-                    this.gamepadKeys.splice(this.gamepadKeys.indexOf(' '), 1);
-                }
-
-                if (gamepad.buttons[12].pressed) this.controller.menus[stateCode.MENU].moveSelection(-1, 0);
-                if (gamepad.buttons[13].pressed) this.controller.menus[stateCode.MENU].moveSelection(-1, 0);
-            }
-            this.keys = [...new Set([...this.keyboradKeys, ...this.gamepadKeys])];
-        }
     }
 }

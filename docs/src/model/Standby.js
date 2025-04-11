@@ -74,6 +74,29 @@ export class StandbyMenu extends Screen {
         this.selectedStageGroup = stageGroup.NO_STAGE;
     }
 
+    handleGamepad(index){
+        switch (index){
+            case 1:
+                this.cancel();
+                break;
+        }
+    }
+
+    handleAnalogStick(axes, p5) {
+        if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
+            // edges of the grid under old grid-centered coordinates
+            let updateX = p5.gamepadX + axes[0] * p5.mouseSpeed;
+            let updateY = p5.gamepadY + axes[1] * p5.mouseSpeed;
+
+            updateX = updateX <= 0 ? 0 : updateX;
+            updateY = updateY <= 0 ? 0 : updateY;
+            updateX = updateX >= CanvasSize.getSize()[0] ? CanvasSize.getSize()[0] : updateX;
+            updateY = updateY >= CanvasSize.getSize()[1] ? CanvasSize.getSize()[1] : updateY;
+            p5.gamepadX = updateX;
+            p5.gamepadY = updateY;
+        }
+    }
+
     draw(p5) {
         let canvasSize = CanvasSize.getSize();
         p5.image(this.background, 0, 0, canvasSize[0], canvasSize[1]);
@@ -90,6 +113,11 @@ export class StandbyMenu extends Screen {
         }
 
         this.drawFloatingWindow(p5);
+
+        if(this.gameState.mode === "gamepad") {
+            p5.fill('yellow');
+            p5.circle(p5.gamepadX, p5.gamepadY, 10);
+        }
     }
 
     drawStageInfo(p5, group) {
@@ -198,5 +226,19 @@ export class StandbyMenu extends Screen {
         }));
 
         this.allFloatingWindows = afw;
+    }
+
+    setupGamepad(){
+
+    }
+
+    setupMouse() {
+    }
+
+    cancel(){
+        this.selectedStageGroup = stageGroup.NO_STAGE;
+        this.buttons.forEach(button => {
+            button.circle = null;
+        });
     }
 }

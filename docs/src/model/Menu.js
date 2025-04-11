@@ -9,6 +9,7 @@ export class StartMenu extends Screen {
     constructor(gameState) {
         super(gameState);
         this.languageManager = this.gameState.languageManager;
+        this.index = 0;
     }
 
     setup(p5) {
@@ -47,6 +48,43 @@ export class StartMenu extends Screen {
         }
         for (let button of this.buttons) {
             button.mouseClick(p5);
+        }
+    }
+
+    handleGamepad(index){
+        switch (index) {
+            case 12:
+                this.buttons[this.index].isSelected = false;
+                if (this.index === 0) this.index = 2;
+                else this.index--;
+                this.buttons[this.index].isSelected = true;
+                break;
+            case 13:
+                this.buttons[this.index].isSelected = false;
+                if (this.index === 2) this.index = 0;
+                else this.index++;
+                this.buttons[this.index].isSelected = true;
+                break;
+        }
+
+    }
+
+    handleAnalogStick(axes) {
+
+    }
+
+    handleAnalogStickPressed(axes) {
+        if(axes[1] < 0){
+            this.buttons[this.index].isSelected = false;
+            if (this.index === 0) this.index = 2;
+            else this.index--;
+            this.buttons[this.index].isSelected = true;
+        }
+        else{
+            this.buttons[this.index].isSelected = false;
+            if (this.index === 2) this.index = 0;
+            else this.index++;
+            this.buttons[this.index].isSelected = true;
         }
     }
 
@@ -94,6 +132,27 @@ export class StartMenu extends Screen {
         myutil.commonFloatingWindows(p5, afw);
 
         this.allFloatingWindows = afw;
+    }
+
+    setupGamepad(p5){
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+            button.isSelected = false;
+        });
+        this.buttons[0].isSelected = true;
+    }
+
+    setupMouse(p5) {
+        p5.cursor();
+        this.buttons[this.index].isSelected = false;
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
+    }
+
+    cancel(){
+
     }
 }
 
