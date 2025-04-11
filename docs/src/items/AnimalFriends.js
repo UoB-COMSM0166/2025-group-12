@@ -1,8 +1,5 @@
-import {Movable} from "./Movable.js";
-
-export class AnimalFriends extends Movable {
+export class AnimalFriends {
     constructor(p5, target) {
-        super();
         this.target = target;
         this.x = 0;
         this.y = 0;

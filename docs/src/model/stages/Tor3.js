@@ -1,13 +1,3 @@
-import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myUtil} from "../../../lib/myUtil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Bandit, Lumbering} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
 
 export class Tornado3PlayBoard extends PlayBoard {
     constructor(gameState) {

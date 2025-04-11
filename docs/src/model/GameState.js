@@ -7,6 +7,16 @@ export const stateCode = {
 
 // game stages are now grouped and the code refers to affiliated group
 // the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
+/**
+ * @global
+ * @typedef {Object} stageGroup
+ * @property {number} NO_STAGE
+ * @property {number} TORNADO
+ * @property {number} VOLCANO
+ * @property {number} EARTHQUAKE
+ * @property {number} BLIZZARD
+ * @property {number} TSUNAMI
+ */
 export const stageGroup = {
     NO_STAGE: 0,
     TORNADO: 1,     // 5 stages expected
@@ -18,6 +28,12 @@ export const stageGroup = {
 
 // game state should not handle any switching logic but only stores information
 export class GameState {
+    /**
+     *
+     * @param p5
+     * @param {GameStageFactory} gsf
+     * @param {InventoryModel} inventory
+     */
     constructor(p5, gsf, inventory) {
         this.state = stateCode.MENU; // default
         this.currentStageGroup = stageGroup.NO_STAGE; // no stage is selected
@@ -49,11 +65,15 @@ export class GameState {
         this.paused = !this.paused;
     }
 
-    setStageCleared(playBoard) {
-        if (this.clearedStages.has(playBoard.stageGroup)) {
-            this.clearedStages.set(playBoard.stageGroup, this.clearedStages.get(playBoard.stageGroup) + 1);
+    /**
+     *
+     * @param {stageGroup} boardStageGroup
+     */
+    setStageCleared(boardStageGroup) {
+        if (this.clearedStages.has(boardStageGroup)) {
+            this.clearedStages.set(boardStageGroup, this.clearedStages.get(boardStageGroup) + 1);
         } else {
-            this.clearedStages.set(playBoard.stageGroup, 1);
+            this.clearedStages.set(boardStageGroup, 1);
         }
     }
 

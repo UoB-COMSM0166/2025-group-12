@@ -1,3 +1,21 @@
+/**
+ * @typedef {Object} PlantLike
+ * @property {number} type
+ * @property {String} name
+ * @property {String} color
+ * @property {number} plantType
+ * @property {p5.Image} img
+ * @property {SeedLike} seed
+ * @property {number} health
+ * @property {number} maxHealth
+ * @property {boolean} status
+ * @property {boolean} hasActive
+ * @property {boolean} hasExtended
+ * @property {number} useLeft
+ * @property {number} maxUse
+ */
+
+
 export class PlantModel {
     constructor(itemTypes) {
         this.type = itemTypes.PLANT;
@@ -35,6 +53,7 @@ export class PlantSerializer {
 
     static stringify(plantInstance) {
         const object = {
+            name: plantInstance.name,
             plantType: plantInstance.plantType,
             health: plantInstance.health,
         }

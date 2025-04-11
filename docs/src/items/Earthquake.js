@@ -1,3 +1,6 @@
+/**
+ * @implements {MovableLike}
+ */
 export class EarthquakeModel {
     /**
      * @param p5
@@ -14,10 +17,13 @@ export class EarthquakeModel {
         this.status = true;
 
         this.isShaking = false;
+
+        this.shakeDuration = 60;
+        this.startFrame = 0;
     }
 
-    static create(p5, playBoard, superModel, itemTypes, movableTypes, x = -1, y = -1) {
-        let earthquake = new EarthquakeModel(p5, superModel, itemTypes, movableTypes, x, y);
+    static create(p5, playBoard, superModel, x = -1, y = -1) {
+        let earthquake = new EarthquakeModel(p5, superModel, EarthquakeLogic.itemTypes, EarthquakeLogic.movableTypes, x, y);
         playBoard.movables.push(earthquake);
     }
 }
@@ -29,11 +35,22 @@ export class EarthquakeRenderer {
 
 export class EarthquakeLogic {
     static setup(bundle){
-        EarthquakeLogic.interaction = bundle.interaction;
+        EarthquakeLogic.InteractionLogic = bundle.InteractionLogic;
         EarthquakeLogic.baseType = bundle.baseType;
         EarthquakeLogic.plantTypes = bundle.plantTypes;
+        EarthquakeLogic.itemTypes = bundle.itemTypes;
+        EarthquakeLogic.terrainTypes = bundle.terrainTypes;
+        EarthquakeLogic.movableTypes = bundle.movableTypes;
+        /** @type {typeof BoardLogic} */
+        EarthquakeLogic.BoardLogic = bundle.BoardLogic;
     }
 
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {EarthquakeModel} earthquake
+     */
     static movements(p5, playBoard, earthquake) {
         if (!earthquake.status || earthquake.hasMoved) {
             return false;
@@ -44,12 +61,12 @@ export class EarthquakeLogic {
             earthquake.hasMoved = true;
             earthquake.status = false;
             EarthquakeLogic.hit(p5, playBoard);
-            EarthquakeLogic.interaction.findMovableAndDelete(playBoard, earthquake);
+            EarthquakeLogic.InteractionLogic.findMovableAndDelete(playBoard, earthquake);
             return false;
         }
         // during movement
         if (earthquake.isMoving && earthquake.isShaking) {
-            EarthquakeLogic.shake(p5);
+            EarthquakeLogic.shake(p5, earthquake);
             return true;
         }
         // before movement
@@ -60,6 +77,11 @@ export class EarthquakeLogic {
         return true;
     }
 
+    /**
+     *
+     * @param p5
+     * @param {EarthquakeModel} earthquake
+     */
     static shake(p5, earthquake) {
         let shakeAmount = 10;
         let shakeX = p5.random(-shakeAmount, shakeAmount);
@@ -73,15 +95,16 @@ export class EarthquakeLogic {
     }
 
     // deal damage to all trees
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
     static hit(p5, playBoard) {
-        for (let cwp of playBoard.boardObjects.getAllCellsWithPlant()) {
+        for (let cwp of EarthquakeLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
             if (EarthquakeLogic.baseType(cwp.plant) === EarthquakeLogic.plantTypes.TREE) {
-                EarthquakeLogic.interaction.plantIsAttacked(playBoard, cwp.plant, 1);
+                EarthquakeLogic.InteractionLogic.plantIsAttacked(playBoard, cwp.plant, 1);
             }
         }
     }
 }
-
-export class EarthquakeSerializer {
-}
-

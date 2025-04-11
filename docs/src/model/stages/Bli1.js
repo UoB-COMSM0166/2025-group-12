@@ -1,11 +1,3 @@
-import {myUtil} from "../../../lib/myUtil.js";
-import {BoardCells} from "../BoardCells.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Blizzard, Plum, Snowfield} from "../../items/Blizzard.js";
-import {BlizzardPlayBoard} from "./BlizzardPlayboard.js";
-import {Bandit} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
-
 export class Blizzard1PlayBoard extends BlizzardPlayBoard {
     constructor(gameState) {
         super(gameState);

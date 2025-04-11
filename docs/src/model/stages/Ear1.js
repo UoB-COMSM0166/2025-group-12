@@ -1,18 +1,3 @@
-import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myUtil} from "../../../lib/myUtil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Bandit, Lumbering} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
-import {baseType, movableTypes, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
-import {Earthquake, Hill, Landslide} from "../../items/Earthquake.js";
-import {InteractionLogic} from "../../items/InteractionLogic.js";
-import {Enemy} from "../../items/Enemy.js";
-import {EarthquakePlayBoard} from "./EarthquakePlayboard.js";
 
 export class Earthquake1PlayBoard extends EarthquakePlayBoard {
     constructor(gameState) {

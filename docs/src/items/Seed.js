@@ -1,3 +1,16 @@
+/**
+ * @typedef {Object} SeedLike
+ * @property {number} type
+ * @property {String} name
+ * @property {String} color
+ * @property {number} seedType
+ * @property {number} countdown
+ * @property {p5.Image} img
+ * @property {number} health
+ * @property {number} maxHealth
+ * @property {boolean} status
+ */
+
 export class SeedModel {
     constructor(itemTypes) {
         this.type = itemTypes.SEED;
@@ -45,6 +58,7 @@ export class SeedSerializer {
 
     static stringify(seedInstance) {
         const object = {
+            name: seedInstance.name,
             seedType: seedInstance.seedType,
             countdown: seedInstance.countdown,
         }

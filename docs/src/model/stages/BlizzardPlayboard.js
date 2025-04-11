@@ -1,8 +1,3 @@
-import {stageGroup} from "../GameState.js";
-import {movableTypes, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
-import {Plum, Snowfield} from "../../items/Blizzard.js";
-import {EarthquakePlayBoard} from "./EarthquakePlayboard.js";
-
 export class BlizzardPlayBoard extends EarthquakePlayBoard {
     constructor(gameState) {
         super(gameState);

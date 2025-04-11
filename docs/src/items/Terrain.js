@@ -47,6 +47,7 @@ export class TerrainSerializer {
             return JSON.stringify(object);
         } else {
             let object = {
+                name: terrainInstance.name,
                 terrainType: terrainInstance.terrainType,
             }
             return JSON.stringify(object);

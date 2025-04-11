@@ -1,12 +1,3 @@
-import {stageGroup} from "../GameState.js";
-import {myUtil} from "../../../lib/myUtil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Sea} from "../../items/Sea.js";
-import {TsunamiAnimation} from "../../items/TsunamiAnimation.js";
-import {Mountain} from "../../items/Mountain.js";
-import {BlizzardPlayBoard} from "./BlizzardPlayboard.js";
 
 export class Tsunami1PlayBoard extends BlizzardPlayBoard {
     constructor(gameState) {

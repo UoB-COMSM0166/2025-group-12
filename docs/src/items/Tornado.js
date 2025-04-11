@@ -1,9 +1,3 @@
-import {movableTypes, itemTypes, terrainTypes} from "./ItemTypes.js";
-import {Enemy} from "./Enemy.js";
-import {InteractionLogic} from "./InteractionLogic.js";
-import {PlayBoard} from "../model/Play.js";
-import {myUtil} from "../../lib/myUtil.js";
-
 export class Tornado extends Enemy {
     constructor(p5, x, y, direction, countdown = 0) {
         super(x, y);
@@ -38,6 +32,31 @@ export class Tornado extends Enemy {
         } else {
             this.img = p5.images.get(`${this.name}`);
         }
+    }
+
+    drawDirection(p5){
+        let direction = this.direction;
+        let x = this.x;
+        let y = this.y;
+        let angle;
+        if (direction[0] === 0 && direction[1] === -1) {
+            angle = p5.radians(330); // Up-right
+        } else if (direction[0] === 0 && direction[1] === 1) {
+            angle = p5.radians(150); // Down-left
+        } else if (direction[0] === -1 && direction[1] === 0) {
+            angle = p5.radians(210); // Up-left
+        } else if (direction[0] === 1 && direction[1] === 0) {
+            angle = p5.radians(30); // Down-right
+        }
+        let offset = 10;
+        let dx = offset * Math.cos(angle);
+        let dy = offset * Math.sin(angle);
+        p5.push();
+        p5.translate(x + dx, y + dy);
+        p5.rotate(angle + p5.HALF_PI);
+        p5.imageMode(p5.CENTER);
+        p5.image(p5.images.get("alertArrow"), 0, 0, 30, 30);
+        p5.pop();
     }
 
     draw(p5) {

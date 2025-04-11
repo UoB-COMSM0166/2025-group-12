@@ -1,30 +1,48 @@
 export class InteractionLogic {
 
-    static setup(bundle){
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
         InteractionLogic.utilityClass = bundle.utilityClass;
         InteractionLogic.FloatingWindow = bundle.FloatingWindow;
         InteractionLogic.movableTypes = bundle.movableTypes;
         InteractionLogic.itemTypes = bundle.itemTypes;
         InteractionLogic.plantTypes = bundle.plantTypes;
+        /** @type {typeof BoardLogic} */
+        InteractionLogic.BoardLogic = bundle.BoardLogic;
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {SeedLike} seed
+     */
     static findSeedAndDelete(playBoard, seed) {
-        let cells = playBoard.boardObjects.getAllCellsWithSeed();
+        let cells = InteractionLogic.BoardLogic.getAllCellsWithSeed(playBoard.boardObjects);
         let cell = cells.find(c => c.seed === seed);
         if (cell !== null) {
             cell.removeSeed();
         }
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {PlantLike} plant
+     */
     static findPlantAndDelete(playBoard, plant) {
-        let cells = playBoard.boardObjects.getAllCellsWithPlant();
+        let cells = InteractionLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
         let cell = cells.find(c => c.plant === plant);
         if (cell !== null) {
             cell.removePlant();
-            playBoard.boardObjects.setEcosystem();
+            InteractionLogic.BoardLogic.setEcosystem(playBoard.boardObjects);
         }
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param movable
+     */
     static findMovableAndDelete(playBoard, movable) {
         let index = playBoard.movables.findIndex(e => e === movable);
         if (index === -1) {
@@ -32,46 +50,43 @@ export class InteractionLogic {
         }
         playBoard.movables.splice(index, 1);
         playBoard.movables.sort((a, b) => {
-            if (a.movableType !== undefined && b.movableType !== undefined) {
+            if (a.movableType != null && b.movableType != null) {
                 return a.movableType - b.movableType;
             }
-            if (a.movableType !== undefined) return -1;
-            if (b.movableType !== undefined) return 1;
+            if (a.movableType != null) return -1;
+            if (b.movableType != null) return 1;
             return 0;
         });
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param item
+     * @param tornado
+     */
     static plantAttackedByTornado(playBoard, item, tornado) {
-        if (!(tornado.movableType === InteractionLogic.movableTypes.TORNADO)) {
+        if (!tornado.movableType || tornado.movableType !== InteractionLogic.movableTypes.TORNADO) {
             console.error("plantAttackedByTornado has received invalid tornado.");
             return;
         }
 
-        let plant = null, seed = null;
-        if (item.type === InteractionLogic.itemTypes.PLANT) {
-            plant = item;
-        } else if (item.type === InteractionLogic.itemTypes.SEED) {
-            seed = item;
-        } else {
-            console.error("plantAttackedByTornado has received invalid plant or seed.");
-            return;
-        }
-
-        if (seed !== null) {
+        if (item.type === InteractionLogic.itemTypes.SEED) {
+            /** @type {SeedLike} */
+            let seed = item;
             seed.health = 0;
             InteractionLogic.findSeedAndDelete(playBoard, seed);
             tornado.health--;
             if (tornado.health === 0) {
                 tornado.status = false;
-            }
-            if (tornado.status === false) {
                 InteractionLogic.findMovableAndDelete(playBoard, tornado);
             }
         }
-
-        if (plant !== null) {
+        else if (item.type === InteractionLogic.itemTypes.PLANT) {
+            /** @type {PlantLike} */
+            let plant = item;
             // if a tree is attacked by a tornado
-            if (plant.plantType === InteractionLogic.plantTypes.TREE && plant.name === "Tree") {
+            if (plant.plantType === InteractionLogic.plantTypes.TREE) {
                 for (let i = 0; i < 2 && plant.health > 0 && tornado.health > 0; i++) {
                     plant.health--;
                     tornado.health--;
@@ -104,33 +119,42 @@ export class InteractionLogic {
 
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param item
+     * @param {number} lost
+     */
     static plantIsAttacked(playBoard, item, lost) {
         if (item.type === InteractionLogic.itemTypes.PLANT) {
-            item.health -= lost;
-            if (item.health <= 0) {
-                item.health = 0;
-                item.status = false;
-                InteractionLogic.findPlantAndDelete(playBoard, item);
+            /** @type {PlantLike} */
+            let plant = item;
+            plant.health -= lost;
+            if (plant.health <= 0) {
+                plant.health = 0;
+                plant.status = false;
+                InteractionLogic.findPlantAndDelete(playBoard, plant);
             }
         } else if (item.type === InteractionLogic.itemTypes.SEED) {
-            item.health = 0;
-            item.status = false;
-            InteractionLogic.findSeedAndDelete(playBoard, item);
+            /** @type {SeedLike} */
+            let seed = item;
+            seed.health = 0;
+            seed.status = false;
+            InteractionLogic.findSeedAndDelete(playBoard, seed);
         } else {
-            console.error("plantAttacked1 has received invalid plant or seed.");
+            console.error("plantAttacked has received invalid plant or seed.");
         }
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} spellCasterCell
+     * @param {CellModel} targetCell
+     * @param n
+     */
     static rechargeHP(playBoard, spellCasterCell, targetCell, n) {
-        if (spellCasterCell.plant.useLeft === 0) {
-            playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("051"));
-            return false;
-        }
-
-        if (!InteractionLogic.activeRange1(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y)) {
-            playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
-            return false;
-        }
+        if(!InteractionLogic.checkActiveSkill(playBoard, spellCasterCell, targetCell)) return false;
 
         let item;
         if (targetCell.plant) {
@@ -155,20 +179,17 @@ export class InteractionLogic {
         return true;
     }
 
+    // a basic version, no animal friend animation. refactor
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} spellCasterCell
+     * @param {CellModel} targetCell
+     */
     static sendAnimalFriends(playBoard, spellCasterCell, targetCell) {
-        if (spellCasterCell.plant.useLeft === 0) {
-            playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("051"));
-            return false;
-        }
+        if(!InteractionLogic.checkActiveSkill(playBoard, spellCasterCell, targetCell)) return false;
 
-        // a basic version, no animal friends.
-
-        if (!InteractionLogic.activeRange1(spellCasterCell.x, spellCasterCell.y, targetCell.x, targetCell.y)) {
-            playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
-            return false;
-        }
-
-        if (targetCell.enemy === null || targetCell.enemy.name !== "Bandit") {
+        if (!targetCell.enemy || targetCell.enemy.movableType !== InteractionLogic.movableTypes.BANDIT) {
             playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
             return false;
         }
@@ -181,6 +202,26 @@ export class InteractionLogic {
             targetCell.enemy = null;
         }
         spellCasterCell.plant.useLeft--;
+        return true;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} spellCasterCell
+     * @param {CellModel} targetCell
+     */
+    static checkActiveSkill(playBoard, spellCasterCell, targetCell){
+        // ran out of usage
+        if (spellCasterCell.plant.useLeft === 0) {
+            playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("051"));
+            return false;
+        }
+        // out of skill range
+        if (!InteractionLogic.activeRange1(spellCasterCell.i, spellCasterCell.j, targetCell.i, targetCell.j)) {
+            playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("052"));
+            return false;
+        }
         return true;
     }
 

@@ -1,4 +1,11 @@
-import {SlideAnimation} from "./SlideAnimation.js";
+/**
+ * @typedef {Object} MovableLike
+ * @property {number} type
+ * @property {number} x
+ * @property {number} y
+ * @property {boolean} isMoving
+ * @property {boolean} hasMoved
+ */
 
 export class MovableModel {
     constructor(itemTypes, x = -1, y = -1) {
@@ -32,12 +39,10 @@ export class MovableLogic {
 }
 
 export class MovableSerializer {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'MovableSerializer',
-            impl,
-            methods: ['stringify', 'parse']
-        });
+
+    static setup(bundle){
+        MovableSerializer.movableTypes = bundle.movableTypes;
+        MovableSerializer.movableFactory = bundle.movableFactory;
     }
 
     static stringify(movable) {
@@ -52,7 +57,7 @@ export class MovableSerializer {
                 break;
             case movableTypes.BOMB:
                 break;
-            case movableTypes.SLIDE:
+            case MovableSerializer.movableTypes.SLIDE:
                 object = {
                     movableType: movable.movableType,
                     cellX: movable.cell?.x,
@@ -61,7 +66,7 @@ export class MovableSerializer {
                     finalCellY: movable.finalCell?.y,
                 }
                 break;
-            case movableTypes.EARTHQUAKE:
+            case MovableSerializer.movableTypes.EARTHQUAKE:
                 object = {
                     movableType: movable.movableType,
                 }
@@ -77,7 +82,7 @@ export class MovableSerializer {
         return JSON.stringify(object);
     }
 
-    static parse(json, p5, playBoard, newMovableInstance) {
+    static parse(json, p5, playBoard) {
         let movable = JSON.parse(json);
         switch (movable.movableType) {
             case movableTypes.BANDIT:
@@ -86,11 +91,10 @@ export class MovableSerializer {
                 return Tornado.parse(json, p5, this);
             case movableTypes.BOMB:
                 return VolcanicBomb.parse(json, p5, this);
-            case movableTypes.SLIDE:
-                const object = JSON.parse(json);
-                return new SlideAnimation(playBoard.boardObjects.getCell(object.cellX, object.cellY), playBoard.boardObjects.getCell(object.finalCellX, object.finalCellY));
-            case movableTypes.EARTHQUAKE:
-                return newMovableInstance;
+            case MovableSerializer.movableTypes.SLIDE:
+                return MovableSerializer.movableFactory.get("SlideAnimation")(p5, playBoard, movable.finalCellX, movable.finalCellY);
+            case MovableSerializer.movableTypes.EARTHQUAKE:
+                return MovableSerializer.movableFactory.get("Earthquake")();
             case movableTypes.BLIZZARD:
                 return Blizzard.parse(json, p5, this);
             case movableTypes.TSUNAMI:

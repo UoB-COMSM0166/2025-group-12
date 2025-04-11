@@ -1,25 +1,7 @@
-import {baseType, movableTypes, itemTypes, plantTypes, seedTypes, terrainTypes} from "../items/ItemTypes.js";
-import {FloatingWindow} from "./FloatingWindow.js";
-import {UnionFind} from "../controller/UnionFind.js";
-import {myUtil} from "../../lib/myUtil.js";
-import {stageGroup} from "./GameState.js";
-import {Plum, PlumSeed, Snowfield} from "../items/Blizzard.js";
-import {Steppe} from "../items/Steppe.js";
-import {Lava, Volcano} from "../items/Volcano.js";
-import {Tree, TreeSeed} from "../items/Tree.js";
-import {Bush, BushSeed} from "../items/Bush.js";
-import {Orchid, OrchidSeed} from "../items/Orchid.js";
-import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
-import {Bamboo, BambooSeed} from "../items/Bamboo.js";
-import {PlayerBase} from "../items/PlayerBase.js";
-import {Mountain} from "../items/Mountain.js";
-import {Lumbering} from "../items/Bandit.js";
-import {Hill, Landslide} from "../items/Earthquake.js";
-import {Sea} from "../items/Sea.js";
-import {Kiku, KikuSeed} from "../items/Kiku.js";
-import {Palm, PalmSeed} from "../items/Palm.js";
+export class BoardModel {
+    static setup(bundle) {
+    }
 
-export class BoardCells {
     constructor(size) {
         this.size = size;
         // initially the array is empty since we have to
@@ -27,32 +9,178 @@ export class BoardCells {
         this.boardObjects = Array.from({length: this.size},
             () => Array.from({length: this.size}, () => null));
     }
+}
 
+export class BoardRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        BoardRenderer.utilityClass = bundle.utilityClass;
+        BoardRenderer.terrainTypes = bundle.terrainTypes;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static draw(p5, playBoard) {
+        // keep the order of these renderers:
+        // terrain - lowest layer
+        // volcano layer
+        // plants - highest layer
+        BoardRenderer.drawTerrain(p5, playBoard, playBoard.boardObjects);
+        BoardRenderer.drawVolcanoLayer(p5, playBoard, playBoard.boardObjects);
+        BoardRenderer.drawPlants(p5, playBoard, playBoard.boardObjects);
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BoardModel} board
+     */
+    static drawTerrain(p5, playBoard, board){
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                CellRenderer.drawTerrain(p5, playBoard, BoardLogic.getCell(i, j, board));
+
+            }
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BoardModel} board
+     */
+    static drawVolcanoLayer(p5, playBoard, board){
+        if (BoardLogic.getCell(2, 2, board).terrain.terrainType === BoardRenderer.terrainTypes.VOLCANO) {
+            let [x1, y1] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, 2, 2, p5.CORNERS);
+            p5.image(p5.images.get("VolcanoLayer"), x1 - playBoard.cellWidth * 3 / 2, y1 - playBoard.cellHeight * 3 + playBoard.cellHeight / 2 + 1, playBoard.cellWidth * 3, playBoard.cellHeight * 3);
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BoardModel} board
+     */
+    static drawPlants(p5, playBoard, board){
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                CellRenderer.drawPlants(p5, playBoard, BoardLogic.getCell(i, j, board));
+            }
+        }
+    }
+
+    // return a descriptive string
+    /**
+     *
+     * @param i
+     * @param j
+     * @param {BoardModel} board
+     */
+    static getCellString(i, j, board) {
+        if (BoardLogic.getCell(i, j, board) === null) {
+            return `cell at (${i},${j}) is null!`
+        }
+
+        let t = BoardLogic.getCell(i, j, board).terrain;
+        let p = BoardLogic.getCell(i, j, board).plant;
+        let s = BoardLogic.getCell(i, j, board).seed;
+        let e = BoardLogic.getCell(i, j, board).enemy;
+
+        if (t === null) {
+            return `cell at (${i},${j}) is missing terrain!`;
+        }
+
+        if (p === null && s === null && e === null) {
+            return `terrain ${t.name}`;
+        }
+
+        if (e !== null) {
+            return `terrain ${t.name} and has a ${e.name} of health ${e.health}.`;
+        }
+
+        if (s !== null) {
+            return `terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
+        }
+
+        return `terrain ${t.name} and has a plant ${p.name} of health ${p.health}.`;
+    }
+}
+
+export class BoardLogic {
+    static setup(bundle) {
+        BoardLogic.itemTypes = bundle.itemTypes;
+        BoardLogic.plantTypes = bundle.plantTypes;
+        BoardLogic.seedTypes = bundle.seedTypes;
+        BoardLogic.terrainTypes = bundle.terrainTypes;
+        BoardLogic.baseType = bundle.baseType;
+        /** @type {typeof UnionFind} */
+        BoardLogic.UnionFind = bundle.UnionFind;
+        /** @type {function} */
+        BoardLogic.dissolveSnowBaseTerrain = bundle.dissolveSnowBaseTerrain;
+        /** @type {function} */
+        BoardLogic.dissolveSnowRange = bundle.dissolveSnowRange;
+    }
+
+    /**
+     *
+     * @param i
+     * @param j
+     * @param {BoardModel} board
+     */
+    static getCell(i, j, board) {
+        if (i < 0 || i >= board.size || j < 0 || j >= board.size) {
+            return null;
+        }
+        return board.boardObjects[i][j];
+    }
+
+    /**
+     *
+     * @param i
+     * @param j
+     * @param terrain
+     * @param {BoardModel} board
+     */
     // to set terrain, invoke this function
-    setCell(x, y, terrain) {
-        this.boardObjects[x][y] = new Cell(x, y, terrain);
+    static setCell(i, j, terrain, board) {
+        board.boardObjects[i][j] = new CellModel(i, j, terrain);
     }
 
     // plant on a cell
-    plantCell(p5, playBoard, x, y, item) {
-        let cell = this.getCell(x, y);
+    /**
+     *
+     * @param p5
+     * @param playBoard
+     * @param i
+     * @param j
+     * @param item
+     * @param {BoardModel} board
+     */
+    static plantCell(p5, playBoard, i, j, item, board) {
+        let cell = BoardLogic.getCell(i, j, board);
 
-        if (item.type !== itemTypes.PLANT && item.type !== itemTypes.SEED) {
+        if (item.type !== BoardLogic.itemTypes.PLANT && item.type !== BoardLogic.itemTypes.SEED) {
             console.error("plantCell received invalid input.");
             return false;
         }
 
-        if (!cell.isCompatible(playBoard, item)) {
+        if (!CellLogic.isCompatible(playBoard, item, cell)) {
             return false;
         }
 
         // the implementation of ecosystem skill: grow faster
-        if (item.type === itemTypes.SEED) {
+        if (item.type === BoardLogic.itemTypes.SEED) {
             cell.seed = item;
             if (cell.ecosystem !== null && cell.ecosystem.growFaster) {
                 cell.seed.countdown = cell.seed.countdown - 1 < 1 ? 1 : cell.seed.countdown - 1;
             }
-            if (cell.terrain.terrainType === terrainTypes.LAVA) {
+            if (cell.terrain.terrainType === BoardLogic.terrainTypes.LAVA) {
                 cell.seed.countdown = 1;
             }
 
@@ -62,105 +190,142 @@ export class BoardCells {
         cell.plant = item;
 
         // reconstruct ecosystem for every transplanting
-        this.setEcosystem();
+        BoardLogic.setEcosystem(board);
 
         // plums dissolve snowfield
-        if (item.plantType === plantTypes.PLUM) {
-            for (let nCell of this.getNearbyCells(cell.x, cell.y, Plum.plumRange)) {
-                if (nCell.terrain.terrainType === terrainTypes.SNOWFIELD) {
-                    nCell.terrain = new Steppe(p5);
+        if (item.plantType === BoardLogic.plantTypes.PLUM) {
+            for (let nCell of BoardLogic.getNearbyCells(cell.i, cell.j, BoardLogic.dissolveSnowRange, board)) {
+                if (nCell.terrain.terrainType === BoardLogic.terrainTypes.SNOWFIELD) {
+                    nCell.terrain = BoardLogic.dissolveSnowBaseTerrain();
                 }
             }
         }
-
         return true;
     }
 
-    removePlant(x, y) {
-        this.getCell(x, y).removePlant();
-        this.setEcosystem();
+    /**
+     *
+     * @param i
+     * @param j
+     * @param {BoardModel} board
+     */
+    static removePlant(i, j, board) {
+        BoardLogic.getCell(i, j, board).removePlant();
+        BoardLogic.setEcosystem(board);
     }
 
-    getCell(x, y) {
-        if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
-            return null;
-        }
-        return this.boardObjects[x][y];
-    }
-
-    getAllCellsWithPlant() {
+    /**
+     *
+     * @param {BoardModel} board
+     */
+    static getAllCellsWithPlant(board) {
         let cells = [];
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                if (this.getCell(i, j).plant !== null) {
-                    cells.push(this.getCell(i, j));
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                if (BoardLogic.getCell(i, j, board).plant !== null) {
+                    cells.push(BoardLogic.getCell(i, j, board));
                 }
             }
         }
         return cells;
     }
 
-    getAllCellsWithSeed() {
+    /**
+     *
+     * @param {BoardModel} board
+     */
+    static getAllCellsWithSeed(board) {
         let cells = [];
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                if (this.getCell(i, j).seed !== null) {
-                    cells.push(this.getCell(i, j));
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                if (BoardLogic.getCell(i, j, board).seed !== null) {
+                    cells.push(BoardLogic.getCell(i, j, board));
                 }
             }
         }
         return cells;
     }
 
-    getAllCellsWithEnemy() {
+    /**
+     *
+     * @param {BoardModel} board
+     */
+    static getAllCellsWithEnemy(board) {
         let cells = [];
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                if (this.getCell(i, j).enemy !== null) {
-                    cells.push(this.getCell(i, j));
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                if (BoardLogic.getCell(i, j, board).enemy !== null) {
+                    cells.push(BoardLogic.getCell(i, j, board));
                 }
             }
         }
         return cells;
     }
 
-    // return a descriptive string
-    getCellString(x, y) {
-        if (this.getCell(x, y) === null) {
-            return `cell at (${x},${y}) is null!`
+    /**
+     *
+     * @param i
+     * @param j
+     * @param {BoardModel} board
+     */
+    static getAdjacent8Cells(i, j, board) {
+        let cells = [];
+        for (let k = -1; k <= 1; k++) {
+            for (let l = -1; l <= 1; l++) {
+                if (k === 0 && l === 0) {
+                    continue;
+                }
+                if (0 <= i + k && i + k < board.size && 0 <= j + l && j + l < board.size) {
+                    cells.push(BoardLogic.getCell(i + k, j + l, board));
+                }
+            }
         }
-
-        let t = this.getCell(x, y).terrain;
-        let p = this.getCell(x, y).plant;
-        let s = this.getCell(x, y).seed;
-        let e = this.getCell(x, y).enemy;
-
-        if (t === null) {
-            return `cell at (${x},${y}) is missing terrain!`;
-        }
-
-        if (p === null && s === null && e === null) {
-            //return `cell at (${x},${y}) is of terrain ${t.name}.`;
-            return `terrain ${t.name}`;
-        }
-
-        if (e !== null) {
-            //return `cell at (${x},${y}) is of terrain ${t.name} and has a ${e.name} with health ${e.health}.`;
-            return `terrain ${t.name} and has a ${e.name} of health ${e.health}.`;
-        }
-
-        if (s !== null) {
-            //return `cell at (${x},${y}) is of terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
-            return `terrain ${t.name} and has a ${s.name} which grows up in ${s.countdown} turns.`;
-        }
-
-        //return `cell at (${x},${y}) is of terrain ${t.name} and has a plant ${p.name} with health ${p.health}.`;
-        return `terrain ${t.name} and has a plant ${p.name} of health ${p.health}.`;
+        return cells;
     }
 
-    setEcosystem() {
-        let allPlants = this.getAllCellsWithPlant();
-        let uf = new UnionFind(allPlants.length);
+    /**
+     *
+     * @param i
+     * @param j
+     * @param {BoardModel} board
+     */
+    static getAdjacent4Cells(i, j, board) {
+        let cells = [];
+        let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+        for (let [k, l] of directions) {
+            if (0 <= i + k && i + k < board.size && 0 <= j + l && j + l < board.size) {
+                cells.push(BoardLogic.getCell(i + k, j + l, board));
+            }
+        }
+        return cells;
+    }
+
+    /**
+     *
+     * @param i
+     * @param j
+     * @param {function} range
+     * @param {BoardModel} board
+     */
+    static getNearbyCells(i, j, range, board) {
+        let cells = [];
+        for (let k = 0; k < board.size; k++) {
+            for (let l = 0; l < board.size; l++) {
+                if (range(i, j, k, l)) {
+                    cells.push(BoardLogic.getCell(k, l, board));
+                }
+            }
+        }
+        return cells;
+    }
+
+    /**
+     *
+     * @param {BoardModel} board
+     */
+    static setEcosystem(board) {
+        let allPlants = BoardLogic.getAllCellsWithPlant(board);
+        let uf = new BoardLogic.UnionFind(allPlants.length);
 
         let cellIndexMap = new Map(); // the variables of UF data structure are integers
         allPlants.forEach((c, index) => cellIndexMap.set(c, index));
@@ -170,7 +335,7 @@ export class BoardCells {
             for (let j = i + 1; j < allPlants.length; j++) {
                 let cell1 = allPlants[i];
                 let cell2 = allPlants[j];
-                if (Math.abs(cell1.x - cell2.x) <= 1 && Math.abs(cell1.y - cell2.y) <= 1) {
+                if (Math.abs(cell1.i - cell2.j) <= 1 && Math.abs(cell1.i - cell2.j) <= 1) {
                     uf.union(i, j);
                 }
             }
@@ -190,17 +355,17 @@ export class BoardCells {
         for (let [root, component] of connectedComponents.entries()) {
 
             // 1. loop through all plants
-            for (let cell of component) {
+            for (let /** @type {CellModel} */ cell of component) {
                 let plantTypesSet = new Set();
-                plantTypesSet.add(baseType(cell.plant));
+                plantTypesSet.add(BoardLogic.baseType(cell.plant));
                 // 2. loop through 4 adjacent cells
-                for (let adCell of this.getAdjacent4Cells(cell.x, cell.y)) {
+                for (let adCell of BoardLogic.getAdjacent4Cells(cell.i, cell.j, board)) {
                     if (adCell.plant === null) continue;
-                    plantTypesSet.add(baseType(adCell.plant));
+                    plantTypesSet.add(BoardLogic.baseType(adCell.plant));
                     // 3. further loop through 4 adjacent cells
-                    for (let adAdCell of this.getAdjacent4Cells(adCell.x, adCell.y)) {
+                    for (let adAdCell of BoardLogic.getAdjacent4Cells(adCell.i, adCell.j, board)) {
                         if (adAdCell.plant === null) continue;
-                        plantTypesSet.add(baseType(adAdCell.plant));
+                        plantTypesSet.add(BoardLogic.baseType(adAdCell.plant));
                     }
                 }
                 // If 3 different plant types exist, mark as ecosystem
@@ -215,10 +380,10 @@ export class BoardCells {
         for (let [root, component] of connectedComponents.entries()) {
             if (!ecosystemQualification.get(root)) continue;
 
-            let ecosystem = this.createEcosystem(component);
-            for (let cell of component) {
+            let ecosystem = BoardLogic.createEcosystem(component);
+            for (let /** @type {CellModel} */ cell of component) {
                 cell.ecosystem = ecosystem;
-                for (let adCell of this.getAdjacent8Cells(cell.x, cell.y)) {
+                for (let adCell of BoardLogic.getAdjacent8Cells(cell.i, cell.j, board)) {
                     // tiebreaker: when two ecosystems are overlapped but not connected
                     if (adCell.ecosystem !== null && adCell.ecosystem !== ecosystem && adCell.ecosystem.countPlants >= ecosystem.countPlants) {
                         continue;
@@ -229,108 +394,82 @@ export class BoardCells {
         }
     }
 
-    createEcosystem(component) {
+    static createEcosystem(component) {
         let ecosystem = new Ecosystem(component.length);
 
         // Assign special abilities
         for (let cell of component) {
-            if (cell.plant.plantType === plantTypes.FIRE_HERB && component.length >= 10) {
+            if (cell.plant.plantType === BoardLogic.plantTypes.FIRE_HERB && component.length >= 10) {
                 ecosystem.rejectLava = true;
                 ecosystem.withstandSnow = true;
             }
         }
         return ecosystem;
     }
+}
 
-
-    getAdjacent8Cells(x, y) {
-        let cells = [];
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (i === 0 && j === 0) {
-                    continue;
-                }
-                if (0 <= x + i && x + i < this.size && 0 <= y + j && y + j < this.size) {
-                    cells.push(this.getCell(x + i, y + j));
-                }
-            }
-        }
-        return cells;
+export class BoardSerializer {
+    static setup(bundle) {
     }
 
-    getAdjacent4Cells(x, y) {
-        let cells = [];
-        let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
-        for (let [i, j] of directions) {
-            if (0 <= x + i && x + i < this.size && 0 <= y + j && y + j < this.size) {
-                cells.push(this.getCell(x + i, y + j));
-            }
-        }
-        return cells;
-    }
-
-    getNearbyCells(x, y, range) {
-        let cells = [];
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.size; j++) {
-                if (range(x, y, i, j)) {
-                    cells.push(this.getCell(i, j));
-                }
-            }
-        }
-        return cells;
-    }
-
-    stringify() {
+    /**
+     *
+     * @param {BoardModel} board
+     */
+    static stringify(board) {
         const object = {
-            size: this.size,
-            boardObjects: Array.from({length: this.size},
-                () => Array.from({length: this.size}, () => null))
+            size: board.size,
+            boardObjects: Array.from({length: board.size},
+                () => Array.from({length: board.size}, () => null))
         }
         for (let i = 0; i < object.boardObjects.length; i++) {
             for (let j = 0; j < object.boardObjects[i].length; j++) {
-                object.boardObjects[i][j] = this.getCell(i, j).stringify();
+                object.boardObjects[i][j] = CellSerializer.stringify(BoardLogic.getCell(i, j, board));
             }
         }
         return JSON.stringify(object);
     }
 
-    static parse(json, p5, playBoard) {
+    static parse(json, p5) {
         const object = JSON.parse(json);
-        let board = new BoardCells(object.size);
+        let board = new BoardModel(object.size);
         for (let i = 0; i < object.size; i++) {
             for (let j = 0; j < object.size; j++) {
-                board.boardObjects[i][j] = Cell.parse(object.boardObjects[i][j], i, j, p5, playBoard);
+                board.boardObjects[i][j] = CellSerializer.parse(object.boardObjects[i][j], i, j, p5);
             }
         }
         return board;
     }
 }
 
-class Cell {
+export class CellModel {
+    static setup(bundle) {
+        CellModel.itemTypes = bundle.itemTypes;
+    }
+
     // constructor only involves terrain since
     // we will manually set terrain for all stages
     // but the right to plant is handed over to player.
-    constructor(x, y, terrain) {
-        if (terrain.type !== itemTypes.TERRAIN) {
-            console.error(`failed to set cell at (${x},${y}) since the input is not terrain.`);
+    constructor(i, j, terrain) {
+        if (terrain.type !== CellModel.itemTypes.TERRAIN) {
+            console.error(`failed to set cell at (${i},${j}) since the input is not terrain.`);
             return;
         }
-
-        this.x = x;
-        this.y = y;
+        /** @type {number} */
+        this.i = i;
+        /** @type {number} */
+        this.j = j;
         this._terrain = terrain;
         this._plant = null;
         this._seed = null;
         this._enemy = null;
-        this.ecosystem = null;
+        /** @type {Ecosystem} */
+        this._ecosystem = null;
     }
 
-    // however we still need to change terrain
-    // for game extensibility.
     set terrain(terrain) {
-        if (terrain.type !== itemTypes.TERRAIN) {
-            console.error(`failed to set cell at (${this.x},${this.y}) since the input is not terrain.`);
+        if (terrain.type !== CellModel.itemTypes.TERRAIN) {
+            console.error(`failed to set cell at (${this.i},${this.j}) since the input is not terrain.`);
             return;
         }
         this._terrain = terrain;
@@ -342,8 +481,8 @@ class Cell {
 
     // to remove a plant from a cell, use removePlant below.
     set plant(plant) {
-        if (plant.type !== itemTypes.PLANT) {
-            console.error(`failed to set cell at (${this.x},${this.y}) since the input is not plant.`);
+        if (plant.type !== CellModel.itemTypes.PLANT) {
+            console.error(`failed to set cell at (${this.i},${this.j}) since the input is not plant.`);
             return;
         }
         this._plant = plant;
@@ -358,8 +497,8 @@ class Cell {
     }
 
     set seed(seed) {
-        if (seed.type !== itemTypes.SEED) {
-            console.error(`failed to set cell at (${this.x},${this.y}) since the input is not seed.`);
+        if (seed.type !== CellModel.itemTypes.SEED) {
+            console.error(`failed to set cell at (${this.i},${this.j}) since the input is not seed.`);
             return;
         }
         this._seed = seed;
@@ -381,61 +520,35 @@ class Cell {
         return this._enemy;
     }
 
-    getEcoString(playBoard) {
-        if (this.ecosystem === null) {
-            return "The cell is not in an ecosystem.";
+    set ecosystem(ecosystem) {
+        if (!(ecosystem instanceof Ecosystem)) {
+            console.error(`failed to set cell at (${this.i},${this.j}) since the input is not ecosystem.`);
+            return;
         }
-        return this.ecosystem.getEcoString(playBoard);
+        this._ecosystem = ecosystem;
     }
 
-    // check if plant or seed is compatible with the terrain, or if the cell is occupied by another plant.
-    isCompatible(playBoard, item) {
-        if (this.enemy !== null) {
-            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("010"));
-            return false;
-        }
+    get ecosystem() {
+        return this._ecosystem;
+    }
+}
 
-        if (this.seed !== null || this.plant !== null) {
-            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("011"));
-            return false;
-        }
-
-        // bamboo
-        if (item?.plantType === plantTypes.BAMBOO) {
-            if (this.terrain.terrainType === terrainTypes.STEPPE || this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.LANDSLIDE) {
-                return true;
-            } else {
-                playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
-                return false;
-            }
-        }
-
-        // plum
-        if (item?.plantType === plantTypes.PLUM) {
-            if (this.terrain.terrainType === terrainTypes.STEPPE || this.terrain.terrainType === terrainTypes.HILL || this.terrain.terrainType === terrainTypes.SNOWFIELD) {
-                return true;
-            } else {
-                playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
-                return false;
-            }
-        }
-
-        // other plants
-        if (this.terrain.terrainType === terrainTypes.MOUNTAIN || this.terrain.terrainType === terrainTypes.BASE
-            || this.terrain.terrainType === terrainTypes.LUMBERING || this.terrain.terrainType === terrainTypes.VOLCANO
-            || (this.terrain.terrainType === terrainTypes.LAVA && this.terrain.name === "Lava")
-            || this.terrain.terrainType === terrainTypes.LANDSLIDE || this.terrain.terrainType === terrainTypes.SNOWFIELD) {
-            playBoard.floatingWindow = FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
-            return false;
-        }
-        return true;
+export class CellRenderer {
+    static setup(bundle) {
+        CellRenderer.utilityClass = bundle.utilityClass;
     }
 
-    drawTerrain(p5, playBoard) {
-        let [x1, y1, x2, y2, x3, y3, x4, y4] = myUtil.cellIndex2Pos(p5, playBoard, this.x, this.y, p5.CORNERS);
-        p5.image(this.terrain.img, x1 - playBoard.cellWidth / 2, y1, playBoard.cellWidth, playBoard.cellHeight);
+    /**
+     *
+     * @param p5
+     * @param playBoard
+     * @param {CellModel} cell
+     */
+    static drawTerrain(p5, playBoard, cell) {
+        let [x1, y1, x2, y2, x3, y3, x4, y4] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CORNERS);
+        p5.image(cell.terrain.img, x1 - playBoard.cellWidth / 2, y1, playBoard.cellWidth, playBoard.cellHeight);
 
-        if (this.ecosystem !== null && playBoard.ecoDisplay) {
+        if (cell.ecosystem !== null && playBoard.ecoDisplay) {
             p5.fill('rgba(0%, 0%, 100%, 0.5)');
         } else {
             p5.fill(0, 0, 0, 0);
@@ -445,132 +558,171 @@ class Cell {
         p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
+    /**
+     *
+     * @param p5
+     * @param playBoard
+     * @param {CellModel} cell
+     */
+    static drawPlants(p5, playBoard, cell) {
+        if (cell.plant !== null) {
+            let [avgX, avgY] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CENTER);
+            let imgSize = CellRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+            p5.image(cell.plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+            CellRenderer.utilityClass.drawHealthBar(p5, cell.plant, avgX - 21, avgY - 42, 40, 5);
+        }
+        if (cell.seed !== null) {
+            let [avgX, avgY] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CENTER);
+            let imgSize = CellRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+            p5.image(cell.seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+        }
+    }
 
-    stringify() {
+    /**
+     *
+     * @param playBoardStageGroup
+     * @param {CellModel} cell
+     */
+    static getEcoString(playBoardStageGroup, cell) {
+        if (cell.ecosystem === null) {
+            return "The cell is not in an ecosystem.";
+        }
+        return cell.ecosystem.getEcoString(playBoardStageGroup);
+    }
+}
+
+export class CellLogic {
+    static setup(bundle) {
+        CellLogic.FloatingWindow = bundle.FloatingWindow;
+        CellLogic.itemTypes = bundle.itemTypes;
+        CellLogic.plantTypes = bundle.plantTypes;
+        CellLogic.seedTypes = bundle.seedTypes;
+        CellLogic.terrainTypes = bundle.terrainTypes;
+    }
+
+    // check if plant or seed is compatible with the terrain, or if the cell is occupied by another plant.
+    /**
+     *
+     * @param playBoard
+     * @param item
+     * @param {CellModel} cell
+     * @returns {boolean}
+     */
+    static isCompatible(playBoard, item, cell) {
+        if (cell.enemy !== null) {
+            playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("010"));
+            return false;
+        }
+
+        if (cell.seed !== null || cell.plant !== null) {
+            playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("011"));
+            return false;
+        }
+
+        // bamboo
+        if (item?.plantType === CellLogic.plantTypes.BAMBOO) {
+            if (cell.terrain.terrainType === CellLogic.terrainTypes.STEPPE || cell.terrain.terrainType === CellLogic.terrainTypes.HILL || cell.terrain.terrainType === CellLogic.terrainTypes.LANDSLIDE) {
+                return true;
+            } else {
+                playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
+                return false;
+            }
+        }
+
+        // plum
+        if (item?.plantType === CellLogic.plantTypes.PLUM) {
+            if (cell.terrain.terrainType === CellLogic.terrainTypes.STEPPE || cell.terrain.terrainType === CellLogic.terrainTypes.HILL || cell.terrain.terrainType === CellLogic.terrainTypes.SNOWFIELD) {
+                return true;
+            } else {
+                playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
+                return false;
+            }
+        }
+
+        // other plants
+        if (cell.terrain.terrainType === CellLogic.terrainTypes.MOUNTAIN || cell.terrain.terrainType === CellLogic.terrainTypes.BASE
+            || cell.terrain.terrainType === CellLogic.terrainTypes.LUMBERING || cell.terrain.terrainType === CellLogic.terrainTypes.VOLCANO
+            || (cell.terrain.terrainType === CellLogic.terrainTypes.LAVA && cell.terrain.name === "Lava")
+            || cell.terrain.terrainType === CellLogic.terrainTypes.LANDSLIDE || cell.terrain.terrainType === CellLogic.terrainTypes.SNOWFIELD) {
+            playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
+            return false;
+        }
+        return true;
+    }
+
+}
+
+export class CellSerializer {
+    static setup(bundle) {
+        /** @type {typeof PlantSerializer} */
+        CellSerializer.PlantSerializer = bundle.PlantSerializer;
+        /** @type {typeof SeedSerializer} */
+        CellSerializer.SeedSerializer = bundle.SeedSerializer;
+        /** @type {typeof TerrainSerializer} */
+        CellSerializer.TerrainSerializer = bundle.TerrainSerializer;
+        /** @type {typeof MovableSerializer} */
+        CellSerializer.MovableSerializer = bundle.MovableSerializer;
+
+        CellSerializer.terrainTypes = bundle.terrainTypes;
+
+        CellSerializer.plantFactory = bundle.plantFactory;
+        CellSerializer.terrainFactory = bundle.terrainFactory;
+    }
+
+    /**
+     *
+     * @param {CellModel} cell
+     */
+    static stringify(cell) {
         let object = {
             terrain: null,
             plant: null,
             seed: null,
             enemy: null,
         }
-        if (this.plant) {
-            object.plant = this.plant.stringify();
+        if (cell.plant) {
+            object.plant = CellSerializer.PlantSerializer.stringify(cell.plant);
         }
-        if (this.seed) {
-            object.seed = this.seed.stringify();
+        if (cell.seed) {
+            object.seed = CellSerializer.SeedSerializer.stringify(cell.seed);
         }
-        if (this.terrain) {
-            object.terrain = this.terrain.stringify();
+        if (cell.terrain) {
+            object.terrain = CellSerializer.TerrainSerializer.stringify(cell.terrain);
         }
-        if (this.enemy) {
-            object.enemy = this.enemy.stringify();
+        if (cell.enemy) {
+            object.enemy = CellSerializer.MovableSerializer.stringify(cell.enemy);
         }
         return JSON.stringify(object);
     }
 
-    static parse(json, x, y, p5, playBoard) {
+    static parse(json, i, j, p5) {
         let object = JSON.parse(json);
         let plant, terrain, seed;
         if (object.plant) {
             plant = JSON.parse(object.plant);
-            switch (plant.plantType) {
-                case plantTypes.TREE:
-                    plant = Tree.parse(object.plant, p5);
-                    break;
-                case plantTypes.BUSH:
-                    plant = Bush.parse(object.plant, p5);
-                    break;
-                case plantTypes.ORCHID:
-                    plant = Orchid.parse(object.plant, p5);
-                    break;
-                case plantTypes.FIRE_HERB:
-                    plant = FireHerb.parse(object.plant, p5);
-                    break;
-                case plantTypes.BAMBOO:
-                    plant = Bamboo.parse(object.plant, p5);
-                    break;
-                case plantTypes.PLUM:
-                    plant = Plum.parse(object.plant, p5);
-                    break;
-                case plantTypes.KIKU:
-                    plant = Kiku.parse(object.plant, p5);
-                    break;
-                case plantTypes.PALM:
-                    plant = Palm.parse(object.plant, p5);
-                    break;
-            }
+            plant = CellSerializer.PlantSerializer.parse(object.plant, p5, CellSerializer.plantFactory.get(plant.name)());
         }
         if (object.seed) {
             seed = JSON.parse(object.seed);
-            switch (seed.seedType) {
-                case seedTypes.TREE:
-                    seed = TreeSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.BUSH:
-                    seed = BushSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.ORCHID:
-                    seed = OrchidSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.FIRE_HERB:
-                    seed = FireHerbSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.BAMBOO:
-                    seed = BambooSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.PLUM:
-                    seed = PlumSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.KIKU:
-                    seed = KikuSeed.parse(object.seed, p5);
-                    break;
-                case seedTypes.PALM:
-                    seed = PalmSeed.parse(object.seed, p5);
-            }
+            seed = CellSerializer.SeedSerializer.parse(object.seed, p5, CellSerializer.plantFactory.get(seed.name)());
         }
         if (object.terrain) {
             terrain = JSON.parse(object.terrain);
-            switch (terrain.terrainType) {
-                case terrainTypes.BASE:
-                    terrain = new PlayerBase(p5);
-                    break;
-                case terrainTypes.MOUNTAIN:
-                    terrain = new Mountain(p5);
-                    break;
-                case terrainTypes.STEPPE:
-                    terrain = new Steppe(p5);
-                    break;
-                case terrainTypes.LUMBERING:
-                    terrain = new Lumbering(p5);
-                    break;
-                case terrainTypes.VOLCANO:
-                    terrain = new Volcano(p5);
-                    break;
-                case terrainTypes.LAVA:
-                    terrain = Lava.parse(object.terrain, p5, playBoard);
-                    break;
-                case terrainTypes.HILL:
-                    terrain = new Hill(p5);
-                    break;
-                case terrainTypes.LANDSLIDE:
-                    terrain = new Landslide(p5);
-                    break;
-                case terrainTypes.SNOWFIELD:
-                    terrain = new Snowfield(p5);
-                    break;
-                case terrainTypes.SEA:
-                    terrain = new Sea(p5);
-                    break;
-            }
+            terrain = CellSerializer.TerrainSerializer.parse(object.terrain, p5, CellSerializer.terrainFactory.get(terrain.name)(), CellSerializer.plantFactory, CellSerializer.terrainTypes);
         }
-        let cell = new Cell(x, y, terrain);
+        let cell = new CellModel(i, j, terrain);
         if (plant) cell.plant = plant;
         if (seed) cell.seed = seed;
         return cell;
     }
 }
 
+
 class Ecosystem {
+    static setup(bundle) {
+        Ecosystem.stageGroup = bundle.stageGroup;
+    }
+
     constructor(countPlants) {
         this.countPlants = countPlants;
         this.growFaster = true;
@@ -579,19 +731,19 @@ class Ecosystem {
         this.withstandSnow = false;
     }
 
-    getEcoString(playBoard) {
+    getEcoString(playBoardStageGroup) {
         let str = "";
         // str += `${this.countPlants} plants in this ecosystem. `;
         if (this.growFaster) {
             str += "Seeds sowed here will grow faster. "
         }
-        if (this.rejectLava && (playBoard.stageGroup === stageGroup.VOLCANO || playBoard.stageGroup === stageGroup.TSUNAMI)) {
+        if (this.rejectLava && (playBoardStageGroup === Ecosystem.stageGroup.VOLCANO || playBoardStageGroup === Ecosystem.stageGroup.TSUNAMI)) {
             str += "Lava expanded here will stop. "
         }
         if (this.strengthenOrchid) {
             str += "Orchid deals more damage to bandits. "
         }
-        if (this.withstandSnow && (playBoard.stageGroup === stageGroup.VOLCANO || playBoard.stageGroup === stageGroup.TSUNAMI)) {
+        if (this.withstandSnow && (playBoardStageGroup === Ecosystem.stageGroup.VOLCANO || playBoardStageGroup === Ecosystem.stageGroup.TSUNAMI)) {
             str += "Withstand blizzard. "
         }
         return str;

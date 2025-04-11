@@ -1,27 +1,37 @@
 export class InventoryModel {
-    constructor(p5, bundle) {
+    static setup(bundle) {
+        InventoryModel.utilityClass = bundle.utilityClass;
+        /** @type {Map} */
+        InventoryModel.plantFactory = bundle.plantFactory;
+    }
+
+    constructor() {
         this.items = new Map(); // <String name, int count>
         this.selectedItem = null; // a String
         this.scrollIndex = 0;
         this.maxVisibleItems = 6;
 
         // for fast lookup when creating item
-        this.itemPrototypes = bundle.plantFactory; // Map<String name, Function create>
+        this.itemPrototypes = InventoryModel.plantFactory; // Map<String name, Function create>
 
         // inventory and item parameters
-        this.padding = bundle.utilityClass.relative2absolute(0.01, 0.06)[0];
-        this.itemHeight = bundle.utilityClass.relative2absolute(0.01, 0.06)[1];
-        this.inventoryWidth = bundle.utilityClass.relative2absolute(0.1, 0.03)[0];
-        this.inventoryY = bundle.utilityClass.relative2absolute(0.1, 0.03)[1];
-        this.itemInter = bundle.utilityClass.relative2absolute(0.01, 0.01)[1];
+        this.padding = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[0];
+        this.itemHeight = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[1];
+        this.inventoryWidth = InventoryModel.utilityClass.relative2absolute(0.1, 0.03)[0];
+        this.inventoryY = InventoryModel.utilityClass.relative2absolute(0.1, 0.03)[1];
+        this.itemInter = InventoryModel.utilityClass.relative2absolute(0.01, 0.01)[1];
         this.inventoryHeight = Math.min(this.items.size, this.maxVisibleItems) * this.itemHeight + this.padding * 2;
-        this.inventoryX = bundle.utilityClass.relative2absolute(1, 1)[0] - this.inventoryWidth - this.padding;
+        this.inventoryX = InventoryModel.utilityClass.relative2absolute(1, 1)[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
     }
 }
 
-export class InventoryRenderer{
+export class InventoryRenderer {
+    static setup(bundle) {
+        InventoryRenderer.Button = bundle.Button;
+    }
+
     /**
      *
      * @param p5
@@ -57,8 +67,8 @@ export class InventoryRenderer{
     }
 }
 
-export class InventoryLogic{
-    static setup(bundle){
+export class InventoryLogic {
+    static setup(bundle) {
         InventoryLogic.plantTypes = bundle.plantTypes;
         InventoryLogic.seedTypes = bundle.seedTypes;
         InventoryLogic.itemTypes = bundle.itemTypes;
@@ -244,7 +254,7 @@ export class InventoryLogic{
     }
 }
 
-export class InventorySerializer{
+export class InventorySerializer {
     /**
      *
      * @param {InventoryModel} inventory

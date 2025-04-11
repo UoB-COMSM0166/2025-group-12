@@ -1,11 +1,16 @@
 export class Controller {
     constructor(bundle) {
+        /** @type {GameState} */
         this.gameState = bundle.gameState;
         this.menus = bundle.menus;
-        this.stateCode = bundle.stateCode;
         this.pauseMenu = bundle.pauseMenu;
-        this.input = bundle.input;
+        this.inputHandler = bundle.inputHandler;
+        this.stateCode = bundle.stateCode;
+        /** @type {stateCode} */
         this.saveState = bundle.initialState;
+
+        this.StartMenuLogic = bundle.StartMenuLogic;
+        this.InventoryLogic = bundle.InventoryLogic;
     }
 
     setup(p5) {
@@ -23,9 +28,6 @@ export class Controller {
             return;
         }
         if (this.gameState.playerCanClick === false) {
-            return;
-        }
-        if (this.gameState.showOptions){
             return;
         }
         let currentMenu = this.menus[this.gameState.getState()];
@@ -85,7 +87,7 @@ export class Controller {
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.PLAY) {
             this.gameState.inventory.scrollIndex = 0;
-            this.menus[this.stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
+            this.menus[this.stateCode.PLAY].tmpInventoryItems = this.InventoryLogic.saveInventory(this.gameState.inventory)
             this.menus[this.stateCode.PLAY].setStageInventory(p5);
             return;
         }
@@ -95,7 +97,7 @@ export class Controller {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;
-            this.gameState.inventory.loadInventory(this.menus[this.stateCode.PLAY].tmpInventoryItems);
+            this.InventoryLogic.loadInventory(this.menus[this.stateCode.PLAY].tmpInventoryItems, this.gameState.inventory);
             // destroy the play board
             this.menus[this.stateCode.PLAY] = null;
             return;
@@ -103,8 +105,7 @@ export class Controller {
 
         // if we go back to start menu from standby, we set New Game button into Resume Game.
         if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.MENU) {
-            this.menus[this.stateCode.MENU].changeNewToResume();
-            return;
+            this.StartMenuLogic.changeNewToResume(this.menus[this.stateCode.MENU])
         }
     }
 

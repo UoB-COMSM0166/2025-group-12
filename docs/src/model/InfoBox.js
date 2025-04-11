@@ -1,7 +1,8 @@
-import {myUtil} from "../../lib/myUtil.js";
-import {Button} from "../items/Button.js";
+export class InfoBoxModel {
+    static setup(bundle) {
+        InfoBoxModel.utilityClass = bundle.utilityClass;
+    }
 
-export class InfoBox {
     constructor(playBoard) {
         this.infoStatus = 't'; // by default prints terrain & ( enemy | seed )
         this.recordStatus = 't'; // if record!='a' && status = 'a', init button, vice versa.
@@ -9,72 +10,85 @@ export class InfoBox {
         this.displayButton = null;
 
         this.playBoard = playBoard;
-        [this.boxWidth, this.boxHeight] = myUtil.relative2absolute(0.18, 1 / 4);
-        this.boxX = myUtil.relative2absolute(1 / 128, 0)[0];
-        [this.paddingX, this.paddingY] = myUtil.relative2absolute(1 / 128, 1 / 72);
-        this.boxY = myUtil.relative2absolute(1, 1)[1] - this.boxHeight - this.paddingY;
+        this.boxWidth = InfoBoxModel.utilityClass.relative2absolute(0.18, 1 / 4)[0];
+        this.boxHeight = InfoBoxModel.utilityClass.relative2absolute(0.18, 1 / 4)[1];
+        this.boxX = InfoBoxModel.utilityClass.relative2absolute(1 / 128, 0)[0];
+        this.paddingX = InfoBoxModel.utilityClass.relative2absolute(1 / 128, 1 / 72)[0];
+        this.paddingY = InfoBoxModel.utilityClass.relative2absolute(1 / 128, 1 / 72)[1];
+        this.boxY = InfoBoxModel.utilityClass.relative2absolute(1, 1)[1] - this.boxHeight - this.paddingY;
+    }
+}
+
+export class InfoBoxRenderer {
+
+    static setup(bundle) {
+        InfoBoxRenderer.utilityClass = bundle.utilityClass;
     }
 
-    // left bottom info box
-    draw(p5) {
+    /**
+     *
+     * @param p5
+     * @param {InfoBoxModel} infoBox
+     */
+    static draw(p5, infoBox) {
         p5.fill(50);
         p5.noStroke();
-        p5.rect(this.boxX, this.boxY, this.boxWidth, this.boxHeight, 10); // 10: corner roundness
+        p5.rect(infoBox.boxX, infoBox.boxY, infoBox.boxWidth, infoBox.boxHeight, 10); // 10: corner roundness
 
         let title;
         let info;
 
-        if (this.infoStatus === 't') {
+        if (infoBox.infoStatus === 't') {
             title = "General Info";
-            info = this.playBoard.boardObjects.getCellString(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
-        } else if (this.infoStatus === 'p') {
+            info = infoBox.playBoard.boardObjects.getCellString(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
+        } else if (infoBox.infoStatus === 'p') {
             title = "Plant Passive";
-            info = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).plant.getPassiveString();
-        } else if (this.infoStatus === 'a') {
+            info = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]).plant.getPassiveString();
+        } else if (infoBox.infoStatus === 'a') {
             title = "Plant Active";
-            info = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).plant.getActiveString();
-        } else if (this.infoStatus === 'e') {
+            info = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]).plant.getActiveString();
+        } else if (infoBox.infoStatus === 'e') {
             title = "Ecosystem";
-            info = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]).getEcoString(this.playBoard);
+            info = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]).getEcoString(infoBox.playBoard);
         }
 
         p5.fill(255);
         p5.textSize(20);
         p5.textAlign(p5.CENTER, p5.TOP);
-        p5.text(title, this.boxX + this.boxWidth / 2, this.boxY + this.paddingY);
+        p5.text(title, infoBox.boxX + infoBox.boxWidth / 2, infoBox.boxY + infoBox.paddingY);
 
         p5.textSize(18);
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
-        p5.text(info, this.boxX + this.paddingX, this.boxY + this.paddingY + 24, this.boxWidth - this.paddingX * 2);
+        p5.text(info, infoBox.boxX + infoBox.paddingX, infoBox.boxY + infoBox.paddingY + 24, infoBox.boxWidth - infoBox.paddingX * 2);
 
-        let arrowSize = myUtil.relative2absolute(0.02)[0];
-        p5.image(p5.images.get("leftarrow"), this.boxX + this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
-        p5.image(p5.images.get("rightarrow"), this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
+        let arrowSize = InfoBoxRenderer.utilityClass.relative2absolute(0.02)[0];
+        p5.image(p5.images.get("leftArrow"), infoBox.boxX + infoBox.boxWidth / 3 - arrowSize / 2, infoBox.boxY - arrowSize - infoBox.paddingY, arrowSize, arrowSize);
+        p5.image(p5.images.get("rightArrow"), infoBox.boxX + 2 * infoBox.boxWidth / 3 - arrowSize / 2, infoBox.boxY - arrowSize - infoBox.paddingY, arrowSize, arrowSize);
 
         // draw a box to highlight arrow
-        if (this.boxX + this.boxWidth / 3 - arrowSize / 2 < p5.mouseX && p5.mouseX < this.boxX + this.boxWidth / 3 - arrowSize / 2 + arrowSize
-            && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize) {
+        if (infoBox.boxX + infoBox.boxWidth / 3 - arrowSize / 2 < p5.mouseX && p5.mouseX < infoBox.boxX + infoBox.boxWidth / 3 - arrowSize / 2 + arrowSize
+            && infoBox.boxY - arrowSize - infoBox.paddingY < p5.mouseY && p5.mouseY < infoBox.boxY - arrowSize - infoBox.paddingY + arrowSize) {
             p5.fill(0, 0, 0, 0);
             p5.stroke(100);
             p5.strokeWeight(2);
-            p5.rect(this.boxX + this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
+            p5.rect(infoBox.boxX + infoBox.boxWidth / 3 - arrowSize / 2, infoBox.boxY - arrowSize - infoBox.paddingY, arrowSize, arrowSize);
         }
-        if (this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 < p5.mouseX && p5.mouseX < this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2 + arrowSize
-            && this.boxY - arrowSize - this.paddingY < p5.mouseY && p5.mouseY < this.boxY - arrowSize - this.paddingY + arrowSize) {
+        if (infoBox.boxX + 2 * infoBox.boxWidth / 3 - arrowSize / 2 < p5.mouseX && p5.mouseX < infoBox.boxX + 2 * infoBox.boxWidth / 3 - arrowSize / 2 + arrowSize
+            && infoBox.boxY - arrowSize - infoBox.paddingY < p5.mouseY && p5.mouseY < infoBox.boxY - arrowSize - infoBox.paddingY + arrowSize) {
             p5.fill(0, 0, 0, 0);
             p5.stroke(100);
             p5.strokeWeight(2);
-            p5.rect(this.boxX + 2 * this.boxWidth / 3 - arrowSize / 2, this.boxY - arrowSize - this.paddingY, arrowSize, arrowSize);
+            p5.rect(infoBox.boxX + 2 * infoBox.boxWidth / 3 - arrowSize / 2, infoBox.boxY - arrowSize - infoBox.paddingY, arrowSize, arrowSize);
         }
 
         // add a page indicator
-        let cell = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
+        let cell = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
         let pages;
         let currentPage;
         if (cell.plant === null) {
             pages = 2;
-            switch (this.infoStatus) {
+            switch (infoBox.infoStatus) {
                 case 't':
                     currentPage = 1;
                     break;
@@ -87,7 +101,7 @@ export class InfoBox {
             }
         } else {
             pages = 4;
-            switch (this.infoStatus) {
+            switch (infoBox.infoStatus) {
                 case 't':
                     currentPage = 1;
                     break;
@@ -109,25 +123,42 @@ export class InfoBox {
         p5.fill(255);
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);
-        p5.text(`${currentPage}/${pages}`, this.boxX + this.boxWidth / 2 - arrowSize / 2, this.boxY - 2 * arrowSize / 3 - this.paddingY);
+        p5.text(`${currentPage}/${pages}`, infoBox.boxX + infoBox.boxWidth / 2 - arrowSize / 2, infoBox.boxY - 2 * arrowSize / 3 - infoBox.paddingY);
+    }
+}
+
+export class InfoBoxLogic {
+    static setup(bundle) {
+        InfoBoxLogic.Button = bundle.button;
+        InfoBoxLogic.utilityClass = bundle.utilityClass;
     }
 
     // clicked info box arrows when info box exists in play board
-    handleClickArrow(p5, playBoard) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static handleClickArrow(p5, playBoard) {
         if (playBoard.selectedCell.length !== 0) {
-            if (playBoard.infoBox.clickArrow(p5, this)) {
+            if (InfoBoxLogic.clickArrow(p5, playBoard.infoBox)) {
                 return true;
             } else {
                 // reset the info status to prevent unintentional bugs
-                playBoard.infoBox.resetStatus();
-                playBoard.infoBox.deleteActivateButton(p5, this);
-                playBoard.infoBox.deleteDisplayButton(p5);
+                InfoBoxLogic.resetStatus(playBoard.infoBox);
+                InfoBoxLogic.deleteActivateButton(playBoard.infoBox);
+                InfoBoxLogic.deleteDisplayButton(playBoard.infoBox);
             }
         }
         return false;
     }
 
-    clickArrow(p5) {
+    /**
+     *
+     * @param p5
+     * @param {InfoBoxModel} infoBox
+     */
+    static clickArrow(p5, infoBox) {
         // the parameters of arrows are hardcoded now, should refactor later.
         let leftArrowX = 74;
         let rightArrowX = 150.8;
@@ -135,146 +166,192 @@ export class InfoBox {
         let arrowSize = 25.6;
         if (p5.mouseX >= leftArrowX && p5.mouseX < leftArrowX + arrowSize
             && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize) {
-            return this.clickLeftArrow(p5);
+            return InfoBoxLogic.clickLeftArrow(p5, infoBox);
         }
         if (p5.mouseX >= rightArrowX && p5.mouseX < rightArrowX + arrowSize
             && p5.mouseY >= arrowY && p5.mouseY <= arrowY + arrowSize) {
-            return this.clickRightArrow(p5);
+            return InfoBoxLogic.clickRightArrow(p5, infoBox);
         }
         return false;
     }
 
     // separate the two functions to incorporate keyboard shortcut
-    clickLeftArrow(p5) {
-        this.infoBoxFSM(p5, 'p');
+    /**
+     *
+     * @param p5
+     * @param {InfoBoxModel} infoBox
+     */
+    static clickLeftArrow(p5, infoBox) {
+        InfoBoxLogic.infoBoxFSM(p5, 'p', infoBox);
         return true;
     }
 
-    clickRightArrow(p5) {
-        this.infoBoxFSM(p5, 'n');
+    /**
+     *
+     * @param p5
+     * @param {InfoBoxModel} infoBox
+     */
+    static clickRightArrow(p5, infoBox) {
+        InfoBoxLogic.infoBoxFSM(p5, 'n', infoBox);
         return true;
     }
 
     // a finite state machine.
-    infoBoxFSM(p5, nextOrPrev) {
-        let cell = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
+    /**
+     *
+     * @param p5
+     * @param nextOrPrev
+     * @param {InfoBoxModel} infoBox
+     */
+    static infoBoxFSM(p5, nextOrPrev, infoBox) {
+        let cell = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
 
         // terrain & enemy
-        if (this.infoStatus === 't') {
+        if (infoBox.infoStatus === 't') {
             if (nextOrPrev === 'n') {
                 if (cell.plant !== null) {
-                    this.setStatus(p5, 'p');
+                    InfoBoxLogic.setStatus(p5, 'p', infoBox);
                 } else {
-                    this.setStatus(p5, 'e');
+                    InfoBoxLogic.setStatus(p5, 'e', infoBox);
                 }
             } else {
-                this.setStatus(p5, 'e');
+                InfoBoxLogic.setStatus(p5, 'e', infoBox);
             }
         }
 
         // plant passive skill
-        else if (this.infoStatus === 'p') {
+        else if (infoBox.infoStatus === 'p') {
             if (nextOrPrev === 'n') {
-                this.setStatus(p5, 'a');
+                InfoBoxLogic.setStatus(p5, 'a', infoBox);
             } else {
-                this.setStatus(p5, 't');
+                InfoBoxLogic.setStatus(p5, 't', infoBox);
             }
         }
 
         // plant active skill
-        else if (this.infoStatus === 'a') {
+        else if (infoBox.infoStatus === 'a') {
             if (nextOrPrev === 'n') {
-                this.setStatus(p5, 'e');
+                InfoBoxLogic.setStatus(p5, 'e', infoBox);
             } else {
-                this.setStatus(p5, 'p');
+                InfoBoxLogic.setStatus(p5, 'p', infoBox);
             }
         }
 
         // ecosystem
-        else if (this.infoStatus === 'e') {
+        else if (infoBox.infoStatus === 'e') {
             if (nextOrPrev === 'n') {
-                this.setStatus(p5, 't');
+                InfoBoxLogic.setStatus(p5, 't', infoBox);
             } else {
                 if (cell.plant !== null) {
-                    this.setStatus(p5, 'a');
+                    InfoBoxLogic.setStatus(p5, 'a', infoBox);
                 } else {
-                    this.setStatus(p5, 't');
+                    InfoBoxLogic.setStatus(p5, 't', infoBox);
                 }
             }
         }
-
     }
 
-    setStatus(p5, newStatus) {
-        this.infoStatus = newStatus;
-        let cell = this.playBoard.boardObjects.getCell(this.playBoard.selectedCell[0], this.playBoard.selectedCell[1]);
-        if (this.infoStatus === 'a' && this.recordStatus !== 'a' && cell.plant !== null && cell.plant.hasActive) {
-            this.setActivateButton(p5);
-        } else if (this.infoStatus !== 'a' && this.recordStatus === 'a') {
-            this.deleteActivateButton(p5);
+    /**
+     *
+     * @param p5
+     * @param newStatus
+     * @param {InfoBoxModel} infoBox
+     */
+    static setStatus(p5, newStatus, infoBox) {
+        infoBox.infoStatus = newStatus;
+        let cell = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
+        if (infoBox.infoStatus === 'a' && infoBox.recordStatus !== 'a' && cell.plant !== null && cell.plant.hasActive) {
+            InfoBoxLogic.setActivateButton(p5, infoBox);
+        } else if (infoBox.infoStatus !== 'a' && infoBox.recordStatus === 'a') {
+            InfoBoxLogic.deleteActivateButton(p5);
         }
 
-        if (this.infoStatus === 'e') this.setEcoDisplayButton(p5);
-        else this.deleteDisplayButton(p5);
+        if (infoBox.infoStatus === 'e') InfoBoxLogic.setEcoDisplayButton(p5);
+        else InfoBoxLogic.deleteDisplayButton(p5);
 
-        this.recordStatus = newStatus;
+        infoBox.recordStatus = newStatus;
     }
 
-    resetStatus() {
-        this.infoStatus = 't';
-        this.recordStatus = 't';
+    /**
+     *
+     * @param {InfoBoxModel} infoBox
+     */
+    static resetStatus(infoBox) {
+        infoBox.infoStatus = 't';
+        infoBox.recordStatus = 't';
     }
 
-    setActivateButton(p5) {
-        let [buttonWidth, buttonHeight] = myUtil.relative2absolute(5 / 64, 0.04);
-        let buttonX = this.boxX + this.boxWidth / 2 - buttonWidth / 2;
-        let buttonY = this.playBoard.canvasHeight - buttonHeight - 2 * this.paddingY;
-        let activate = new Button(buttonX, buttonY, buttonWidth, buttonHeight, "activate");
+    /**
+     *
+     * @param p5
+     * @param {InfoBoxModel} infoBox
+     */
+    static setActivateButton(p5, infoBox) {
+        let [buttonWidth, buttonHeight] = InfoBoxLogic.utilityClass.relative2absolute(5 / 64, 0.04);
+        let buttonX = infoBox.boxX + infoBox.boxWidth / 2 - buttonWidth / 2;
+        let buttonY = infoBox.playBoard.canvasHeight - buttonHeight - 2 * infoBox.paddingY;
+        let activate = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, "activate");
         activate.onClick = () => {
-            this.playBoard.activatePlantSkill(p5);
+            infoBox.playBoard.activatePlantSkill(p5);
         };
-        this.playBoard.buttons.push(activate);
-        this.activateButton = activate;
+        infoBox.playBoard.buttons.push(activate);
+        infoBox.activateButton = activate;
     }
 
-    deleteActivateButton(p5) {
-        if (this.activateButton === null) {
+    /**
+     *
+     * @param {InfoBoxModel} infoBox
+     */
+    static deleteActivateButton(infoBox) {
+        if (infoBox.activateButton === null) {
             return;
         }
-        let index = this.playBoard.buttons.findIndex(button => button === this.activateButton);
+        let index = infoBox.playBoard.buttons.findIndex(button => button === infoBox.activateButton);
         if (index !== -1) {
-            this.playBoard.buttons.splice(index, 1);
+            infoBox.playBoard.buttons.splice(index, 1);
         }
-        this.activateButton = null;
+        infoBox.activateButton = null;
     }
 
-    setEcoDisplayButton(p5) {
-        let [buttonWidth, buttonHeight] = myUtil.relative2absolute(5 / 64, 0.04);
-        let buttonX = this.boxX + this.boxWidth / 2 - buttonWidth / 2;
-        let buttonY = this.playBoard.canvasHeight - buttonHeight - 2 * this.paddingY;
+    /**
+     *
+     * @param {InfoBoxModel} infoBox
+     */
+    static setEcoDisplayButton(infoBox) {
+        let [buttonWidth, buttonHeight] = InfoBoxLogic.utilityClass.relative2absolute(5 / 64, 0.04);
+        let buttonX = infoBox.boxX + infoBox.boxWidth / 2 - buttonWidth / 2;
+        let buttonY = infoBox.playBoard.canvasHeight - buttonHeight - 2 * infoBox.paddingY;
 
-        let text = this.playBoard.ecoDisplay ? "display off" : "display on";
+        let text = infoBox.playBoard.ecoDisplay ? "display off" : "display on";
 
-        let display = new Button(buttonX, buttonY, buttonWidth, buttonHeight, text);
+        let display = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, text);
         display.onClick = () => {
-            this.playBoard.ecoDisplay = !this.playBoard.ecoDisplay;
-            this.toggleEcoDisplayButtonText();
+            infoBox.playBoard.ecoDisplay = !infoBox.playBoard.ecoDisplay;
+            InfoBoxLogic.toggleEcoDisplayButtonText(infoBox);
         };
-        this.playBoard.buttons.push(display);
-        this.displayButton = display;
+        infoBox.playBoard.buttons.push(display);
+        infoBox.displayButton = display;
     }
 
-    toggleEcoDisplayButtonText() {
-        this.displayButton.text = this.playBoard.ecoDisplay ? "display off" : "display on";
+    /**
+     *
+     * @param {InfoBoxModel} infoBox
+     */
+    static toggleEcoDisplayButtonText(infoBox) {
+        infoBox.displayButton.text = infoBox.playBoard.ecoDisplay ? "display off" : "display on";
     }
 
-    deleteDisplayButton(p5) {
-        if (this.displayButton === null) return;
+    /**
+     *
+     * @param {InfoBoxModel} infoBox
+     */
+    static deleteDisplayButton(infoBox) {
+        if (infoBox.displayButton === null) return;
 
-        let index = this.playBoard.buttons.findIndex(button => button === this.displayButton);
+        let index = infoBox.playBoard.buttons.findIndex(button => button === infoBox.displayButton);
         if (index !== -1) {
-            this.playBoard.buttons.splice(index, 1);
+            infoBox.playBoard.buttons.splice(index, 1);
         }
-        this.displayButton = null;
+        infoBox.displayButton = null;
     }
 }

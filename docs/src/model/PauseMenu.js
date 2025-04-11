@@ -1,68 +1,92 @@
-import {Button} from "../items/Button.js";
-import {myUtil} from "../../lib/myUtil.js";
-import {GameSave} from "./GameSave.js";
-import {stateCode} from "./GameState.js";
+export class PauseMenuModel {
+    static setup(bundle){}
 
-export class PauseMenu {
+    /**
+     * @param {GameState} gameState
+     */
     constructor(gameState) {
         this.gameState = gameState;
         this.buttons = [];
+        /** @type {FloatingWindow} */
+        this.floatingWindow = null;
+        /** @type {Map} */
+        this.allFloatingWindows = null;
     }
 
-    setup(p5) {
-        let [buttonWidth, buttonHeight] = myUtil.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = myUtil.relative2absolute(0.5, 0.3);
-        let buttonInter = myUtil.relative2absolute(0.1, 0.1)[1];
+    init(bundle) {
+        let [buttonWidth, buttonHeight] = bundle.utilityClass.relative2absolute(0.15, 0.07);
+        let [buttonX, buttonY] = bundle.utilityClass.relative2absolute(0.5, 0.3);
+        let buttonInter = bundle.utilityClass.relative2absolute(0.1, 0.1)[1];
 
-        let continueButton = new Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "Continue");
+        let continueButton = new bundle.Button(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "Continue");
         continueButton.onClick = () => {
             this.gameState.togglePaused();
         }
 
-        let loadGameButton = new Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+        let loadGameButton = new bundle.Button(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
-            GameSave.load(p5);
+            bundle.gameSerializer.load(p5);
             this.gameState.togglePaused();
         }
 
-        let saveGameButton = new Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
+        let saveGameButton = new bundle.Button(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Save Game");
         saveGameButton.onClick = () => {
-            GameSave.save(p5);
+            bundle.gameSerializer.save(p5);
             this.gameState.togglePaused();
         }
 
-        let escapeText = this.gameState.state === stateCode.PLAY ? 'Quit' : 'Back';
-        let escapeButton = new Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, escapeText);
+        let escapeText = this.gameState.state === bundle.stateCode.PLAY ? 'Quit' : 'Back';
+        let escapeButton = new bundle.Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, escapeText);
         escapeButton.onClick = () => {
             this.gameState.togglePaused();
-            if (this.gameState.state === stateCode.PLAY) {
-                this.gameState.setState(stateCode.STANDBY);
+            if (this.gameState.state === bundle.stateCode.PLAY) {
+                this.gameState.setState(bundle.stateCode.STANDBY);
             } else {
-                this.gameState.setState(stateCode.MENU);
+                this.gameState.setState(bundle.stateCode.MENU);
             }
             this.gameState.setPlayerCanClick(true);
         };
         this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);
     }
+}
 
-    handleClick(p5) {
-        for (let button of this.buttons) {
+export class PauseMenuLogic{
+    static setup(bundle){}
+
+    /**
+     *
+     * @param p5
+     * @param {PauseMenuModel} pauseMenu
+     */
+    static handleClick(p5, pauseMenu) {
+        for (let button of pauseMenu.buttons) {
             if (button.mouseClick(p5)) {
                 return;
             }
         }
-        this.gameState.togglePaused();
+        pauseMenu.gameState.togglePaused();
+    }
+}
+
+export class PauseMenuRenderer{
+    static setup(bundle){
+        PauseMenuRenderer.utilityClass = bundle.utilityClass;
     }
 
-    draw(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PauseMenuModel} pauseMenu
+     */
+    static draw(p5, pauseMenu) {
         p5.background(0, 0, 0, 80);
         p5.fill(255);
         p5.textSize(50);
         p5.textAlign(p5.CENTER, p5.CENTER);
-        let [textX, textY] = myUtil.relative2absolute(0.5, 0.2);
+        let [textX, textY] = PauseMenuRenderer.utilityClass.relative2absolute(0.5, 0.2);
         p5.text("PAUSE", textX, textY);
 
-        for (let button of this.buttons) {
+        for (let button of pauseMenu.buttons) {
             button.draw(p5);
         }
     }
