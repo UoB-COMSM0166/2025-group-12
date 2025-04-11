@@ -77,7 +77,6 @@ export class PlayBoard extends Screen {
         this.undoStack = [];
 
         this.selectInv = false;
-        this.mode = "mouse";
     }
 
     /* public methods */
@@ -87,7 +86,6 @@ export class PlayBoard extends Screen {
         p5.gamepadX = this.canvasWidth / 2;
         p5.gamepadY = this.canvasHeight / 2;
         p5.mouseSpeed = 10;
-        this.mode = this.gameState.mode;
         this.gameState.inventory.mode = this.gameState.mode;
         // action listeners
         this.setupActionListeners(p5);
@@ -565,6 +563,7 @@ export class PlayBoard extends Screen {
         else{
             index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
         }
+        console.log(index)
         if (index[0] === -1) {
             this.selectedCell = [];
         } else {
@@ -826,13 +825,11 @@ export class PlayBoard extends Screen {
     setupGamepad(p5){
         p5.noCursor();
         this.gameState.inventory.mode = "gamepad";
-        this.mode = "gamepad";
     }
 
     setupMouse(p5) {
         p5.cursor();
         this.gameState.inventory.mode = "mouse";
-        this.mode = "mouse";
     }
 
     cancel() {

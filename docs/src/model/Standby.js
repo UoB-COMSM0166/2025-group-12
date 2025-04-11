@@ -229,14 +229,14 @@ export class StandbyMenu extends Screen {
         this.allFloatingWindows = afw;
     }
 
-    setupGamepad(){
+    setupGamepad(p5){
         p5.noCursor();
         this.buttons.forEach(button => {
             button.mode = "gamepad";
         });
     }
 
-    setupMouse() {
+    setupMouse(p5) {
         p5.cursor();
         this.buttons.forEach(button => {
             button.mode = "mouse";
