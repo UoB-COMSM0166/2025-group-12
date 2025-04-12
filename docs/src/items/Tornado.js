@@ -1,6 +1,9 @@
-export class Tornado extends Enemy {
-    constructor(p5, x, y, direction, countdown = 0) {
-        super(x, y);
+/**
+ * @implements {MovableLike}
+ */
+export class TornadoModel {
+    constructor(p5, superModel, itemTypes, movableTypes, x, y, direction, countdown = 0) {
+        Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Tornado";
         this.movableType = movableTypes.TORNADO;
 
@@ -21,6 +24,7 @@ export class Tornado extends Enemy {
             return;
         }
 
+        /** @type {CellModel} */
         this.cell = null;
         this.countdown = countdown;
         this.isMoving = false;
@@ -34,10 +38,37 @@ export class Tornado extends Enemy {
         }
     }
 
-    drawDirection(p5){
-        let direction = this.direction;
-        let x = this.x;
-        let y = this.y;
+    static create(p5, playBoard, superModel, i, j, direction, countdown = 0) {
+        let cell = TornadoLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
+        if (cell.enemy !== null) {
+            return cell.enemy;
+        }
+        let [avgX, avgY] = TornadoLogic.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
+        let tornado = new TornadoModel(p5, superModel, TornadoLogic.itemTypes, TornadoLogic.movableTypes, avgX, avgY, direction, countdown);
+        playBoard.movables.push(tornado);
+        cell.enemy = tornado;
+        tornado.cell = cell;
+        return tornado;
+    }
+}
+
+export class TornadoRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        TornadoRenderer.utilityClass = bundle.utilityClass;
+        /** @type {typeof BoardLogic} */
+        TornadoRenderer.BoardLogic = bundle.BoardLogic;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {TornadoModel} tornado
+     */
+    drawDirection(p5, tornado) {
+        let direction = tornado.direction;
+        let x = tornado.x;
+        let y = tornado.y;
         let angle;
         if (direction[0] === 0 && direction[1] === -1) {
             angle = p5.radians(330); // Up-right
@@ -59,48 +90,61 @@ export class Tornado extends Enemy {
         p5.pop();
     }
 
-    draw(p5) {
-        let imgSize = myUtil.relative2absolute(1 / 32, 0)[0];
-        p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
+    /**
+     *
+     * @param p5
+     * @param {TornadoModel} tornado
+     */
+    static draw(p5, tornado) {
+        let imgSize = TornadoRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+        p5.image(tornado.img, tornado.x - imgSize / 2, tornado.y - imgSize, imgSize, imgSize);
+    }
+}
+
+export class TornadoLogic{
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        TornadoLogic.utilityClass = bundle.utilityClass;
+        TornadoLogic.baseType = bundle.baseType;
+        TornadoLogic.itemTypes = bundle.itemTypes;
+        TornadoLogic.plantTypes = bundle.plantTypes;
+        TornadoLogic.terrainTypes = bundle.terrainTypes;
+        TornadoLogic.movableTypes = bundle.movableTypes;
+
+        /** @type {typeof BoardLogic} */
+        TornadoLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        TornadoLogic.InteractionLogic = bundle.InteractionLogic;
     }
 
-    static createNewTornado(p5, playBoard, i, j, direction, countdown = 0) {
-        if (playBoard.boardObjects.getCell(i, j).enemy !== null) {
-            return;
-        }
-        let [avgX, avgY] = myUtil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
-        let tornado = new Tornado(p5, avgX, avgY, direction, countdown);
-        playBoard.movables.push(tornado);
-        playBoard.boardObjects.getCell(i, j).enemy = tornado;
-        tornado.cell = playBoard.boardObjects.getCell(i, j);
-    }
-
-    movements(p5, playBoard) {
-        if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of Tornado has received invalid PlayBoard.');
+    /**
+     *
+     * @param p5
+     * @param playBoard
+     * @param {TornadoModel} tornado
+     */
+    static movements(p5, playBoard, tornado) {
+        if (!tornado.status) {
             return false;
         }
-        if (!this.status) {
-            return false;
-        }
-        if (this.isMoving) {
-            this.moveAndInvokeTornado(p5, playBoard);
+        if (tornado.isMoving) {
+            TornadoLogic.moveAndInvokeTornado(p5, playBoard, tornado);
             return true;
         }
-        if (this.countdown > 0) {
-            this.countdown--;
+        if (tornado.countdown > 0) {
+            tornado.countdown--;
             this.hasMoved = true;
-            if (this.countdown <= 1) this.img = p5.images.get(`${this.name}`);
+            if (tornado.countdown <= 1) this.img = p5.images.get(`${tornado.name}`);
             return false;
         }
-        if (this.countdown === 0) {
-            if (this.cell !== null) {
-                this.cell.enemy = null;
-                this.cell = null;
+        if (tornado.countdown === 0) {
+            if (tornado.cell !== null) {
+                tornado.cell.enemy = null;
+                tornado.cell = null;
             }
-            this.isMoving = true;
-            this.img = p5.images.get(`${this.name}`);
-            this.moveAndInvokeTornado(p5, playBoard);
+            tornado.isMoving = true;
+            tornado.img = p5.images.get(`${tornado.name}`);
+            TornadoLogic.moveAndInvokeTornado(p5, playBoard, tornado);
             return true;
         }
     }
@@ -109,33 +153,34 @@ export class Tornado extends Enemy {
     // 1. check current cell to perform Tornado-terrain interaction.
     // 2. check extended trees' existence, and randomly pick one lucky tree.
     // 3. check current cell to attack plant or seed.
-    moveAndInvokeTornado(p5, playBoard) {
-        if (!(playBoard instanceof PlayBoard)) {
-            console.error('moveAndInvokeTornado has received invalid PlayBoard.');
-            return;
-        }
-
-        let [dx, dy] = this.direction;
-        let oldX = myUtil.oldCoorX(playBoard, this.x, this.y) + this.moveSpeed * dx;
-        let oldY = myUtil.oldCoorY(playBoard, this.x, this.y) + this.moveSpeed * dy;
-        let newX = myUtil.newCoorX(playBoard, oldX, oldY);
-        let newY = myUtil.newCoorY(playBoard, oldX, oldY);
-        this.x = newX;
-        this.y = newY;
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {TornadoModel} tornado
+     */
+    static moveAndInvokeTornado(p5, playBoard, tornado) {
+        let [dx, dy] = tornado.direction;
+        let oldX = TornadoLogic.utilityClass.oldCoorX(playBoard, tornado.x, tornado.y) + tornado.moveSpeed * dx;
+        let oldY = TornadoLogic.utilityClass.oldCoorY(playBoard, tornado.x, tornado.y) + tornado.moveSpeed * dy;
+        let newX = TornadoLogic.utilityClass.newCoorX(playBoard, oldX, oldY);
+        let newY = TornadoLogic.utilityClass.newCoorY(playBoard, oldX, oldY);
+        tornado.x = newX;
+        tornado.y = newY;
 
         // call interaction when Tornado overlays with plant (cell level)
-        let index = myUtil.pos2CellIndex(playBoard, this.x, this.y);
+        let index = TornadoLogic.utilityClass.pos2CellIndex(playBoard, tornado.x, tornado.y);
         if (index[0] !== -1) {
-            let cell = playBoard.boardObjects.getCell(index[0], index[1]);
+            let cell = TornadoLogic.BoardLogic.getCell(index[0], index[1],playBoard.boardObjects);
             // 1. check current cell to perform Tornado-terrain interaction.
             if (cell.terrain.name === "Mountain") {
                 this.status = false;
-                InteractionLogic.findMovableAndDelete(playBoard, this);
+                TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
                 return;
             }
 
             // 2. check extended trees' existence, and randomly pick one lucky tree.
-            let cells = playBoard.boardObjects.getAdjacent4Cells(index[0], index[1]);
+            let cells =TornadoLogic.BoardLogic.getAdjacent4Cells(index[0], index[1],playBoard.boardObjects);
             let trees = [];
             for (let adCell of cells) {
                 if (adCell !== null && adCell.plant !== null && adCell.plant.name === "Tree") {
@@ -146,22 +191,22 @@ export class Tornado extends Enemy {
             }
             if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
-                InteractionLogic.plantAttackedByTornado(playBoard, luckyTree, this);
+                TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, luckyTree, tornado);
                 return;
             }
 
             // 3. check current cell to attack plant or seed.
             if (this.status === true) {
                 if (cell.plant !== null && cell.plant.status === true) {
-                    InteractionLogic.plantAttackedByTornado(playBoard, cell.plant, this);
+                    TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, cell.plant, tornado);
                 } else if (cell.seed !== null) {
-                    InteractionLogic.plantAttackedByTornado(playBoard, cell.seed, this);
+                    TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, cell.seed, tornado);
                 }
             }
 
             // 4. if player base is at this cell, destroy it.
-            if (cell.terrain.terrainType === terrainTypes.BASE) {
-                myUtil.gameOver(playBoard);
+            if (cell.terrain.terrainType === TornadoLogic.terrainTypes.BASE) {
+                TornadoLogic.utilityClass.gameOver(playBoard);
                 return;
             }
 
@@ -169,7 +214,7 @@ export class Tornado extends Enemy {
             if (cell.enemy && cell.enemy.name === "Bandit") {
                 cell.enemy.health = 0;
                 cell.enemy.status = false;
-                InteractionLogic.findMovableAndDelete(playBoard, cell.enemy);
+                TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, cell.enemy);
                 cell.enemy = null;
             }
 
@@ -178,38 +223,7 @@ export class Tornado extends Enemy {
         // if the tornado goes out of the grid, it dies anyway.
         if (index[0] === -1) {
             this.status = false;
-            InteractionLogic.findMovableAndDelete(playBoard, this);
+            TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
         }
-    }
-
-    stringify() {
-        let d;
-        if (this.direction[0] === 0 && this.direction[1] === -1) d = 'u';
-        if (this.direction[0] === 0 && this.direction[1] === 1) d = 'd';
-        if (this.direction[0] === -1 && this.direction[1] === 0) d = 'l';
-        if (this.direction[0] === 1 && this.direction[1] === 0) d = 'r';
-
-        const object = {
-            movableType: this.movableType,
-            x: this.x,
-            y: this.y,
-            health: this.health,
-            direction: d,
-            cellX: this.cell?.x,
-            cellY: this.cell?.y,
-            countdown: this.countdown,
-        }
-        return JSON.stringify(object);
-    }
-
-    static parse(json, p5, playBoard) {
-        const object = JSON.parse(json);
-        let tornado = new Tornado(p5, object.x, object.y, object.direction, object.countdown);
-
-        if (object.cellX != null && object.cellY != null) { // != null checks both null and undefined
-            tornado.cell = playBoard.boardObjects.getCell(object.cellX, object.cellY);
-        }
-        tornado.health = object.health;
-        return tornado;
     }
 }

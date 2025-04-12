@@ -1,14 +1,25 @@
+/**
+ * @implements ScreenLike
+ */
 export class GameMapModel {
-    static isScreen = true;
-
-    static setup(bundle){}
+    static setup(bundle){
+        GameMapModel.p5 = bundle.p5;
+        /** @type {typeof myUtil} */
+        GameMapModel.utilityClass = bundle.utilityClass;
+        GameMapModel.stateCode = bundle.stateCode;
+        GameMapModel.stageGroup = bundle.stageGroup;
+        /** @type {typeof Button} */
+        GameMapModel.Button = bundle.Button;
+        /** @type {typeof MapButton} */
+        GameMapModel.MapButton = bundle.MapButton;
+        GameMapModel.FloatingWindow = bundle.FloatingWindow;
+    }
 
     /**
      *
      * @param {GameState} gameState
-     * @param {stageGroup} stageGroup
      */
-    constructor(gameState, stageGroup) {
+    constructor(gameState) {
         this.gameState = gameState;
         this.buttons = [];
         /** @type {FloatingWindow} */
@@ -17,30 +28,32 @@ export class GameMapModel {
         this.allFloatingWindows = null;
 
         this.background = null;
-        this.selectedStageGroup = stageGroup.NO_STAGE;
+        this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;
+
+        this.init();
     }
 
-    init(bundle) {
-        this.background = bundle.p5.images.get("GameMapBG");
+    init() {
+        this.background = GameMapModel.p5.images.get("GameMapBG");
 
         const buttonConfigs = [
-            {x: 0.52, y: 0.68, image: "Tornado", group: bundle.stageGroup.TORNADO},
-            {x: 0.475, y: 0.475, image: "VolcanoLayer", group: bundle.stageGroup.VOLCANO},
-            {x: 0.65, y: 0.3, image: "Landslide", group: bundle.stageGroup.EARTHQUAKE},
-            {x: 0.18, y: 0.65, image: "Blizzard", group: bundle.stageGroup.BLIZZARD},
-            {x: 0.36, y: 0.3, image: "Tsunami", group: bundle.stageGroup.TSUNAMI}
+            {x: 0.52, y: 0.68, imageName: "Tornado", group: GameMapModel.stageGroup.TORNADO},
+            {x: 0.475, y: 0.475, imageName: "VolcanoLayer", group: GameMapModel.stageGroup.VOLCANO},
+            {x: 0.65, y: 0.3, imageName: "Landslide", group: GameMapModel.stageGroup.EARTHQUAKE},
+            {x: 0.18, y: 0.65, imageName: "Blizzard", group: GameMapModel.stageGroup.BLIZZARD},
+            {x: 0.36, y: 0.3, imageName: "Tsunami", group: GameMapModel.stageGroup.TSUNAMI}
         ];
 
-        this.buttons = buttonConfigs.map(cfg => this.createStageButton(bundle, cfg.x, cfg.y, cfg.image, cfg.group));
+        this.buttons = buttonConfigs.map(cfg => this.createStageButton(cfg.x, cfg.y, cfg.imageName, cfg.group));
 
-        this.initAllFloatingWindows(bundle);
+        this.initAllFloatingWindows();
     }
 
-    createStageButton(bundle, xRatio, yRatio, imgName, group) {
-        let p5 = bundle.p5;
-        let [x, y] = bundle.utilityClass.relative2absolute(xRatio, yRatio);
-        let [size] = bundle.utilityClass.relative2absolute(0.05, 0.05);
-        let button = new bundle.MapButton(x, y, size, p5.images.get(imgName), group);
+    createStageButton(xRatio, yRatio, imgName, group) {
+        let p5 = GameMapModel.p5;
+        let [x, y] = GameMapModel.utilityClass.relative2absolute(xRatio, yRatio);
+        let [size] = GameMapModel.utilityClass.relative2absolute(0.05, 0.05);
+        let button = new GameMapModel.MapButton(x, y, size, p5.images.get(imgName), group);
         button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
                 if (button.isLocked) {
@@ -49,13 +62,13 @@ export class GameMapModel {
                     } else {
                         GameMapLogic.copyFloatingWindow(p5, "lock", this);
                     }
-                    this.selectedStageGroup = bundle.stageGroup.NO_STAGE;
+                    this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;
                     return;
                 }
             }
             if (this.selectedStageGroup === group) {
                 button.circle = null;
-                this.selectedStageGroup = bundle.stageGroup.NO_STAGE;
+                this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;
                 GameMapLogic.clickedStageButton(p5, group, this);
             } else {
                 this.selectedStageGroup = group;
@@ -65,10 +78,10 @@ export class GameMapModel {
         return button;
     }
 
-    initAllFloatingWindows(bundle) {
+    initAllFloatingWindows() {
         let afw = new Map();
 
-        afw.set("clear", new bundle.FloatingWindow(bundle.p5, null, "{white:This stage has been cleared.}", {
+        afw.set("clear", new GameMapModel.FloatingWindow(GameMapModel.p5, null, "{white:This stage has been cleared.}", {
             x: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
             y: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
@@ -78,7 +91,7 @@ export class GameMapModel {
             playerCanClick: true
         }));
 
-        afw.set("lock", new bundle.FloatingWindow(bundle.p5, null, "{white:This stage is locked.}", {
+        afw.set("lock", new GameMapModel.FloatingWindow(GameMapModel.p5, null, "{white:This stage is locked.}", {
             x: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
             y: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
@@ -88,7 +101,7 @@ export class GameMapModel {
             playerCanClick: true
         }));
 
-        afw.set("moreTutorial", new bundle.FloatingWindow(bundle.p5, null, "{white:Click 'Tornado' again to continue tutorial.}", {
+        afw.set("moreTutorial", new GameMapModel.FloatingWindow(GameMapModel.p5, null, "{white:Click 'Tornado' again to continue tutorial.}", {
             x: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
             y: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
@@ -108,8 +121,10 @@ export class GameMapRenderer {
         /** @type {typeof myUtil} */
         GameMapRenderer.utilityClass = bundle.utilityClass;
         /** @type {typeof InventoryRenderer} */
-        GameMapRenderer.inventoryRendererLayer = bundle.inventoryRendererLayer;
+        GameMapRenderer.InventoryRenderer = bundle.InventoryRenderer;
         GameMapRenderer.stageGroup = bundle.stageGroup;
+        /** @type {typeof ScreenRenderer} */
+        GameMapRenderer.ScreenRenderer = bundle.ScreenRenderer;
     }
 
     /**
@@ -126,7 +141,7 @@ export class GameMapRenderer {
             button.draw(p5);
         }
 
-        GameMapRenderer.inventoryRendererLayer.draw(p5, gameMap.gameState.inventory);
+        GameMapRenderer.InventoryRenderer.draw(p5, gameMap.gameState.inventory);
 
         if (gameMap.selectedStageGroup !== GameMapRenderer.stageGroup.NO_STAGE) {
             GameMapRenderer.drawStageInfo(p5, gameMap.selectedStageGroup, gameMap);
@@ -135,13 +150,14 @@ export class GameMapRenderer {
         GameMapRenderer.drawFloatingWindow(p5, gameMap);
     }
 
-    // placeholder, injected in container
     /**
      *
      * @param p5
      * @param {GameMapModel} gameMap
      */
-    static drawFloatingWindow(p5, gameMap) {}
+    static drawFloatingWindow(p5, gameMap) {
+        GameMapRenderer.ScreenRenderer.drawFloatingWindow(p5,gameMap, GameMapLogic.setFloatingWindow);
+    }
 
     /**
      *
@@ -212,23 +228,27 @@ export class GameMapLogic{
         GameMapLogic.FloatingWindow = bundle.FloatingWindow;
         GameMapLogic.stateCode = bundle.stateCode;
         GameMapLogic.stageGroup = bundle.stageGroup;
+        /** @type {typeof ScreenLogic} */
+        GameMapLogic.ScreenLogic = bundle.ScreenLogic;
     }
 
-    // placeholder, injected in container
     /**
      *
      * @param {GameMapModel} gameMap
      */
-    static handleFloatingWindow(gameMap){}
+    static handleFloatingWindow(gameMap){
+        return GameMapLogic.ScreenLogic.handleFloatingWindow(gameMap);
+    }
 
-    // placeholder, injected in container
     /**
      *
      * @param p5
      * @param event
      * @param {GameMapModel} gameMap
      */
-    static handleScroll(p5, event, gameMap){}
+    static handleScroll(p5, event, gameMap){
+        GameMapLogic.ScreenLogic.handleScroll(p5, event, gameMap);
+    }
 
     /**
      *

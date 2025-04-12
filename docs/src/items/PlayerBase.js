@@ -10,16 +10,14 @@ export class PlayerBaseModel {
 
         this.weight = 0;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class PlayerBaseRenderer {
 }
 
 export class PlayerBaseLogic {
-    static getWeight(base) {
-        return base.weight;
-    }
-}
-
-export class PlayerBaseSerializer {
 }

@@ -4,7 +4,7 @@ new p5((p) => {
     let container = new Container(p);
 
     p.preload = () => {
-        container.preloader(p);
+        container.preloader();
     };
 
     p.setup = () => {
@@ -32,7 +32,7 @@ new p5((p) => {
         container.controller.setData(p, container.gameState.getState());
 
         // replace following tmp view handling later
-        container.renderer(p);
+        container.renderer();
 
         // keep a copy of current state
         container.controller.saveState = container.gameState.getState();

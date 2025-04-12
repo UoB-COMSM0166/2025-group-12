@@ -6,16 +6,14 @@ export class SteppeModel {
         this.img = p5.images.get(`${this.name}`);
         this.weight = 0;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class SteppeRenderer {
 }
 
 export class SteppeLogic {
-    static getWeight(steppe) {
-        return steppe.weight;
-    }
-}
-
-export class SteppeSerializer {
 }

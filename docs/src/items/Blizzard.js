@@ -1,21 +1,14 @@
-import {Plant} from "./Plant.js";
-import {Terrain} from "./Terrain.js";
-import {movableTypes, plantTypes, seedTypes, terrainTypes} from "./ItemTypes.js";
-import {Seed} from "./Seed.js";
-import {Enemy} from "./Enemy.js";
-import {myUtil} from "../../lib/myUtil.js";
-import {PlayBoard} from "../model/Play.js";
-import {InteractionLogic} from "./InteractionLogic.js";
-
-export class Blizzard extends Enemy {
-    constructor(p5, playBoard, countdown = 0) {
-        super(-1, -1);
+/**
+ * @implements {MovableLike}
+ */
+export class BlizzardModel {
+    constructor(p5, playBoard, superModel, itemTypes, movableTypes, countdown = 0, x = -1, y = -1) {
+        Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Blizzard";
         this.movableType = movableTypes.BLIZZARD;
         this.status = true;
 
-        this.playBoard = playBoard;
-
+        /** @type {CellModel} */
         this.cell = null;
         this.countdown = countdown;
         this.isMoving = false;
@@ -30,90 +23,111 @@ export class Blizzard extends Enemy {
         }
     }
 
-    draw(p5) {
-        let imgSize = myUtil.relative2absolute(1 / 32, 0)[0];
+    static create(p5, playBoard, superModel, i, j, countdown = 0) {
+        let blizzard = new BlizzardModel(p5, playBoard, superModel, BlizzardLogic.itemTypes, BlizzardLogic.movableTypes, countdown);
+        blizzard.cell = BlizzardLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
+        playBoard.movables.push(blizzard);
+        return blizzard;
+    }
+}
+
+export class BlizzardRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        BlizzardRenderer.utilityClass = bundle.utilityClass;
+        /** @type {typeof BoardLogic} */
+        BlizzardRenderer.BoardLogic = bundle.BoardLogic;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BlizzardModel} blizzard
+     */
+    static draw(p5, playBoard, blizzard) {
+        let imgSize = BlizzardRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
         // draw 9 images
-        let cells = this.playBoard.boardObjects.getAdjacent8Cells(this.cell.x, this.cell.y);
-        cells.push(this.cell);
+        let cells = BlizzardRenderer.BoardLogic.getAdjacent8Cells(blizzard.cell.i, blizzard.cell.j, playBoard.boardObjects);
+        cells.push(blizzard.cell);
 
         for (let cell of cells) {
-            let [avgX, avgY] = myUtil.cellIndex2Pos(p5, this.playBoard, cell.x, cell.y, p5.CENTER);
-            p5.image(this.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
+            let [avgX, avgY] = BlizzardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CENTER);
+            p5.image(blizzard.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
         }
     }
+}
 
-    static createNewBlizzard(p5, playBoard, i, j, countdown = 0) {
-        let blizzard = new Blizzard(p5, playBoard, countdown);
-        playBoard.movables.push(blizzard);
-        blizzard.cell = playBoard.boardObjects.getCell(i, j);
+export class BlizzardLogic {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        BlizzardLogic.utilityClass = bundle.utilityClass;
+        BlizzardLogic.baseType = bundle.baseType;
+        BlizzardLogic.itemTypes = bundle.itemTypes;
+        BlizzardLogic.plantTypes = bundle.plantTypes;
+        BlizzardLogic.terrainTypes = bundle.terrainTypes;
+        BlizzardLogic.movableTypes = bundle.movableTypes;
+
+        /** @type {typeof BoardLogic} */
+        BlizzardLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        BlizzardLogic.InteractionLogic = bundle.InteractionLogic;
     }
 
-    movements(p5, playBoard) {
-        if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of Blizzard has received invalid PlayBoard.');
-            return false;
-        }
-        if (!this.status) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BlizzardModel} blizzard
+     */
+    static movements(p5, playBoard, blizzard) {
+        if (!blizzard.status) {
             return false;
         }
         // end movement
-        if (this.isMoving && this.playAnimation >= 100) {
-
-            let cells = this.playBoard.boardObjects.getAdjacent8Cells(this.cell.x, this.cell.y);
-            cells.push(this.cell);
+        if (blizzard.isMoving && blizzard.playAnimation >= 100) {
+            let cells = BlizzardLogic.BoardLogic.getAdjacent8Cells(blizzard.cell.i, blizzard.cell.j, playBoard.boardObjects);
+            cells.push(blizzard.cell);
             for (let cell of cells) {
-                this.hit(p5, cell);
+                BlizzardLogic.hit(p5, playBoard, cell);
             }
-
-            this.isMoving = false;
-            this.hasMoved = true;
-            InteractionLogic.findMovableAndDelete(playBoard, this);
+            blizzard.isMoving = false;
+            blizzard.hasMoved = true;
+            BlizzardLogic.InteractionLogic.findMovableAndDelete(playBoard, blizzard);
             return true;
         }
         // during movement
-        if (this.isMoving && this.playAnimation < 100) {
+        if (blizzard.isMoving && blizzard.playAnimation < 100) {
             // play animation placeholder
-            this.playAnimation += 5;
+            blizzard.playAnimation += 5;
             return true;
         }
         // before movement
-        if (this.countdown > 0) {
-            this.countdown--;
-            this.hasMoved = true;
-            if (this.countdown <= 1) this.img = p5.images.get(`${this.name}`);
+        if (blizzard.countdown > 0) {
+            blizzard.countdown--;
+            blizzard.hasMoved = true;
+            if (blizzard.countdown <= 1) blizzard.img = p5.images.get(`${blizzard.name}`);
             return false;
         }
-        if (this.countdown === 0) {
-            this.isMoving = true;
-            this.img = p5.images.get(`${this.name}`);
+        if (blizzard.countdown === 0) {
+            blizzard.isMoving = true;
+            blizzard.img = p5.images.get(`${blizzard.name}`);
             return true;
         }
     }
 
-    hit(p5, cell) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} cell
+     */
+    static hit(p5, playBoard, cell) {
         if (cell.ecosystem?.withstandSnow) return;
 
-        if (cell.plant) InteractionLogic.plantIsAttacked(this.playBoard, cell.plant, 1);
+        if (cell.plant) BlizzardLogic.InteractionLogic.plantIsAttacked(playBoard, cell.plant, 1);
 
-        if (cell.seed) InteractionLogic.plantIsAttacked(this.playBoard, cell.seed, 1);
+        if (cell.seed) BlizzardLogic.InteractionLogic.plantIsAttacked(playBoard, cell.seed, 1);
     }
-
-    stringify() {
-        const object = {
-            movableType: this.movableType,
-            countdown: this.countdown,
-            cellX: this.cell?.x,
-            cellY: this.cell?.y,
-        }
-        return JSON.stringify(object);
-    }
-
-    static parse(json, p5, playBoard) {
-        const object = JSON.parse(json);
-        let blizzard = new Blizzard(p5, playBoard, object.countdown);
-        blizzard.cell = playBoard.boardObjects.getCell(object.cellX, object.cellY);
-        return blizzard;
-    }
-
 }
 

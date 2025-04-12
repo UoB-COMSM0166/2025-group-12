@@ -24,13 +24,19 @@ export class SlideModel {
         this.accumulate = 0;
     }
 
-    static create(p5, playBoard, superModel, dest_i, dest_j) {
-        return SlideLogic.generateSlide(p5, playBoard, superModel, dest_i, dest_j);
+    static create(p5, playBoard, superModel, start_i, start_j, dest_i, dest_j) {
+        let slide = new SlideModel(p5, superModel, SlideLogic.itemTypes, SlideLogic.movableTypes,
+            SlideLogic.BoardLogic.getCell(start_i, start_j, playBoard.boardObjects),
+            SlideLogic.BoardLogic.getCell(dest_i, dest_j, playBoard.boardObjects));
+        playBoard.movables.push(slide);
+        return slide;
     }
 }
 
 export class SlideRenderer {
-    static draw() {
+    static setup(bundle){}
+
+    static draw(p5) {
     }
 }
 
@@ -38,7 +44,6 @@ export class SlideLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         SlideLogic.utilityClass = bundle.utilityClass;
-        SlideLogic.InteractionLogic = bundle.InteractionLogic;
         SlideLogic.baseType = bundle.baseType;
         SlideLogic.itemTypes = bundle.itemTypes;
         SlideLogic.plantTypes = bundle.plantTypes;
@@ -77,10 +82,7 @@ export class SlideLogic {
                 return;
             }
         }
-        let landslide = new SlideModel(p5, superModel, SlideLogic.itemTypes, SlideLogic.movableTypes,
-            SlideLogic.BoardLogic.getCell(cell.i, cell.j, playBoard.boardObjects),
-            SlideLogic.BoardLogic.getCell(dest_i, dest_j, playBoard.boardObjects));
-        playBoard.movables.push(landslide);
+        SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, dest_i, dest_j);
     }
 
     /**

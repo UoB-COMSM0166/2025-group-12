@@ -6,16 +6,14 @@ export class MountainModel {
         this.img = p5.images.get(`${this.name}`);
         this.weight = 1000;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class MountainRenderer {
 }
 
 export class MountainLogic {
-    static getWeight(mountain) {
-        return mountain.weight;
-    }
-}
-
-export class MountainSerializer {
 }

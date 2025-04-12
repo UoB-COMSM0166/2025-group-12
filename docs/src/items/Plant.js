@@ -13,8 +13,9 @@
  * @property {boolean} hasExtended
  * @property {number} useLeft
  * @property {number} maxUse
+ * @property {number} earthCounter
+ * @property {number} coldCounter
  */
-
 
 export class PlantModel {
     constructor(itemTypes) {
@@ -23,34 +24,47 @@ export class PlantModel {
 }
 
 export class PlantRenderer {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'PlantRenderer',
-            impl,
-            methods: ['getPassiveString', 'getActiveString']
-        });
-    }
+    static setup(bundle){}
+
+    static draw(){}
 }
 
 export class PlantLogic {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'PlantLogic',
-            impl,
-            methods: ['setup', 'reevaluateSkills']
-        });
+    static setup(bundle){
+        PlantLogic.plantTypes = bundle.plantTypes;
+        /** @type {typeof TreeLogic} */
+        PlantLogic.TreeLogic = bundle.TreeLogic;
+        /** @type {typeof OrchidLogic} */
+        PlantLogic.OrchidLogic = bundle.OrchidLogic;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} cell
+     * @param {PlantLike} plant
+     */
+    static reevaluateSkills(playBoard, cell, plant){
+        if(plant.plantType === PlantLogic.plantTypes.TREE){
+            PlantLogic.TreeLogic.reevaluateSkills(playBoard, cell, /** @type {TreeModel} */ plant);
+        }
+        else if(plant.plantType === PlantLogic.plantTypes.ORCHID){
+            PlantLogic.OrchidLogic.reevaluateSkills(playBoard, cell, /** @type {OrchidModel} */ plant);
+        }
     }
 }
 
 export class PlantSerializer {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'PlantSerializer',
-            impl,
-            methods: ['stringify', 'parse']
-        });
+    static setup(bundle){
+        PlantSerializer.plantFactory = bundle.plantFactory;
+        PlantSerializer.plantTypes = bundle.plantTypes;
     }
 
+    /**
+     *
+     * @param {PlantLike} plantInstance
+     * @returns {string}
+     */
     static stringify(plantInstance) {
         const object = {
             name: plantInstance.name,
@@ -63,9 +77,10 @@ export class PlantSerializer {
         return JSON.stringify(object);
     }
 
-    static parse(json, p5, newPlantInstance) {
+    static parse(json) {
         const object = JSON.parse(json);
-        Object.assign(newPlantInstance, object);
-        return newPlantInstance;
+        let plant = PlantSerializer.plantFactory.get(object.plantType)();
+        Object.assign(plant, object);
+        return plant;
     }
 }

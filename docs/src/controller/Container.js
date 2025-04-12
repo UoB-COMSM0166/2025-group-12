@@ -1,4 +1,4 @@
-import {DijkstraSP} from "../../lib/GraphSP.js";
+import {DijkstraSP, DirectedEdge, EdgeWeightedDigraph} from "../../lib/GraphSP.js";
 import {IndexPriorityQueue} from "../../lib/PriorityQueue.js";
 import {UnionFind} from "../../lib/UnionFind.js";
 import {myUtil} from "../../lib/myUtil.js";
@@ -9,8 +9,6 @@ import {InputHandler} from "./InputHandler.js";
 
 import {CanvasSize} from "../CanvasSize.js";
 import {FloatingWindow} from "../model/FloatingWindow.js";
-
-import {assertInterface} from "../../lib/assertInterface.js";
 
 import {PlantModel, PlantLogic, PlantRenderer, PlantSerializer} from "../items/Plant.js";
 import {SeedModel, SeedLogic, SeedRenderer, SeedSerializer} from "../items/Seed.js";
@@ -49,7 +47,11 @@ import {InteractionLogic} from "../items/InteractionLogic.js";
 import {MovableModel, MovableLogic, MovableRenderer, MovableSerializer} from "../items/Movable.js";
 import {EarthquakeModel, EarthquakeLogic, EarthquakeRenderer} from "../items/Earthquake.js";
 import {SlideModel, SlideLogic, SlideRenderer} from "../items/SlideAnimation.js";
-
+import {TsunamiModel, TsunamiLogic, TsunamiRenderer} from "../items/TsunamiAnimation.js";
+import {VolcanicBombModel, VolcanicBombLogic, VolcanicBombRenderer} from "../items/VolcanicBomb.js";
+import {BlizzardModel, BlizzardLogic, BlizzardRenderer} from "../items/Blizzard.js";
+import{TornadoModel, TornadoLogic, TornadoRenderer} from "../items/Tornado.js";
+import {BanditModel, BanditLogic, BanditRenderer} from "../items/Bandit.js";
 
 import {Tornado1PlayBoard} from "../model/stages/Tor1.js";
 import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
@@ -93,18 +95,22 @@ export class Container {
         this.utilityClass = myUtil;
         this.utilityClass.setup({CanvasSize: this.CanvasSize, FloatingWindow: this.FloatingWindow});
 
-        this.IPQ = IndexPriorityQueue; // no setup
+        this.IndexPriorityQueue = IndexPriorityQueue; // no setup
 
         this.UnionFind = UnionFind; // no setup
 
-        this.DijkstraAlgorithm = DijkstraSP;
-        this.DijkstraAlgorithm.setup(this.IPQ);
+        this.DijkstraSP = DijkstraSP;
+        this.DijkstraSP.setup(this.IndexPriorityQueue);
+
+        this.EdgeWeightedDigraph = EdgeWeightedDigraph;
+        this.DirectedEdge = DirectedEdge;
 
         // -----------------------------------
         /* importing game entities - plants */
         // -----------------------------------
 
         let entityBundle = {
+            p5: p5,
             utilityClass: this.utilityClass,
             itemTypes: itemTypes,
             plantTypes: plantTypes,
@@ -112,9 +118,8 @@ export class Container {
             terrainTypes: terrainTypes,
             movableTypes: movableTypes,
             baseType: baseType,
-            PlantModel: PlantModel,
-            SeedModel: SeedModel,
             InteractionLogic: InteractionLogic,
+            BoardLogic: BoardLogic,
         };
 
         this.plantModules = [
@@ -128,39 +133,15 @@ export class Container {
             entityObject("Palm", PalmModel, PalmLogic, PalmRenderer, null),
         ];
 
-        // injection and check implementation
+        // injection
         for (let plantModule of this.plantModules) {
             let {model, logic, renderer} = plantModule;
-
             if (model.setup) model.setup(entityBundle);
             if (logic.setup) logic.setup(entityBundle);
             if (renderer.setup) renderer.setup(entityBundle);
 
-            // check implementation and inheritance of methods
-            PlantLogic.assertImplementation(assertInterface, logic);
-            PlantRenderer.assertImplementation(assertInterface, renderer);
+            entityBundle[logic.name] = logic;
         }
-
-        // could use name as the key, it will not be slow since it is a hash map.
-        // using plantTypes requires importing it - extra effort
-        this.plantFactory = new Map([
-            ["Tree", () => new TreeModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["Bush", () => new BushModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["Orchid", () => new OrchidModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["FireHerb", () => new FireHerbModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["Bamboo", () => new BambooModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["Plum", () => new PlumModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["Kiku", () => new KikuModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["Palm", () => new PalmModel(p5, PlantModel, itemTypes, plantTypes)],
-            ["TreeSeed", () => new TreeSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["BushSeed", () => new BushSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["OrchidSeed", () => new OrchidSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["FireHerbSeed", () => new FireHerbSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["BambooSeed", () => new BambooSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["PlumSeed", () => new PlumSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["KikuSeed", () => new KikuSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            ["PalmSeed", () => new PalmSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-        ]);
 
         // ----------------------------------
         /* importing game entities - seeds */
@@ -177,33 +158,45 @@ export class Container {
             entityObject("Palm", PalmSeedModel, PalmSeedLogic, PalmSeedRenderer, null),
         ];
 
-        // set seed common methods
+        // injection
         for (let seedModule of this.seedModules) {
-            let {name, logic, renderer} = seedModule;
-            // assign seed logics
-            logic.grow = (p5, seedInstance) => SeedLogic.grow(p5, seedInstance, this.plantFactory.get(name)());
-
-            // check implementation and inheritance of methods
-            SeedLogic.assertImplementation(assertInterface, logic);
-            SeedRenderer.assertImplementation(assertInterface, renderer);
+            let {model, renderer, logic} = seedModule;
+            if (model.setup) model.setup(entityBundle);
+            if (logic.setup) logic.setup(entityBundle);
+            if (renderer.setup) renderer.setup(entityBundle);
         }
+
+        this.plantFactory = new Map([
+            [plantTypes.TREE, () => new TreeModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.BUSH, () => new BushModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.ORCHID, () => new OrchidModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.FIRE_HERB, () => new FireHerbModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.BAMBOO, () => new BambooModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.PLUM, () => new PlumModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.KIKU, () => new KikuModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.PALM, () => new PalmModel(p5, PlantModel, itemTypes, plantTypes)],
+            [seedTypes.TREE, () => new TreeSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.BUSH, () => new BushSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.ORCHID, () => new OrchidSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.FIRE_HERB, () => new FireHerbSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.BAMBOO, () => new BambooSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.PLUM, () => new PlumSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.KIKU, () => new KikuSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.PALM, () => new PalmSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+        ]);
+        entityBundle.plantFactory = this.plantFactory;
+
+        PlantRenderer.setup(entityBundle);
+        PlantLogic.setup(entityBundle);
+        PlantSerializer.setup(entityBundle);
+
+        SeedRenderer.setup(entityBundle);
+        SeedLogic.setup(entityBundle);
+        SeedSerializer.setup(entityBundle);
 
         // ------------------------------------
         /* importing game entities - terrain */
         // ------------------------------------
-
-        this.terrainFactory = new Map([
-            ["PlayerBase", () => new PlayerBaseModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Mountain", () => new MountainModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Steppe", () => new SteppeModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Lumbering", () => new LumberingModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Volcano", () => new VolcanoModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Lava", () => new LavaModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Hill", () => new HillModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Landslide", () => new LandslideModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Snowfield", () => new SnowfieldModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            ["Sea", () => new SeaModel(p5, TerrainModel, itemTypes, terrainTypes)],
-        ])
 
         let terrainModules = [
             entityObject("PlayerBase", PlayerBaseModel, PlayerBaseLogic, PlayerBaseRenderer, null),
@@ -218,16 +211,35 @@ export class Container {
             entityObject("Sea", SeaModel, SeaLogic, SeaRenderer, null),
         ];
 
+        // injection
         for (let terrainModule of terrainModules) {
             let {model, logic, renderer} = terrainModule;
             if (model.setup) model.setup(entityBundle);
             if (logic.setup) logic.setup(entityBundle);
             if (renderer.setup) renderer.setup(entityBundle);
-
-            // check implementation and inheritance of methods
-            TerrainRenderer.assertImplementation(assertInterface, renderer);
-            TerrainLogic.assertImplementation(assertInterface, logic);
         }
+
+        this.terrainFactory = new Map([
+            [terrainTypes.BASE, () => new PlayerBaseModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.MOUNTAIN, () => new MountainModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.STEPPE, () => new SteppeModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.LUMBERING, () => new LumberingModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.VOLCANO, () => new VolcanoModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.LAVA, () => new LavaModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.HILL, () => new HillModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.LANDSLIDE, () => new LandslideModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.SNOWFIELD, () => new SnowfieldModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.SEA, () => new SeaModel(p5, TerrainModel, itemTypes, terrainTypes)],
+        ]);
+        entityBundle.terrainFactory = this.terrainFactory;
+
+        TerrainLogic.setup(entityBundle);
+        TerrainRenderer.setup(entityBundle);
+        TerrainSerializer.setup(entityBundle);
+
+        // -----------------------------------------------------
+        /* importing game entities - movables and interaction */
+        // -----------------------------------------------------
 
         this.interactionLogic = InteractionLogic;
         this.interactionLogic.setup({
@@ -235,18 +247,60 @@ export class Container {
             FloatingWindow: this.FloatingWindow,
             movableTypes: movableTypes,
             itemTypes: itemTypes,
-            plantTypes: plantTypes
+            plantTypes: plantTypes,
+            BoardLogic: BoardLogic,
         });
 
-        let movableModules = []
+        let movableBundle = {
+            p5: p5,
+            utilityClass: this.utilityClass,
+            itemTypes: itemTypes,
+            baseType: baseType,
+            plantTypes: plantTypes,
+            terrainTypes: terrainTypes,
+            terrainFactory: this.terrainFactory,
+            movableTypes: movableTypes,
+            movableFactory: this.movableFactory,
+            BoardLogic: BoardLogic,
+            InteractionLogic: InteractionLogic,
+            DijkstraSP: DijkstraSP,
+            EdgeWeightedDigraph: EdgeWeightedDigraph,
+            DirectedEdge: DirectedEdge,
+        };
+
+        let movableModules = [
+            entityObject("Earthquake", EarthquakeModel, EarthquakeLogic, EarthquakeRenderer, null),
+            entityObject("SlideAnimation", SlideModel, SlideLogic, SlideRenderer, null),
+            entityObject("TsunamiAnimation", TsunamiModel, TsunamiLogic, TsunamiRenderer, null),
+            entityObject("VolcanicBomb", VolcanicBombModel, VolcanicBombLogic, VolcanicBombRenderer, null),
+            entityObject("Blizzard", BlizzardModel, BlizzardLogic, BlizzardRenderer, null),
+            entityObject("Tornado", TornadoModel, TornadoLogic, TornadoRenderer, null),
+            entityObject("Bandit", BanditModel, BanditLogic, BanditRenderer, null),
+        ]
+
+        for (let movableModule of movableModules) {
+            let {model, logic, renderer} = movableModule;
+            if (model.setup) model.setup(movableBundle);
+            if (logic.setup) logic.setup(movableBundle);
+            if (renderer.setup) renderer.setup(movableBundle);
+
+            movableBundle[logic.name] = logic;
+            movableBundle[renderer.name] = renderer;
+        }
 
         this.movableFactory = new Map([
-            ["Earthquake", (p5, playBoard) => EarthquakeModel.create(p5, playBoard, MovableModel)],
-            ["SlideAnimation", (p5, playBoard, dest_i, dest_j) => SlideModel.create(p5, playBoard, MovableModel, dest_i, dest_j)],
+            ["Earthquake", (playBoard) => EarthquakeModel.create(p5, playBoard, MovableModel)],
+            ["SlideAnimation", (playBoard, start_i, start_j, dest_i, dest_j) => SlideModel.create(p5, playBoard, MovableModel, start_i, start_j, dest_i, dest_j)],
+            ["TsunamiAnimation", (playBoard, startCol, startRow, range, blockerLimit) => TsunamiModel.create(p5, playBoard, MovableModel, startCol, startRow, range, blockerLimit)],
+            ["VolcanicBomb", (playBoard, i1, j1, i2, j2, x1, y1, x2, y2, countdown) => VolcanicBombModel.create(p5,MovableModel, playBoard, i1, j1, i2, j2, x1, y1, x2, y2, countdown)],
+            ["Blizzard", (playBoard, i, j, countdown) => BlizzardModel.create(p5, playBoard, MovableModel, i, j, countdown)],
+            ["Tornado", (playBoard, i, j, direction, countdown) => TornadoModel.create(p5, playBoard, MovableModel, i, j, direction, countdown)],
+            ["Bandit", (playBoard, i, j) => BanditModel.create(p5, playBoard, MovableModel, i, j)]
         ]);
+        movableBundle.movableFactory = this.movableFactory;
 
-        let movableBundle = {};
-
+        MovableLogic.setup(movableBundle);
+        MovableLogic.setup(movableBundle);
         MovableSerializer.setup(movableBundle);
 
         // --------------------------------------
@@ -258,10 +312,12 @@ export class Container {
         this.MapButton = MapButton;
 
         // initialize serializer
-        this.gameSerializer = GameSerializer;
-        this.gameSerializer.setup({
+        this.GameSerializer = GameSerializer;
+        this.GameSerializer.setup({
+            inventoryStringifier: InventorySerializer.stringify,
             inventoryParser: InventorySerializer.parse,
-            playBoardParser: null,
+            playBoardStringifier: PlayBoardSerializer.saveGame,
+            playBoardParser: PlayBoardSerializer.loadGame,
             stateCode: stateCode
         });
 
@@ -273,12 +329,19 @@ export class Container {
             MapButton: this.MapButton,
             stateCode: stateCode,
             stageGroup: stageGroup,
-            gameSerializer: this.gameSerializer,
+            GameSerializer: this.GameSerializer,
             plantFactory: this.plantFactory,
-            inventoryLogicLayer: InventoryLogic,
-            inventoryRendererLayer: InventoryRenderer,
-            inventorySerializerLayer: InventorySerializer,
+
+            ScreenRenderer: ScreenRenderer,
+            ScreenLogic: ScreenLogic,
+
+            InventoryLogic: InventoryLogic,
+            InventoryRenderer: InventoryRenderer,
+            InventorySerializer: InventorySerializer,
             InfoBoxModel: InfoBoxModel,
+            BoardModel: BoardModel,
+
+            activatePlantSkill: PlayBoardLogic.activatePlantSkill,
         }
 
         ScreenLogic.setup(menuBundle);
@@ -286,12 +349,12 @@ export class Container {
         this.gameStageFactory = new GameStageFactory();
 
         // initialize inventory
-        this.inventoryModel = InventoryModel;
         InventoryModel.setup(menuBundle);
         InventoryLogic.setup(entityBundle);
         InventoryRenderer.setup(menuBundle);
+        this.inventory = new InventoryModel();
 
-        this.gameState = new GameState(p5, this.gameStageFactory, new this.inventoryModel(p5));
+        this.gameState = new GameState(p5, this.gameStageFactory, this.inventory);
 
         menuBundle.gameState = this.gameState;
 
@@ -306,40 +369,24 @@ export class Container {
         for (let menuModule of this.menuModules) {
             let {model, logic, renderer, serializer} = menuModule;
             if (model.setup) model.setup(menuBundle);
-
             if (logic.setup) logic.setup(menuBundle);
-            logic.handleFloatingWindow = ScreenLogic.handleFloatingWindow;
-            logic.handleScroll = ScreenLogic.handleScroll;
-
             if (renderer.setup) renderer.setup(menuBundle);
-            renderer.drawFloatingWindow = (p5, screen) => ScreenRenderer.drawFloatingWindow(p5, screen, logic.setFloatingWindow);
-
             if (serializer && serializer.setup) serializer.setup(menuBundle);
-
-            if (model.isScreen) {
-                ScreenModel.assertImplementation(assertInterface, model);
-                ScreenLogic.assertImplementation(assertInterface, logic);
-                ScreenRenderer.assertImplementation(assertInterface, renderer);
-            }
         }
 
-        // create main menus
+        // main menus
         this.startMenu = new StartMenuModel(this.gameState);
-        this.startMenu.init(menuBundle);
-        this.gameMap = new GameMapModel(this.gameState, stageGroup);
-        this.gameMap.init(menuBundle);
+        this.gameMap = new GameMapModel(this.gameState);
+        // helper menus
+        this.pauseMenu = new PauseMenuModel(this.gameState);
+        this.inputHandler = new InputHandler(this.gameState);
+        this.initialState = stateCode.MENU; // default
 
         this.menus = {
             [stateCode.MENU]: this.startMenu,
             [stateCode.STANDBY]: this.gameMap,
             [stateCode.PLAY]: null
         };
-
-        // create helper menus
-        this.pauseMenu = new PauseMenuModel(this.gameState);
-        this.pauseMenu.init(menuBundle);
-        this.inputHandler = new InputHandler(this.gameState, stateCode);
-        this.initialState = stateCode.MENU; // default
 
         this.controller = new Controller({
             gameState: this.gameState,
@@ -348,16 +395,16 @@ export class Container {
             pauseMenu: this.pauseMenu,
             inputHandler: this.inputHandler,
             initialState: this.initialState,
-            StartMenuLogic: StartMenuLogic,
-            InventoryLogic: InventoryLogic,
+            changeNewToResume: StartMenuLogic.changeNewToResume,
+            saveInventory: InventoryLogic.saveInventory,
+            loadInventory: InventoryLogic.loadInventory,
         });
 
-        this.gameSerializer.save = () => this.gameSerializer.saveGame(this.controller);
-        this.gameSerializer.load = () => this.gameSerializer.loadGame(p5, this.controller);
+        this.GameSerializer.save = () => this.GameSerializer.saveGame(this.controller);
+        this.GameSerializer.load = () => this.GameSerializer.loadGame(p5, this.controller);
 
-        Renderer.draw = (p5) => Renderer.render(p5, this.menus, this.gameState, this.pauseMenu);
-        this.renderer = Renderer.draw; // invoke it in main loop by container.renderer(p)
-        this.preloader = (p5) => p5.images = loadImages(p5);
+        this.renderer = () => Renderer.render(p5, this.menus, this.gameState, this.pauseMenu);
+        this.preloader = () => p5.images = loadImages(p5);
 
         let playBundle = {
             UnionFind: this.UnionFind,

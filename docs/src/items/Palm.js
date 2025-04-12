@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class PalmModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -12,27 +15,25 @@ export class PalmModel {
         this.maxHealth = 3;
         this.status = true;
     }
-}
 
-export class PalmRenderer {
-    static getPassiveString(bamboo) {
+    getPassiveString() {
         return "Dampen tsunami."
     }
 
-    static getActiveString(bamboo) {
+    getActiveString() {
         return "No active skill.";
     }
+}
+
+export class PalmRenderer {
 }
 
 export class PalmLogic {
     static setup(bundle) {
     }
 
-    static reevaluateSkills(bundle) {
+    static reevaluateSkills() {
     }
-}
-
-export class PalmSerializer {
 }
 
 export class PalmSeedModel {
@@ -50,7 +51,4 @@ export class PalmSeedRenderer {
 }
 
 export class PalmSeedLogic {
-}
-
-export class PalmSeedSerializer {
 }

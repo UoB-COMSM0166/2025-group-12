@@ -25,17 +25,19 @@ export class EarthquakeModel {
     static create(p5, playBoard, superModel, x = -1, y = -1) {
         let earthquake = new EarthquakeModel(p5, superModel, EarthquakeLogic.itemTypes, EarthquakeLogic.movableTypes, x, y);
         playBoard.movables.push(earthquake);
+        return earthquake;
     }
 }
 
 export class EarthquakeRenderer {
+    static setup(bundle){}
+
     static draw(p5) {
     }
 }
 
 export class EarthquakeLogic {
     static setup(bundle){
-        EarthquakeLogic.InteractionLogic = bundle.InteractionLogic;
         EarthquakeLogic.baseType = bundle.baseType;
         EarthquakeLogic.plantTypes = bundle.plantTypes;
         EarthquakeLogic.itemTypes = bundle.itemTypes;
@@ -43,6 +45,8 @@ export class EarthquakeLogic {
         EarthquakeLogic.movableTypes = bundle.movableTypes;
         /** @type {typeof BoardLogic} */
         EarthquakeLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        EarthquakeLogic.InteractionLogic = bundle.InteractionLogic;
     }
 
     /**

@@ -6,16 +6,14 @@ export class LumberingModel {
         this.img = p5.images.get(`${this.name}`);
         this.weight = 0;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class LumberingRenderer {
 }
 
 export class LumberingLogic {
-    static getWeight(lumbering) {
-        return lumbering.weight;
-    }
-}
-
-export class LumberingSerializer {
 }

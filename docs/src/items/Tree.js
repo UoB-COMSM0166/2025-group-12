@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class TreeModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -22,35 +25,41 @@ export class TreeModel {
         this.useLeft = 1;
         this.maxUse = 1;
     }
-}
 
-export class TreeRenderer {
-    static getPassiveString(tree) {
-        if (tree.hasExtended) {
+    getPassiveString() {
+        if (this.hasExtended) {
             return "Stops an incoming tornado from nearby 8 cells and lose up to 2 HP.";
         }
         return "Stops an incoming tornado and lose up to 2 HP.";
     }
 
-    static getActiveString(tree) {
-        if (tree.hasActive) {
+    getActiveString() {
+        if (this.hasActive) {
             return "Heal a nearby plant's HP by 1.";
         }
         return "No active skill now.";
     }
 }
 
+export class TreeRenderer {
+}
+
 export class TreeLogic {
     static setup(bundle) {
         TreeLogic.baseType = bundle.baseType;
         TreeLogic.plantTypes = bundle.plantTypes;
+
+        /** @type {typeof BoardLogic} */
+        TreeLogic.BoardLogic = bundle.BoardLogic;
     }
 
-    static reevaluateSkills(bundle) {
-        let tree = bundle.plant;
-        let playBoard = bundle.playBoard;
-        let cell = bundle.cell;
-
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} cell
+     * @param {TreeModel} tree
+     */
+    static reevaluateSkills(playBoard, cell, tree) {
         if (cell.plant !== tree) {
             console.error("reevaluateSkills of Tree has received wrong cell.");
             return;
@@ -60,7 +69,7 @@ export class TreeLogic {
         tree.hasActive = false;
         tree.hasExtended = false;
 
-        let adjacentCells = playBoard.boardObjects.getAdjacent4Cells(cell.x, cell.y);
+        let adjacentCells = TreeLogic.BoardLogic.getAdjacent4Cells(cell.i, cell.j, playBoard.boardObjects);
         // when a bush is next to this tree, it gains extended passive skill.
         for (let adCell of adjacentCells) {
             if (adCell.plant !== null && TreeLogic.baseType(adCell.plant) === TreeLogic.plantTypes.BUSH) {
@@ -80,9 +89,6 @@ export class TreeLogic {
     }
 }
 
-export class TreeSerializer {
-}
-
 export class TreeSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -98,7 +104,4 @@ export class TreeSeedRenderer {
 }
 
 export class TreeSeedLogic {
-}
-
-export class TreeSeedSerializer {
 }

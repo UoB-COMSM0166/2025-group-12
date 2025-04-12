@@ -1,7 +1,20 @@
+/**
+ * @implements ScreenLike
+ */
 export class StartMenuModel {
-    static isScreen = true;
-
-    static setup(bundle){}
+    static setup(bundle) {
+        StartMenuModel.p5 = bundle.p5;
+        /** @type {typeof myUtil} */
+        StartMenuModel.utilityClass = bundle.utilityClass;
+        StartMenuModel.stateCode = bundle.stateCode;
+        /** @type {typeof Button} */
+        StartMenuModel.Button = bundle.Button;
+        StartMenuModel.FloatingWindow = bundle.FloatingWindow;
+        /** @type {typeof GameSerializer} */
+        StartMenuModel.GameSerializer = bundle.GameSerializer;
+        /** @type {typeof MenuItem} */
+        StartMenuModel.MenuItem = bundle.MenuItem;
+    }
 
     /**
      *
@@ -16,47 +29,51 @@ export class StartMenuModel {
         this.allFloatingWindows = null;
     }
 
-    init(bundle) {
-        let [buttonWidth, buttonHeight] = bundle.utilityClass.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = bundle.utilityClass.relative2absolute(0.2, 0.6);
-        let buttonInter = bundle.utilityClass.relative2absolute(0.1, 0.1)[1];
+    init() {
+        let [buttonWidth, buttonHeight] = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07);
+        let [buttonX, buttonY] = StartMenuModel.utilityClass.relative2absolute(0.2, 0.6);
+        let buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
 
-        let newGameButton = new bundle.MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
-        newGameButton.onClick = () => bundle.gameState.setState(bundle.stateCode.STANDBY);
+        let newGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
+        newGameButton.onClick = () => this.gameState.setState(StartMenuModel.stateCode.STANDBY);
 
-        let loadGameButton = new bundle.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+        let loadGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
-            if (!bundle.gameSerializer.load(bundle.p5)) {
-                StartMenuLogic.copyFloatingWindow(bundle.p5, "NoSaveData", this);
+            if (!StartMenuModel.GameSerializer.load()) {
+                StartMenuLogic.copyFloatingWindow(StartMenuModel.p5, "NoSaveData", this);
             }
         }
 
         this.buttons.push(newGameButton, loadGameButton);
 
-        this.initAllFloatingWindows(bundle);
+        this.initAllFloatingWindows();
     }
 
-    initAllFloatingWindows(bundle) {
+    initAllFloatingWindows() {
         let afw = new Map();
 
-        bundle.utilityClass.commonFloatingWindows(bundle.p5, afw);
+        StartMenuModel.utilityClass.commonFloatingWindows(StartMenuModel.p5, afw);
 
         this.allFloatingWindows = afw;
     }
 }
 
-export class StartMenuRenderer{
-    static setup(bundle){
+export class StartMenuRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
         StartMenuRenderer.utilityClass = bundle.utilityClass;
+        /** @type {typeof ScreenRenderer} */
+        StartMenuRenderer.ScreenRenderer = bundle.ScreenRenderer;
     }
 
-    // placeholder, injected in container
     /**
      *
      * @param p5
      * @param {StartMenuModel} startMenu
      */
-    static drawFloatingWindow(p5, startMenu) {}
+    static drawFloatingWindow(p5, startMenu) {
+        StartMenuRenderer.ScreenRenderer.drawFloatingWindow(p5, startMenu, StartMenuLogic.setFloatingWindow);
+    }
 
     /**
      *
@@ -82,18 +99,23 @@ export class StartMenuRenderer{
     }
 }
 
-export class StartMenuLogic{
-    static setup(bundle){
+export class StartMenuLogic {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
         StartMenuLogic.utilityClass = bundle.utilityClass;
         StartMenuLogic.FloatingWindow = bundle.FloatingWindow;
+        StartMenuLogic.stateCode = bundle.stateCode;
+        /** @type {typeof ScreenLogic} */
+        StartMenuLogic.ScreenLogic = bundle.ScreenLogic;
     }
 
-    // placeholder, injected in container
     /**
      *
      * @param {StartMenuModel} startMenu
      */
-    static handleFloatingWindow(startMenu){}
+    static handleFloatingWindow(startMenu) {
+        return StartMenuLogic.ScreenLogic.handleFloatingWindow(startMenu);
+    }
 
     /**
      *
@@ -109,14 +131,9 @@ export class StartMenuLogic{
         }
     }
 
-    // placeholder, injected in container
-    /**
-     *
-     * @param p5
-     * @param event
-     * @param {StartMenuModel} startMenu
-     */
-    static handleScroll(p5, event, startMenu){}
+    // placeholder - start menu does not contain inventory
+    static handleScroll() {
+    }
 
     /**
      *
@@ -135,6 +152,7 @@ export class StartMenuLogic{
      * @param {StartMenuModel} startMenu
      */
     static setFloatingWindow(p5, startMenu) {
+
     }
 
     /**

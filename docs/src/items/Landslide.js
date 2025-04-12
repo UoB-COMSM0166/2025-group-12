@@ -6,16 +6,14 @@ export class LandslideModel {
         this.img = p5.images.get(`${this.name}`);
         this.weight = 0;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class LandslideRenderer {
 }
 
 export class LandslideLogic {
-    static getWeight(landslide) {
-        return landslide.weight;
-    }
-}
-
-export class LandslideSerializer {
 }

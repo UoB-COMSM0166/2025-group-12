@@ -24,23 +24,24 @@ export class SeedModel {
 }
 
 export class SeedRenderer {
-    static assertImplementation(assertion, impl) {
-    }
+    static setup(bundle){}
+
+    static draw(){}
 }
 
 export class SeedLogic {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'SeedLogic',
-            impl,
-            methods: ['grow']
-        });
+    static setup(bundle){
+        SeedLogic.plantFactory = bundle.plantFactory;
     }
 
-    static grow(p5, seedInstance, newPlantInstance) {
+    /**
+     *
+     * @param {SeedLike} seedInstance
+     */
+    static grow(seedInstance) {
         seedInstance.countdown--;
         if (seedInstance.countdown === 0) {
-            return newPlantInstance;
+            return SeedLogic.plantFactory.get(seedInstance.seedType)();
         } else {
             return seedInstance;
         }
@@ -48,14 +49,15 @@ export class SeedLogic {
 }
 
 export class SeedSerializer {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'SeedSerializer',
-            impl,
-            methods: ['stringify', 'parse']
-        });
+    static setup(bundle){
+        SeedSerializer.seedTypes = bundle.seedTypes;
+        SeedSerializer.plantFactory = bundle.plantFactory;
     }
 
+    /**
+     *
+     * @param {SeedLike} seedInstance
+     */
     static stringify(seedInstance) {
         const object = {
             name: seedInstance.name,
@@ -65,9 +67,10 @@ export class SeedSerializer {
         return JSON.stringify(object);
     }
 
-    static parse(json, p5, newSeedInstance) {
+    static parse(json) {
         const object = JSON.parse(json);
-        Object.assign(newSeedInstance, object);
-        return newSeedInstance;
+        let seed = SeedSerializer.plantFactory.get(object.seedType)();
+        Object.assign(seed, object);
+        return seed;
     }
 }

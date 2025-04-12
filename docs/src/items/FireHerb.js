@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class FireHerbModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -15,27 +18,26 @@ export class FireHerbModel {
         // no passive or active skill
         // it only affects the ecosystem
     }
-}
 
-export class FireHerbRenderer {
-    static getPassiveString(fireHerb) {
+    getPassiveString() {
         return "No passive skill.";
     }
 
-    static getActiveString(fireHerb) {
+    getActiveString() {
         return "No active skill.";
     }
+}
+
+export class FireHerbRenderer {
+
 }
 
 export class FireHerbLogic {
     static setup(bundle) {
     }
 
-    static reevaluateSkills(bundle) {
+    static reevaluateSkills() {
     }
-}
-
-export class FireHerbSerializer {
 }
 
 export class FireHerbSeedModel {
@@ -53,7 +55,4 @@ export class FireHerbSeedRenderer {
 }
 
 export class FireHerbSeedLogic {
-}
-
-export class FireHerbSeedSerializer {
 }

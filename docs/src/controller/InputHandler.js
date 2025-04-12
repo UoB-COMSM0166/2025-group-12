@@ -1,7 +1,17 @@
 export class InputHandler {
-    constructor(gameState, stateCode) {
+    static setup(bundle){
+        InputHandler.p5 = bundle.p5;
+        InputHandler.stateCode = bundle.stateCode;
+        /** @type {typeof InfoBoxLogic} */
+        InputHandler.InfoBoxLogic = bundle.InfoBoxLogic;
+    }
+
+    /**
+     *
+     * @param {GameState} gameState
+     */
+    constructor(gameState) {
         this.gameState = gameState;
-        this.stateCode = stateCode;
         this.keys = [];
         this.keyboradKeys = [];
         this.gamepadKeys = [];
@@ -17,13 +27,52 @@ export class InputHandler {
                 this.keyboradKeys.push(e.key);
             } else if (e.key === 'q') {
                 //
-            } else if (e.key === 'Escape' && this.gameState.state !== this.stateCode.MENU) {
+            } else if (e.key === 'Escape' && this.gameState.state !== InputHandler.stateCode.MENU) {
                 // pause the game
                 this.gameState.togglePaused();
                 // comment out since code change
                 //this.gameState.togglePlayerCanClick();
             }
         });
+
+        // a keyboard shortcut to activate plant skill
+        if(this.gameState.currentStage != null) {
+            let p5 = InputHandler.p5;
+            let playBoard = this.gameState.currentStage;
+            window.addEventListener("keyup", (event) => {
+                // active skill
+                if (event.key === "e" && playBoard.infoBox.activateButton !== null) {
+                    playBoard.infoBox.activateButton._onClick(p5);
+                }
+                // toggle display ecosystem
+                if (event.key === "e" && playBoard.infoBox.displayButton !== null) {
+                    playBoard.infoBox.displayButton._onClick(p5);
+                }
+                // turn button
+                if (event.key === " " && playBoard.gameState.playerCanClick && playBoard.floatingWindow === null) {
+                    playBoard.buttons.find(b => b.text.startsWith("turn"))._onClick();
+                }
+                // to dev team: quick skip current stage
+                if (event.key === "c" && !playBoard.skip) {
+                    playBoard.skip = true;
+                    playBoard.stageClearSettings(p5);
+                    playBoard.gameState.setState(InputHandler.stateCode.FINISH);
+                }
+                // info box arrows
+                if (event.key === "a" && playBoard.selectedCell.length !== 0) {
+                    InputHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
+                }
+                if (event.key === "ArrowLeft" && playBoard.selectedCell.length !== 0) {
+                    InputHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
+                }
+                if (event.key === "d" && playBoard.selectedCell.length !== 0) {
+                    InputHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
+                }
+                if (event.key === "ArrowRight" && playBoard.selectedCell.length !== 0) {
+                    InputHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
+                }
+            })
+        }
         window.addEventListener('keyup', e => {
             if (e.key === 'w' ||
                 e.key === 'a' ||

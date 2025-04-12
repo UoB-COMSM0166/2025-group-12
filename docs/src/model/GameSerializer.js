@@ -2,14 +2,21 @@ export class GameSerializer {
 
     static saveDataID = "GreenRenaissanceSaveData";
 
-    static setup(bundle){
+    static setup(bundle) {
+        /**  @type {function} */
+        GameSerializer.inventoryStringifier = bundle.inventoryStringifier;
+        /**  @type {function} */
+        GameSerializer.playBoardStringifier = bundle.playBoardStringifier;
+        /**  @type {function} */
         GameSerializer.inventoryParser = bundle.inventoryParser;
+        /**  @type {function} */
         GameSerializer.playBoardParser = bundle.playBoardParser;
         GameSerializer.stateCode = bundle.stateCode;
     }
 
-    // placeholder, modified in container
-    static save(){}
+    // placeholder, injected in container
+    static save() {
+    }
 
     /**
      *
@@ -19,8 +26,8 @@ export class GameSerializer {
         let state = {
             state: controller.gameState.state,
             currentStageGroup: controller.gameState.currentStageGroup,
-            currentStage: controller.gameState.currentStage != null ? controller.gameState.currentStage.saveGame() : null,
-            inventory: controller.gameState.currentStage != null ? null : controller.gameState.inventory.stringify(), // prevent double storage of inventory
+            currentStage: controller.gameState.currentStage != null ? GameSerializer.playBoardStringifier(controller.gameState.currentStage) : null,
+            inventory: controller.gameState.currentStage != null ? null : GameSerializer.inventoryStringifier(controller.gameState.inventory), // prevent double storage of inventory
             clearedStages: JSON.stringify(Array.from(controller.gameState.clearedStages.entries())),
             saveState: controller.saveState,
         }
@@ -28,8 +35,9 @@ export class GameSerializer {
         console.log('Game saved');
     }
 
-    // placeholder, modified in container
-    static load(){}
+    // placeholder, injected in container
+    static load() {
+    }
 
     /**
      *

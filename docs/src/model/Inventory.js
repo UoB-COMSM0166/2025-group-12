@@ -259,7 +259,7 @@ export class InventorySerializer {
      *
      * @param {InventoryModel} inventory
      */
-    stringify(inventory) {
+    static stringify(inventory) {
         const object = {
             items: Array.from(inventory.items.entries())
         }

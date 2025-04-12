@@ -8,9 +8,12 @@ export class Controller {
         this.stateCode = bundle.stateCode;
         /** @type {stateCode} */
         this.saveState = bundle.initialState;
-
-        this.StartMenuLogic = bundle.StartMenuLogic;
-        this.InventoryLogic = bundle.InventoryLogic;
+        /** @type {Function} */
+        this.changeNewToResume = bundle.changeNewToResume;
+        /** @type {Function} */
+        this.saveInventory = bundle.saveInventory;
+        /** @type {Function} */
+        this.loadInventory = bundle.loadInventory;
     }
 
     setup(p5) {
@@ -87,7 +90,7 @@ export class Controller {
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.PLAY) {
             this.gameState.inventory.scrollIndex = 0;
-            this.menus[this.stateCode.PLAY].tmpInventoryItems = this.InventoryLogic.saveInventory(this.gameState.inventory)
+            this.menus[this.stateCode.PLAY].tmpInventoryItems = this.saveInventory(this.gameState.inventory)
             this.menus[this.stateCode.PLAY].setStageInventory(p5);
             return;
         }
@@ -97,7 +100,7 @@ export class Controller {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;
-            this.InventoryLogic.loadInventory(this.menus[this.stateCode.PLAY].tmpInventoryItems, this.gameState.inventory);
+            this.loadInventory(this.menus[this.stateCode.PLAY].tmpInventoryItems, this.gameState.inventory);
             // destroy the play board
             this.menus[this.stateCode.PLAY] = null;
             return;
@@ -105,7 +108,7 @@ export class Controller {
 
         // if we go back to start menu from standby, we set New Game button into Resume Game.
         if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.MENU) {
-            this.StartMenuLogic.changeNewToResume(this.menus[this.stateCode.MENU])
+            this.changeNewToResume(this.menus[this.stateCode.MENU])
         }
     }
 

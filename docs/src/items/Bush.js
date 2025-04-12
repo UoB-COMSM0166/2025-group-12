@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class BushModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -14,27 +17,25 @@ export class BushModel {
 
         // passive: nearby tree's defense extends to 9 cells.
     }
-}
 
-export class BushRenderer {
-    static getPassiveString(bush) {
+    getPassiveString() {
         return "Extends nearby Trees' passive ability to adjacent 8 cells.";
     }
 
-    static getActiveString(bush) {
+    getActiveString() {
         return "No active skill.";
     }
+}
+
+export class BushRenderer {
 }
 
 export class BushLogic {
     static setup(bundle) {
     }
 
-    static reevaluateSkills(bundle) {
+    static reevaluateSkills() {
     }
-}
-
-export class BushSerializer {
 }
 
 export class BushSeedModel {
@@ -52,7 +53,4 @@ export class BushSeedRenderer {
 }
 
 export class BushSeedLogic {
-}
-
-export class BushSeedSerializer {
 }

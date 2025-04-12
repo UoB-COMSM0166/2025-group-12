@@ -9,16 +9,14 @@ export class HillModel {
 
         this.weight = 20;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class HillRenderer {
 }
 
 export class HillLogic {
-    static getWeight(hill) {
-        return hill.weight;
-    }
-}
-
-export class HillSerializer {
 }

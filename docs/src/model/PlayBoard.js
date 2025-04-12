@@ -38,12 +38,16 @@
  * @property {Function} setupActionListeners
  * @property {Function} setStageTerrain
  * @property {Function} initAllFloatingWindows
+ * @property {Function} getTurnButtonText
  */
 
 // -----------------------------------
 /* Remember to maintain above JSDoc. */
 // -----------------------------------
 
+/**
+ * @implements ScreenLike
+ */
 export class PlayBoardModel {
     static setup(bundle) {
         /** @type {typeof myUtil} */
@@ -145,6 +149,12 @@ export class PlayBoardModel {
         playBoard.initAllFloatingWindows(p5);
     }
 
+    // boilerplate function, concrete boards must import this
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
     static setupActionListeners(p5, playBoard) {
         // escape button
         let [escX, escY] = PlayBoardModel.utilityClass.relative2absolute(0.01, 0.01);
@@ -159,13 +169,13 @@ export class PlayBoardModel {
         let [undoWidth, undoHeight] = PlayBoardModel.utilityClass.relative2absolute(0.09, 0.07);
         let undoButton = new PlayBoardModel.Button(undoX, undoY, undoWidth, undoHeight, "Undo");
         undoButton.onClick = () => {
-            this.undo(p5);
+            PlayBoardSerializer.undo(p5, playBoard);
         }
 
         // turn button
         let [turnWidth, turnHeight] = PlayBoardModel.utilityClass.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = PlayBoardModel.utilityClass.relative2absolute(0.5, 0.01);
-        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, this.getTurnButtonText());
+        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, playBoard.getTurnButtonText());
         turnButton.onClick = () => {
             playBoard.movables.sort((a, b) => {
                 if (a.movableType !== undefined && b.movableType !== undefined) {
@@ -188,40 +198,21 @@ export class PlayBoardModel {
         }
 
         playBoard.buttons.push(escapeButton, turnButton, undoButton);
+    }
 
-        // a keyboard shortcut to activate plant skill
-        window.addEventListener("keyup", (event) => {
-            // active skill
-            if (event.key === "e" && playBoard.infoBox.activateButton !== null) {
-                playBoard.infoBox.activateButton._onClick(p5);
-            }
-            // toggle display ecosystem
-            if (event.key === "e" && playBoard.infoBox.displayButton !== null) {
-                playBoard.infoBox.displayButton._onClick(p5);
-            }
-            // turn button
-            if (event.key === " " && playBoard.gameState.playerCanClick && playBoard.floatingWindow === null) {
-                playBoard.buttons.find(b => b.text.startsWith("turn"))._onClick();
-            }
-            // to dev team: quick skip current stage
-            if (event.key === "c" && !playBoard.skip) {
-                playBoard.skip = true;
-                playBoard.stageClearSettings(p5);
-                playBoard.gameState.setState(PlayBoardModel.stateCode.FINISH);
-            }
-            // info box arrows
-            if (event.key === "a" && playBoard.selectedCell.length !== 0) {
-                playBoard.infoBox.clickLeftArrow(p5);
-            }
-            if (event.key === "ArrowLeft" && playBoard.selectedCell.length !== 0) {
-                playBoard.infoBox.clickLeftArrow(p5);
-            }
-            if (event.key === "d" && playBoard.selectedCell.length !== 0) {
-                playBoard.infoBox.clickRightArrow(p5);
-            }
-            if (event.key === "ArrowRight" && playBoard.selectedCell.length !== 0) {
-                playBoard.infoBox.clickRightArrow(p5);
-            }
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static getTurnButtonText(playBoard) {
+        return `turn ${playBoard.turn} in ${playBoard.maxTurn}`;
+    }
+
+    static assertImplementation(assertion, impl) {
+        assertion({
+            name: 'ScreenRenderer',
+            impl,
+            methods: ['setup', 'draw','drawFloatingWindow']
         });
     }
 }
@@ -398,15 +389,6 @@ export class PlayBoardLogic{
         PlayBoardLogic.BoardLogic = bundle.BoardLogic;
     }
 
-
-    /**
-     *
-     * @param {PlayBoardLike} playBoard
-     */
-    static getTurnButtonText(playBoard) {
-        return `turn ${playBoard.turn} in ${playBoard.maxTurn}`;
-    }
-
     // when floating window is on, click anywhere to disable it.
     /**
      *
@@ -474,9 +456,9 @@ export class PlayBoardLogic{
         } else {
             this.selectedCell = [index[0], index[1]];
             // a shortcut to direct to plant active skill page
-            let cell = PlayBoardModel.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
+            let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
             if (cell.plant !== null && cell.plant.hasActive) {
-                PlayBoardModel.InfoBoxLogic.setStatus(p5, 'a',playBoard.infoBox);
+                PlayBoardLogic.InfoBoxLogic.setStatus(p5, 'a',playBoard.infoBox);
             }
         }
     }
@@ -690,10 +672,14 @@ export class PlayBoardLogic{
     }
 
     // this does not activate skill immediately, but go to awaiting status
-    activatePlantSkill(p5) {
-        let spellCaster = this.boardObjects.getCell(this.selectedCell[0], this.selectedCell[1]);
-        if (spellCaster.plant.plantType === plantTypes.TREE || spellCaster.plant.plantType === plantTypes.ORCHID) {
-            this.awaitCell = true;
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static activatePlantSkill(playBoard) {
+        let spellCaster = PlayBoardLogic.BoardLogic.getCell(playBoard.selectedCell[0], playBoard.selectedCell[1], playBoard.boardObjects);
+        if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.TREE || spellCaster.plant.plantType === PlayBoardLogic.plantTypes.ORCHID) {
+            playBoard.awaitCell = true;
         }
     }
 
@@ -707,6 +693,10 @@ export class PlayBoardLogic{
 }
 
 export class PlayBoardSerializer{
+    static setup(bundle){
+
+    }
+
     /**
      *
      * @param {PlayBoardLike} playBoard
@@ -779,7 +769,7 @@ export class PlayBoardSerializer{
      *
      * @param {PlayBoardLike} playBoard
      */
-    saveGame(playBoard) {
+    static saveGame(playBoard) {
         let status = this.stringify();
         status.stageGroup = playBoard.stageGroup;
         status.stageNumbering = Number(this.stageNumbering.charAt(2));

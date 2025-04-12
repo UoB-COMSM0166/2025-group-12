@@ -6,16 +6,14 @@ export class SnowfieldModel {
         this.img = p5.images.get(`${this.name}`);
         this.weight = 0;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class SnowfieldRenderer {
 }
 
 export class SnowfieldLogic {
-    static getWeight(snowfield) {
-        return snowfield.weight;
-    }
-}
-
-export class SnowfieldSerializer {
 }

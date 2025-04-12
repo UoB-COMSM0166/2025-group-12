@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class KikuModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -12,27 +15,25 @@ export class KikuModel {
         this.maxHealth = 1;
         this.status = true;
     }
-}
 
-export class KikuRenderer {
-    static getPassiveString(kiku) {
+    getPassiveString() {
         return "Increase the upper limit of action points by 1.";
     }
 
-    static getActiveString(kiku) {
+    getActiveString() {
         return "No active skill.";
     }
+}
+
+export class KikuRenderer {
 }
 
 export class KikuLogic {
     static setup(bundle) {
     }
 
-    static reevaluateSkills(bundle) {
+    static reevaluateSkills() {
     }
-}
-
-export class KikuSerializer {
 }
 
 export class KikuSeedModel {
@@ -50,7 +51,4 @@ export class KikuSeedRenderer {
 }
 
 export class KikuSeedLogic {
-}
-
-export class KikuSeedSerializer {
 }

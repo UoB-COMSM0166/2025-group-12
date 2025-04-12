@@ -14,6 +14,10 @@ export class LavaModel {
 
         this.weight = 1000;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class LavaRenderer {
@@ -22,6 +26,8 @@ export class LavaRenderer {
 export class LavaLogic {
     static setup(bundle) {
         LavaLogic.itemTypes = bundle.itemTypes;
+        /** @type {typeof BoardLogic} */
+        LavaLogic.BoardLogic = bundle.BoardLogic;
     }
 
     static storeSeed(p5, plant, lava) {
@@ -42,17 +48,10 @@ export class LavaLogic {
             if (lava.seed != null) {
                 console.log(this)
                 lava.seed.countdown = 1;
-                playBoard.boardObjects.getCell(lava.cellX, lava.cellY).seed = lava.seed;
+                LavaLogic.BoardLogic.getCell(lava.cellX, lava.cellY, playBoard.boardObjects).seed = lava.seed;
                 lava.seed = null;
             }
             lava.weight = 0;
         }
     }
-
-    static getWeight(lava) {
-        return lava.weight;
-    }
-}
-
-export class LavaSerializer {
 }

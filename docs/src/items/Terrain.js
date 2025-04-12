@@ -7,31 +7,25 @@ export class TerrainModel {
 }
 
 export class TerrainRenderer {
-    static assertImplementation(assertion, impl) {
+    static setup(bundle){
     }
 }
 
 export class TerrainLogic {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'TerrainLogic',
-            impl,
-            methods: ['getWeight']
-        });
+    static setup(bundle){
     }
 }
 
 export class TerrainSerializer {
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'TerrainSerializer',
-            impl,
-            methods: ['stringify', 'parse']
-        });
+    static setup(bundle){
+        TerrainSerializer.p5 = bundle.p5;
+        TerrainSerializer.terrainTypes = bundle.terrainTypes;
+        TerrainSerializer.plantFactory = bundle.plantFactory;
+        TerrainSerializer.terrainFactory = bundle.terrainFactory;
     }
 
-    static stringify(terrainInstance, terrainTypes) {
-        if (terrainInstance.terrainType === terrainTypes.LAVA) {
+    static stringify(terrainInstance) {
+        if (terrainInstance.terrainType === TerrainSerializer.terrainTypes.LAVA) {
             let object = {
                 terrainType: terrainInstance.terrainType,
                 name: terrainInstance.name,
@@ -54,17 +48,19 @@ export class TerrainSerializer {
         }
     }
 
-    static parse(json, p5, newTerrainInstance, plantFactory, terrainTypes) {
+    static parse(json) {
         let object = JSON.parse(json);
-        if (object.terrainType === terrainTypes.LAVA) {
+        let newTerrainInstance = TerrainSerializer.terrainFactory.get(object.terrainType)();
+
+        if (object.terrainType === TerrainSerializer.terrainTypes.LAVA) {
             newTerrainInstance.name = object.name;
-            newTerrainInstance.img = p5.images.get(newTerrainInstance.name);
+            newTerrainInstance.img = TerrainSerializer.p5.images.get(newTerrainInstance.name);
             newTerrainInstance.countdown = object.countdown;
             newTerrainInstance.hasSolidified = object.hasSolidified;
             newTerrainInstance.cellX = object.cellX;
             newTerrainInstance.cellY = object.cellY;
             if (object.seed) {
-                let seedInstance = plantFactory[object.seed.name]();
+                let seedInstance = TerrainSerializer.plantFactory.get(object.seed.seedType)();
                 if (seedInstance) {
                     seedInstance.countdown = object.seed.countdown;
                     newTerrainInstance.seed = seedInstance;

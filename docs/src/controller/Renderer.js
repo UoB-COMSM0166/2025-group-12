@@ -1,7 +1,4 @@
 export class Renderer{
-    // placeholder, injected in container
-    static draw(p5){}
-
     static render(p5, menus, gameState, pauseMenu) {
         let currentMenu = menus[gameState.getState()];
         if (currentMenu && currentMenu.draw) {

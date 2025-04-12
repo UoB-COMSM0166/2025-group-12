@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class PlumModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -12,16 +15,17 @@ export class PlumModel {
         this.maxHealth = 2;
         this.status = true;
     }
-}
 
-export class PlumRenderer {
-    static getPassiveString(plum) {
+    getPassiveString() {
         return "Dissolve nearby snowfield.";
     }
 
-    static getActiveString(plum) {
+    getActiveString() {
         return "No active skill.";
     }
+}
+
+export class PlumRenderer {
 }
 
 export class PlumLogic {
@@ -29,15 +33,12 @@ export class PlumLogic {
         PlumLogic.util = bundle.utilityClass;
     }
 
-    static reevaluateSkills(bundle) {
+    static reevaluateSkills() {
     }
 
     static plumRange(i0, j0, i1, j1) {
         return PlumLogic.util.manhattanDistance(i0, j0, i1, j1) <= 2 && PlumLogic.util.euclideanDistance(i0, j0, i1, j1) <= 2;
     }
-}
-
-export class PlumSerializer {
 }
 
 export class PlumSeedModel {
@@ -55,7 +56,4 @@ export class PlumSeedRenderer {
 }
 
 export class PlumSeedLogic {
-}
-
-export class PlumSeedSerializer {
 }

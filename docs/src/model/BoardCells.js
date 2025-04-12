@@ -121,9 +121,9 @@ export class BoardLogic {
         BoardLogic.baseType = bundle.baseType;
         /** @type {typeof UnionFind} */
         BoardLogic.UnionFind = bundle.UnionFind;
-        /** @type {function} */
+        /** @type {Function} */
         BoardLogic.dissolveSnowBaseTerrain = bundle.dissolveSnowBaseTerrain;
-        /** @type {function} */
+        /** @type {Function} */
         BoardLogic.dissolveSnowRange = bundle.dissolveSnowRange;
     }
 
@@ -132,6 +132,7 @@ export class BoardLogic {
      * @param i
      * @param j
      * @param {BoardModel} board
+     * @return {CellModel}
      */
     static getCell(i, j, board) {
         if (i < 0 || i >= board.size || j < 0 || j >= board.size) {
@@ -217,6 +218,7 @@ export class BoardLogic {
     /**
      *
      * @param {BoardModel} board
+     * @return {Array<CellModel>}
      */
     static getAllCellsWithPlant(board) {
         let cells = [];
@@ -233,6 +235,7 @@ export class BoardLogic {
     /**
      *
      * @param {BoardModel} board
+     * @return {Array<CellModel>}
      */
     static getAllCellsWithSeed(board) {
         let cells = [];
@@ -249,6 +252,7 @@ export class BoardLogic {
     /**
      *
      * @param {BoardModel} board
+     * @return {Array<CellModel>}
      */
     static getAllCellsWithEnemy(board) {
         let cells = [];
@@ -267,6 +271,7 @@ export class BoardLogic {
      * @param i
      * @param j
      * @param {BoardModel} board
+     * @return {Array<CellModel>}
      */
     static getAdjacent8Cells(i, j, board) {
         let cells = [];
@@ -288,6 +293,7 @@ export class BoardLogic {
      * @param i
      * @param j
      * @param {BoardModel} board
+     * @return {Array<CellModel>}
      */
     static getAdjacent4Cells(i, j, board) {
         let cells = [];
@@ -306,6 +312,7 @@ export class BoardLogic {
      * @param j
      * @param {function} range
      * @param {BoardModel} board
+     * @return {Array<CellModel>}
      */
     static getNearbyCells(i, j, range, board) {
         let cells = [];
@@ -451,15 +458,12 @@ export class CellModel {
     // we will manually set terrain for all stages
     // but the right to plant is handed over to player.
     constructor(i, j, terrain) {
-        if (terrain.type !== CellModel.itemTypes.TERRAIN) {
-            console.error(`failed to set cell at (${i},${j}) since the input is not terrain.`);
-            return;
-        }
         /** @type {number} */
         this.i = i;
         /** @type {number} */
         this.j = j;
-        this._terrain = terrain;
+        this._terrain = null;
+        this.terrain = terrain;
         this._plant = null;
         this._seed = null;
         this._enemy = null;

@@ -1,3 +1,6 @@
+/**
+ * @implements {PlantLike}
+ */
 export class BambooModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
@@ -12,16 +15,17 @@ export class BambooModel {
         this.maxHealth = 4;
         this.status = true;
     }
-}
 
-export class BambooRenderer {
-    static getPassiveString(bamboo) {
+    getPassiveString() {
         return "Automatically spreads to all nearby landslide terrain and repair local environment."
     }
 
-    static getActiveString(bamboo) {
+    getActiveString() {
         return "No active skill.";
     }
+}
+
+export class BambooRenderer {
 }
 
 export class BambooLogic {
@@ -30,30 +34,35 @@ export class BambooLogic {
         BambooLogic.itemTypes = bundle.itemTypes;
         BambooLogic.plantTypes = bundle.plantTypes;
         BambooLogic.superModel = bundle.PlantModel;
+
+        /** @type {typeof BoardLogic} */
+        BambooLogic.BoardLogic = bundle.BoardLogic;
     }
 
-    static reevaluateSkills(bundle) {
+    static reevaluateSkills() {
     }
 
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} cell
+     */
     static spreadBamboo(p5, playBoard, cell) {
         if (!cell.plant && !cell.seed) {
             cell.plant = new BambooModel(p5, BambooLogic.superModel, BambooLogic.itemTypes, BambooLogic.plantTypes);
         }
 
-        for (let adCell of playBoard.boardObjects.getAdjacent8Cells(cell.x, cell.y)) {
+        for (let adCell of BambooLogic.BoardLogic.getAdjacent8Cells(cell.i, cell.j, playBoard.boardObjects)) {
             if (adCell.plant || adCell.seed) continue;
 
             if (adCell.terrain.terrainType === BambooLogic.terrainTypes.LANDSLIDE) {
                 adCell.plant = new BambooModel(p5, BambooLogic.superModel, BambooLogic.itemTypes, BambooLogic.plantTypes);
-                this.spreadBamboo(p5, adCell);
+                this.spreadBamboo(p5, playBoard, adCell);
             }
         }
     }
 }
-
-export class BambooSerializer {
-}
-
 
 export class BambooSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
@@ -70,7 +79,4 @@ export class BambooSeedRenderer {
 }
 
 export class BambooSeedLogic {
-}
-
-export class BambooSeedSerializer {
 }

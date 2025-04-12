@@ -4,7 +4,11 @@ export class VolcanoModel {
         this.name = "Volcano";
         this.terrainType = terrainTypes.VOLCANO;
         this.img = p5.images.get(`${this.name}`);
-        this.weight = 2000;
+        this.weight = 20000;
+    }
+
+    getWeight() {
+        return this.weight;
     }
 }
 
@@ -12,10 +16,4 @@ export class VolcanoRenderer {
 }
 
 export class VolcanoLogic {
-    static getWeight(volcano) {
-        return volcano.weight;
-    }
-}
-
-export class VolcanoSerializer {
 }

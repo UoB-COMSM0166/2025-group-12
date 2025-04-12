@@ -1,5 +1,3 @@
-
-// defining JSDoc interface for screen inheritances
 /**
  * @typedef {Object} ScreenLike
  * @property {Array} buttons
@@ -16,35 +14,16 @@ export class ScreenModel {
     constructor(gameState) {
         this.gameState = gameState;
         this.buttons = [];
+        /** @type {FloatingWindow} */
         this.floatingWindow = null;
+        /** @type {Map} */
         this.allFloatingWindows = null;
-    }
-
-    static getScreenLikeFields(){
-        return {
-            name: "ScreenLike",
-            methods: ['setup', 'initAllFloatingWindows'],
-            fields: ["gameState", "buttons", "floatingWindow", "allFloatingWindows"]
-        };
-    }
-
-    static assertImplementation(assertion, impl) {
-        let object = ScreenModel.getScreenLikeFields();
-        object.impl = impl;
-        assertion(object);
     }
 }
 
 export class ScreenRenderer{
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'ScreenRenderer',
-            impl,
-            methods: ['setup', 'draw','drawFloatingWindow']
-        });
-    }
-
     // general logic
+    // remember to invoke this method in `draw()` to ensure logic.
     /**
      *
      * @param p5
@@ -52,7 +31,7 @@ export class ScreenRenderer{
      * @param {function} setFloatingWindowFn
      */
     static drawFloatingWindow(p5, screen, setFloatingWindowFn) {
-        setFloatingWindowFn(p5);
+        setFloatingWindowFn(p5, screen);
         if (screen.floatingWindow !== null) {
             if (screen.floatingWindow.isFading) {
                 screen.floatingWindow.fadeOut();
@@ -71,19 +50,11 @@ export class ScreenRenderer{
 export class ScreenLogic {
     static setup(bundle){
         /** @type {typeof InventoryLogic} */
-        ScreenLogic.inventoryLogicLayer = bundle.inventoryLogicLayer;
-    }
-
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'ScreenLogic',
-            impl,
-            methods: ['setup', 'handleClick', 'handleScroll',  'handleFloatingWindow', 'setFloatingWindow']
-        });
+        ScreenLogic.InventoryLogic = bundle.InventoryLogic;
     }
 
     // general logic
-    // remember to invoke this method in `draw()` to ensure logic.
+    // remember to invoke this method in `handleClick()` to ensure logic.
     /**
      *
      * @param {ScreenLike} screen
@@ -115,7 +86,7 @@ export class ScreenLogic {
             && p5.mouseX <= screen.gameState.inventory.inventoryX + screen.gameState.inventory.inventoryWidth
             && p5.mouseY >= screen.gameState.inventory.inventoryY
             && p5.mouseY <= screen.gameState.inventory.inventoryY + screen.gameState.inventory.inventoryHeight) {
-            ScreenLogic.inventoryLogicLayer.handleScroll(event, screen.gameState.inventory);
+            ScreenLogic.InventoryLogic.handleScroll(event, screen.gameState.inventory);
         }
     }
 }

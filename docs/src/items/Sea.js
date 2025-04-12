@@ -6,16 +6,14 @@ export class SeaModel {
         this.img = p5.images.get(`${this.name}`);
         this.weight = 100000;
     }
+
+    getWeight() {
+        return this.weight;
+    }
 }
 
 export class SeaRenderer {
 }
 
 export class SeaLogic {
-    static getWeight(sea) {
-        return sea.weight;
-    }
-}
-
-export class SeaSerializer {
 }

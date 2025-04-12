@@ -1,8 +1,14 @@
+import {PlayBoardLogic} from "./PlayBoard.js";
+
 export class InfoBoxModel {
     static setup(bundle) {
         InfoBoxModel.utilityClass = bundle.utilityClass;
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
     constructor(playBoard) {
         this.infoStatus = 't'; // by default prints terrain & ( enemy | seed )
         this.recordStatus = 't'; // if record!='a' && status = 'a', init button, vice versa.
@@ -22,7 +28,14 @@ export class InfoBoxModel {
 export class InfoBoxRenderer {
 
     static setup(bundle) {
+        /** @type {typeof myUtil} */
         InfoBoxRenderer.utilityClass = bundle.utilityClass;
+        /** @type {typeof BoardLogic} */
+        InfoBoxRenderer.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof BoardRenderer} */
+        InfoBoxRenderer.BoardRenderer = bundle.BoardRenderer;
+        /** @type {typeof CellRenderer} */
+        InfoBoxRenderer.CellRenderer = bundle.CellRenderer;
     }
 
     /**
@@ -40,16 +53,17 @@ export class InfoBoxRenderer {
 
         if (infoBox.infoStatus === 't') {
             title = "General Info";
-            info = infoBox.playBoard.boardObjects.getCellString(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
+            info = InfoBoxRenderer.BoardRenderer.getCellString(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects);
         } else if (infoBox.infoStatus === 'p') {
             title = "Plant Passive";
-            info = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]).plant.getPassiveString();
+            info = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects).plant.getPassiveString();
         } else if (infoBox.infoStatus === 'a') {
             title = "Plant Active";
-            info = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]).plant.getActiveString();
+            info = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects).plant.getActiveString();
         } else if (infoBox.infoStatus === 'e') {
             title = "Ecosystem";
-            info = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]).getEcoString(infoBox.playBoard);
+            info = InfoBoxRenderer.CellRenderer.getEcoString(infoBox.playBoard.stageGroup ,InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects))
+                ;
         }
 
         p5.fill(255);
@@ -83,7 +97,7 @@ export class InfoBoxRenderer {
         }
 
         // add a page indicator
-        let cell = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
+        let cell = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects);
         let pages;
         let currentPage;
         if (cell.plant === null) {
@@ -130,7 +144,10 @@ export class InfoBoxRenderer {
 export class InfoBoxLogic {
     static setup(bundle) {
         InfoBoxLogic.Button = bundle.button;
+        /** @type {typeof myUtil} */
         InfoBoxLogic.utilityClass = bundle.utilityClass;
+        /** @type {Function} */
+        InfoBoxLogic.activatePlantSkill = bundle.activatePlantSkill;
     }
 
     // clicked info box arrows when info box exists in play board
@@ -204,7 +221,7 @@ export class InfoBoxLogic {
      * @param {InfoBoxModel} infoBox
      */
     static infoBoxFSM(p5, nextOrPrev, infoBox) {
-        let cell = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
+        let cell = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects);
 
         // terrain & enemy
         if (infoBox.infoStatus === 't') {
@@ -259,15 +276,15 @@ export class InfoBoxLogic {
      */
     static setStatus(p5, newStatus, infoBox) {
         infoBox.infoStatus = newStatus;
-        let cell = infoBox.playBoard.boardObjects.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1]);
+        let cell = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects);
         if (infoBox.infoStatus === 'a' && infoBox.recordStatus !== 'a' && cell.plant !== null && cell.plant.hasActive) {
             InfoBoxLogic.setActivateButton(p5, infoBox);
         } else if (infoBox.infoStatus !== 'a' && infoBox.recordStatus === 'a') {
-            InfoBoxLogic.deleteActivateButton(p5);
+            InfoBoxLogic.deleteActivateButton(infoBox);
         }
 
-        if (infoBox.infoStatus === 'e') InfoBoxLogic.setEcoDisplayButton(p5);
-        else InfoBoxLogic.deleteDisplayButton(p5);
+        if (infoBox.infoStatus === 'e') InfoBoxLogic.setEcoDisplayButton(infoBox);
+        else InfoBoxLogic.deleteDisplayButton(infoBox);
 
         infoBox.recordStatus = newStatus;
     }
@@ -292,7 +309,7 @@ export class InfoBoxLogic {
         let buttonY = infoBox.playBoard.canvasHeight - buttonHeight - 2 * infoBox.paddingY;
         let activate = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, "activate");
         activate.onClick = () => {
-            infoBox.playBoard.activatePlantSkill(p5);
+            InfoBoxLogic.activatePlantSkill(infoBox.playBoard);
         };
         infoBox.playBoard.buttons.push(activate);
         infoBox.activateButton = activate;

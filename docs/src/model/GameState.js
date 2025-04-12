@@ -37,14 +37,16 @@ export class GameState {
     constructor(p5, gsf, inventory) {
         this.state = stateCode.MENU; // default
         this.currentStageGroup = stageGroup.NO_STAGE; // no stage is selected
+        /** @type {*|PlayBoardLike} */
         this.currentStage = null;
+        /** @type {InventoryModel} */
         this.inventory = inventory;
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
 
         this.clearedStages = new Map();
         this.clearedStages.set(stageGroup.NO_STAGE, 1);
-
+        /** @type {GameStageFactory} */
         this.gsf = gsf;
     }
 
