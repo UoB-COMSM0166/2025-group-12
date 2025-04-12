@@ -44,6 +44,8 @@ export class GameState {
         this.languageManager = new LanguageManager();
         this.showOptions = false;
         this.mode = "mouse";
+        this.fading = false;
+        this.nextState = null;
     }
 
     setState(newState) {

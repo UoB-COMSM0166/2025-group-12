@@ -37,9 +37,11 @@ export class PauseMenu {
         escapeButton.onClick = () => {
             this.gameState.togglePaused();
             if (this.gameState.state === stateCode.PLAY) {
-                this.gameState.setState(stateCode.STANDBY);
+                this.gameState.fading = true;
+                this.gameState.nextState = stateCode.STANDBY;
             } else {
-                this.gameState.setState(stateCode.MENU);
+                this.gameState.fading = true;
+                this.gameState.nextState = stateCode.MENU;
             }
             this.gameState.setPlayerCanClick(true);
         };

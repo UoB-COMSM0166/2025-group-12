@@ -4,6 +4,7 @@ import {GameSave} from "./GameSave.js";
 import {MenuItem} from "../items/MenuItem.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
+import {CanvasSize} from "../CanvasSize.js";
 
 export class StartMenu extends Screen {
     constructor(gameState) {
@@ -20,7 +21,11 @@ export class StartMenu extends Screen {
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
         let newGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
-        newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
+        newGameButton.onClick = () => {
+            // gameState change is in fadeOut animation function
+            this.gameState.fading = true;
+            this.gameState.nextState = stateCode.STANDBY;
+        }
 
         let loadGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
@@ -35,6 +40,7 @@ export class StartMenu extends Screen {
         }
 
         this.buttons.push(newGameButton, loadGameButton, optionsButton);
+        this.isStart = true;
     }
 
     reset(p5) {
@@ -104,6 +110,8 @@ export class StartMenu extends Screen {
         }
 
         this.drawFloatingWindow(p5);
+        if(this.gameState.fading) this.playFadeOutAnimation(p5);
+        if(this.isStart) this.playFadeInAnimation(p5);
     }
 
     changeNewToResume() {

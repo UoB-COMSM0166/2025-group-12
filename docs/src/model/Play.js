@@ -469,6 +469,8 @@ export class PlayBoard extends Screen {
             p5.fill('yellow');
             p5.circle(p5.gamepadX, p5.gamepadY, 10);
         }
+        if(this.gameState.fading) this.playFadeOutAnimation(p5);
+        if(this.isStart) this.playFadeInAnimation(p5);
     }
 
     // ----------------------------------- //
@@ -563,7 +565,6 @@ export class PlayBoard extends Screen {
         else{
             index = myutil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
         }
-        console.log(index)
         if (index[0] === -1) {
             this.selectedCell = [];
         } else {

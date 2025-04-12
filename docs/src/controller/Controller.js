@@ -118,8 +118,6 @@ export class Controller {
         if (this.gameState.showOptions) {
             this.options.draw(p5);
         }
-        // this.gamepadState.updateGamepad(this.saveState, currentMenu, p5);
-        // this.gamepadState.draw(this.saveState, p5);
     }
 
     // when shift to PLAY from STANDBY, create the new play board

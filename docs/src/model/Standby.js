@@ -26,6 +26,7 @@ export class StandbyMenu extends Screen {
         ];
 
         this.buttons = buttonConfigs.map(cfg => this.createStageButton(p5, cfg.x, cfg.y, cfg.image, cfg.group));
+        this.isStart = true;
     }
 
     createStageButton(p5, xRatio, yRatio, imgName, group) {
@@ -119,6 +120,8 @@ export class StandbyMenu extends Screen {
             p5.fill('yellow');
             p5.circle(p5.gamepadX, p5.gamepadY, 10);
         }
+        if(this.gameState.fading) this.playFadeOutAnimation(p5);
+        if(this.isStart) this.playFadeInAnimation(p5);
     }
 
     drawStageInfo(p5, group) {
@@ -177,7 +180,8 @@ export class StandbyMenu extends Screen {
     }
 
     clickedStageButton(p5, stageGroup) {
-        this.gameState.setState(stateCode.PLAY);
+        this.gameState.fading = true;
+        this.gameState.nextState = stateCode.PLAY;
         this.gameState.currentStageGroup = stageGroup;
     }
 
@@ -249,4 +253,5 @@ export class StandbyMenu extends Screen {
             button.circle = null;
         });
     }
+
 }
