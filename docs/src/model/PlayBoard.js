@@ -5,7 +5,7 @@
  * @property {FloatingWindow} floatingWindow
  * @property {Map} allFloatingWindows
  * @property {number} stageGroup
- * @property {string} stageNumbering
+ * @property {number} stageNumbering
  * @property {number} canvasWidth
  * @property {number} canvasHeight
  * @property {number} Sx
@@ -30,8 +30,9 @@
  * @property {boolean} awaitCell
  * @property {boolean} ecoDisplay
  * @property {boolean} isGameOver
+ * @property {boolean} hasBamboo
  * @property {boolean} skip
- * @property {{img: p5.Image}} shadowPlant
+ * @property {*} shadowPlant
  * @property {Array} undoStack
  * @property {Array} snowfields
  * @property {Array} fertilized
@@ -41,12 +42,15 @@
  * @property {Function} getTurnButtonText
  */
 
-// -----------------------------------
-/* Remember to maintain above JSDoc. */
-// -----------------------------------
+// ---------------------------------
+// Remember to maintain above JSDoc.
+// ---------------------------------
+
+import {movableTypes} from "../items/ItemTypes.js";
 
 /**
  * @implements ScreenLike
+ * @implements PlayBoardLike
  */
 export class PlayBoardModel {
     static setup(bundle) {
@@ -55,7 +59,7 @@ export class PlayBoardModel {
         PlayBoardModel.stateCode = bundle.stateCode;
         PlayBoardModel.stageGroup = bundle.stageGroup;
         /** @type {typeof Button} */
-        PlayBoardModel.Button  =bundle.Button;
+        PlayBoardModel.Button = bundle.Button;
         /** @type {typeof InfoBoxModel} */
         PlayBoardModel.InfoBoxModel = bundle.InfoBoxModel;
         /** @type {typeof BoardModel} */
@@ -64,9 +68,10 @@ export class PlayBoardModel {
 
     /**
      *
+     * @param p5
      * @param {GameState} gameState
      */
-    constructor(gameState) {
+    constructor(p5, gameState) {
         this.gameState = gameState;
         this.buttons = [];
         /** @type {FloatingWindow} */
@@ -75,7 +80,7 @@ export class PlayBoardModel {
         this.allFloatingWindows = null;
 
         this.stageGroup = PlayBoardModel.stageGroup.NO_STAGE;
-        this.stageNumbering = "0-0";
+        this.stageNumbering = 0;
         this.canvasWidth = PlayBoardModel.utilityClass.relative2absolute(1, 1)[0];
         this.canvasHeight = PlayBoardModel.utilityClass.relative2absolute(1, 1)[1];
 
@@ -101,7 +106,7 @@ export class PlayBoardModel {
          * initialize them later after Object.assign in subclasses.
          */
         this.boardObjects = null; // new PlayBoardModel.BoardModel(this.gridSize);
-        this.infoBox = null; // new PlayBoardModel.InfoBoxModel(this);
+        this.infoBox = new PlayBoardModel.InfoBoxModel(this);
 
         // to store the items at the start of each stage,
         // so when you quit we can reset inventory
@@ -131,6 +136,28 @@ export class PlayBoardModel {
 
         // save last state
         this.undoStack = [];
+
+        // BLIZZARD SPECIFIC:
+        // snowfield prototype cells
+        this.snowfields = [];
+
+        // TSUNAMI SPECIFIC:
+        // record fertilized cells
+        this.fertilized = Array.from({length: this.gridSize},
+            () => Array.from({length: this.gridSize}, () => false));
+
+        PlayBoardModel.concreteBoardInit(this);
+
+        // initialization
+        PlayBoardModel.initPlayBoard(p5, /** @type {PlayBoardLike} */ this);
+    }
+
+    // will be replaced by concrete board methods
+    static concreteBoardInit(playBoard){
+    }
+
+    // abstract - invoked by controller
+    static setStageInventory(p5, playBoard) {
     }
 
     /**
@@ -140,32 +167,42 @@ export class PlayBoardModel {
      */
     static initPlayBoard(p5, playBoard) {
         // action listeners
-        playBoard.setupActionListeners(p5);
+        PlayBoardModel.setupActionListeners(p5, playBoard);
 
         // setup stage terrain
-        playBoard.setStageTerrain(p5);
+        PlayBoardModel.setStageTerrain(p5, playBoard);
 
         // initialized all fw
-        playBoard.initAllFloatingWindows(p5);
+        PlayBoardModel.initAllFloatingWindows(p5, playBoard);
     }
 
-    // boilerplate function, concrete boards must import this
+    // abstract
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+    }
+
+    // abstract
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
+    }
+
+    // boilerplate
     /**
      *
      * @param p5
      * @param {PlayBoardLike} playBoard
      */
     static setupActionListeners(p5, playBoard) {
-        // escape button
-        let [escX, escY] = PlayBoardModel.utilityClass.relative2absolute(0.01, 0.01);
-        let [escWidth, escHeight] = PlayBoardModel.utilityClass.relative2absolute(0.09, 0.07);
-        let escapeButton = new PlayBoardModel.Button(escX, escY, escWidth, escHeight, "Escape");
-        escapeButton.onClick = () => {
-            playBoard.gameState.setState(PlayBoardModel.stateCode.STANDBY);
-        };
-
         // undo
-        let [undoX, undoY] = PlayBoardModel.utilityClass.relative2absolute(0.1, 0.01);
+        let [undoX, undoY] = PlayBoardModel.utilityClass.relative2absolute(0.02, 0.01);
         let [undoWidth, undoHeight] = PlayBoardModel.utilityClass.relative2absolute(0.09, 0.07);
         let undoButton = new PlayBoardModel.Button(undoX, undoY, undoWidth, undoHeight, "Undo");
         undoButton.onClick = () => {
@@ -175,7 +212,7 @@ export class PlayBoardModel {
         // turn button
         let [turnWidth, turnHeight] = PlayBoardModel.utilityClass.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = PlayBoardModel.utilityClass.relative2absolute(0.5, 0.01);
-        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, playBoard.getTurnButtonText());
+        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, PlayBoardModel.getTurnButtonText(playBoard));
         turnButton.onClick = () => {
             playBoard.movables.sort((a, b) => {
                 if (a.movableType !== undefined && b.movableType !== undefined) {
@@ -191,13 +228,13 @@ export class PlayBoardModel {
             }
             // when game is not cleared, remember to deal with end turn stuff
             if (playBoard.turn < playBoard.maxTurn + 1) {
-                this.endTurn = true;
+                playBoard.endTurn = true;
             }
             // once player unable to click, controller will loop movables to check if there are anything has not moved
             playBoard.gameState.setPlayerCanClick(false);
         }
 
-        playBoard.buttons.push(escapeButton, turnButton, undoButton);
+        playBoard.buttons.push(turnButton, undoButton);
     }
 
     /**
@@ -207,18 +244,12 @@ export class PlayBoardModel {
     static getTurnButtonText(playBoard) {
         return `turn ${playBoard.turn} in ${playBoard.maxTurn}`;
     }
-
-    static assertImplementation(assertion, impl) {
-        assertion({
-            name: 'ScreenRenderer',
-            impl,
-            methods: ['setup', 'draw','drawFloatingWindow']
-        });
-    }
 }
 
 export class PlayBoardRenderer {
-    static setup(bundle){
+    static setup(bundle) {
+        PlayBoardRenderer.itemTypes = bundle.itemTypes;
+        PlayBoardRenderer.movableTypes = bundle.movableTypes;
         /** @type {typeof ScreenRenderer} */
         PlayBoardRenderer.ScreenRenderer = bundle.ScreenRenderer;
         /** @type {typeof BoardRenderer} */
@@ -227,6 +258,8 @@ export class PlayBoardRenderer {
         PlayBoardRenderer.InfoBoxRenderer = bundle.InfoBoxRenderer;
         /** @type {typeof InventoryRenderer} */
         PlayBoardRenderer.InventoryRenderer = bundle.InventoryRenderer;
+        /** @type {typeof MovableRenderer} */
+        PlayBoardRenderer.MovableRenderer = bundle.MovableRenderer;
 
         /** @type {typeof myUtil} */
         PlayBoardRenderer.utilityClass = bundle.utilityClass;
@@ -280,7 +313,7 @@ export class PlayBoardRenderer {
      * @param p5
      * @param {PlayBoardLike} playBoard
      */
-    static setCursorStyle(p5, playBoard){
+    static setCursorStyle(p5, playBoard) {
         // set cursor style
         if (playBoard.gameState.inventory.selectedItem !== null) {
             p5.cursor('grab');
@@ -305,6 +338,39 @@ export class PlayBoardRenderer {
      * @param p5
      * @param {PlayBoardLike} playBoard
      */
+    static drawMovables(p5, playBoard) {
+        // tornado arrows first
+        for (let movable of playBoard.movables) {
+            if (!movable.isMoving && movable.type === PlayBoardRenderer.itemTypes.ENEMY && movable.movableType === PlayBoardRenderer.movableTypes.TORNADO) {
+                PlayBoardRenderer.MovableRenderer.drawDirection(p5, movable);
+            }
+        }
+        // draw all movables according to movables
+        for (let movable of playBoard.movables) {
+            PlayBoardRenderer.MovableRenderer.draw(playBoard, movable);
+        }
+        // health bar last
+        for (let movable of playBoard.movables) {
+            if (movable.health !== undefined) {
+                PlayBoardRenderer.utilityClass.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static drawFloatingWindow(p5, playBoard) {
+        PlayBoardRenderer.ScreenRenderer.drawFloatingWindow(p5, playBoard, PlayBoardLogic.setFloatingWindow);
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
     static draw(p5, playBoard) {
         p5.background(180);
 
@@ -314,63 +380,44 @@ export class PlayBoardRenderer {
         p5.fill('red');
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);
-        p5.text(playBoard.stageNumbering, stageNumberingX, stageNumberingY);
+        p5.text(`${playBoard.stageGroup}-${playBoard.stageNumbering}`, stageNumberingX, stageNumberingY);
 
-        // draw stage grid
         PlayBoardRenderer.drawGrid(p5, playBoard);
 
-        // left bottom corner info box
+        // draw info box
         if (playBoard.selectedCell.length !== 0) {
             PlayBoardRenderer.InfoBoxRenderer.draw(p5, playBoard.infoBox);
         }
 
-        // tornado arrows first
-        for (let movable of playBoard.movables) {
-            if (!movable.isMoving && movable.type === itemTypes.ENEMY && movable.movableType === movableTypes.TORNADO) {
-                movable.drawDirection(p5);
-            }
-        }
-        // draw all movables according to this.movables
-        for (let movable of this.movables) {
-            movable.draw(p5);
-        }
-        // health bar last
-        for (let movable of this.movables) {
-            if (movable.health !== undefined) {
-                myUtil.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
-            }
-        }
-
+        PlayBoardRenderer.drawMovables(p5, playBoard);
 
         // draw inventory
         PlayBoardRenderer.InventoryRenderer.draw(p5, playBoard.gameState.inventory);
 
         // draw action points
-        myUtil.drawActionPoints(p5, this);
+        PlayBoardRenderer.utilityClass.drawActionPoints(p5, playBoard);
 
         // all buttons
-        // to cascade activate button above info box, place this loop after info box
-        for (let button of this.buttons) {
-            if (!(this.turn === this.maxTurn + 1 && button.text.startsWith("turn"))) {
+        // to cascade activate button above info box, place the loop after info box
+        for (let button of playBoard.buttons) {
+            if (!(playBoard.turn === playBoard.maxTurn + 1 && button.text.startsWith("turn"))) {
                 button.draw(p5);
             }
         }
 
         // if game over, set player can click to stop movables updating
-        if (this.isGameOver && !this.gameState.playerCanClick) {
-            this.gameState.setPlayerCanClick(true);
+        if (playBoard.isGameOver && !playBoard.gameState.playerCanClick) {
+            playBoard.gameState.setPlayerCanClick(true);
         }
 
-        this.drawFloatingWindow(p5);
+        PlayBoardRenderer.drawFloatingWindow(p5, playBoard);
 
         PlayBoardRenderer.setCursorStyle(p5, playBoard);
     }
-
-
 }
 
-export class PlayBoardLogic{
-    static setup(bundle){
+export class PlayBoardLogic {
+    static setup(bundle) {
         /** @type {typeof ScreenLogic} */
         PlayBoardLogic.ScreenLogic = bundle.ScreenLogic;
 
@@ -378,23 +425,42 @@ export class PlayBoardLogic{
         PlayBoardLogic.utilityClass = bundle.utilityClass;
         PlayBoardLogic.stateCode = bundle.stateCode;
         PlayBoardLogic.stageGroup = bundle.stageGroup;
+        PlayBoardLogic.itemTypes = bundle.itemTypes;
+        /** @type {function} */
+        PlayBoardLogic.baseType = bundle.baseType;
         PlayBoardLogic.plantTypes = bundle.plantTypes;
         PlayBoardLogic.seedTypes = bundle.seedTypes;
+        PlayBoardLogic.plantFactory = bundle.plantFactory;
+
+        PlayBoardLogic.terrainTypes = bundle.terrainTypes;
+        PlayBoardLogic.terrainFactory = bundle.terrainFactory;
+
+        PlayBoardLogic.movableTypes = bundle.movableTypes;
+        PlayBoardLogic.movableFactory = bundle.movableFactory;
 
         PlayBoardLogic.FloatingWindow = bundle.FloatingWindow;
 
+        /** @type {typeof InventoryLogic} */
+        PlayBoardLogic.InventoryLogic = bundle.InventoryLogic;
         /** @type {typeof InfoBoxLogic} */
         PlayBoardLogic.InfoBoxLogic = bundle.InfoBoxLogic;
         /** @type {typeof BoardLogic} */
         PlayBoardLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        PlayBoardLogic.InteractionLogic = bundle.InteractionLogic;
+
+        /** @type {typeof PlantLogic} */
+        PlayBoardLogic.PlantLogic = bundle.PlantLogic;
+        /** @type {typeof SeedLogic} */
+        PlayBoardLogic.SeedLogic = bundle.SeedLogic;
     }
 
-    // when floating window is on, click anywhere to disable it.
+    // boilerplate. when floating window is on, click anywhere to disable it.
     /**
      *
      * @param {PlayBoardLike} playBoard
      */
-    static handleFloatingWindow(playBoard){
+    static handleFloatingWindow(playBoard) {
         if (playBoard.floatingWindow !== null) {
             // game over
             if (!playBoard.allFloatingWindows.has("001")) {
@@ -429,17 +495,17 @@ export class PlayBoardLogic{
             if (index[0] === -1) {
                 playBoard.floatingWindow = PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
             } else {
-                // this branch represents skill has been activated successfully
-                playBoard.stringify();
+                // the branch represents skill has been activated successfully
+                PlayBoardSerializer.stringify(playBoard);
                 let spellCaster = PlayBoardLogic.BoardLogic.getCell(playBoard.selectedCell[0], playBoard.selectedCell[1], playBoard.boardObjects);
                 let target = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
                 if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.TREE) {
-                    PlantActive.rechargeHP(this, spellCaster, target, 1);
+                    PlayBoardLogic.InteractionLogic.rechargeHP(playBoard, spellCaster, target, 1);
                 } else if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.ORCHID) {
-                    PlantActive.sendAnimalFriends(this, spellCaster, target);
+                    PlayBoardLogic.InteractionLogic.sendAnimalFriends(playBoard, spellCaster, target);
                 }
             }
-            this.awaitCell = false;
+            playBoard.awaitCell = false;
         }
     }
 
@@ -452,13 +518,13 @@ export class PlayBoardLogic{
     static clickedCell(p5, playBoard) {
         let index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
         if (index[0] === -1) {
-            this.selectedCell = [];
+            playBoard.selectedCell = [];
         } else {
-            this.selectedCell = [index[0], index[1]];
+            playBoard.selectedCell = [index[0], index[1]];
             // a shortcut to direct to plant active skill page
             let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
             if (cell.plant !== null && cell.plant.hasActive) {
-                PlayBoardLogic.InfoBoxLogic.setStatus(p5, 'a',playBoard.infoBox);
+                PlayBoardLogic.InfoBoxLogic.setStatus(p5, 'a', playBoard.infoBox);
             }
         }
     }
@@ -468,7 +534,60 @@ export class PlayBoardLogic{
      * @param p5
      * @param {PlayBoardLike} playBoard
      */
-    handleClick(p5, playBoard) {
+    static handlePlanting(p5, playBoard) {
+        let index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+        // clicked an item from inventory, then clicked a cell:
+        if (playBoard.gameState.inventory.selectedItem !== null && index[0] !== -1) {
+            if (playBoard.actionPoints > 0) {
+                PlayBoardSerializer.stringify(playBoard);
+                let item = PlayBoardLogic.InventoryLogic.createItem(p5, playBoard.gameState.inventory.selectedItem, playBoard.gameState.inventory);
+                if (PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, index[0], index[1], item)) {
+                    console.log(`Placed ${playBoard.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
+                    playBoard.shadowPlant = null;
+                    if (playBoard.hasActionPoints) {
+                        playBoard.actionPoints--;
+                    }
+                    // set plant's skill
+                    PlayBoardLogic.reevaluatePlantSkills(playBoard);
+
+                    // remove item from inventory
+                    PlayBoardLogic.InventoryLogic.itemDecrement(playBoard.gameState.inventory);
+
+                    // set countdown for seed
+                    PlayBoardLogic.setSeedCountdown(index[0], index[1], playBoard);
+
+                    // if kiku is planted, increase upper limit of action points immediately
+                    if (PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects)?.plant?.plantType === PlayBoardLogic.plantTypes.KIKU) {
+                        playBoard.maxActionPoints++;
+                        playBoard.actionPoints++;
+                    }
+
+                    return;
+                }
+            } else {
+                if (playBoard.hasActionPoints && playBoard.actionPoints === 0) {
+                    playBoard.floatingWindow = PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("002"));
+                    return;
+                }
+            }
+        }
+
+        // clicked item from inventory or clicked somewhere else:
+        // handle inventory clicks later to prevent unintentional issues
+        PlayBoardLogic.InventoryLogic.handleClick(p5, playBoard.gameState.inventory);
+        if (playBoard.gameState.inventory.selectedItem !== null && index[0] === -1) {
+            playBoard.shadowPlant = PlayBoardLogic.InventoryLogic.createItem(p5, playBoard.gameState.inventory.selectedItem, playBoard.gameState.inventory);
+        } else {
+            playBoard.shadowPlant = null;
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static handleClick(p5, playBoard) {
         if (PlayBoardLogic.handleFloatingWindow(playBoard)) {
             return;
         }
@@ -488,80 +607,47 @@ export class PlayBoardLogic{
         }
 
         // inventory item and planting
-        this.handlePlanting(p5);
+        PlayBoardLogic.handlePlanting(p5, playBoard);
 
         // click any grid cell to display info box
         PlayBoardLogic.clickedCell(p5, playBoard);
     }
 
-
-
-
-
-
-
-    handlePlanting(p5) {
-        let index = myUtil.pos2CellIndex(this, p5.mouseX, p5.mouseY);
-        // clicked an item from inventory, then clicked a cell:
-        if (this.gameState.inventory.selectedItem !== null && index[0] !== -1) {
-            if (this.actionPoints > 0) {
-                this.stringify();
-                if (this.boardObjects.plantCell(p5, this, index[0], index[1], this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem))) {
-                    console.log(`Placed ${this.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
-                    this.shadowPlant = null;
-                    if (this.hasActionPoints) {
-                        this.actionPoints--;
-                    }
-                    // set plant's skill
-                    this.reevaluatePlantSkills();
-
-                    // remove item from inventory
-                    this.gameState.inventory.itemDecrement();
-
-                    // set countdown for seed
-                    this.setSeedCountdown(index[0], index[1]);
-
-                    // if kiku is planted, increase upper limit of action points immediately
-                    if (this.boardObjects.getCell(index[0], index[1])?.plant?.plantType === plantTypes.KIKU) {
-                        this.maxActionPoints++;
-                        this.actionPoints++;
-                    }
-
-                    return;
-                }
-            } else {
-                if (this.hasActionPoints && this.actionPoints === 0) {
-                    this.floatingWindow = FloatingWindow.copyOf(this.allFloatingWindows.get("002"));
-                    return;
-                }
-            }
-        }
-
-        // clicked item from inventory or clicked somewhere else:
-        // handle inventory clicks later to prevent unintentional issues
-        this.gameState.inventory.handleClick(p5);
-        if (this.gameState.inventory.selectedItem !== null && index[0] === -1) {
-            this.shadowPlant = this.gameState.inventory.createItem(p5, this.gameState.inventory.selectedItem);
-        } else {
-            this.shadowPlant = null;
-        }
+    /**
+     *
+     * @param event
+     * @param {PlayBoardLike} playBoard
+     */
+    static handleScroll(event, playBoard) {
+        PlayBoardLogic.ScreenLogic.handleScroll(event, playBoard);
     }
 
-    setSeedCountdown(x, y) {
-        // used in stage 5
+    // abstract, used in stage 5
+    /**
+     *
+     * @param x
+     * @param y
+     * @param {PlayBoardLike} playBoard
+     */
+    static setSeedCountdown(x, y, playBoard) {
     }
 
     // miscellaneous end turn settings
-    endTurnActivity(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static endTurnActivity(p5, playBoard) {
         // clear undo stack
-        this.undoStack = [];
+        playBoard.undoStack = [];
 
         // remove dead plants and reset plant skill
-        let cells = this.boardObjects.getAllCellsWithPlant();
+        let cells = PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
         for (let cell of cells) {
             // a safe-lock to remove all dead plants
             if (cell.plant.status === false) {
-                this.boardObjects.removePlant(cell.x, cell.y);
+                PlayBoardLogic.BoardLogic.removePlant(cell.i, cell.j, playBoard.boardObjects);
             }
             // reset active skill status
             if (cell.plant.hasActive) {
@@ -570,66 +656,76 @@ export class PlayBoardLogic{
         }
 
         // update seed status
-        let cellsWithSeed = this.boardObjects.getAllCellsWithSeed();
+        let cellsWithSeed = PlayBoardLogic.BoardLogic.getAllCellsWithSeed(playBoard.boardObjects);
         for (let cws of cellsWithSeed) {
-            let grown = cws.seed.grow(p5);
-            if (grown.type === itemTypes.SEED) {
+            let grown = PlayBoardLogic.SeedLogic.grow(cws.seed);
+            if (grown.type === PlayBoardLogic.itemTypes.SEED) {
                 cws.seed = grown;
-            } else if (grown.type === itemTypes.PLANT) {
+            } else if (grown.type === PlayBoardLogic.itemTypes.PLANT) {
                 cws.removeSeed();
                 cws.plant = grown;
             }
         }
 
         // reevaluate plants' skills, after seeds have grown up
-        this.reevaluatePlantSkills();
+        PlayBoardLogic.reevaluatePlantSkills(playBoard);
 
         // also, reconstruct ecosystem
-        this.boardObjects.setEcosystem();
+        PlayBoardLogic.BoardLogic.setEcosystem(playBoard.boardObjects);
 
         // set turn and counter
-        this.turn++;
-        this.buttons.find(button => button.text.startsWith("turn")).text = this.getTurnButtonText();
-        if (this.turn === this.maxTurn + 1) {
-            this.stageClearSettings(p5);
+        playBoard.turn++;
+        playBoard.buttons.find(button => button.text.startsWith("turn")).text = PlayBoardModel.getTurnButtonText(playBoard);
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            PlayBoardLogic.stageClearSettings(p5, playBoard);
             return;
         } else {
-            this.endTurn = false;
+            playBoard.endTurn = false;
         }
 
         // set next turn enemies and new inventory items
-        this.nextTurnItems(p5);
+        PlayBoardLogic.nextTurnItems(p5, playBoard);
 
         // count the total number of kiku to determine max action points
         let count = 0;
-        for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
-            if (cwp?.plant.plantType === plantTypes.KIKU) count++;
+        for (let cwp of PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
+            if (cwp?.plant.plantType === PlayBoardLogic.plantTypes.KIKU) count++;
         }
-        this.maxActionPoints = 3 + count;
+        playBoard.maxActionPoints = 3 + count;
         // reset action points
-        this.actionPoints = this.maxActionPoints;
+        playBoard.actionPoints = playBoard.maxActionPoints;
 
         // set action listener active
-        this.gameState.setPlayerCanClick(true);
+        playBoard.gameState.setPlayerCanClick(true);
     }
 
-    stageClearSettings(p5) {
-        // when a stage is cleared:    
-        // 1. store all living plants, this comes after seeds have grown
-        let cellsWithPlant = this.boardObjects.getAllCellsWithPlant();
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static stageClearSettings(p5, playBoard) {
+        // when a stage is cleared:
+        // 1. store all living plants, comes after seeds have grown
+        let cellsWithPlant = PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
         for (let cws of cellsWithPlant) {
-            this.gameState.inventory.pushItem2Inventory(p5, cws.plant.name, 1);
+            PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, cws.plant.plantType ? cws.plant.plantType : cws.plant.seedType, 1, playBoard.gameState.inventory);
         }
         // 2. remove all seeds and bamboo from inventory
-        this.gameState.inventory.removeAllSeedsAndBamboo();
+        PlayBoardLogic.InventoryLogic.removeAllSeedsAndBamboo(playBoard.gameState.inventory);
         // 3. set current stage cleared
-        this.gameState.setStageCleared(this);
+        playBoard.gameState.setStageCleared(playBoard.stageGroup);
         // 4. reset action listener
-        this.gameState.setPlayerCanClick(true);
+        playBoard.gameState.setPlayerCanClick(true);
     }
 
-    setAndResolveCounter(p5) {
-        let cells = this.boardObjects.getAllCellsWithPlant();
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setAndResolveCounter(p5, playBoard) {
+        let cells = PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
 
         // increment earth counters, decrement cold counters.
         for (let cwp of cells) {
@@ -638,24 +734,24 @@ export class PlayBoardLogic{
             } else {
                 cwp.plant.earthCounter++;
             }
-            if (cwp.terrain.terrainType === terrainTypes.SNOWFIELD) {
+            if (cwp.terrain.terrainType === PlayBoardLogic.terrainTypes.SNOWFIELD) {
                 if (cwp.plant.coldCounter === undefined) {
                     cwp.plant.coldCounter = 2;
                 } else {
                     cwp.plant.coldCounter--;
                     if (cwp.plant.coldCounter <= 0) {
-                        InteractionLogic.findPlantAndDelete(this, cwp.plant);
+                        PlayBoardLogic.InteractionLogic.findPlantAndDelete(playBoard, cwp.plant);
                     }
                 }
             }
         }
 
-        if (!this.hasBamboo) {
+        if (!playBoard.hasBamboo) {
             // if a tree has a counter=10, insert bamboo into inventory.
             for (let cwp of cells) {
-                if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && baseType(cwp.plant) === plantTypes.TREE) {
-                    this.modifyBoard(p5, "bamboo");
-                    this.hasBamboo = true;
+                if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
+                    PlayBoardLogic.modifyBoard(p5, "bamboo", playBoard);
+                    playBoard.hasBamboo = true;
                     break;
                 }
             }
@@ -664,53 +760,123 @@ export class PlayBoardLogic{
 
     // when a new plant is placed or removed,
     // we need to verify all plant's skill status.
-    reevaluatePlantSkills() {
-        let cells = this.boardObjects.getAllCellsWithPlant();
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static reevaluatePlantSkills(playBoard) {
+        let cells = PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
         for (let cell of cells) {
-            cell.plant.reevaluateSkills(this, cell);
+            PlayBoardLogic.PlantLogic.reevaluateSkills(playBoard, cell, cell.plant);
         }
     }
 
-    // this does not activate skill immediately, but go to awaiting status
+    // does not activate skill immediately, but go to awaiting status
     /**
      *
      * @param {PlayBoardLike} playBoard
      */
     static activatePlantSkill(playBoard) {
         let spellCaster = PlayBoardLogic.BoardLogic.getCell(playBoard.selectedCell[0], playBoard.selectedCell[1], playBoard.boardObjects);
-        if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.TREE || spellCaster.plant.plantType === PlayBoardLogic.plantTypes.ORCHID) {
+        if (spellCaster.plant.hasActive) {
             playBoard.awaitCell = true;
         }
     }
 
-    nextTurnItems(p5) {
-        console.error("nextTurnEnemies is not overridden!");
+    // BLIZZARD SPECIFIC:
+    // we will need to reset snowfield if plum dies.
+    static resetSnowfield(p5, playBoard) {
+        for (let index of playBoard.snowfields) {
+            let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
+            let hasPlum = false;
+            for (let nCell of PlayBoardLogic.BoardLogic.getNearbyCells(cell.i, cell.j, PlayBoardLogic.PlumLogic.plumRange, playBoard.boardObjects)) {
+                if (nCell.plant?.plantType === PlayBoardLogic.plantTypes.PLUM) {
+                    hasPlum = true;
+                    break;
+                }
+            }
+            if (!hasPlum) {
+                cell.terrain = PlayBoardLogic.terrainFactory.get(PlayBoardLogic.terrainTypes.SNOWFIELD)();
+            }
+        }
     }
 
+    // abstract
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+    }
 
+    // abstract
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
+    }
 
-
+    // abstract
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+    }
 }
 
-export class PlayBoardSerializer{
-    static setup(bundle){
-
+export class PlayBoardSerializer {
+    static setup(bundle) {
+        /**  @type {typeof BoardSerializer} */
+        PlayBoardSerializer.BoardSerializer = bundle.BoardSerializer;
+        /**  @type {typeof InventorySerializer} */
+        PlayBoardSerializer.InventorySerializer = bundle.InventorySerializer;
+        /** @type {typeof MovableSerializer} */
+        PlayBoardSerializer.MovableSerializer = bundle.MovableSerializer;
+        /** @type {typeof BoardLogic} */
+        PlayBoardSerializer.BoardLogic = bundle.BoardLogic;
     }
 
+    // stringify - undo
     /**
      *
      * @param {PlayBoardLike} playBoard
      */
     static stringify(playBoard) {
         let status = {
-            boardObjects: playBoard.boardObjects.stringify(),
-            inventory: playBoard.gameState.inventory.stringify(),
-            movables: JSON.stringify(playBoard.movables.map(movable => movable.stringify())),
+            boardObjects: PlayBoardSerializer.BoardSerializer.stringify(playBoard.boardObjects),
+            inventory: PlayBoardSerializer.InventorySerializer.stringify(playBoard.gameState.inventory),
+            movables: JSON.stringify(playBoard.movables.map(movable => PlayBoardSerializer.MovableSerializer.stringify(movable))),
             actionPoints: playBoard.actionPoints,
             maxActionPoints: playBoard.maxActionPoints,
         }
         playBoard.undoStack.push(JSON.stringify(status));
         return status;
+    }
+
+    // saveGame - loadGame
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static saveGame(playBoard) {
+        let status = PlayBoardSerializer.stringify(playBoard);
+        status.stageGroup = playBoard.stageGroup;
+        status.stageNumbering = playBoard.stageNumbering;
+        status.turn = playBoard.turn;
+        status.tmpInventoryItems = Array.from(playBoard.tmpInventoryItems.entries());
+        if (playBoard.snowfields !== undefined) {
+            status.snowfields = JSON.stringify(playBoard.snowfields);
+        }
+        if (playBoard.fertilized !== undefined) {
+            status.fertilized = JSON.stringify(playBoard.fertilized);
+        }
+        return JSON.stringify(status);
     }
 
     /**
@@ -724,41 +890,24 @@ export class PlayBoardSerializer{
         let status = JSON.parse(playBoard.undoStack.pop());
 
         // reset board
-        playBoard.boardObjects = BoardSerializer.parse(status.boardObjects, p5, this);
+        playBoard.boardObjects = PlayBoardSerializer.BoardSerializer.parse(status.boardObjects, p5);
         // reset action points
         playBoard.maxActionPoints = status.maxActionPoints;
         playBoard.actionPoints = status.actionPoints;
         // reset plant skills
-        playBoard.reevaluatePlantSkills();
+        PlayBoardLogic.reevaluatePlantSkills(playBoard);
         // reset ecosystem
-        playBoard.boardObjects.setEcosystem();
+        PlayBoardSerializer.BoardLogic.setEcosystem(playBoard.boardObjects);
         // reset inventory
-        playBoard.gameState.inventory = Inventory.parse(status.inventory, p5);
+        PlayBoardSerializer.InventorySerializer.parse(status.inventory, p5, playBoard.gameState.inventory);
 
         // reset movables, need to put movable with cell to the correct cell
-        this.movables = JSON.parse(status.movables).map(json => {
+
+        playBoard.movables = JSON.parse(status.movables).map(json => {
             const movable = JSON.parse(json);
-            switch (movable.movableType) {
-                case movableTypes.BANDIT:
-                    return Bandit.parse(json, p5, this);
-                case movableTypes.TORNADO:
-                    return Tornado.parse(json, p5, this);
-                case movableTypes.BOMB:
-                    return VolcanicBomb.parse(json, p5, this);
-                case movableTypes.SLIDE:
-                    return SlideAnimation.parse(json, p5, this);
-                case movableTypes.EARTHQUAKE:
-                    return Earthquake.parse(json, p5, this);
-                case movableTypes.BLIZZARD:
-                    return Blizzard.parse(json, p5, this);
-                case movableTypes.TSUNAMI:
-                    return TsunamiAnimation.parse(json, p5, this);
-                default:
-                    console.warn("Unknown enemy type", movable.movableType);
-                    return null;
-            }
-        }).filter(Boolean);
-        for (let movable of this.movables) {
+            return PlayBoardSerializer.MovableSerializer.parse(movable, playBoard);
+        });
+        for (let movable of playBoard.movables) {
             if (movable.cell) {
                 movable.cell.enemy = movable;
             }
@@ -767,28 +916,15 @@ export class PlayBoardSerializer{
 
     /**
      *
-     * @param {PlayBoardLike} playBoard
+     * @param p5
+     * @param {GameState} gameState
+     * @param status
      */
-    static saveGame(playBoard) {
-        let status = this.stringify();
-        status.stageGroup = playBoard.stageGroup;
-        status.stageNumbering = Number(this.stageNumbering.charAt(2));
-        status.turn = this.turn;
-        status.tmpInventoryItems = Array.from(this.tmpInventoryItems.entries());
-        if (this.snowfields !== undefined) {
-            status.snowfields = JSON.stringify(this.snowfields);
-        }
-        if (this.fertilized !== undefined) {
-            status.fertilized = JSON.stringify(this.fertilized);
-        }
-        return JSON.stringify(status);
-    }
-
     static loadGame(p5, gameState, status) {
         let statusObject = JSON.parse(status);
         let playBoard = new gameState.gsf.stageClasses[statusObject.stageGroup][statusObject.stageNumbering - 1](gameState);
         playBoard.undoStack.push(status);
-        playBoard.undo(p5);
+        PlayBoardSerializer.undo(p5, playBoard);
         playBoard.turn = statusObject.turn;
         playBoard.tmpInventoryItems = new Map(statusObject.tmpInventoryItems);
         if (playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);

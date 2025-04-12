@@ -3,14 +3,10 @@ export class GameSerializer {
     static saveDataID = "GreenRenaissanceSaveData";
 
     static setup(bundle) {
-        /**  @type {function} */
-        GameSerializer.inventoryStringifier = bundle.inventoryStringifier;
-        /**  @type {function} */
-        GameSerializer.playBoardStringifier = bundle.playBoardStringifier;
-        /**  @type {function} */
-        GameSerializer.inventoryParser = bundle.inventoryParser;
-        /**  @type {function} */
-        GameSerializer.playBoardParser = bundle.playBoardParser;
+        /**  @type {typeof InventorySerializer} */
+        GameSerializer.InventorySerializer = bundle.InventorySerializer;
+        /**  @type {typeof PlayBoardSerializer} */
+        GameSerializer.PlayBoardSerializer = bundle.PlayBoardSerializer;
         GameSerializer.stateCode = bundle.stateCode;
     }
 
@@ -26,8 +22,8 @@ export class GameSerializer {
         let state = {
             state: controller.gameState.state,
             currentStageGroup: controller.gameState.currentStageGroup,
-            currentStage: controller.gameState.currentStage != null ? GameSerializer.playBoardStringifier(controller.gameState.currentStage) : null,
-            inventory: controller.gameState.currentStage != null ? null : GameSerializer.inventoryStringifier(controller.gameState.inventory), // prevent double storage of inventory
+            currentStage: controller.gameState.currentStage != null ? GameSerializer.PlayBoardSerializer.saveGame(controller.gameState.currentStage) : null,
+            inventory: controller.gameState.currentStage != null ? null : GameSerializer.InventorySerializer.stringify(controller.gameState.inventory), // prevent double storage of inventory
             clearedStages: JSON.stringify(Array.from(controller.gameState.clearedStages.entries())),
             saveState: controller.saveState,
         }
@@ -51,15 +47,17 @@ export class GameSerializer {
             let gameState = controller.gameState;
             gameState.state = stateObject.state;
             gameState.currentStageGroup = stateObject.currentStageGroup;
-            gameState.inventory = stateObject.inventory ? GameSerializer.inventoryParser(stateObject.inventory, p5, gameState.inventory) : null;
+            gameState.inventory = stateObject.inventory ? GameSerializer.InventorySerializer.parse(stateObject.inventory, p5, gameState.inventory) : null;
             gameState.clearedStages = new Map(JSON.parse(stateObject.clearedStages));
-            gameState.currentStage = stateObject.currentStage ? GameSerializer.playBoardParser(p5, gameState, stateObject.currentStage) : null;
+            gameState.currentStage = stateObject.currentStage ? GameSerializer.PlayBoardSerializer.loadGame(p5, gameState, stateObject.currentStage) : null;
 
             controller.menus[GameSerializer.stateCode.PLAY] = gameState.currentStage;
             controller.saveState = stateObject.saveState;
             controller.gameState = gameState;
 
-            if (gameState.state === GameSerializer.stateCode.STANDBY) controller.menus[GameSerializer.stateCode.STANDBY].setup(p5);
+            if (gameState.state === GameSerializer.stateCode.STANDBY) {
+                controller.menus[GameSerializer.stateCode.STANDBY].buttons.forEach(button => button.circle = null);
+            }
             return true;
         } else {
             console.error('Save data not found!');

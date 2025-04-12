@@ -6,13 +6,13 @@ export class InventoryModel {
     }
 
     constructor() {
-        this.items = new Map(); // <String name, int count>
-        this.selectedItem = null; // a String
+        this.items = new Map(); // <plantTypes plantType, int count>
+        this.selectedItem = null; // plantType
         this.scrollIndex = 0;
         this.maxVisibleItems = 6;
 
         // for fast lookup when creating item
-        this.itemPrototypes = InventoryModel.plantFactory; // Map<String name, Function create>
+        this.itemPrototypes = InventoryModel.plantFactory; // Map<plantTypes plantType, Function create>
 
         // inventory and item parameters
         this.padding = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[0];
@@ -139,14 +139,14 @@ export class InventoryLogic {
     /**
      *
      * @param p5
-     * @param name
+     * @param plantType
      * @param {InventoryModel} inventory
      */
-    static createItem(p5, name, inventory) {
+    static createItem(p5, plantType, inventory) {
         // fetch an instance from item prototypes
-        let item = inventory.itemPrototypes.get(name)();
+        let item = inventory.itemPrototypes.get(plantType)();
         if (!item) {
-            console.error("input of createItem is unknown?");
+            console.error("plantType is unknown?");
             return null;
         }
         return item;
@@ -156,19 +156,19 @@ export class InventoryLogic {
     /**
      *
      * @param p5
-     * @param name
+     * @param plantType
      * @param quantity
      * @param {InventoryModel} inventory
      */
-    static pushItem2Inventory(p5, name, quantity, inventory) {
+    static pushItem2Inventory(p5, plantType, quantity, inventory) {
         // if the item is already in inventory:
-        if (inventory.items.has(name)) {
-            inventory.items.set(name, inventory.items.get(name) + quantity);
+        if (inventory.items.has(plantType)) {
+            inventory.items.set(plantType, inventory.items.get(plantType) + quantity);
             return;
         }
         // if the item is not in inventory:
-        if (InventoryLogic.createItem(p5, name, inventory) !== null) {
-            inventory.items.set(name, quantity);
+        if (InventoryLogic.createItem(p5, plantType, inventory) !== null) {
+            inventory.items.set(plantType, quantity);
         }
         // if the item is invalid:
         // do nothing. createItem has printed error info.
@@ -181,12 +181,12 @@ export class InventoryLogic {
     /**
      *
      * @param p5
-     * @param name
+     * @param plantType
      * @param quantity
      * @param {InventoryModel} inventory
      */
-    static setItemOfInventory(p5, name, quantity, inventory) {
-        inventory.items.set(name, quantity);
+    static setItemOfInventory(p5, plantType, quantity, inventory) {
+        inventory.items.set(plantType, quantity);
         InventoryLogic.updateInventoryHeight(inventory);
     }
 
@@ -241,13 +241,13 @@ export class InventoryLogic {
      * @param {InventoryModel} inventory
      */
     static removeAllSeedsAndBamboo(inventory) {
-        for (let [name, instanceConstructor] of inventory.itemPrototypes.entries()) {
+        for (let [type, instanceConstructor] of inventory.itemPrototypes.entries()) {
             let instance = instanceConstructor();
             if (instance.type === InventoryLogic.itemTypes.SEED) {
-                inventory.items.delete(name);
+                inventory.items.delete(type);
             }
             if (instance.type === InventoryLogic.itemTypes.PLANT && instance.plantType === InventoryLogic.plantTypes.BAMBOO) {
-                inventory.items.delete(name);
+                inventory.items.delete(type);
             }
         }
         InventoryLogic.updateInventoryHeight(inventory);

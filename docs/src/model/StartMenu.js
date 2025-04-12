@@ -27,6 +27,8 @@ export class StartMenuModel {
         this.floatingWindow = null;
         /** @type {Map} */
         this.allFloatingWindows = null;
+
+        this.init();
     }
 
     init() {

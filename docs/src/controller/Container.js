@@ -1,3 +1,5 @@
+import {assertInterface} from "../../lib/assertInterface.js";
+
 import {DijkstraSP, DirectedEdge, EdgeWeightedDigraph} from "../../lib/GraphSP.js";
 import {IndexPriorityQueue} from "../../lib/PriorityQueue.js";
 import {UnionFind} from "../../lib/UnionFind.js";
@@ -50,18 +52,18 @@ import {SlideModel, SlideLogic, SlideRenderer} from "../items/SlideAnimation.js"
 import {TsunamiModel, TsunamiLogic, TsunamiRenderer} from "../items/TsunamiAnimation.js";
 import {VolcanicBombModel, VolcanicBombLogic, VolcanicBombRenderer} from "../items/VolcanicBomb.js";
 import {BlizzardModel, BlizzardLogic, BlizzardRenderer} from "../items/Blizzard.js";
-import{TornadoModel, TornadoLogic, TornadoRenderer} from "../items/Tornado.js";
+import {TornadoModel, TornadoLogic, TornadoRenderer} from "../items/Tornado.js";
 import {BanditModel, BanditLogic, BanditRenderer} from "../items/Bandit.js";
 
 import {Tornado1PlayBoard} from "../model/stages/Tor1.js";
-import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
-import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
-import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
-import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
-import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
-import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
-import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
-import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
+// import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
+// import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
+// import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
+// import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
+// import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
+// import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
+// import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
+// import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
 
 import {GameSerializer} from "../model/GameSerializer.js";
 import {MenuItem} from "../items/MenuItem.js";
@@ -289,18 +291,18 @@ export class Container {
         }
 
         this.movableFactory = new Map([
-            ["Earthquake", (playBoard) => EarthquakeModel.create(p5, playBoard, MovableModel)],
-            ["SlideAnimation", (playBoard, start_i, start_j, dest_i, dest_j) => SlideModel.create(p5, playBoard, MovableModel, start_i, start_j, dest_i, dest_j)],
-            ["TsunamiAnimation", (playBoard, startCol, startRow, range, blockerLimit) => TsunamiModel.create(p5, playBoard, MovableModel, startCol, startRow, range, blockerLimit)],
-            ["VolcanicBomb", (playBoard, i1, j1, i2, j2, x1, y1, x2, y2, countdown) => VolcanicBombModel.create(p5,MovableModel, playBoard, i1, j1, i2, j2, x1, y1, x2, y2, countdown)],
-            ["Blizzard", (playBoard, i, j, countdown) => BlizzardModel.create(p5, playBoard, MovableModel, i, j, countdown)],
-            ["Tornado", (playBoard, i, j, direction, countdown) => TornadoModel.create(p5, playBoard, MovableModel, i, j, direction, countdown)],
-            ["Bandit", (playBoard, i, j) => BanditModel.create(p5, playBoard, MovableModel, i, j)]
+            [movableTypes.EARTHQUAKE, (playBoard) => EarthquakeModel.create(p5, playBoard, MovableModel)],
+            [movableTypes.SLIDE, (playBoard, start_i, start_j, dest_i, dest_j) => SlideModel.create(p5, playBoard, MovableModel, start_i, start_j, dest_i, dest_j)],
+            [movableTypes.TSUNAMI, (playBoard, startCol, startRow, range, blockerLimit) => TsunamiModel.create(p5, playBoard, MovableModel, startCol, startRow, range, blockerLimit)],
+            [movableTypes.BOMB, (playBoard, i1, j1, i2, j2, x1, y1, x2, y2, countdown) => VolcanicBombModel.create(p5, MovableModel, playBoard, i1, j1, i2, j2, x1, y1, x2, y2, countdown)],
+            [movableTypes.BLIZZARD, (playBoard, i, j, countdown) => BlizzardModel.create(p5, playBoard, MovableModel, i, j, countdown)],
+            [movableTypes.TORNADO, (playBoard, i, j, direction, countdown) => TornadoModel.create(p5, playBoard, MovableModel, i, j, direction, countdown)],
+            [movableTypes.BANDIT, (playBoard, i, j) => BanditModel.create(p5, playBoard, MovableModel, i, j)]
         ]);
         movableBundle.movableFactory = this.movableFactory;
 
         MovableLogic.setup(movableBundle);
-        MovableLogic.setup(movableBundle);
+        MovableRenderer.setup(movableBundle);
         MovableSerializer.setup(movableBundle);
 
         // --------------------------------------
@@ -314,10 +316,8 @@ export class Container {
         // initialize serializer
         this.GameSerializer = GameSerializer;
         this.GameSerializer.setup({
-            inventoryStringifier: InventorySerializer.stringify,
-            inventoryParser: InventorySerializer.parse,
-            playBoardStringifier: PlayBoardSerializer.saveGame,
-            playBoardParser: PlayBoardSerializer.loadGame,
+            InventorySerializer: InventorySerializer,
+            PlayBoardSerializer: PlayBoardSerializer,
             stateCode: stateCode
         });
 
@@ -332,6 +332,8 @@ export class Container {
             GameSerializer: this.GameSerializer,
             plantFactory: this.plantFactory,
 
+            FloatingWindow: FloatingWindow,
+
             ScreenRenderer: ScreenRenderer,
             ScreenLogic: ScreenLogic,
 
@@ -339,7 +341,12 @@ export class Container {
             InventoryRenderer: InventoryRenderer,
             InventorySerializer: InventorySerializer,
             InfoBoxModel: InfoBoxModel,
+            InfoBoxLogic: InfoBoxLogic,
             BoardModel: BoardModel,
+            BoardLogic: BoardLogic,
+            BoardRenderer: BoardRenderer,
+            CellRenderer: CellRenderer,
+            PlayBoardLogic: PlayBoardLogic,
 
             activatePlantSkill: PlayBoardLogic.activatePlantSkill,
         }
@@ -379,6 +386,7 @@ export class Container {
         this.gameMap = new GameMapModel(this.gameState);
         // helper menus
         this.pauseMenu = new PauseMenuModel(this.gameState);
+        InputHandler.setup(menuBundle);
         this.inputHandler = new InputHandler(this.gameState);
         this.initialState = stateCode.MENU; // default
 
@@ -395,37 +403,82 @@ export class Container {
             pauseMenu: this.pauseMenu,
             inputHandler: this.inputHandler,
             initialState: this.initialState,
-            changeNewToResume: StartMenuLogic.changeNewToResume,
-            saveInventory: InventoryLogic.saveInventory,
-            loadInventory: InventoryLogic.loadInventory,
+
+            StartMenuLogic : StartMenuLogic,
+            GameMapLogic : GameMapLogic,
+            PlayBoardModel : PlayBoardModel,
+            PlayBoardLogic : PlayBoardLogic,
+            PauseMenuLogic : PauseMenuLogic,
+            InventoryLogic : InventoryLogic,
+            MovableLogic : MovableLogic,
         });
 
         this.GameSerializer.save = () => this.GameSerializer.saveGame(this.controller);
         this.GameSerializer.load = () => this.GameSerializer.loadGame(p5, this.controller);
 
-        this.renderer = () => Renderer.render(p5, this.menus, this.gameState, this.pauseMenu);
-        this.preloader = () => p5.images = loadImages(p5);
+        this.renderer = new Renderer(
+            {
+                gameState: this.gameState,
+                menus: this.menus,
+                stateCode: stateCode,
+                pauseMenu: this.pauseMenu,
+                StartMenuRenderer: StartMenuRenderer,
+                GameMapRenderer: GameMapRenderer,
+                PlayBoardRenderer: PlayBoardRenderer,
+                PauseMenuRenderer: PauseMenuRenderer,
+            }
+        )
 
         let playBundle = {
+            utilityClass: this.utilityClass,
+            Button: this.Button,
             UnionFind: this.UnionFind,
 
+            PlantLogic: PlantLogic,
+            PlantRenderer: PlantRenderer,
             PlantSerializer: PlantSerializer,
+            SeedLogic: SeedLogic,
+            SeedRenderer: SeedRenderer,
             SeedSerializer: SeedSerializer,
+            TerrainLogic: TerrainLogic,
+            TerrainRenderer: TerrainRenderer,
             TerrainSerializer: TerrainSerializer,
+            MovableLogic: MovableLogic,
+            MovableRenderer: MovableRenderer,
             MovableSerializer: MovableSerializer,
 
             FloatingWindow: FloatingWindow,
+            stateCode: stateCode,
+            stageGroup: stageGroup,
             itemTypes: itemTypes,
+            baseType: baseType,
             plantTypes: plantTypes,
             seedTypes: seedTypes,
             terrainTypes: terrainTypes,
-            baseType: baseType,
+            movableTypes: movableTypes,
+
+            InteractionLogic : InteractionLogic,
 
             plantFactory: this.plantFactory,
             terrainFactory: this.terrainFactory,
+            movableFactory: this.movableFactory,
 
-            dissolveSnowBaseTerrain: this.terrainFactory.get("Steppe"),
             dissolveSnowRange: PlumLogic.plumRange,
+
+            ScreenRenderer : ScreenRenderer,
+
+            BoardModel: BoardModel,
+            BoardLogic: BoardLogic,
+            BoardRenderer : BoardRenderer,
+            BoardSerializer: BoardSerializer,
+
+            InfoBoxModel: InfoBoxModel,
+            InfoBoxLogic: InfoBoxLogic,
+            InfoBoxRenderer :InfoBoxRenderer,
+
+            InventoryLogic: InventoryLogic,
+            InventoryRenderer: InventoryRenderer,
+            InventorySerializer: InventorySerializer,
         }
 
         // cell
@@ -439,6 +492,38 @@ export class Container {
         BoardLogic.setup(playBundle);
         BoardRenderer.setup(playBundle);
         BoardSerializer.setup(playBundle);
+
+        // play board
+        PlayBoardModel.setup(playBundle);
+        PlayBoardRenderer.setup(playBundle);
+        PlayBoardLogic.setup(playBundle);
+        PlayBoardSerializer.setup(playBundle);
+
+        let modelMethods = [
+            "concreteBoardInit",
+            "setStageInventory",
+            "setStageTerrain",
+            "initAllFloatingWindows"
+        ];
+
+        let logicMethods = [
+            "nextTurnItems",
+            "modifyBoard",
+            "setFloatingWindow",
+        ];
+
+        assertInterface({
+            name: "Tornado1PlayBoard",
+            impl: Tornado1PlayBoard,
+            methods: modelMethods
+        });
+        assertInterface({
+            name: "Tornado1PlayBoard",
+            impl: Tornado1PlayBoard,
+            methods: logicMethods
+        });
+
+        Tornado1PlayBoard.setup(PlayBoardModel, PlayBoardLogic);
     }
 }
 
@@ -460,25 +545,29 @@ class GameStageFactory {
         this.stageClasses = Array.from({length: 20}, () => []);
 
         this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
+        //this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
+        //this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
+        //this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
+        //this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
 
-        this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
+        //this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
 
-        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
+        //this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
 
-        this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
+        //this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
 
-        this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
+        //this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
     }
 
     // allocate game stage dynamically
+    /**
+     *
+     * @param newStage
+     * @param {GameState} gameState
+     */
     newGameStage(newStage, gameState) {
         let StageClasses = this.stageClasses[gameState.currentStageGroup];
         let index = gameState.clearedStages.get(gameState.currentStageGroup);
-        let StageClass = StageClasses[index != null ? index : 0];
-        return StageClass ? new StageClass(gameState) : null;
+        return StageClasses[index != null ? index : 0];
     }
 }

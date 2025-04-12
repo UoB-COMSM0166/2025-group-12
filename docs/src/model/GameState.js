@@ -37,7 +37,7 @@ export class GameState {
     constructor(p5, gsf, inventory) {
         this.state = stateCode.MENU; // default
         this.currentStageGroup = stageGroup.NO_STAGE; // no stage is selected
-        /** @type {*|PlayBoardLike} */
+        /** @type {null|PlayBoardLike} */
         this.currentStage = null;
         /** @type {InventoryModel} */
         this.inventory = inventory;
@@ -69,7 +69,7 @@ export class GameState {
 
     /**
      *
-     * @param {stageGroup} boardStageGroup
+     * @param boardStageGroup
      */
     setStageCleared(boardStageGroup) {
         if (this.clearedStages.has(boardStageGroup)) {
@@ -87,10 +87,5 @@ export class GameState {
     isSpecificStageCleared(stageGroup, numbering) {
         let index = this.clearedStages.get(stageGroup);
         return index !== undefined && index >= numbering;
-    }
-
-    // invoked by controller.
-    newGameStage() {
-        return this.gsf.newGameStage(this.currentStageGroup, this);
     }
 }

@@ -118,13 +118,12 @@ export class BoardLogic {
         BoardLogic.plantTypes = bundle.plantTypes;
         BoardLogic.seedTypes = bundle.seedTypes;
         BoardLogic.terrainTypes = bundle.terrainTypes;
+        BoardLogic.terrainFactory = bundle.terrainFactory;
         BoardLogic.baseType = bundle.baseType;
         /** @type {typeof UnionFind} */
         BoardLogic.UnionFind = bundle.UnionFind;
-        /** @type {Function} */
-        BoardLogic.dissolveSnowBaseTerrain = bundle.dissolveSnowBaseTerrain;
-        /** @type {Function} */
-        BoardLogic.dissolveSnowRange = bundle.dissolveSnowRange;
+        /** @type {typeof PlantLogic} */
+        BoardLogic.PlantLogic = bundle.PlantLogic;
     }
 
     /**
@@ -157,14 +156,13 @@ export class BoardLogic {
     /**
      *
      * @param p5
-     * @param playBoard
+     * @param {PlayBoardLike} playBoard
      * @param i
      * @param j
      * @param item
-     * @param {BoardModel} board
      */
-    static plantCell(p5, playBoard, i, j, item, board) {
-        let cell = BoardLogic.getCell(i, j, board);
+    static plantCell(p5, playBoard, i, j, item) {
+        let cell = BoardLogic.getCell(i, j, playBoard.boardObjects);
 
         if (item.type !== BoardLogic.itemTypes.PLANT && item.type !== BoardLogic.itemTypes.SEED) {
             console.error("plantCell received invalid input.");
@@ -191,13 +189,13 @@ export class BoardLogic {
         cell.plant = item;
 
         // reconstruct ecosystem for every transplanting
-        BoardLogic.setEcosystem(board);
+        BoardLogic.setEcosystem(playBoard.boardObjects);
 
         // plums dissolve snowfield
         if (item.plantType === BoardLogic.plantTypes.PLUM) {
-            for (let nCell of BoardLogic.getNearbyCells(cell.i, cell.j, BoardLogic.dissolveSnowRange, board)) {
+            for (let nCell of BoardLogic.getNearbyCells(cell.i, cell.j, BoardLogic.PlantLogic.plumRange, playBoard.boardObjects)) {
                 if (nCell.terrain.terrainType === BoardLogic.terrainTypes.SNOWFIELD) {
-                    nCell.terrain = BoardLogic.dissolveSnowBaseTerrain();
+                    nCell.terrain = BoardLogic.terrainFactory.get(BoardLogic.terrainTypes.STEPPE)();
                 }
             }
         }

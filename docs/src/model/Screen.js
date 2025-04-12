@@ -76,11 +76,10 @@ export class ScreenLogic {
 
     /**
      *
-     * @param p5
      * @param event
      * @param {ScreenLike} screen
      */
-    static handleScroll(p5, event, screen) {
+    static handleScroll(event, screen) {
         if (!screen.gameState) return;
         if (p5.mouseX >= screen.gameState.inventory.inventoryX
             && p5.mouseX <= screen.gameState.inventory.inventoryX + screen.gameState.inventory.inventoryWidth

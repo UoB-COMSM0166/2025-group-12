@@ -242,12 +242,11 @@ export class GameMapLogic{
 
     /**
      *
-     * @param p5
      * @param event
      * @param {GameMapModel} gameMap
      */
-    static handleScroll(p5, event, gameMap){
-        GameMapLogic.ScreenLogic.handleScroll(p5, event, gameMap);
+    static handleScroll(event, gameMap){
+        GameMapLogic.ScreenLogic.handleScroll(event, gameMap);
     }
 
     /**

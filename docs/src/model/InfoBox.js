@@ -1,5 +1,3 @@
-import {PlayBoardLogic} from "./PlayBoard.js";
-
 export class InfoBoxModel {
     static setup(bundle) {
         InfoBoxModel.utilityClass = bundle.utilityClass;
@@ -143,7 +141,7 @@ export class InfoBoxRenderer {
 
 export class InfoBoxLogic {
     static setup(bundle) {
-        InfoBoxLogic.Button = bundle.button;
+        InfoBoxLogic.Button = bundle.Button;
         /** @type {typeof myUtil} */
         InfoBoxLogic.utilityClass = bundle.utilityClass;
         /** @type {Function} */

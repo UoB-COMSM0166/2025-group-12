@@ -36,6 +36,8 @@ export class PlantLogic {
         PlantLogic.TreeLogic = bundle.TreeLogic;
         /** @type {typeof OrchidLogic} */
         PlantLogic.OrchidLogic = bundle.OrchidLogic;
+        /** @type {typeof PlumLogic} */
+        PlantLogic.PlumLogic = bundle.PlumLogic;
     }
 
     /**
@@ -45,12 +47,17 @@ export class PlantLogic {
      * @param {PlantLike} plant
      */
     static reevaluateSkills(playBoard, cell, plant){
+        if(plant === null) return;
         if(plant.plantType === PlantLogic.plantTypes.TREE){
             PlantLogic.TreeLogic.reevaluateSkills(playBoard, cell, /** @type {TreeModel} */ plant);
         }
         else if(plant.plantType === PlantLogic.plantTypes.ORCHID){
             PlantLogic.OrchidLogic.reevaluateSkills(playBoard, cell, /** @type {OrchidModel} */ plant);
         }
+    }
+
+    static plumRange(i0, j0, i1, j1) {
+        return PlantLogic.PlumLogic.plumRange(i0, j0, i1, j1);
     }
 }
 

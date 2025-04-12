@@ -1,9 +1,11 @@
 export class InputHandler {
-    static setup(bundle){
+    static setup(bundle) {
         InputHandler.p5 = bundle.p5;
         InputHandler.stateCode = bundle.stateCode;
         /** @type {typeof InfoBoxLogic} */
         InputHandler.InfoBoxLogic = bundle.InfoBoxLogic;
+        /** @type {typeof PlayBoardLogic} */
+        InputHandler.PlayBoardLogic = bundle.PlayBoardLogic;
     }
 
     /**
@@ -35,11 +37,12 @@ export class InputHandler {
             }
         });
 
-        // a keyboard shortcut to activate plant skill
-        if(this.gameState.currentStage != null) {
+
+        window.addEventListener("keyup", (event) => {
             let p5 = InputHandler.p5;
             let playBoard = this.gameState.currentStage;
-            window.addEventListener("keyup", (event) => {
+            // a keyboard shortcut to activate plant skill
+            if (playBoard != null) {
                 // active skill
                 if (event.key === "e" && playBoard.infoBox.activateButton !== null) {
                     playBoard.infoBox.activateButton._onClick(p5);
@@ -55,7 +58,7 @@ export class InputHandler {
                 // to dev team: quick skip current stage
                 if (event.key === "c" && !playBoard.skip) {
                     playBoard.skip = true;
-                    playBoard.stageClearSettings(p5);
+                    InputHandler.PlayBoardLogic.stageClearSettings(p5, playBoard);
                     playBoard.gameState.setState(InputHandler.stateCode.FINISH);
                 }
                 // info box arrows
@@ -71,8 +74,8 @@ export class InputHandler {
                 if (event.key === "ArrowRight" && playBoard.selectedCell.length !== 0) {
                     InputHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
                 }
-            })
-        }
+            }
+        })
         window.addEventListener('keyup', e => {
             if (e.key === 'w' ||
                 e.key === 'a' ||

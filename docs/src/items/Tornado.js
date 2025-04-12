@@ -65,7 +65,7 @@ export class TornadoRenderer {
      * @param p5
      * @param {TornadoModel} tornado
      */
-    drawDirection(p5, tornado) {
+    static drawDirection(p5, tornado) {
         let direction = tornado.direction;
         let x = tornado.x;
         let y = tornado.y;
@@ -133,8 +133,8 @@ export class TornadoLogic{
         }
         if (tornado.countdown > 0) {
             tornado.countdown--;
-            this.hasMoved = true;
-            if (tornado.countdown <= 1) this.img = p5.images.get(`${tornado.name}`);
+            tornado.hasMoved = true;
+            if (tornado.countdown <= 1) tornado.img = p5.images.get(`${tornado.name}`);
             return false;
         }
         if (tornado.countdown === 0) {
@@ -173,9 +173,10 @@ export class TornadoLogic{
         if (index[0] !== -1) {
             let cell = TornadoLogic.BoardLogic.getCell(index[0], index[1],playBoard.boardObjects);
             // 1. check current cell to perform Tornado-terrain interaction.
-            if (cell.terrain.name === "Mountain") {
-                this.status = false;
+            if (cell.terrain.terrainType === TornadoLogic.terrainTypes.MOUNTAIN) {
+                tornado.status = false;
                 TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
+                console.log("return1")
                 return;
             }
 
@@ -192,11 +193,12 @@ export class TornadoLogic{
             if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
                 TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, luckyTree, tornado);
+                console.log("return2")
                 return;
             }
 
             // 3. check current cell to attack plant or seed.
-            if (this.status === true) {
+            if (tornado.status === true) {
                 if (cell.plant !== null && cell.plant.status === true) {
                     TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, cell.plant, tornado);
                 } else if (cell.seed !== null) {
@@ -204,13 +206,13 @@ export class TornadoLogic{
                 }
             }
 
-            // 4. if player base is at this cell, destroy it.
+            // 4. if player base is at the cell, destroy it.
             if (cell.terrain.terrainType === TornadoLogic.terrainTypes.BASE) {
                 TornadoLogic.utilityClass.gameOver(playBoard);
                 return;
             }
 
-            // 5. if a bandit is at this cell, dies.
+            // 5. if a bandit is at the cell, dies.
             if (cell.enemy && cell.enemy.name === "Bandit") {
                 cell.enemy.health = 0;
                 cell.enemy.status = false;
@@ -222,7 +224,7 @@ export class TornadoLogic{
 
         // if the tornado goes out of the grid, it dies anyway.
         if (index[0] === -1) {
-            this.status = false;
+            tornado.status = false;
             TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
         }
     }
