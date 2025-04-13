@@ -30,6 +30,11 @@ class GameMapModel {
         this.background = null;
         this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;
 
+        // fade in fade out render
+        this.fade = 0;
+        this.isStart = true;
+        this.fadeIn = 255;
+
         this.init();
     }
 
@@ -148,6 +153,9 @@ class GameMapRenderer {
         }
 
         GameMapRenderer.drawFloatingWindow(p5, gameMap);
+
+        if(gameMap.gameState.fading) GameMapRenderer.ScreenRenderer.playFadeOutAnimation(p5, gameMap);
+        if(gameMap.isStart) GameMapRenderer.ScreenRenderer.playFadeInAnimation(p5, gameMap);
     }
 
     /**
@@ -279,7 +287,8 @@ class GameMapLogic {
      * @param {GameMapModel} gameMap
      */
     static clickedStageButton(p5, newStageGroup, gameMap) {
-        gameMap.gameState.setState(GameMapLogic.stateCode.PLAY);
+        gameMap.gameState.fading = true;
+        gameMap.gameState.nextState = GameMapLogic.stateCode.PLAY;
         gameMap.gameState.currentStageGroup = newStageGroup;
     }
 
@@ -290,7 +299,7 @@ class GameMapLogic {
      * @param {GameMapModel} gameMap
      */
     static copyFloatingWindow(p5, str, gameMap) {
-        gameMap.floatingWindow = GameMapLogic.FloatingWindow.copyOf(gameMap.allFloatingWindows.get(str));
+        gameMap.floatingWindow = /** @type {FloatingWindow} */ GameMapLogic.FloatingWindow.copyOf(gameMap.allFloatingWindows.get(str));
     }
 
     /**

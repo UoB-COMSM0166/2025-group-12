@@ -9,6 +9,7 @@ class StartMenuModel {
         StartMenuModel.stateCode = bundle.stateCode;
         /** @type {typeof Button} */
         StartMenuModel.Button = bundle.Button;
+        /** @type {typeof FloatingWindow} */
         StartMenuModel.FloatingWindow = bundle.FloatingWindow;
         /** @type {typeof GameSerializer} */
         StartMenuModel.GameSerializer = bundle.GameSerializer;
@@ -28,6 +29,12 @@ class StartMenuModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
+        // fade in fade out render
+        this.fade = 0;
+        this.fading = false;
+        this.isStart = true;
+        this.fadeIn = 255;
+
         this.init();
     }
 
@@ -37,7 +44,10 @@ class StartMenuModel {
         let buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
 
         let newGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
-        newGameButton.onClick = () => this.gameState.setState(StartMenuModel.stateCode.STANDBY);
+        newGameButton.onClick = () => {
+            this.gameState.fading = true;
+            this.gameState.nextState = StartMenuModel.stateCode.STANDBY;
+        }
 
         let loadGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
@@ -98,6 +108,9 @@ class StartMenuRenderer {
         }
 
         StartMenuRenderer.drawFloatingWindow(p5, startMenu);
+
+        if(startMenu.gameState.fading) StartMenuRenderer.ScreenRenderer.playFadeOutAnimation(p5, startMenu);
+        if(startMenu.isStart) StartMenuRenderer.ScreenRenderer.playFadeInAnimation(p5, startMenu);
     }
 }
 
@@ -164,7 +177,7 @@ class StartMenuLogic {
      * @param {StartMenuModel} startMenu
      */
     static copyFloatingWindow(p5, str, startMenu) {
-        startMenu.floatingWindow = StartMenuLogic.FloatingWindow.copyOf(startMenu.allFloatingWindows.get(str));
+        startMenu.floatingWindow = /** @type {FloatingWindow} */ StartMenuLogic.FloatingWindow.copyOf(startMenu.allFloatingWindows.get(str));
     }
 }
 

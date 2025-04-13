@@ -8,6 +8,8 @@ class Controller {
         this.stateCode = bundle.stateCode;
         /** @type {stateCode} */
         this.saveState = bundle.initialState;
+        /** @type {typeof ScreenLogic} */
+        this.ScreenLogic = bundle.ScreenLogic;
         /** @type {typeof StartMenuLogic} */
         this.StartMenuLogic = bundle.StartMenuLogic;
         /** @type {typeof GameMapLogic} */
@@ -51,6 +53,10 @@ class Controller {
         if (currentMenu && this.logicFactory.get(currentState).handleScroll) {
             this.logicFactory.get(currentState).handleScroll(event, currentMenu);
         }
+    }
+
+    handleFading(p5){
+        this.ScreenLogic.stateTransitionAtFading(p5, this.menus[this.gameState.getState()]);
     }
 
     // when shift to PLAY from STANDBY, create the new play board

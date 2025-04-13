@@ -26,13 +26,15 @@ new p5((p) => {
     p.draw = () => {
         p.background(100);
 
+        container.controller.handleFading(p);
+
         // create play stage
         container.controller.setPlayStage(p);
 
         // when game state changes, load or save data accordingly
         container.controller.setData(p, container.gameState.getState());
 
-        // replace following tmp view handling later
+        // rendering
         container.renderer.render(p);
 
         // keep a copy of current state

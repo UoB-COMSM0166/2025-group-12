@@ -48,6 +48,10 @@ class GameState {
         this.clearedStages.set(stageGroup.NO_STAGE, 1);
         /** @type {GameStageFactory} */
         this.gsf = gsf;
+
+        // fade in fade out render
+        this.fading = false;
+        this.nextState = null;
     }
 
     setState(newState) {

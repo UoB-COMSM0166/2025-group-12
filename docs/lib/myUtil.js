@@ -116,8 +116,8 @@ class myUtil {
         // Check if click is within the grid
         if (oldX >= leftEdge && oldX <= rightEdge
             && oldY >= topEdge && oldY <= bottomEdge) {
-            let col = Math.floor((oldX + (playBoard.gridSize * playBoard.cellWidth) / 2) / playBoard.cellWidth);
-            let row = Math.floor((oldY + (playBoard.gridSize * playBoard.cellHeight) / 2) / playBoard.cellHeight);
+            let col = Math.min(playBoard.gridSize-1, Math.floor((oldX + (playBoard.gridSize * playBoard.cellWidth) / 2) / playBoard.cellWidth));
+            let row = Math.min(playBoard.gridSize-1, Math.floor((oldY + (playBoard.gridSize * playBoard.cellHeight) / 2) / playBoard.cellHeight));
             return [row, col];
         } else {
             return [-1];

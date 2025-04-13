@@ -351,6 +351,7 @@ class Container {
             activatePlantSkill: PlayBoardLogic.activatePlantSkill,
         }
 
+        ScreenRenderer.setup(menuBundle);
         ScreenLogic.setup(menuBundle);
 
         this.gameStageFactory = new GameStageFactory();
@@ -404,6 +405,7 @@ class Container {
             inputHandler: this.inputHandler,
             initialState: this.initialState,
 
+            ScreenLogic: ScreenLogic,
             StartMenuLogic: StartMenuLogic,
             GameMapLogic: GameMapLogic,
             PlayBoardModel: PlayBoardModel,

@@ -3,6 +3,7 @@ class FloatingWindow {
     constructor(p5, triPos, text, boxParam) {
         this.p5 = p5;
         this.triPos = triPos;
+        /** @type {String} */
         this.text = text;
         this.boxParam = boxParam;
         this.fontSize = boxParam.fontSize;

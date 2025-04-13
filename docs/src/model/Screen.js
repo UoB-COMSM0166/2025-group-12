@@ -4,6 +4,10 @@
  * @property {FloatingWindow} floatingWindow
  * @property {Map} allFloatingWindows
  * @property {GameState} gameState
+ * @property {number} fade
+ * @property {boolean} fading
+ * @property {boolean} isStart
+ * @property {number} fadeIn
  */
 
 class ScreenModel {
@@ -18,10 +22,19 @@ class ScreenModel {
         this.floatingWindow = null;
         /** @type {Map} */
         this.allFloatingWindows = null;
+
+        this.fade = 0;
+        this.isStart = true;
+        this.fadeIn = 255;
     }
 }
 
 class ScreenRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        ScreenRenderer.utilityClass = bundle.utilityClass;
+    }
+
     // general logic
     // remember to invoke this method in `draw()` to ensure logic.
     /**
@@ -45,12 +58,56 @@ class ScreenRenderer {
             }
         }
     }
+
+    /**
+     *
+     * @param p5
+     * @param {ScreenLike} screen
+     */
+    static playFadeInAnimation(p5, screen) {
+        screen.fadeIn -= 10;
+        p5.noStroke();
+        p5.fill(0, screen.fadeIn);
+        let [canvasWidth, canvasLength] = ScreenRenderer.utilityClass.relative2absolute(1, 1)
+        p5.rect(0, 0, canvasWidth, canvasLength);
+        if(screen.fadeIn <= 0){
+            screen.fadeIn = 255;
+            screen.isStart = false;
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {ScreenLike} screen
+     */
+    static playFadeOutAnimation(p5, screen) {
+        screen.fade += 10;
+        p5.noStroke();
+        p5.fill(0, screen.fade);
+        let [canvasWidth, canvasLength] = ScreenRenderer.utilityClass.relative2absolute(1, 1)
+        p5.rect(0, 0, canvasWidth, canvasLength);
+    }
 }
 
 class ScreenLogic {
     static setup(bundle) {
         /** @type {typeof InventoryLogic} */
         ScreenLogic.InventoryLogic = bundle.InventoryLogic;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {ScreenLike} screen
+     */
+    static stateTransitionAtFading(p5, screen){
+        if(screen.fade >= 255) {
+            screen.gameState.fading = false;
+            screen.fade = 0;
+            screen.gameState.setState(screen.gameState.nextState);
+            screen.isStart = true;
+        }
     }
 
     // general logic

@@ -4,6 +4,10 @@
  * @property {Array} buttons
  * @property {FloatingWindow} floatingWindow
  * @property {Map} allFloatingWindows
+ * @property {number} fade
+ * @property {boolean} fading
+ * @property {boolean} isStart
+ * @property {number} fadeIn
  * @property {number} stageGroup
  * @property {number} stageNumbering
  * @property {number} canvasWidth
@@ -76,6 +80,12 @@ class PlayBoardModel {
         this.floatingWindow = null;
         /** @type {Map} */
         this.allFloatingWindows = null;
+
+        // fade in fade out render
+        this.fade = 0;
+        this.faing = false;
+        this.isStart = true;
+        this.fadeIn = 255;
 
         this.stageGroup = PlayBoardModel.stageGroup.NO_STAGE;
         this.stageNumbering = 0;
@@ -411,6 +421,9 @@ class PlayBoardRenderer {
         PlayBoardRenderer.drawFloatingWindow(p5, playBoard);
 
         PlayBoardRenderer.setCursorStyle(p5, playBoard);
+
+        if(playBoard.gameState.fading) PlayBoardRenderer.ScreenRenderer.playFadeOutAnimation(p5, playBoard);
+        if(playBoard.isStart) PlayBoardRenderer.ScreenRenderer.playFadeInAnimation(p5, playBoard);
     }
 }
 
