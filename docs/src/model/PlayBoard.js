@@ -46,13 +46,11 @@
 // Remember to maintain above JSDoc.
 // ---------------------------------
 
-import {movableTypes} from "../items/ItemTypes.js";
-
 /**
  * @implements ScreenLike
  * @implements PlayBoardLike
  */
-export class PlayBoardModel {
+class PlayBoardModel {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         PlayBoardModel.utilityClass = bundle.utilityClass;
@@ -153,7 +151,7 @@ export class PlayBoardModel {
     }
 
     // will be replaced by concrete board methods
-    static concreteBoardInit(playBoard){
+    static concreteBoardInit(playBoard) {
     }
 
     // abstract - invoked by controller
@@ -246,7 +244,7 @@ export class PlayBoardModel {
     }
 }
 
-export class PlayBoardRenderer {
+class PlayBoardRenderer {
     static setup(bundle) {
         PlayBoardRenderer.itemTypes = bundle.itemTypes;
         PlayBoardRenderer.movableTypes = bundle.movableTypes;
@@ -416,7 +414,7 @@ export class PlayBoardRenderer {
     }
 }
 
-export class PlayBoardLogic {
+class PlayBoardLogic {
     static setup(bundle) {
         /** @type {typeof ScreenLogic} */
         PlayBoardLogic.ScreenLogic = bundle.ScreenLogic;
@@ -750,7 +748,7 @@ export class PlayBoardLogic {
             // if a tree has a counter=10, insert bamboo into inventory.
             for (let cwp of cells) {
                 if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
-                    PlayBoardLogic.modifyBoard(p5, "bamboo", playBoard);
+                    PlayBoardLogic.modifyBoard(p5, playBoard,"bamboo");
                     playBoard.hasBamboo = true;
                     break;
                 }
@@ -789,7 +787,7 @@ export class PlayBoardLogic {
         for (let index of playBoard.snowfields) {
             let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
             let hasPlum = false;
-            for (let nCell of PlayBoardLogic.BoardLogic.getNearbyCells(cell.i, cell.j, PlayBoardLogic.PlumLogic.plumRange, playBoard.boardObjects)) {
+            for (let nCell of PlayBoardLogic.BoardLogic.getNearbyCells(cell.i, cell.j, PlayBoardLogic.PlantLogic.plumRange, playBoard.boardObjects)) {
                 if (nCell.plant?.plantType === PlayBoardLogic.plantTypes.PLUM) {
                     hasPlum = true;
                     break;
@@ -830,7 +828,7 @@ export class PlayBoardLogic {
     }
 }
 
-export class PlayBoardSerializer {
+class PlayBoardSerializer {
     static setup(bundle) {
         /**  @type {typeof BoardSerializer} */
         PlayBoardSerializer.BoardSerializer = bundle.BoardSerializer;
@@ -933,4 +931,10 @@ export class PlayBoardSerializer {
         playBoard.initAllFloatingWindows(p5);
         return playBoard;
     }
+}
+
+export {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer};
 }

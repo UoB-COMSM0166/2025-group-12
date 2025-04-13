@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class PalmModel {
+class PalmModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Palm";
@@ -25,10 +25,10 @@ export class PalmModel {
     }
 }
 
-export class PalmRenderer {
+class PalmRenderer {
 }
 
-export class PalmLogic {
+class PalmLogic {
     static setup(bundle) {
     }
 
@@ -36,7 +36,7 @@ export class PalmLogic {
     }
 }
 
-export class PalmSeedModel {
+class PalmSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "PalmSeed";
@@ -47,8 +47,14 @@ export class PalmSeedModel {
     }
 }
 
-export class PalmSeedRenderer {
+class PalmSeedRenderer {
 }
 
-export class PalmSeedLogic {
+class PalmSeedLogic {
+}
+
+export {PalmModel, PalmLogic, PalmRenderer, PalmSeedModel, PalmSeedLogic, PalmSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PalmModel, PalmLogic, PalmRenderer, PalmSeedModel, PalmSeedLogic, PalmSeedRenderer};
 }

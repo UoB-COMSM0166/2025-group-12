@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class EarthquakeModel {
+class EarthquakeModel {
     /**
      * @param p5
      * @param {typeof MovableModel} superModel
@@ -29,15 +29,16 @@ export class EarthquakeModel {
     }
 }
 
-export class EarthquakeRenderer {
-    static setup(bundle){}
+class EarthquakeRenderer {
+    static setup(bundle) {
+    }
 
     static draw(p5) {
     }
 }
 
-export class EarthquakeLogic {
-    static setup(bundle){
+class EarthquakeLogic {
+    static setup(bundle) {
         EarthquakeLogic.baseType = bundle.baseType;
         EarthquakeLogic.plantTypes = bundle.plantTypes;
         EarthquakeLogic.itemTypes = bundle.itemTypes;
@@ -111,4 +112,10 @@ export class EarthquakeLogic {
             }
         }
     }
+}
+
+export {EarthquakeModel, EarthquakeLogic, EarthquakeRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {EarthquakeModel, EarthquakeLogic, EarthquakeRenderer};
 }

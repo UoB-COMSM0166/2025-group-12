@@ -1,4 +1,4 @@
-export class VolcanoModel {
+class VolcanoModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Volcano";
@@ -12,8 +12,14 @@ export class VolcanoModel {
     }
 }
 
-export class VolcanoRenderer {
+class VolcanoRenderer {
 }
 
-export class VolcanoLogic {
+class VolcanoLogic {
+}
+
+export {VolcanoModel, VolcanoLogic, VolcanoRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {VolcanoModel, VolcanoLogic, VolcanoRenderer};
 }

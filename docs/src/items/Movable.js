@@ -8,7 +8,7 @@
  * @property {boolean} hasMoved
  */
 
-export class MovableModel {
+class MovableModel {
     constructor(itemTypes, x = -1, y = -1) {
         this.x = x;
         this.y = y;
@@ -19,7 +19,7 @@ export class MovableModel {
     }
 }
 
-export class MovableRenderer {
+class MovableRenderer {
     static setup(bundle) {
         MovableRenderer.p5 = bundle.p5;
         MovableRenderer.movableTypes = bundle.movableTypes;
@@ -44,7 +44,7 @@ export class MovableRenderer {
      * @param p5
      * @param {TornadoModel} tornado
      */
-    static drawDirection(p5, tornado){
+    static drawDirection(p5, tornado) {
         MovableRenderer.TornadoRenderer.drawDirection(p5, tornado);
     }
 
@@ -55,33 +55,27 @@ export class MovableRenderer {
      */
     static draw(playBoard, movable) {
         let p5 = MovableRenderer.p5;
-        if(movable.movableType === MovableRenderer.movableTypes.EARTHQUAKE){
+        if (movable.movableType === MovableRenderer.movableTypes.EARTHQUAKE) {
             MovableRenderer.EarthquakeRenderer.draw(p5);
-        }
-        else if(movable.movableType === MovableRenderer.movableTypes.SLIDE){
+        } else if (movable.movableType === MovableRenderer.movableTypes.SLIDE) {
             MovableRenderer.SlideRenderer.draw(p5);
-        }
-        else if(movable.movableType === MovableRenderer.movableTypes.TSUNAMI){
+        } else if (movable.movableType === MovableRenderer.movableTypes.TSUNAMI) {
             MovableRenderer.TsunamiRenderer.draw(p5, playBoard, /** @type {TsunamiModel} */ movable);
-        }
-        else if(movable.movableType === MovableRenderer.movableTypes.BOMB){
+        } else if (movable.movableType === MovableRenderer.movableTypes.BOMB) {
             MovableRenderer.VolcanicBombRenderer.draw(p5, /** @type {VolcanicBombModel} */ movable);
-        }
-        else if(movable.movableType === MovableRenderer.movableTypes.BLIZZARD){
+        } else if (movable.movableType === MovableRenderer.movableTypes.BLIZZARD) {
             MovableRenderer.BlizzardRenderer.draw(p5, playBoard, /** @type {BlizzardModel} */ movable);
-        }
-        else if(movable.movableType === MovableRenderer.movableTypes.TORNADO){
+        } else if (movable.movableType === MovableRenderer.movableTypes.TORNADO) {
             MovableRenderer.TornadoRenderer.draw(p5, /** @type {TornadoModel} */ movable);
-        }
-        else if(movable.movableType === MovableRenderer.movableTypes.BANDIT){
+        } else if (movable.movableType === MovableRenderer.movableTypes.BANDIT) {
             MovableRenderer.BanditRenderer.draw(p5, /** @type {BanditModel} */ movable);
-        }else{
+        } else {
             console.warn("Unknown type of movable, skipped rendering!");
         }
     }
 }
 
-export class MovableLogic {
+class MovableLogic {
     static setup(bundle) {
         MovableSerializer.movableTypes = bundle.movableTypes;
         /** @type {typeof EarthquakeLogic} */
@@ -106,7 +100,7 @@ export class MovableLogic {
      * @param {PlayBoardLike} playBoard
      * @param {MovableLike} movable
      */
-    static movements(p5, playBoard, movable){
+    static movements(p5, playBoard, movable) {
         switch (movable.movableType) {
             case MovableSerializer.movableTypes.BANDIT:
                 return MovableLogic.BanditLogic.movements(p5, playBoard, /** @type {BanditModel} */ movable);
@@ -129,7 +123,7 @@ export class MovableLogic {
     }
 }
 
-export class MovableSerializer {
+class MovableSerializer {
 
     static setup(bundle) {
         MovableSerializer.movableTypes = bundle.movableTypes;
@@ -268,4 +262,10 @@ export class MovableSerializer {
         }
 
     }
+}
+
+export {MovableModel, MovableLogic, MovableRenderer, MovableSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MovableModel, MovableLogic, MovableRenderer, MovableSerializer};
 }

@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class TsunamiModel {
+class TsunamiModel {
     constructor(p5, playBoard, superModel, itemTypes, movableTypes, startCol, startRow, range = 1, blockerLimit = 3, x = -1, y = -1) {
         Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "TsunamiAnimation";
@@ -39,7 +39,7 @@ export class TsunamiModel {
     }
 }
 
-export class TsunamiRenderer {
+class TsunamiRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         TsunamiRenderer.utilityClass = bundle.utilityClass;
@@ -71,7 +71,7 @@ export class TsunamiRenderer {
     }
 }
 
-export class TsunamiLogic {
+class TsunamiLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         TsunamiLogic.utilityClass = bundle.utilityClass;
@@ -216,4 +216,10 @@ export class TsunamiLogic {
 
         if (!TsunamiLogic.checkIsMoving(tsunami)) tsunami.isMoving = false;
     }
+}
+
+export {TsunamiModel, TsunamiLogic, TsunamiRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {TsunamiModel, TsunamiLogic, TsunamiRenderer};
 }

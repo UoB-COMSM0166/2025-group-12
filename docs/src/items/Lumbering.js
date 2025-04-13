@@ -1,4 +1,4 @@
-export class LumberingModel {
+class LumberingModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Lumbering";
@@ -12,8 +12,14 @@ export class LumberingModel {
     }
 }
 
-export class LumberingRenderer {
+class LumberingRenderer {
 }
 
-export class LumberingLogic {
+class LumberingLogic {
+}
+
+export {LumberingModel, LumberingLogic, LumberingRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {LumberingModel, LumberingLogic, LumberingRenderer};
 }

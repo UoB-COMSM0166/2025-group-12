@@ -1,4 +1,4 @@
-export class TerrainModel {
+class TerrainModel {
     constructor(itemTypes) {
         this.img = null;
         this.type = itemTypes.TERRAIN;
@@ -6,18 +6,18 @@ export class TerrainModel {
     }
 }
 
-export class TerrainRenderer {
-    static setup(bundle){
+class TerrainRenderer {
+    static setup(bundle) {
     }
 }
 
-export class TerrainLogic {
-    static setup(bundle){
+class TerrainLogic {
+    static setup(bundle) {
     }
 }
 
-export class TerrainSerializer {
-    static setup(bundle){
+class TerrainSerializer {
+    static setup(bundle) {
         TerrainSerializer.p5 = bundle.p5;
         TerrainSerializer.terrainTypes = bundle.terrainTypes;
         TerrainSerializer.plantFactory = bundle.plantFactory;
@@ -71,4 +71,10 @@ export class TerrainSerializer {
         }
         return newTerrainInstance;
     }
+}
+
+export {TerrainModel, TerrainLogic, TerrainRenderer, TerrainSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {TerrainModel, TerrainLogic, TerrainRenderer, TerrainSerializer};
 }

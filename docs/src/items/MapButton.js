@@ -1,4 +1,4 @@
-export class MapButton {
+class MapButton {
     constructor(x, y, size, img, stageGroup) {
         this.x = x;
         this.y = y;
@@ -123,4 +123,10 @@ class CircleAnimation {
         p5.endShape();
         p5.pop();
     }
+}
+
+export {MapButton};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MapButton};
 }

@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class BlizzardModel {
+class BlizzardModel {
     constructor(p5, playBoard, superModel, itemTypes, movableTypes, countdown = 0, x = -1, y = -1) {
         Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Blizzard";
@@ -31,7 +31,7 @@ export class BlizzardModel {
     }
 }
 
-export class BlizzardRenderer {
+class BlizzardRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         BlizzardRenderer.utilityClass = bundle.utilityClass;
@@ -58,7 +58,7 @@ export class BlizzardRenderer {
     }
 }
 
-export class BlizzardLogic {
+class BlizzardLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         BlizzardLogic.utilityClass = bundle.utilityClass;
@@ -131,3 +131,8 @@ export class BlizzardLogic {
     }
 }
 
+export {BlizzardModel, BlizzardLogic, BlizzardRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {BlizzardModel, BlizzardLogic, BlizzardRenderer};
+}

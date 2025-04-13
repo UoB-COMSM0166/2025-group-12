@@ -1,4 +1,4 @@
-export class GameSerializer {
+class GameSerializer {
 
     static saveDataID = "GreenRenaissanceSaveData";
 
@@ -64,6 +64,12 @@ export class GameSerializer {
             return false;
         }
     }
+}
+
+export {GameSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {GameSerializer};
 }
 
 function generateKey(timestamp, keySize) {

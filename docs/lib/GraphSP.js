@@ -1,7 +1,8 @@
-export class DijkstraSP {
+class DijkstraSP {
     /** @type {typeof IndexPriorityQueue} */
     static IPQ = null;
-    static setup(object){
+
+    static setup(object) {
         DijkstraSP.IPQ = object.IPQ;
     }
 
@@ -64,7 +65,7 @@ export class DijkstraSP {
 
 }
 
-export class EdgeWeightedDigraph {
+class EdgeWeightedDigraph {
     constructor(V) {
         this.V = V;
         this.E = 0;
@@ -112,18 +113,18 @@ export class EdgeWeightedDigraph {
         }
     }
 
-    hasEdge(v, w){
+    hasEdge(v, w) {
         return this.adj[v]?.find(e => e.to() === w);
     }
 
-    setWeightIfHasEdge(v, w, weight, mode){
-        if(this.hasEdge(v, w)){
+    setWeightIfHasEdge(v, w, weight, mode) {
+        if (this.hasEdge(v, w)) {
             this.setWeight(v, w, weight, mode);
         }
     }
 }
 
-export class DirectedEdge {
+class DirectedEdge {
     constructor(v, w, weight) {
         this.v = v;
         this.w = w;
@@ -147,4 +148,10 @@ export class DirectedEdge {
             return 0;
         }
     }
+}
+
+export {DijkstraSP, DirectedEdge, EdgeWeightedDigraph};
+
+if (typeof module !== 'undefined') {
+    module.exports = {DijkstraSP, DirectedEdge, EdgeWeightedDigraph};
 }

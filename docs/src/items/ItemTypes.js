@@ -1,5 +1,5 @@
 // make itemTypes distinct from other types on numeric values
-export let itemTypes = {
+let itemTypes = {
     PLANT: 1000,
     SEED: 1001,
     ENEMY: 1002,
@@ -8,7 +8,7 @@ export let itemTypes = {
 }
 
 // notice: the order of plants and seed in the inventory follows below ordering.
-export let plantTypes = {
+let plantTypes = {
     BAMBOO: 2,
     ORCHID: 8,
     FIRE_HERB: 10,
@@ -20,7 +20,7 @@ export let plantTypes = {
     BUSH: 92,
     GRASS: 94,
 }
-export let seedTypes = {
+let seedTypes = {
     BAMBOO: 3,
     ORCHID: 9,
     FIRE_HERB: 11,
@@ -33,7 +33,7 @@ export let seedTypes = {
     GRASS: 95,
 }
 
-export let terrainTypes = {
+let terrainTypes = {
     BASE: 1,
     MOUNTAIN: 2,
     STEPPE: 3,
@@ -47,7 +47,7 @@ export let terrainTypes = {
 }
 
 // notice: the order of end turn actions refers to below ordering.
-export let movableTypes = {
+let movableTypes = {
     ANIMAL: 0,
     EARTHQUAKE: 100,
     SLIDE: 105,
@@ -58,7 +58,7 @@ export let movableTypes = {
     BANDIT: 130,
 }
 
-export function baseType(plantOrSeed) {
+function baseType(plantOrSeed) {
     if (plantOrSeed.type === itemTypes.PLANT) {
         if (plantOrSeed.plantType === plantTypes.TREE || plantOrSeed.plantType === plantTypes.BAMBOO || plantOrSeed.plantType === plantTypes.PALM) {
             return plantTypes.TREE;
@@ -77,4 +77,10 @@ export function baseType(plantOrSeed) {
         }
     }
     return itemTypes.UNKNOWN;
+}
+
+export {itemTypes, plantTypes, seedTypes, terrainTypes, movableTypes, baseType};
+
+if (typeof module !== 'undefined') {
+    module.exports = {itemTypes, plantTypes, seedTypes, terrainTypes, movableTypes, baseType};
 }

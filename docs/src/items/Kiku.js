@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class KikuModel {
+class KikuModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Kiku";
@@ -25,10 +25,10 @@ export class KikuModel {
     }
 }
 
-export class KikuRenderer {
+class KikuRenderer {
 }
 
-export class KikuLogic {
+class KikuLogic {
     static setup(bundle) {
     }
 
@@ -36,7 +36,7 @@ export class KikuLogic {
     }
 }
 
-export class KikuSeedModel {
+class KikuSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "KikuSeed";
@@ -47,8 +47,14 @@ export class KikuSeedModel {
     }
 }
 
-export class KikuSeedRenderer {
+class KikuSeedRenderer {
 }
 
-export class KikuSeedLogic {
+class KikuSeedLogic {
+}
+
+export {KikuModel, KikuLogic, KikuRenderer, KikuSeedModel, KikuSeedLogic, KikuSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {KikuModel, KikuLogic, KikuRenderer, KikuSeedModel, KikuSeedLogic, KikuSeedRenderer};
 }

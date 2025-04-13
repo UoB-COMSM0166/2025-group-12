@@ -1,4 +1,4 @@
-export class PlayerBaseModel {
+class PlayerBaseModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "PlayerBase";
@@ -16,8 +16,14 @@ export class PlayerBaseModel {
     }
 }
 
-export class PlayerBaseRenderer {
+class PlayerBaseRenderer {
 }
 
-export class PlayerBaseLogic {
+class PlayerBaseLogic {
+}
+
+export {PlayerBaseModel, PlayerBaseLogic, PlayerBaseRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PlayerBaseModel, PlayerBaseLogic, PlayerBaseRenderer};
 }

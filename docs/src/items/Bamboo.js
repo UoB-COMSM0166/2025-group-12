@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class BambooModel {
+class BambooModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Bamboo";
@@ -25,10 +25,10 @@ export class BambooModel {
     }
 }
 
-export class BambooRenderer {
+class BambooRenderer {
 }
 
-export class BambooLogic {
+class BambooLogic {
     static setup(bundle) {
         BambooLogic.terrainTypes = bundle.terrainTypes;
         BambooLogic.itemTypes = bundle.itemTypes;
@@ -64,7 +64,7 @@ export class BambooLogic {
     }
 }
 
-export class BambooSeedModel {
+class BambooSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "BambooSeed";
@@ -75,8 +75,14 @@ export class BambooSeedModel {
     }
 }
 
-export class BambooSeedRenderer {
+class BambooSeedRenderer {
 }
 
-export class BambooSeedLogic {
+class BambooSeedLogic {
+}
+
+export {BambooModel, BambooLogic, BambooRenderer, BambooSeedModel, BambooSeedLogic, BambooSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {BambooModel, BambooLogic, BambooRenderer, BambooSeedModel, BambooSeedLogic, BambooSeedRenderer};
 }

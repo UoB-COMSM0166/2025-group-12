@@ -11,7 +11,7 @@
  * @property {boolean} status
  */
 
-export class SeedModel {
+class SeedModel {
     constructor(itemTypes) {
         this.type = itemTypes.SEED;
         this.health = 1;
@@ -23,14 +23,16 @@ export class SeedModel {
     }
 }
 
-export class SeedRenderer {
-    static setup(bundle){}
+class SeedRenderer {
+    static setup(bundle) {
+    }
 
-    static draw(){}
+    static draw() {
+    }
 }
 
-export class SeedLogic {
-    static setup(bundle){
+class SeedLogic {
+    static setup(bundle) {
         SeedLogic.plantFactory = bundle.plantFactory;
     }
 
@@ -48,8 +50,8 @@ export class SeedLogic {
     }
 }
 
-export class SeedSerializer {
-    static setup(bundle){
+class SeedSerializer {
+    static setup(bundle) {
         SeedSerializer.seedTypes = bundle.seedTypes;
         SeedSerializer.plantFactory = bundle.plantFactory;
     }
@@ -73,4 +75,10 @@ export class SeedSerializer {
         Object.assign(seed, object);
         return seed;
     }
+}
+
+export {SeedModel, SeedLogic, SeedRenderer, SeedSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {SeedModel, SeedLogic, SeedRenderer, SeedSerializer};
 }

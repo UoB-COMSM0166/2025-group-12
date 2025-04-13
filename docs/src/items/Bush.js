@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class BushModel {
+class BushModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Bush";
@@ -27,10 +27,10 @@ export class BushModel {
     }
 }
 
-export class BushRenderer {
+class BushRenderer {
 }
 
-export class BushLogic {
+class BushLogic {
     static setup(bundle) {
     }
 
@@ -38,7 +38,7 @@ export class BushLogic {
     }
 }
 
-export class BushSeedModel {
+class BushSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "BushSeed";
@@ -49,8 +49,14 @@ export class BushSeedModel {
     }
 }
 
-export class BushSeedRenderer {
+class BushSeedRenderer {
 }
 
-export class BushSeedLogic {
+class BushSeedLogic {
+}
+
+export {BushModel, BushLogic, BushRenderer, BushSeedModel, BushSeedLogic, BushSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {BushModel, BushLogic, BushRenderer, BushSeedModel, BushSeedLogic, BushSeedRenderer};
 }

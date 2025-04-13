@@ -1,4 +1,4 @@
-export class LandslideModel {
+class LandslideModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Landslide";
@@ -12,8 +12,14 @@ export class LandslideModel {
     }
 }
 
-export class LandslideRenderer {
+class LandslideRenderer {
 }
 
-export class LandslideLogic {
+class LandslideLogic {
+}
+
+export {LandslideModel, LandslideLogic, LandslideRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {LandslideModel, LandslideLogic, LandslideRenderer};
 }

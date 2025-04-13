@@ -1,4 +1,4 @@
-export function assertInterface({name, impl, methods = [], fields = []}) {
+function assertInterface({name, impl, methods = [], fields = []}) {
     for (const method of methods) {
         if (typeof impl[method] !== 'function') {
             console.error(`${name}: "${method}" is not implemented in "${impl.name || 'UnknownImpl'}"`);
@@ -9,4 +9,10 @@ export function assertInterface({name, impl, methods = [], fields = []}) {
             console.error(`${name}: missing field "${field}" in "${impl.constructor.name}"`);
         }
     }
+}
+
+export {assertInterface};
+
+if (typeof module !== 'undefined') {
+    module.exports = {assertInterface};
 }

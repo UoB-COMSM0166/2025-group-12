@@ -1,4 +1,4 @@
-export class Controller {
+class Controller {
     constructor(bundle) {
         /** @type {GameState} */
         this.gameState = bundle.gameState;
@@ -138,3 +138,8 @@ export class Controller {
 
 }
 
+export {Controller};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Controller};
+}

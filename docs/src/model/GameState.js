@@ -1,4 +1,4 @@
-export const stateCode = {
+const stateCode = {
     MENU: 1,
     STANDBY: 2,
     PLAY: 4,
@@ -17,7 +17,7 @@ export const stateCode = {
  * @property {number} BLIZZARD
  * @property {number} TSUNAMI
  */
-export const stageGroup = {
+const stageGroup = {
     NO_STAGE: 0,
     TORNADO: 1,     // 5 stages expected
     VOLCANO: 2,     // 1
@@ -27,7 +27,7 @@ export const stageGroup = {
 }
 
 // game state should not handle any switching logic but only stores information
-export class GameState {
+class GameState {
     /**
      *
      * @param p5
@@ -88,4 +88,10 @@ export class GameState {
         let index = this.clearedStages.get(stageGroup);
         return index !== undefined && index >= numbering;
     }
+}
+
+export {stateCode, stageGroup, GameState};
+
+if (typeof module !== 'undefined') {
+    module.exports = {stateCode, stageGroup, GameState};
 }

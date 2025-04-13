@@ -1,4 +1,4 @@
-export class Button {
+class Button {
     constructor(x, y, width, height, text) {
         // location and size properties
         this.x = x;
@@ -48,4 +48,10 @@ export class Button {
         }
         return false;
     }
+}
+
+export {Button};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Button};
 }

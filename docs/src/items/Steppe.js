@@ -1,4 +1,4 @@
-export class SteppeModel {
+class SteppeModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Steppe";
@@ -12,8 +12,14 @@ export class SteppeModel {
     }
 }
 
-export class SteppeRenderer {
+class SteppeRenderer {
 }
 
-export class SteppeLogic {
+class SteppeLogic {
+}
+
+export {SteppeModel, SteppeLogic, SteppeRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {SteppeModel, SteppeLogic, SteppeRenderer};
 }

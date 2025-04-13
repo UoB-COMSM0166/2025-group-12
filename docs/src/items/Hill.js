@@ -1,4 +1,4 @@
-export class HillModel {
+class HillModel {
     constructor(p5, superModel, itemTypes, terrainTypes, canSlide = false) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Hill";
@@ -15,8 +15,14 @@ export class HillModel {
     }
 }
 
-export class HillRenderer {
+class HillRenderer {
 }
 
-export class HillLogic {
+class HillLogic {
+}
+
+export {HillModel, HillLogic, HillRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {HillModel, HillLogic, HillRenderer};
 }

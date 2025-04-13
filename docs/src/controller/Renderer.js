@@ -1,4 +1,4 @@
-export class Renderer {
+class Renderer {
     constructor(bundle) {
         /** @type {GameState} */
         this.gameState = bundle.gameState;
@@ -21,7 +21,7 @@ export class Renderer {
     }
 
     render(p5) {
-        let currentState= this.gameState.getState();
+        let currentState = this.gameState.getState();
         let currentMenu = this.menus[currentState];
         if (currentMenu && this.renderFactory.get(currentState).draw) {
             this.renderFactory.get(currentState).draw(p5, currentMenu);
@@ -33,4 +33,10 @@ export class Renderer {
             this.PauseMenuRenderer.draw(p5, this.pauseMenu);
         }
     }
+}
+
+export {Renderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Renderer};
 }

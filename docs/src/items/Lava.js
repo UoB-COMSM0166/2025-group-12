@@ -1,4 +1,4 @@
-export class LavaModel {
+class LavaModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Lava";
@@ -20,10 +20,10 @@ export class LavaModel {
     }
 }
 
-export class LavaRenderer {
+class LavaRenderer {
 }
 
-export class LavaLogic {
+class LavaLogic {
     static setup(bundle) {
         LavaLogic.itemTypes = bundle.itemTypes;
         /** @type {typeof BoardLogic} */
@@ -54,4 +54,10 @@ export class LavaLogic {
             lava.weight = 0;
         }
     }
+}
+
+export {LavaModel, LavaLogic, LavaRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {LavaModel, LavaLogic, LavaRenderer};
 }

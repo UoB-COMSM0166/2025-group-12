@@ -84,7 +84,7 @@ import {loadImages} from "../Preloader.js";
 
 
 // to achieve loosely coupling we use lazy dependency injection
-export class Container {
+class Container {
     constructor(p5) {
 
         // ----------------------
@@ -404,13 +404,13 @@ export class Container {
             inputHandler: this.inputHandler,
             initialState: this.initialState,
 
-            StartMenuLogic : StartMenuLogic,
-            GameMapLogic : GameMapLogic,
-            PlayBoardModel : PlayBoardModel,
-            PlayBoardLogic : PlayBoardLogic,
-            PauseMenuLogic : PauseMenuLogic,
-            InventoryLogic : InventoryLogic,
-            MovableLogic : MovableLogic,
+            StartMenuLogic: StartMenuLogic,
+            GameMapLogic: GameMapLogic,
+            PlayBoardModel: PlayBoardModel,
+            PlayBoardLogic: PlayBoardLogic,
+            PauseMenuLogic: PauseMenuLogic,
+            InventoryLogic: InventoryLogic,
+            MovableLogic: MovableLogic,
         });
 
         this.GameSerializer.save = () => this.GameSerializer.saveGame(this.controller);
@@ -457,7 +457,7 @@ export class Container {
             terrainTypes: terrainTypes,
             movableTypes: movableTypes,
 
-            InteractionLogic : InteractionLogic,
+            InteractionLogic: InteractionLogic,
 
             plantFactory: this.plantFactory,
             terrainFactory: this.terrainFactory,
@@ -465,16 +465,16 @@ export class Container {
 
             dissolveSnowRange: PlumLogic.plumRange,
 
-            ScreenRenderer : ScreenRenderer,
+            ScreenRenderer: ScreenRenderer,
 
             BoardModel: BoardModel,
             BoardLogic: BoardLogic,
-            BoardRenderer : BoardRenderer,
+            BoardRenderer: BoardRenderer,
             BoardSerializer: BoardSerializer,
 
             InfoBoxModel: InfoBoxModel,
             InfoBoxLogic: InfoBoxLogic,
-            InfoBoxRenderer :InfoBoxRenderer,
+            InfoBoxRenderer: InfoBoxRenderer,
 
             InventoryLogic: InventoryLogic,
             InventoryRenderer: InventoryRenderer,
@@ -570,4 +570,10 @@ class GameStageFactory {
         let index = gameState.clearedStages.get(gameState.currentStageGroup);
         return StageClasses[index != null ? index : 0];
     }
+}
+
+export {Container};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Container};
 }

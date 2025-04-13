@@ -1,4 +1,4 @@
-export class MenuItem {
+class MenuItem {
     constructor(x, y, width, height, text) {
         this.x = x;
         this.y = y;
@@ -90,4 +90,10 @@ export class MenuItem {
         }
         return false;
     }
+}
+
+export {MenuItem};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MenuItem};
 }

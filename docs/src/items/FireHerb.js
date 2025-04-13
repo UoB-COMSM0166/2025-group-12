@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class FireHerbModel {
+class FireHerbModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "FireHerb";
@@ -28,11 +28,11 @@ export class FireHerbModel {
     }
 }
 
-export class FireHerbRenderer {
+class FireHerbRenderer {
 
 }
 
-export class FireHerbLogic {
+class FireHerbLogic {
     static setup(bundle) {
     }
 
@@ -40,7 +40,7 @@ export class FireHerbLogic {
     }
 }
 
-export class FireHerbSeedModel {
+class FireHerbSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "FireHerbSeed";
@@ -51,8 +51,21 @@ export class FireHerbSeedModel {
     }
 }
 
-export class FireHerbSeedRenderer {
+class FireHerbSeedRenderer {
 }
 
-export class FireHerbSeedLogic {
+class FireHerbSeedLogic {
+}
+
+export {FireHerbModel, FireHerbLogic, FireHerbRenderer, FireHerbSeedModel, FireHerbSeedLogic, FireHerbSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {
+        FireHerbModel,
+        FireHerbLogic,
+        FireHerbRenderer,
+        FireHerbSeedModel,
+        FireHerbSeedLogic,
+        FireHerbSeedRenderer
+    };
 }

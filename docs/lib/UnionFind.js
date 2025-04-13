@@ -1,5 +1,5 @@
 // use union find we can fetch connected regions when terrain changes (river, flood, bridge, ...)
-export class UnionFind {
+class UnionFind {
     constructor(N) {
         this.id = new Array(N);
         this.size = new Array(N).fill(1);
@@ -54,4 +54,10 @@ export class UnionFind {
         }
         this.count--;
     }
+}
+
+export {UnionFind};
+
+if (typeof module !== 'undefined') {
+    module.exports = {UnionFind};
 }

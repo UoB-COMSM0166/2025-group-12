@@ -17,20 +17,22 @@
  * @property {number} coldCounter
  */
 
-export class PlantModel {
+class PlantModel {
     constructor(itemTypes) {
         this.type = itemTypes.PLANT;
     }
 }
 
-export class PlantRenderer {
-    static setup(bundle){}
+class PlantRenderer {
+    static setup(bundle) {
+    }
 
-    static draw(){}
+    static draw() {
+    }
 }
 
-export class PlantLogic {
-    static setup(bundle){
+class PlantLogic {
+    static setup(bundle) {
         PlantLogic.plantTypes = bundle.plantTypes;
         /** @type {typeof TreeLogic} */
         PlantLogic.TreeLogic = bundle.TreeLogic;
@@ -46,12 +48,11 @@ export class PlantLogic {
      * @param {CellModel} cell
      * @param {PlantLike} plant
      */
-    static reevaluateSkills(playBoard, cell, plant){
-        if(plant === null) return;
-        if(plant.plantType === PlantLogic.plantTypes.TREE){
+    static reevaluateSkills(playBoard, cell, plant) {
+        if (plant === null) return;
+        if (plant.plantType === PlantLogic.plantTypes.TREE) {
             PlantLogic.TreeLogic.reevaluateSkills(playBoard, cell, /** @type {TreeModel} */ plant);
-        }
-        else if(plant.plantType === PlantLogic.plantTypes.ORCHID){
+        } else if (plant.plantType === PlantLogic.plantTypes.ORCHID) {
             PlantLogic.OrchidLogic.reevaluateSkills(playBoard, cell, /** @type {OrchidModel} */ plant);
         }
     }
@@ -61,8 +62,8 @@ export class PlantLogic {
     }
 }
 
-export class PlantSerializer {
-    static setup(bundle){
+class PlantSerializer {
+    static setup(bundle) {
         PlantSerializer.plantFactory = bundle.plantFactory;
         PlantSerializer.plantTypes = bundle.plantTypes;
     }
@@ -90,4 +91,10 @@ export class PlantSerializer {
         Object.assign(plant, object);
         return plant;
     }
+}
+
+export {PlantModel, PlantLogic, PlantRenderer, PlantSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PlantModel, PlantLogic, PlantRenderer, PlantSerializer};
 }

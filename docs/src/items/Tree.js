@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class TreeModel {
+class TreeModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Tree";
@@ -41,10 +41,10 @@ export class TreeModel {
     }
 }
 
-export class TreeRenderer {
+class TreeRenderer {
 }
 
-export class TreeLogic {
+class TreeLogic {
     static setup(bundle) {
         TreeLogic.baseType = bundle.baseType;
         TreeLogic.plantTypes = bundle.plantTypes;
@@ -89,7 +89,7 @@ export class TreeLogic {
     }
 }
 
-export class TreeSeedModel {
+class TreeSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "TreeSeed";
@@ -100,8 +100,14 @@ export class TreeSeedModel {
     }
 }
 
-export class TreeSeedRenderer {
+class TreeSeedRenderer {
 }
 
-export class TreeSeedLogic {
+class TreeSeedLogic {
+}
+
+export {TreeModel, TreeLogic, TreeRenderer, TreeSeedModel, TreeSeedLogic, TreeSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {TreeModel, TreeLogic, TreeRenderer, TreeSeedModel, TreeSeedLogic, TreeSeedRenderer};
 }

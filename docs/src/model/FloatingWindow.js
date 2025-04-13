@@ -1,5 +1,5 @@
 // a semi-transparent floating window with messages.
-export class FloatingWindow {
+class FloatingWindow {
     constructor(p5, triPos, text, boxParam) {
         this.p5 = p5;
         this.triPos = triPos;
@@ -160,4 +160,10 @@ export class FloatingWindow {
     static copyOf(fw) {
         return new FloatingWindow(fw.p5, fw.triPos, fw.text, fw.boxParam);
     }
+}
+
+export {FloatingWindow};
+
+if (typeof module !== 'undefined') {
+    module.exports = {FloatingWindow};
 }

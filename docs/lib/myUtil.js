@@ -1,4 +1,4 @@
-export class myUtil {
+class myUtil {
 
     static setup(bundle) {
         myUtil.CanvasSize = bundle.CanvasSize;
@@ -76,10 +76,9 @@ export class myUtil {
             p5.rect(x, y, width, height, 20);
 
             p5.noStroke();
-            if(playBoard.actionPoints !== 0){
+            if (playBoard.actionPoints !== 0) {
                 p5.fill("#6699FF");
-            }
-            else{
+            } else {
                 p5.fill("rgba(102,153,255,0.5)");
             }
             p5.rect(x, y, width, height, 20);
@@ -87,7 +86,7 @@ export class myUtil {
             p5.fill(255);
             p5.textSize(15);
             p5.textAlign(p5.CENTER, p5.CENTER);
-            p5.text(playBoard.actionPoints + " / " + playBoard.maxActionPoints,x + width / 2, y + height / 2);
+            p5.text(playBoard.actionPoints + " / " + playBoard.maxActionPoints, x + width / 2, y + height / 2);
         }
     }
 
@@ -212,7 +211,7 @@ export class myUtil {
         return -(1 / (playBoard.Sx * playBoard.Sy * Math.sin(playBoard.span))) * (playBoard.Sx * Math.sin(playBoard.rot) * newX - playBoard.Sx * Math.cos(playBoard.rot) * newY);
     }
 
-    static commonFloatingWindows(p5, afw){
+    static commonFloatingWindows(p5, afw) {
         afw.set("000", new myUtil.FloatingWindow(p5, null, "{white:Stage Cleared!}", {
             x: myUtil.relative2absolute(1 / 2, 1 / 6)[0],
             y: myUtil.relative2absolute(1 / 2, 1 / 6)[1],
@@ -363,4 +362,10 @@ export class myUtil {
             playerCanClick: true
         }));
     }
+}
+
+export {myUtil};
+
+if (typeof module !== 'undefined') {
+    module.exports = {myUtil};
 }

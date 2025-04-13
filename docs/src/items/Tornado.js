@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class TornadoModel {
+class TornadoModel {
     constructor(p5, superModel, itemTypes, movableTypes, x, y, direction, countdown = 0) {
         Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Tornado";
@@ -52,7 +52,7 @@ export class TornadoModel {
     }
 }
 
-export class TornadoRenderer {
+class TornadoRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         TornadoRenderer.utilityClass = bundle.utilityClass;
@@ -101,7 +101,7 @@ export class TornadoRenderer {
     }
 }
 
-export class TornadoLogic{
+class TornadoLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         TornadoLogic.utilityClass = bundle.utilityClass;
@@ -171,7 +171,7 @@ export class TornadoLogic{
         // call interaction when Tornado overlays with plant (cell level)
         let index = TornadoLogic.utilityClass.pos2CellIndex(playBoard, tornado.x, tornado.y);
         if (index[0] !== -1) {
-            let cell = TornadoLogic.BoardLogic.getCell(index[0], index[1],playBoard.boardObjects);
+            let cell = TornadoLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
             // 1. check current cell to perform Tornado-terrain interaction.
             if (cell.terrain.terrainType === TornadoLogic.terrainTypes.MOUNTAIN) {
                 tornado.status = false;
@@ -181,7 +181,7 @@ export class TornadoLogic{
             }
 
             // 2. check extended trees' existence, and randomly pick one lucky tree.
-            let cells =TornadoLogic.BoardLogic.getAdjacent4Cells(index[0], index[1],playBoard.boardObjects);
+            let cells = TornadoLogic.BoardLogic.getAdjacent4Cells(index[0], index[1], playBoard.boardObjects);
             let trees = [];
             for (let adCell of cells) {
                 if (adCell !== null && adCell.plant !== null && adCell.plant.name === "Tree") {
@@ -228,4 +228,10 @@ export class TornadoLogic{
             TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
         }
     }
+}
+
+export {TornadoModel, TornadoLogic, TornadoRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {TornadoModel, TornadoLogic, TornadoRenderer};
 }

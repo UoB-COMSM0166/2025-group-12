@@ -1,4 +1,4 @@
-export class Tornado1PlayBoard {
+class Tornado1PlayBoard {
     static PlayBoardLogic;
     static PlayBoardModel;
 
@@ -75,7 +75,7 @@ export class Tornado1PlayBoard {
     static nextTurnItems(p5, playBoard) {
         let movableFactory = this.PlayBoardLogic.movableFactory;
         let movableTypes = this.PlayBoardLogic.movableTypes;
-        if(playBoard.turn === 2){
+        if (playBoard.turn === 2) {
             movableFactory.get(movableTypes.TORNADO)(playBoard, 0, 4, 'd');
         }
     }
@@ -307,4 +307,10 @@ export class Tornado1PlayBoard {
 
         playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Tornado1PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Tornado1PlayBoard};
 }

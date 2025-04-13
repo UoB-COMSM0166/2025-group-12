@@ -1,4 +1,4 @@
-export class InventoryModel {
+class InventoryModel {
     static setup(bundle) {
         InventoryModel.utilityClass = bundle.utilityClass;
         /** @type {Map} */
@@ -27,7 +27,7 @@ export class InventoryModel {
     }
 }
 
-export class InventoryRenderer {
+class InventoryRenderer {
     static setup(bundle) {
         InventoryRenderer.Button = bundle.Button;
     }
@@ -67,7 +67,7 @@ export class InventoryRenderer {
     }
 }
 
-export class InventoryLogic {
+class InventoryLogic {
     static setup(bundle) {
         InventoryLogic.plantTypes = bundle.plantTypes;
         InventoryLogic.seedTypes = bundle.seedTypes;
@@ -254,7 +254,7 @@ export class InventoryLogic {
     }
 }
 
-export class InventorySerializer {
+class InventorySerializer {
     /**
      *
      * @param {InventoryModel} inventory
@@ -277,4 +277,10 @@ export class InventorySerializer {
         InventoryLogic.loadInventory(new Map(object.items), inventoryInstance);
         return inventoryInstance;
     }
+}
+
+export {InventoryModel, InventoryLogic, InventoryRenderer, InventorySerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {InventoryModel, InventoryLogic, InventoryRenderer, InventorySerializer};
 }

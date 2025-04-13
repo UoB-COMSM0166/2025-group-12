@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class VolcanicBombModel {
+class VolcanicBombModel {
     constructor(p5, superModel, itemTypes, movableTypes, i1, j1, i2, j2, x1, y1, x2, y2, countdown = 1, x = -1, y = -1) {
         Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "VolcanicBomb";
@@ -45,7 +45,7 @@ export class VolcanicBombModel {
     }
 }
 
-export class VolcanicBombRenderer {
+class VolcanicBombRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         VolcanicBombRenderer.utilityClass = bundle.utilityClass;
@@ -86,7 +86,7 @@ export class VolcanicBombRenderer {
     }
 }
 
-export class VolcanicBombLogic {
+class VolcanicBombLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         VolcanicBombLogic.utilityClass = bundle.utilityClass;
@@ -258,4 +258,10 @@ export class VolcanicBombLogic {
         // Integrate from vertex h to x
         return VolcanicBombLogic.integrate(u => Math.sqrt(1 + (2 * bomb.a * (u - bomb.h)) ** 2), bomb.h, x);
     }
+}
+
+export {VolcanicBombModel, VolcanicBombLogic, VolcanicBombRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {VolcanicBombModel, VolcanicBombLogic, VolcanicBombRenderer};
 }

@@ -1,4 +1,4 @@
-export class InputHandler {
+class InputHandler {
     static setup(bundle) {
         InputHandler.p5 = bundle.p5;
         InputHandler.stateCode = bundle.stateCode;
@@ -122,4 +122,10 @@ export class InputHandler {
         }
         this.keys = [...new Set([...this.keyboradKeys, ...this.gamepadKeys])];
     }
+}
+
+export {InputHandler};
+
+if (typeof module !== 'undefined') {
+    module.exports = {InputHandler};
 }

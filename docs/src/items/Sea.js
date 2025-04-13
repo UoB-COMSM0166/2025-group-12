@@ -1,4 +1,4 @@
-export class SeaModel {
+class SeaModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Sea";
@@ -12,8 +12,14 @@ export class SeaModel {
     }
 }
 
-export class SeaRenderer {
+class SeaRenderer {
 }
 
-export class SeaLogic {
+class SeaLogic {
+}
+
+export {SeaModel, SeaLogic, SeaRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {SeaModel, SeaLogic, SeaRenderer};
 }

@@ -1,4 +1,4 @@
-export class InfoBoxModel {
+class InfoBoxModel {
     static setup(bundle) {
         InfoBoxModel.utilityClass = bundle.utilityClass;
     }
@@ -23,7 +23,7 @@ export class InfoBoxModel {
     }
 }
 
-export class InfoBoxRenderer {
+class InfoBoxRenderer {
 
     static setup(bundle) {
         /** @type {typeof myUtil} */
@@ -60,8 +60,8 @@ export class InfoBoxRenderer {
             info = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects).plant.getActiveString();
         } else if (infoBox.infoStatus === 'e') {
             title = "Ecosystem";
-            info = InfoBoxRenderer.CellRenderer.getEcoString(infoBox.playBoard.stageGroup ,InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects))
-                ;
+            info = InfoBoxRenderer.CellRenderer.getEcoString(infoBox.playBoard.stageGroup, InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects))
+            ;
         }
 
         p5.fill(255);
@@ -139,7 +139,7 @@ export class InfoBoxRenderer {
     }
 }
 
-export class InfoBoxLogic {
+class InfoBoxLogic {
     static setup(bundle) {
         InfoBoxLogic.Button = bundle.Button;
         /** @type {typeof myUtil} */
@@ -369,4 +369,10 @@ export class InfoBoxLogic {
         }
         infoBox.displayButton = null;
     }
+}
+
+export {InfoBoxModel, InfoBoxLogic, InfoBoxRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {InfoBoxModel, InfoBoxLogic, InfoBoxRenderer};
 }

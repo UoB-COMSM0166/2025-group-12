@@ -1,7 +1,7 @@
 /**
  * @implements ScreenLike
  */
-export class PauseMenuModel {
+class PauseMenuModel {
     static setup(bundle) {
         PauseMenuModel.p5 = bundle.p5;
         /** @type {typeof myUtil} */
@@ -67,7 +67,7 @@ export class PauseMenuModel {
     }
 }
 
-export class PauseMenuRenderer {
+class PauseMenuRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         PauseMenuRenderer.utilityClass = bundle.utilityClass;
@@ -105,7 +105,7 @@ export class PauseMenuRenderer {
     }
 }
 
-export class PauseMenuLogic {
+class PauseMenuLogic {
     static setup(bundle) {
         /** @type {typeof ScreenLogic} */
         PauseMenuLogic.ScreenLogic = bundle.ScreenLogic;
@@ -159,4 +159,10 @@ export class PauseMenuLogic {
     static copyFloatingWindow(p5, str, pauseMenu) {
         pauseMenu.floatingWindow = PauseMenuLogic.FloatingWindow.copyOf(pauseMenu.allFloatingWindows.get(str));
     }
+}
+
+export {PauseMenuModel, PauseMenuLogic, PauseMenuRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PauseMenuModel, PauseMenuLogic, PauseMenuRenderer};
 }

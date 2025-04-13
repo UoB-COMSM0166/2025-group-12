@@ -1,7 +1,7 @@
 /**
  * @implements ScreenLike
  */
-export class StartMenuModel {
+class StartMenuModel {
     static setup(bundle) {
         StartMenuModel.p5 = bundle.p5;
         /** @type {typeof myUtil} */
@@ -60,7 +60,7 @@ export class StartMenuModel {
     }
 }
 
-export class StartMenuRenderer {
+class StartMenuRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         StartMenuRenderer.utilityClass = bundle.utilityClass;
@@ -101,7 +101,7 @@ export class StartMenuRenderer {
     }
 }
 
-export class StartMenuLogic {
+class StartMenuLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         StartMenuLogic.utilityClass = bundle.utilityClass;
@@ -166,4 +166,10 @@ export class StartMenuLogic {
     static copyFloatingWindow(p5, str, startMenu) {
         startMenu.floatingWindow = StartMenuLogic.FloatingWindow.copyOf(startMenu.allFloatingWindows.get(str));
     }
+}
+
+export {StartMenuModel, StartMenuLogic, StartMenuRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {StartMenuModel, StartMenuLogic, StartMenuRenderer};
 }

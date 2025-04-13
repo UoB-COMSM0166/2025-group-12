@@ -1,4 +1,4 @@
-export class MountainModel {
+class MountainModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Mountain";
@@ -12,8 +12,14 @@ export class MountainModel {
     }
 }
 
-export class MountainRenderer {
+class MountainRenderer {
 }
 
-export class MountainLogic {
+class MountainLogic {
+}
+
+export {MountainModel, MountainLogic, MountainRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MountainModel, MountainLogic, MountainRenderer};
 }

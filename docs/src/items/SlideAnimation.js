@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class SlideModel {
+class SlideModel {
     /**
      *
      * @param p5
@@ -33,14 +33,15 @@ export class SlideModel {
     }
 }
 
-export class SlideRenderer {
-    static setup(bundle){}
+class SlideRenderer {
+    static setup(bundle) {
+    }
 
     static draw(p5) {
     }
 }
 
-export class SlideLogic {
+class SlideLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         SlideLogic.utilityClass = bundle.utilityClass;
@@ -161,4 +162,10 @@ export class SlideLogic {
         }
         landslide.cell = SlideLogic.BoardLogic.getCell(landslide.cell.i + direction[0], landslide.cell.j + direction[1], playBoard.boardObjects);
     }
+}
+
+export {SlideModel, SlideLogic, SlideRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {SlideModel, SlideLogic, SlideRenderer};
 }

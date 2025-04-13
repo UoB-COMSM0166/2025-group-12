@@ -1,4 +1,4 @@
-export class BoardModel {
+class BoardModel {
     static setup(bundle) {
     }
 
@@ -11,7 +11,7 @@ export class BoardModel {
     }
 }
 
-export class BoardRenderer {
+class BoardRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         BoardRenderer.utilityClass = bundle.utilityClass;
@@ -39,7 +39,7 @@ export class BoardRenderer {
      * @param {PlayBoardLike} playBoard
      * @param {BoardModel} board
      */
-    static drawTerrain(p5, playBoard, board){
+    static drawTerrain(p5, playBoard, board) {
         for (let i = 0; i < board.size; i++) {
             for (let j = 0; j < board.size; j++) {
                 CellRenderer.drawTerrain(p5, playBoard, BoardLogic.getCell(i, j, board));
@@ -54,7 +54,7 @@ export class BoardRenderer {
      * @param {PlayBoardLike} playBoard
      * @param {BoardModel} board
      */
-    static drawVolcanoLayer(p5, playBoard, board){
+    static drawVolcanoLayer(p5, playBoard, board) {
         if (BoardLogic.getCell(2, 2, board).terrain.terrainType === BoardRenderer.terrainTypes.VOLCANO) {
             let [x1, y1] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, 2, 2, p5.CORNERS);
             p5.image(p5.images.get("VolcanoLayer"), x1 - playBoard.cellWidth * 3 / 2, y1 - playBoard.cellHeight * 3 + playBoard.cellHeight / 2 + 1, playBoard.cellWidth * 3, playBoard.cellHeight * 3);
@@ -67,7 +67,7 @@ export class BoardRenderer {
      * @param {PlayBoardLike} playBoard
      * @param {BoardModel} board
      */
-    static drawPlants(p5, playBoard, board){
+    static drawPlants(p5, playBoard, board) {
         for (let i = 0; i < board.size; i++) {
             for (let j = 0; j < board.size; j++) {
                 CellRenderer.drawPlants(p5, playBoard, BoardLogic.getCell(i, j, board));
@@ -112,7 +112,7 @@ export class BoardRenderer {
     }
 }
 
-export class BoardLogic {
+class BoardLogic {
     static setup(bundle) {
         BoardLogic.itemTypes = bundle.itemTypes;
         BoardLogic.plantTypes = bundle.plantTypes;
@@ -413,7 +413,7 @@ export class BoardLogic {
     }
 }
 
-export class BoardSerializer {
+class BoardSerializer {
     static setup(bundle) {
     }
 
@@ -447,7 +447,7 @@ export class BoardSerializer {
     }
 }
 
-export class CellModel {
+class CellModel {
     static setup(bundle) {
         CellModel.itemTypes = bundle.itemTypes;
     }
@@ -535,7 +535,7 @@ export class CellModel {
     }
 }
 
-export class CellRenderer {
+class CellRenderer {
     static setup(bundle) {
         CellRenderer.utilityClass = bundle.utilityClass;
     }
@@ -593,7 +593,7 @@ export class CellRenderer {
     }
 }
 
-export class CellLogic {
+class CellLogic {
     static setup(bundle) {
         CellLogic.FloatingWindow = bundle.FloatingWindow;
         CellLogic.itemTypes = bundle.itemTypes;
@@ -654,7 +654,7 @@ export class CellLogic {
 
 }
 
-export class CellSerializer {
+class CellSerializer {
     static setup(bundle) {
         /** @type {typeof PlantSerializer} */
         CellSerializer.PlantSerializer = bundle.PlantSerializer;
@@ -719,7 +719,6 @@ export class CellSerializer {
     }
 }
 
-
 class Ecosystem {
     static setup(bundle) {
         Ecosystem.stageGroup = bundle.stageGroup;
@@ -750,4 +749,19 @@ class Ecosystem {
         }
         return str;
     }
+}
+
+export {BoardModel, BoardRenderer, BoardLogic, BoardSerializer, CellModel, CellLogic, CellRenderer, CellSerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {
+        BoardModel,
+        BoardRenderer,
+        BoardLogic,
+        BoardSerializer,
+        CellModel,
+        CellLogic,
+        CellRenderer,
+        CellSerializer
+    };
 }

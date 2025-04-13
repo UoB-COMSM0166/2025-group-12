@@ -1,4 +1,4 @@
-export class SnowfieldModel {
+class SnowfieldModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Snowfield";
@@ -12,8 +12,14 @@ export class SnowfieldModel {
     }
 }
 
-export class SnowfieldRenderer {
+class SnowfieldRenderer {
 }
 
-export class SnowfieldLogic {
+class SnowfieldLogic {
+}
+
+export {SnowfieldModel, SnowfieldLogic, SnowfieldRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {SnowfieldModel, SnowfieldLogic, SnowfieldRenderer};
 }

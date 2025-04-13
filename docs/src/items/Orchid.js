@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class OrchidModel {
+class OrchidModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Orchid";
@@ -35,10 +35,10 @@ export class OrchidModel {
     }
 }
 
-export class OrchidRenderer {
+class OrchidRenderer {
 }
 
-export class OrchidLogic {
+class OrchidLogic {
     static setup(bundle) {
         OrchidLogic.baseType = bundle.baseType;
         OrchidLogic.plantTypes = bundle.plantTypes;
@@ -72,7 +72,7 @@ export class OrchidLogic {
     }
 }
 
-export class OrchidSeedModel {
+class OrchidSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "OrchidSeed";
@@ -83,8 +83,14 @@ export class OrchidSeedModel {
     }
 }
 
-export class OrchidSeedRenderer {
+class OrchidSeedRenderer {
 }
 
-export class OrchidSeedLogic {
+class OrchidSeedLogic {
+}
+
+export {OrchidModel, OrchidLogic, OrchidRenderer, OrchidSeedModel, OrchidSeedLogic, OrchidSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {OrchidModel, OrchidLogic, OrchidRenderer, OrchidSeedModel, OrchidSeedLogic, OrchidSeedRenderer};
 }

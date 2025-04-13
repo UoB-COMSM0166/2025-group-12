@@ -1,7 +1,7 @@
 /**
  * @implements {PlantLike}
  */
-export class PlumModel {
+class PlumModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Plum";
@@ -25,10 +25,10 @@ export class PlumModel {
     }
 }
 
-export class PlumRenderer {
+class PlumRenderer {
 }
 
-export class PlumLogic {
+class PlumLogic {
     static setup(bundle) {
         PlumLogic.util = bundle.utilityClass;
     }
@@ -41,7 +41,7 @@ export class PlumLogic {
     }
 }
 
-export class PlumSeedModel {
+class PlumSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
         this.name = "PlumSeed";
@@ -52,8 +52,14 @@ export class PlumSeedModel {
     }
 }
 
-export class PlumSeedRenderer {
+class PlumSeedRenderer {
 }
 
-export class PlumSeedLogic {
+class PlumSeedLogic {
+}
+
+export {PlumModel, PlumLogic, PlumRenderer, PlumSeedModel, PlumSeedLogic, PlumSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PlumModel, PlumLogic, PlumRenderer, PlumSeedModel, PlumSeedLogic, PlumSeedRenderer};
 }

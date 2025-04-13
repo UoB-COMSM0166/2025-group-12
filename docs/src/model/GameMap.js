@@ -1,8 +1,8 @@
 /**
  * @implements ScreenLike
  */
-export class GameMapModel {
-    static setup(bundle){
+class GameMapModel {
+    static setup(bundle) {
         GameMapModel.p5 = bundle.p5;
         /** @type {typeof myUtil} */
         GameMapModel.utilityClass = bundle.utilityClass;
@@ -115,9 +115,9 @@ export class GameMapModel {
     }
 }
 
-export class GameMapRenderer {
+class GameMapRenderer {
 
-    static setup(bundle){
+    static setup(bundle) {
         /** @type {typeof myUtil} */
         GameMapRenderer.utilityClass = bundle.utilityClass;
         /** @type {typeof InventoryRenderer} */
@@ -156,7 +156,7 @@ export class GameMapRenderer {
      * @param {GameMapModel} gameMap
      */
     static drawFloatingWindow(p5, gameMap) {
-        GameMapRenderer.ScreenRenderer.drawFloatingWindow(p5,gameMap, GameMapLogic.setFloatingWindow);
+        GameMapRenderer.ScreenRenderer.drawFloatingWindow(p5, gameMap, GameMapLogic.setFloatingWindow);
     }
 
     /**
@@ -221,8 +221,8 @@ export class GameMapRenderer {
     }
 }
 
-export class GameMapLogic{
-    static setup(bundle){
+class GameMapLogic {
+    static setup(bundle) {
         /** @type {typeof myUtil} */
         GameMapLogic.utilityClass = bundle.utilityClass;
         GameMapLogic.FloatingWindow = bundle.FloatingWindow;
@@ -236,7 +236,7 @@ export class GameMapLogic{
      *
      * @param {GameMapModel} gameMap
      */
-    static handleFloatingWindow(gameMap){
+    static handleFloatingWindow(gameMap) {
         return GameMapLogic.ScreenLogic.handleFloatingWindow(gameMap);
     }
 
@@ -245,7 +245,7 @@ export class GameMapLogic{
      * @param event
      * @param {GameMapModel} gameMap
      */
-    static handleScroll(event, gameMap){
+    static handleScroll(event, gameMap) {
         GameMapLogic.ScreenLogic.handleScroll(event, gameMap);
     }
 
@@ -304,4 +304,10 @@ export class GameMapLogic{
             gameMap.allFloatingWindows.delete("moreTutorial");
         }
     }
+}
+
+export {GameMapModel, GameMapLogic, GameMapRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {GameMapModel, GameMapLogic, GameMapRenderer};
 }

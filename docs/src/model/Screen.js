@@ -6,7 +6,7 @@
  * @property {GameState} gameState
  */
 
-export class ScreenModel {
+class ScreenModel {
     /**
      *
      * @param {GameState} gameState
@@ -21,7 +21,7 @@ export class ScreenModel {
     }
 }
 
-export class ScreenRenderer{
+class ScreenRenderer {
     // general logic
     // remember to invoke this method in `draw()` to ensure logic.
     /**
@@ -47,8 +47,8 @@ export class ScreenRenderer{
     }
 }
 
-export class ScreenLogic {
-    static setup(bundle){
+class ScreenLogic {
+    static setup(bundle) {
         /** @type {typeof InventoryLogic} */
         ScreenLogic.InventoryLogic = bundle.InventoryLogic;
     }
@@ -88,4 +88,10 @@ export class ScreenLogic {
             ScreenLogic.InventoryLogic.handleScroll(event, screen.gameState.inventory);
         }
     }
+}
+
+export {ScreenModel, ScreenLogic, ScreenRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {ScreenModel, ScreenLogic, ScreenRenderer};
 }

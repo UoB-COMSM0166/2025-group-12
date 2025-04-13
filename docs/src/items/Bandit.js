@@ -1,7 +1,7 @@
 /**
  * @implements {MovableLike}
  */
-export class BanditModel {
+class BanditModel {
     constructor(p5, superModel, itemTypes, movableTypes, x, y) {
         Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Bandit";
@@ -40,7 +40,7 @@ export class BanditModel {
     }
 }
 
-export class BanditRenderer {
+class BanditRenderer {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         BanditRenderer.utilityClass = bundle.utilityClass;
@@ -57,7 +57,7 @@ export class BanditRenderer {
     }
 }
 
-export class BanditLogic{
+class BanditLogic {
     static setup(bundle) {
         /** @type {typeof myUtil} */
         BanditLogic.utilityClass = bundle.utilityClass;
@@ -286,10 +286,10 @@ export class BanditLogic{
                     G.addEdge(new BanditLogic.DirectedEdge(i + j * N, i + (j + 1) * N, 1 + BanditLogic.BoardLogic.getCell(i, j + 1, playBoard.boardObjects).terrain.getWeight()));
                 }
                 if (i - 1 >= 0) {
-                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, (i - 1) + j * N, 1 + BanditLogic.BoardLogic.getCell(i -1, j, playBoard.boardObjects).terrain.getWeight()));
+                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, (i - 1) + j * N, 1 + BanditLogic.BoardLogic.getCell(i - 1, j, playBoard.boardObjects).terrain.getWeight()));
                 }
                 if (j - 1 >= 0) {
-                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, i + (j - 1) * N, 1 + BanditLogic.BoardLogic.getCell(i, j -1, playBoard.boardObjects).terrain.getWeight()));
+                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, i + (j - 1) * N, 1 + BanditLogic.BoardLogic.getCell(i, j - 1, playBoard.boardObjects).terrain.getWeight()));
                 }
             }
         }
@@ -323,4 +323,10 @@ export class BanditLogic{
         return G;
     }
 
+}
+
+export {BanditModel, BanditLogic, BanditRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {BanditModel, BanditLogic, BanditRenderer};
 }

@@ -1,4 +1,4 @@
-export class InteractionLogic {
+class InteractionLogic {
 
     static setup(bundle) {
         /** @type {typeof myUtil} */
@@ -81,8 +81,7 @@ export class InteractionLogic {
                 tornado.status = false;
                 InteractionLogic.findMovableAndDelete(playBoard, tornado);
             }
-        }
-        else if (item.type === InteractionLogic.itemTypes.PLANT) {
+        } else if (item.type === InteractionLogic.itemTypes.PLANT) {
             /** @type {PlantLike} */
             let plant = item;
             // if a tree is attacked by a tornado
@@ -154,7 +153,7 @@ export class InteractionLogic {
      * @param n
      */
     static rechargeHP(playBoard, spellCasterCell, targetCell, n) {
-        if(!InteractionLogic.checkActiveSkill(playBoard, spellCasterCell, targetCell)) return false;
+        if (!InteractionLogic.checkActiveSkill(playBoard, spellCasterCell, targetCell)) return false;
 
         let item;
         if (targetCell.plant) {
@@ -187,7 +186,7 @@ export class InteractionLogic {
      * @param {CellModel} targetCell
      */
     static sendAnimalFriends(playBoard, spellCasterCell, targetCell) {
-        if(!InteractionLogic.checkActiveSkill(playBoard, spellCasterCell, targetCell)) return false;
+        if (!InteractionLogic.checkActiveSkill(playBoard, spellCasterCell, targetCell)) return false;
 
         if (!targetCell.enemy || targetCell.enemy.movableType !== InteractionLogic.movableTypes.BANDIT) {
             playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
@@ -211,7 +210,7 @@ export class InteractionLogic {
      * @param {CellModel} spellCasterCell
      * @param {CellModel} targetCell
      */
-    static checkActiveSkill(playBoard, spellCasterCell, targetCell){
+    static checkActiveSkill(playBoard, spellCasterCell, targetCell) {
         // ran out of usage
         if (spellCasterCell.plant.useLeft === 0) {
             playBoard.floatingWindow = InteractionLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("051"));
@@ -228,4 +227,10 @@ export class InteractionLogic {
     static activeRange1(i1, j1, i2, j2) {
         return InteractionLogic.utilityClass.manhattanDistance(i1, j1, i2, j2) <= 2;
     }
+}
+
+export {InteractionLogic};
+
+if (typeof module !== 'undefined') {
+    module.exports = {InteractionLogic};
 }
