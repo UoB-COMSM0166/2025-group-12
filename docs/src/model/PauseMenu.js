@@ -24,6 +24,8 @@ class PauseMenuModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
+        this.index = 0;
+
         this.init();
     }
 
@@ -57,15 +59,32 @@ class PauseMenuModel {
         escapeButton.onClick = () => {
             this.gameState.togglePaused();
             if (this.gameState.state === PauseMenuModel.stateCode.PLAY) {
-                this.gameState.fading = true;
+                this.gameState.isFading = true;
                 this.gameState.nextState = PauseMenuModel.stateCode.STANDBY;
             } else {
-                this.gameState.fading = true;
+                this.gameState.isFading = true;
                 this.gameState.nextState = PauseMenuModel.stateCode.MENU;
             }
             this.gameState.setPlayerCanClick(true);
         };
         this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);
+    }
+
+    shift2Gamepad(p5) {
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+            button.isSelected = false;
+        });
+        this.buttons[0].isSelected = true;
+    }
+
+    shift2Mouse(p5) {
+        p5.cursor();
+        this.buttons[this.index].isSelected = false;
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
     }
 }
 
@@ -103,7 +122,7 @@ class PauseMenuRenderer {
      * @param {PauseMenuModel} pauseMenu
      */
     static drawFloatingWindow(p5, pauseMenu) {
-        PauseMenuRenderer.ScreenRenderer.drawFloatingWindow(p5, pauseMenu, PauseMenuLogic.setFloatingWindow);
+        PauseMenuRenderer.ScreenRenderer.drawFloatingWindow(p5, /** @type {ScreenLike} */pauseMenu, PauseMenuLogic.setFloatingWindow);
     }
 }
 
@@ -118,8 +137,67 @@ class PauseMenuLogic {
      *
      * @param {PauseMenuModel} pauseMenu
      */
+    static cancel(pauseMenu){
+        pauseMenu.gameState.togglePaused();
+    }
+
+    /**
+     *
+     * @param index
+     * @param {PauseMenuModel} pauseMenu
+     */
+    static handleGamepad(index, pauseMenu){
+        switch (index) {
+            case 1:
+                PauseMenuLogic.cancel(pauseMenu);
+                break;
+            case 12:
+                pauseMenu.buttons[pauseMenu.index].isSelected = false;
+                if (pauseMenu.index === 0) pauseMenu.index = 3;
+                else pauseMenu.index--;
+                pauseMenu.buttons[pauseMenu.index].isSelected = true;
+                break;
+            case 13:
+                pauseMenu.buttons[pauseMenu.index].isSelected = false;
+                if (pauseMenu.index === 3) pauseMenu.index = 0;
+                else pauseMenu.index++;
+                pauseMenu.buttons[pauseMenu.index].isSelected = true;
+                break;
+        }
+
+    }
+
+    static handleAnalogStick(axes, pauseMenu) {
+
+    }
+
+    /**
+     *
+     * @param p5
+     * @param axes
+     * @param {PauseMenuModel} pauseMenu
+     */
+    static handleAnalogStickPressed(p5, axes, pauseMenu) {
+        if(axes[1] < 0){
+            pauseMenu.buttons[pauseMenu.index].isSelected = false;
+            if (pauseMenu.index === 0) pauseMenu.index = 3;
+            else pauseMenu.index--;
+            pauseMenu.buttons[pauseMenu.index].isSelected = true;
+        }
+        else{
+            pauseMenu.buttons[pauseMenu.index].isSelected = false;
+            if (pauseMenu.index === 3) pauseMenu.index = 0;
+            else pauseMenu.index++;
+            pauseMenu.buttons[pauseMenu.index].isSelected = true;
+        }
+    }
+
+    /**
+     *
+     * @param {PauseMenuModel} pauseMenu
+     */
     static handleFloatingWindow(pauseMenu) {
-        return PauseMenuLogic.ScreenLogic.handleFloatingWindow(pauseMenu);
+        return PauseMenuLogic.ScreenLogic.handleFloatingWindow(/** @type {ScreenLike} */pauseMenu);
     }
 
     // placeholder - pause menu does not control inventory scrolling
@@ -159,7 +237,7 @@ class PauseMenuLogic {
      * @param {PauseMenuModel} pauseMenu
      */
     static copyFloatingWindow(p5, str, pauseMenu) {
-        pauseMenu.floatingWindow = PauseMenuLogic.FloatingWindow.copyOf(pauseMenu.allFloatingWindows.get(str));
+        pauseMenu.floatingWindow = /** @type {FloatingWindow} */ PauseMenuLogic.FloatingWindow.copyOf(pauseMenu.allFloatingWindows.get(str));
     }
 }
 

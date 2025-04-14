@@ -32,7 +32,8 @@ class GameMapModel {
 
         // fade in fade out render
         this.fade = 0;
-        this.isStart = true;
+        this.isFading = false;
+        this.isEntering = true;
         this.fadeIn = 255;
 
         this.init();
@@ -42,11 +43,11 @@ class GameMapModel {
         this.background = GameMapModel.p5.images.get("GameMapBG");
 
         const buttonConfigs = [
-            {x: 0.52, y: 0.68, imageName: "Tornado", group: GameMapModel.stageGroup.TORNADO},
-            {x: 0.475, y: 0.475, imageName: "VolcanoLayer", group: GameMapModel.stageGroup.VOLCANO},
-            {x: 0.65, y: 0.3, imageName: "Landslide", group: GameMapModel.stageGroup.EARTHQUAKE},
-            {x: 0.18, y: 0.65, imageName: "Blizzard", group: GameMapModel.stageGroup.BLIZZARD},
-            {x: 0.36, y: 0.3, imageName: "Tsunami", group: GameMapModel.stageGroup.TSUNAMI}
+            {x: 0.52, y: 0.68, imageName: "TornadoIcon", group: GameMapModel.stageGroup.TORNADO},
+            {x: 0.475, y: 0.475, imageName: "VolcanoIcon", group: GameMapModel.stageGroup.VOLCANO},
+            {x: 0.65, y: 0.3, imageName: "EarthquakeIcon", group: GameMapModel.stageGroup.EARTHQUAKE},
+            {x: 0.18, y: 0.65, imageName: "RainIcon", group: GameMapModel.stageGroup.BLIZZARD},
+            {x: 0.36, y: 0.3, imageName: "TsunamiIcon", group: GameMapModel.stageGroup.TSUNAMI}
         ];
 
         this.buttons = buttonConfigs.map(cfg => this.createStageButton(cfg.x, cfg.y, cfg.imageName, cfg.group));
@@ -118,6 +119,20 @@ class GameMapModel {
 
         this.allFloatingWindows = afw;
     }
+
+    shift2Gamepad(p5){
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+        });
+    }
+
+    shift2Mouse(p5) {
+        p5.cursor();
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
+    }
 }
 
 class GameMapRenderer {
@@ -154,8 +169,17 @@ class GameMapRenderer {
 
         GameMapRenderer.drawFloatingWindow(p5, gameMap);
 
-        if(gameMap.gameState.fading) GameMapRenderer.ScreenRenderer.playFadeOutAnimation(p5, gameMap);
-        if(gameMap.isStart) GameMapRenderer.ScreenRenderer.playFadeInAnimation(p5, gameMap);
+        if (gameMap.gameState.isFading) {
+            GameMapRenderer.ScreenRenderer.playFadeOutAnimation(p5, gameMap);
+        }
+        if (gameMap.isEntering) {
+            GameMapRenderer.ScreenRenderer.playFadeInAnimation(p5, gameMap);
+        }
+
+        if(gameMap.gameState.mode === "gamepad") {
+            p5.fill('yellow');
+            p5.circle(p5.gamepadX, p5.gamepadY, 10);
+        }
     }
 
     /**
@@ -244,6 +268,51 @@ class GameMapLogic {
      *
      * @param {GameMapModel} gameMap
      */
+    static cancel(gameMap){
+        gameMap.selectedStageGroup = GameMapLogic.stageGroup.NO_STAGE;
+        gameMap.buttons.forEach(button => {
+            button.circle = null;
+        });
+    }
+
+    /**
+     *
+     * @param index
+     * @param {GameMapModel} gameMap
+     */
+    static handleGamepad(index, gameMap){
+        switch (index){
+            case 1:
+                GameMapLogic.cancel(gameMap);
+                break;
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param axes
+     * @param gameMap
+     */
+    static handleAnalogStick(p5, axes, gameMap) {
+        if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
+            // edges of the grid under old grid-centered coordinates
+            let updateX = p5.gamepadX + axes[0] * p5.mouseSpeed;
+            let updateY = p5.gamepadY + axes[1] * p5.mouseSpeed;
+
+            updateX = updateX <= 0 ? 0 : updateX;
+            updateY = updateY <= 0 ? 0 : updateY;
+            updateX = updateX >= GameMapLogic.utilityClass.relative2absolute(1, 1)[0] ? GameMapLogic.utilityClass.relative2absolute(1, 1)[0] : updateX;
+            updateY = updateY >= GameMapLogic.utilityClass.relative2absolute(1, 1)[1] ? GameMapLogic.utilityClass.relative2absolute(1, 1)[1] : updateY;
+            p5.gamepadX = updateX;
+            p5.gamepadY = updateY;
+        }
+    }
+
+    /**
+     *
+     * @param {GameMapModel} gameMap
+     */
     static handleFloatingWindow(gameMap) {
         return GameMapLogic.ScreenLogic.handleFloatingWindow(gameMap);
     }
@@ -287,7 +356,7 @@ class GameMapLogic {
      * @param {GameMapModel} gameMap
      */
     static clickedStageButton(p5, newStageGroup, gameMap) {
-        gameMap.gameState.fading = true;
+        gameMap.gameState.isFading = true;
         gameMap.gameState.nextState = GameMapLogic.stateCode.PLAY;
         gameMap.gameState.currentStageGroup = newStageGroup;
     }

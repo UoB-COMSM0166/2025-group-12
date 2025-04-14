@@ -5,8 +5,8 @@
  * @property {Map} allFloatingWindows
  * @property {GameState} gameState
  * @property {number} fade
- * @property {boolean} fading
- * @property {boolean} isStart
+ * @property {boolean} isFading
+ * @property {boolean} isEntering
  * @property {number} fadeIn
  */
 
@@ -24,7 +24,7 @@ class ScreenModel {
         this.allFloatingWindows = null;
 
         this.fade = 0;
-        this.isStart = true;
+        this.isEntering = true;
         this.fadeIn = 255;
     }
 }
@@ -72,7 +72,7 @@ class ScreenRenderer {
         p5.rect(0, 0, canvasWidth, canvasLength);
         if(screen.fadeIn <= 0){
             screen.fadeIn = 255;
-            screen.isStart = false;
+            screen.isEntering = false;
         }
     }
 
@@ -103,10 +103,10 @@ class ScreenLogic {
      */
     static stateTransitionAtFading(p5, screen){
         if(screen.fade >= 255) {
-            screen.gameState.fading = false;
+            screen.gameState.isFading = false;
             screen.fade = 0;
             screen.gameState.setState(screen.gameState.nextState);
-            screen.isStart = true;
+            screen.isEntering = true;
         }
     }
 

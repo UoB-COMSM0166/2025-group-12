@@ -11,6 +11,9 @@ class InventoryModel {
         this.scrollIndex = 0;
         this.maxVisibleItems = 6;
 
+        this.status = Array.from({length: this.maxVisibleItems}, () => false);
+        this.index = -1;
+
         // for fast lookup when creating item
         this.itemPrototypes = InventoryModel.plantFactory; // Map<plantTypes plantType, Function create>
 
@@ -24,6 +27,9 @@ class InventoryModel {
         this.inventoryX = InventoryModel.utilityClass.relative2absolute(1, 1)[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
+
+        this.mode = "mouse";
+        this.isSelected = false;
     }
 }
 
@@ -52,11 +58,21 @@ class InventoryRenderer {
         // loop inventory items
         let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
         let index = 0;
-        for (let [key, value] of visibleItems) {
+        for (let i = 0; i < visibleItems.length; i++) {
+            let key = visibleItems[i][0];
+            let value = visibleItems[i][1];
             let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
             let itemInstance = inventory.itemPrototypes.get(key)();
+            p5.push();
+            if (inventory.index === i) {
+                p5.stroke("rgb(200, 200, 0)");
+                p5.strokeWeight(3);
+            } else {
+                p5.noStroke();
+            }
             p5.fill(itemInstance.color);
             p5.rect(inventory.itemX, itemY, inventory.itemWidth, inventory.itemHeight - inventory.itemInter, inventory.itemInter);
+            p5.pop();
             p5.fill(0);
             p5.textSize(14);
             p5.textAlign(p5.CENTER, p5.CENTER);
@@ -100,14 +116,22 @@ class InventoryLogic {
         let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
         // record when an inventory item is clicked
         let index = 0;
-        for (let [key, _] of visibleItems) {
+        for (let i = 0; i < visibleItems.length; i++) {
+            let key = visibleItems[i][0];
             let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
-            if (p5.mouseX >= inventory.itemX && p5.mouseX <= inventory.itemX + inventory.itemWidth &&
-                p5.mouseY >= itemY && p5.mouseY <= itemY + (inventory.itemHeight - inventory.itemInter)) {
-                inventory.selectedItem = key;
-                return;
+            if (inventory.mode === "mouse") {
+                if (p5.mouseX >= inventory.itemX && p5.mouseX <= inventory.itemX + inventory.itemWidth &&
+                    p5.mouseY >= itemY && p5.mouseY <= itemY + (inventory.itemHeight - inventory.itemInter)) {
+                    inventory.selectedItem = key;
+                    return;
+                }
+            } else {
+                if (inventory.index === i && inventory.isSelected) {
+                    inventory.selectedItem = key;
+                    return;
+                }
+                index++;
             }
-            index++;
         }
     }
 

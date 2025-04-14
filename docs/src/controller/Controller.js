@@ -4,7 +4,7 @@ class Controller {
         this.gameState = bundle.gameState;
         this.menus = bundle.menus;
         this.pauseMenu = bundle.pauseMenu;
-        this.inputHandler = bundle.inputHandler;
+        this.keyboardHandler = bundle.keyboardHandler;
         this.stateCode = bundle.stateCode;
         /** @type {stateCode} */
         this.saveState = bundle.initialState;
@@ -32,7 +32,25 @@ class Controller {
         ])
     }
 
+    mouseMoved(p5) {
+        if (this.gameState.mode !== "mouse") {
+            this.gameState.mode = "mouse";
+            for (const [_, value] of Object.entries(this.menus)) {
+                if (!value) continue;
+                value.shift2Mouse(p5);
+            }
+            this.pauseMenu.shift2Mouse(p5);
+            console.log("Input mode changed to mouse");
+        }
+    }
+
     clickListener(p5) {
+        if(this.gameState.mode !== "mouse") {
+            this.mouseMoved(p5);
+            return;
+        }
+
+        if (this.gameState.isFading) return;
         if (this.gameState.paused) {
             this.PauseMenuLogic.handleClick(p5, this.pauseMenu);
             return;
@@ -48,6 +66,12 @@ class Controller {
     }
 
     scrollListener(p5, event) {
+        if(this.gameState.mode !== "mouse") {
+            this.mouseMoved(p5);
+            return;
+        }
+
+        if (this.gameState.isFading) return;
         let currentState = this.gameState.getState();
         let currentMenu = this.menus[currentState];
         if (currentMenu && this.logicFactory.get(currentState).handleScroll) {
@@ -55,7 +79,17 @@ class Controller {
         }
     }
 
-    handleFading(p5){
+    mainLoopEntry(p5) {
+        this.handleFading(p5);
+
+        // create play stage
+        this.setPlayStage(p5);
+
+        // when game state changes, load or save data accordingly
+        this.setData(p5, this.gameState.getState());
+    }
+
+    handleFading(p5) {
         this.ScreenLogic.stateTransitionAtFading(p5, this.menus[this.gameState.getState()]);
     }
 
@@ -142,6 +176,53 @@ class Controller {
         }
     }
 
+    /**
+     *
+     * @param index
+     */
+    gamepadListener(index) {
+        if (this.gameState.paused) {
+            this.pauseMenu.handleGamepad(index);
+            return;
+        }
+        if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleGamepad) {
+            currentMenu.handleGamepad(index);
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param axes
+     */
+    analogStickListener(p5, axes) {
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleAnalogStick) {
+            currentMenu.handleAnalogStick(p5, axes, currentMenu);
+        }
+    }
+
+    /**
+     *
+     * @param axes
+     */
+    analogStickPressedListener(axes) {
+        if (this.gameState.paused) {
+            this.pauseMenu.handleAnalogStickPressed(axes);
+            return;
+        }
+        if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleAnalogStickPressed) {
+            currentMenu.handleAnalogStickPressed(axes);
+        }
+    }
 }
 
 export {Controller};

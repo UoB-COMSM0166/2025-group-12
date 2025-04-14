@@ -68,11 +68,14 @@ export function createMockP5() {
             shadowColor: '',
         },
 
-        // Mouse
+        // Mouse, Key, Gamepad
         mouseX: 0,
         mouseY: 0,
         key: '',
         keyIsPressed: false,
+        gamepadX: 0,
+        gamepadY: 0,
+        mouseSpeed: 20,
 
         // Custom
         images: new Map([['Alert', {}]]),

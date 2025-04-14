@@ -30,14 +30,15 @@ test('test new game button, entered game map then quit to menu', () => {
     p.mouseX = newGame.x + newGame.width / 2;
     p.mouseY = newGame.y + newGame.height / 2;
     controller.clickListener(p);
-    expect(container.gameState.state).toBe(stateCode.STANDBY);
 
     // next cycle - game menu change to game map
-    tick(p, container);
+    tick(p, container, 50);
+
+    expect(container.gameState.state).toBe(stateCode.STANDBY);
 
     // next cycle - game menu change to start menu
     container.gameState.setState(stateCode.MENU);
-    tick(p, container);
+    tick(p, container, 50);
 
     expect(newGame.text.toLowerCase().includes('resume')).toBe(true);
 });

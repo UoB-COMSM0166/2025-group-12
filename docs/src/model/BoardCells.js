@@ -29,7 +29,7 @@ class BoardRenderer {
         // volcano layer
         // plants - highest layer
         BoardRenderer.drawTerrain(p5, playBoard, playBoard.boardObjects);
-        BoardRenderer.drawVolcanoLayer(p5, playBoard, playBoard.boardObjects);
+        BoardRenderer.drawLayer(p5, playBoard, playBoard.boardObjects);
         BoardRenderer.drawPlants(p5, playBoard, playBoard.boardObjects);
     }
 
@@ -54,10 +54,18 @@ class BoardRenderer {
      * @param {PlayBoardLike} playBoard
      * @param {BoardModel} board
      */
-    static drawVolcanoLayer(p5, playBoard, board) {
+    static drawLayer(p5, playBoard, board) {
         if (BoardLogic.getCell(2, 2, board).terrain.terrainType === BoardRenderer.terrainTypes.VOLCANO) {
             let [x1, y1] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, 2, 2, p5.CORNERS);
             p5.image(p5.images.get("VolcanoLayer"), x1 - playBoard.cellWidth * 3 / 2, y1 - playBoard.cellHeight * 3 + playBoard.cellHeight / 2 + 1, playBoard.cellWidth * 3, playBoard.cellHeight * 3);
+        }
+        for (let i = 0; i < board.size; i++) {
+            for (let j = 0; j < board.size; j++) {
+                if (BoardLogic.getCell(i, j, board).terrain.terrainType === BoardRenderer.terrainTypes.MOUNTAIN) {
+                    let [x, y] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
+                    p5.image(p5.images.get("MountainLayer"), x - playBoard.cellWidth / 2, y - playBoard.cellHeight + playBoard.cellHeight / 2, playBoard.cellWidth, playBoard.cellHeight);
+                }
+            }
         }
     }
 

@@ -1,11 +1,11 @@
-class InputHandler {
+class KeyboardHandler {
     static setup(bundle) {
-        InputHandler.p5 = bundle.p5;
-        InputHandler.stateCode = bundle.stateCode;
+        KeyboardHandler.p5 = bundle.p5;
+        KeyboardHandler.stateCode = bundle.stateCode;
         /** @type {typeof InfoBoxLogic} */
-        InputHandler.InfoBoxLogic = bundle.InfoBoxLogic;
+        KeyboardHandler.InfoBoxLogic = bundle.InfoBoxLogic;
         /** @type {typeof PlayBoardLogic} */
-        InputHandler.PlayBoardLogic = bundle.PlayBoardLogic;
+        KeyboardHandler.PlayBoardLogic = bundle.PlayBoardLogic;
     }
 
     /**
@@ -16,7 +16,6 @@ class InputHandler {
         this.gameState = gameState;
         this.keys = [];
         this.keyboradKeys = [];
-        this.gamepadKeys = [];
         this.gamepad = null;
         window.addEventListener('keydown', e => {
             if ((e.key === 'w' ||
@@ -29,7 +28,7 @@ class InputHandler {
                 this.keyboradKeys.push(e.key);
             } else if (e.key === 'q') {
                 //
-            } else if (e.key === 'Escape' && this.gameState.state !== InputHandler.stateCode.MENU) {
+            } else if (e.key === 'Escape' && this.gameState.state !== KeyboardHandler.stateCode.MENU) {
                 // pause the game
                 this.gameState.togglePaused();
                 // comment out since code change
@@ -39,7 +38,7 @@ class InputHandler {
 
 
         window.addEventListener("keyup", (event) => {
-            let p5 = InputHandler.p5;
+            let p5 = KeyboardHandler.p5;
             let playBoard = this.gameState.currentStage;
             // a keyboard shortcut to activate plant skill
             if (playBoard != null) {
@@ -58,21 +57,21 @@ class InputHandler {
                 // to dev team: quick skip current stage
                 if (event.key === "c" && !playBoard.skip) {
                     playBoard.skip = true;
-                    InputHandler.PlayBoardLogic.stageClearSettings(p5, playBoard);
-                    playBoard.gameState.setState(InputHandler.stateCode.FINISH);
+                    KeyboardHandler.PlayBoardLogic.stageClearSettings(p5, playBoard);
+                    playBoard.gameState.setState(KeyboardHandler.stateCode.FINISH);
                 }
                 // info box arrows
                 if (event.key === "a" && playBoard.selectedCell.length !== 0) {
-                    InputHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
+                    KeyboardHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
                 }
                 if (event.key === "ArrowLeft" && playBoard.selectedCell.length !== 0) {
-                    InputHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
+                    KeyboardHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
                 }
                 if (event.key === "d" && playBoard.selectedCell.length !== 0) {
-                    InputHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
+                    KeyboardHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
                 }
                 if (event.key === "ArrowRight" && playBoard.selectedCell.length !== 0) {
-                    InputHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
+                    KeyboardHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
                 }
             }
         })
@@ -86,46 +85,11 @@ class InputHandler {
                 this.keyboradKeys.splice(this.keyboradKeys.indexOf(e.key), 1);
             }
         });
-
-        window.addEventListener('gamepadconnected', (e) => {
-            this.gamepad = e.gamepad;
-        });
-
-        window.addEventListener('gamepaddisconnected', (e) => {
-            this.gamepad = null;
-        });
-    }
-
-    updateGamepad() {
-        if (this.gamepad) {
-            const gamepads = navigator.getGamepads();
-            const gamepad = gamepads[this.gamepad.index];
-
-            if (gamepad) {
-                const axisX = gamepad.axes[0];
-
-                if (axisX > 0.5 && !this.gamepadKeys.includes('d')) {
-                    this.gamepadKeys.push('d');
-                } else if (axisX < -0.5 && !this.gamepadKeys.includes('a')) {
-                    this.gamepadKeys.push('a');
-                } else if (Math.abs(axisX) < 0.5 && (this.gamepadKeys.includes('a') || this.gamepadKeys.includes('d'))) {
-                    this.gamepadKeys.splice(this.gamepadKeys.indexOf('a'), 1);
-                    this.gamepadKeys.splice(this.gamepadKeys.indexOf('d'), 1);
-                }
-
-                if (gamepad.buttons[0].pressed && !this.gamepadKeys.includes(' ')) {
-                    this.gamepadKeys.push(' ');
-                } else if (!gamepad.buttons[0].pressed && this.gamepadKeys.includes(' ')) {
-                    this.gamepadKeys.splice(this.gamepadKeys.indexOf(' '), 1);
-                }
-            }
-        }
-        this.keys = [...new Set([...this.keyboradKeys, ...this.gamepadKeys])];
     }
 }
 
-export {InputHandler};
+export {KeyboardHandler};
 
 if (typeof module !== 'undefined') {
-    module.exports = {InputHandler};
+    module.exports = {KeyboardHandler};
 }

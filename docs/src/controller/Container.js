@@ -7,7 +7,7 @@ import {myUtil} from "../../lib/myUtil.js";
 
 import {Controller} from "./Controller.js";
 import {Renderer} from "./Renderer.js";
-import {InputHandler} from "./InputHandler.js";
+import {KeyboardHandler} from "./KeyboardHandler.js";
 
 import {CanvasSize} from "../CanvasSize.js";
 import {FloatingWindow} from "../model/FloatingWindow.js";
@@ -80,7 +80,6 @@ import {PauseMenuModel, PauseMenuLogic, PauseMenuRenderer} from "../model/PauseM
 import {CellModel, CellLogic, CellRenderer, CellSerializer} from "../model/BoardCells.js";
 import {BoardModel, BoardLogic, BoardRenderer, BoardSerializer} from "../model/BoardCells.js";
 import {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer} from "../model/PlayBoard.js";
-import {loadImages} from "../Preloader.js";
 
 
 // to achieve loosely coupling we use lazy dependency injection
@@ -387,8 +386,8 @@ class Container {
         this.gameMap = new GameMapModel(this.gameState);
         // helper menus
         this.pauseMenu = new PauseMenuModel(this.gameState);
-        InputHandler.setup(menuBundle);
-        this.inputHandler = new InputHandler(this.gameState);
+        KeyboardHandler.setup(menuBundle);
+        this.keyboardHandler = new KeyboardHandler(this.gameState);
         this.initialState = stateCode.MENU; // default
 
         this.menus = {
@@ -402,7 +401,7 @@ class Container {
             menus: this.menus,
             stateCode: stateCode,
             pauseMenu: this.pauseMenu,
-            inputHandler: this.inputHandler,
+            keyboardHandler: this.keyboardHandler,
             initialState: this.initialState,
 
             ScreenLogic: ScreenLogic,
@@ -526,6 +525,8 @@ class Container {
         });
 
         Tornado1PlayBoard.setup(PlayBoardModel, PlayBoardLogic);
+
+
     }
 }
 

@@ -50,8 +50,11 @@ class GameState {
         this.gsf = gsf;
 
         // fade in fade out render
-        this.fading = false;
+        this.isFading = false;
         this.nextState = null;
+
+        // gamepad
+        this.mode = "mouse";
     }
 
     setState(newState) {

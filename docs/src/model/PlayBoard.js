@@ -5,9 +5,11 @@
  * @property {FloatingWindow} floatingWindow
  * @property {Map} allFloatingWindows
  * @property {number} fade
- * @property {boolean} fading
- * @property {boolean} isStart
+ * @property {boolean} isFading
+ * @property {boolean} isEntering
  * @property {number} fadeIn
+ * @property {boolean} selectInv
+ * @property {String} mode
  * @property {number} stageGroup
  * @property {number} stageNumbering
  * @property {number} canvasWidth
@@ -84,7 +86,7 @@ class PlayBoardModel {
         // fade in fade out render
         this.fade = 0;
         this.faing = false;
-        this.isStart = true;
+        this.isEntering = true;
         this.fadeIn = 255;
 
         this.stageGroup = PlayBoardModel.stageGroup.NO_STAGE;
@@ -156,12 +158,19 @@ class PlayBoardModel {
 
         PlayBoardModel.concreteBoardInit(this);
 
+        // gamepad
+        this.selectInv = false;
+        this.mode = "mouse";
+
         // initialization
         PlayBoardModel.initPlayBoard(p5, /** @type {PlayBoardLike} */ this);
     }
 
     // will be replaced by concrete board methods
     static concreteBoardInit(playBoard) {
+    }
+
+    setupInteractive(playBoard) {
     }
 
     // abstract - invoked by controller
@@ -174,6 +183,13 @@ class PlayBoardModel {
      * @param {PlayBoardLike} playBoard
      */
     static initPlayBoard(p5, playBoard) {
+        // reset position
+        p5.gamepadX = playBoard.canvasWidth / 2;
+        p5.gamepadY = playBoard.canvasHeight / 2;
+        p5.mouseSpeed = 10;
+        playBoard.mode = playBoard.gameState.mode;
+        playBoard.gameState.inventory.mode = playBoard.gameState.mode;
+
         // action listeners
         PlayBoardModel.setupActionListeners(p5, playBoard);
 
@@ -252,6 +268,20 @@ class PlayBoardModel {
     static getTurnButtonText(playBoard) {
         return `turn ${playBoard.turn} in ${playBoard.maxTurn}`;
     }
+
+    shift2Gamepad(p5) {
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+        });
+    }
+
+    shift2Mouse(p5) {
+        p5.cursor();
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
+    }
 }
 
 class PlayBoardRenderer {
@@ -305,7 +335,9 @@ class PlayBoardRenderer {
         for (let i = 0; i < playBoard.gridSize; i++) {
             for (let j = 0; j < playBoard.gridSize; j++) {
                 let [x1, y1, x2, y2, x3, y3, x4, y4] = PlayBoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
-                if (PlayBoardRenderer.utilityClass.isCursorInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)) {
+                let isCursorInQuad = playBoard.gameState.mode === "mouse" ? PlayBoardRenderer.utilityClass.isCursorInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)
+                    : PlayBoardRenderer.utilityClass.isCursorInQuad(p5.gamepadX, p5.gamepadY, x1, y1, x2, y2, x3, y3, x4, y4)
+                if (isCursorInQuad) {
                     p5.stroke('rgb(255,255,0)');
                     p5.strokeWeight(2);
                     p5.noFill();
@@ -323,12 +355,14 @@ class PlayBoardRenderer {
      */
     static setCursorStyle(p5, playBoard) {
         // set cursor style
-        if (playBoard.gameState.inventory.selectedItem !== null) {
-            p5.cursor('grab');
-        } else if (playBoard.awaitCell) {
-            p5.cursor('pointer');
-        } else {
-            p5.cursor(p5.ARROW);
+        if (playBoard.gameState.mode === "mouse") {
+            if (playBoard.gameState.inventory.selectedItem !== null) {
+                p5.cursor('grab');
+            } else if (playBoard.awaitCell) {
+                p5.cursor('pointer');
+            } else {
+                p5.cursor(p5.ARROW);
+            }
         }
 
         // draw shadow plant
@@ -336,7 +370,11 @@ class PlayBoardRenderer {
             let imgSize = PlayBoardRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
             p5.push();
             p5.tint(255, 180);
-            p5.image(playBoard.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
+            if (playBoard.gameState.mode === "gamepad") {
+                p5.image(playBoard.shadowPlant.img, p5.gamepadX - imgSize / 2, p5.gamepadY - 3 * imgSize / 4, imgSize, imgSize);
+            } else {
+                p5.image(playBoard.shadowPlant.img, p5.mouseX - imgSize / 2, p5.mouseY - 3 * imgSize / 4, imgSize, imgSize);
+            }
             p5.pop();
         }
     }
@@ -422,8 +460,20 @@ class PlayBoardRenderer {
 
         PlayBoardRenderer.setCursorStyle(p5, playBoard);
 
-        if(playBoard.gameState.fading) PlayBoardRenderer.ScreenRenderer.playFadeOutAnimation(p5, playBoard);
-        if(playBoard.isStart) PlayBoardRenderer.ScreenRenderer.playFadeInAnimation(p5, playBoard);
+        if (playBoard.gameState.isFading) {
+            PlayBoardRenderer.ScreenRenderer.playFadeOutAnimation(p5, playBoard);
+        }
+
+        if (playBoard.isEntering) {
+            PlayBoardRenderer.ScreenRenderer.playFadeInAnimation(p5, playBoard);
+        }
+
+        // gamepad pos
+        if (playBoard.gameState.mode === "gamepad") {
+            p5.fill('yellow');
+            p5.circle(p5.gamepadX, p5.gamepadY, 10);
+        }
+
     }
 }
 
@@ -466,6 +516,99 @@ class PlayBoardLogic {
         PlayBoardLogic.SeedLogic = bundle.SeedLogic;
     }
 
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static cancel(playBoard) {
+        if (playBoard.gameState.paused) playBoard.gameState.togglePaused();
+        else {
+            if (playBoard.gameState.inventory.selectedItem) {
+                playBoard.gameState.inventory.selectedItem = null;
+                playBoard.shadowPlant = null;
+                return;
+            }
+            playBoard.gameState.inventory.index = -1;
+            playBoard.gameState.inventory.isSelected = false;
+        }
+    }
+
+    /**
+     *
+     * @param index
+     * @param {PlayBoardLike} playBoard
+     */
+    static handleGamepad(index, playBoard) {
+        switch (index) {
+            case 1:
+                PlayBoardLogic.cancel(playBoard);
+                break;
+            case 3:
+                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                    playBoard.buttons[1].onClick();
+                }
+                break;
+            case 6:
+                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                    playBoard.buttons[2].onClick();
+                }
+                break;
+            case 9:
+                playBoard.gameState.togglePaused();
+                break;
+            case 12:
+                playBoard.gameState.inventory.isSelected = true;
+                playBoard.gameState.inventory.index = Math.max(0, playBoard.gameState.inventory.index - 1);
+                if (playBoard.gameState.inventory.index === 0) {
+                    const event = {};
+                    event.deltaY = -1;
+                    PlayBoardLogic.InventoryLogic.handleScroll(event, playBoard.gameState.inventory);
+                }
+                break;
+            case 13:
+                playBoard.gameState.inventory.isSelected = true;
+                let visibleItems = Array.from(playBoard.gameState.inventory.items.entries()).slice(playBoard.gameState.inventory.scrollIndex, playBoard.gameState.inventory.scrollIndex + playBoard.gameState.inventory.maxVisibleItems);
+                playBoard.gameState.inventory.index = Math.min(visibleItems.length - 1, playBoard.gameState.inventory.index + 1);
+                if (playBoard.gameState.inventory.index === 5) {
+                    const event = {};
+                    event.deltaY = 1;
+                    PlayBoardLogic.InventoryLogic.handleScroll(event, playBoard.gameState.inventory);
+                }
+                break;
+        }
+    }
+
+    /**
+     *
+     * @param axes
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static handleAnalogStick(p5, axes, playBoard) {
+        if (playBoard.gameState.paused) return;
+        if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
+            // edges of the grid under old grid-centered coordinates
+            let leftEdge = -(playBoard.gridSize * playBoard.cellWidth) / 2;
+            let rightEdge = (playBoard.gridSize * playBoard.cellWidth) / 2;
+            let topEdge = -(playBoard.gridSize * playBoard.cellHeight) / 2;
+            let bottomEdge = (playBoard.gridSize * playBoard.cellHeight) / 2;
+
+            let updateX = p5.gamepadX + axes[0] * p5.mouseSpeed;
+            let updateY = p5.gamepadY + axes[1] * p5.mouseSpeed;
+
+            // mouse position under old grid-centered coordinates
+            let oldX = PlayBoardLogic.utilityClass.oldCoorX(playBoard, updateX - playBoard.canvasWidth / 2, updateY - playBoard.canvasHeight / 2);
+            let oldY = PlayBoardLogic.utilityClass.oldCoorY(playBoard, updateX - playBoard.canvasWidth / 2, updateY - playBoard.canvasHeight / 2);
+
+            oldX = oldX <= leftEdge ? leftEdge : oldX;
+            oldY = oldY <= topEdge ? topEdge : oldY;
+            oldX = oldX >= rightEdge ? rightEdge : oldX;
+            oldY = oldY >= bottomEdge ? bottomEdge : oldY;
+            p5.gamepadX = PlayBoardLogic.utilityClass.newCoorX(playBoard, oldX, oldY) + playBoard.canvasWidth / 2;
+            p5.gamepadY = PlayBoardLogic.utilityClass.newCoorY(playBoard, oldX, oldY) + playBoard.canvasHeight / 2;
+        }
+    }
+
     // boilerplate. when floating window is on, click anywhere to disable it.
     /**
      *
@@ -504,7 +647,7 @@ class PlayBoardLogic {
         if (playBoard.awaitCell) {
             let index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
             if (index[0] === -1) {
-                playBoard.floatingWindow = PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
+                playBoard.floatingWindow = /** @type {FloatingWindow} */ PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
             } else {
                 // the branch represents skill has been activated successfully
                 PlayBoardSerializer.stringify(playBoard);
@@ -527,7 +670,12 @@ class PlayBoardLogic {
      * @param {PlayBoardLike} playBoard
      */
     static clickedCell(p5, playBoard) {
-        let index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+        let index;
+        if (playBoard.gameState.mode === "gamepad") {
+            index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.gamepadX, p5.gamepadY);
+        } else {
+            index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+        }
         if (index[0] === -1) {
             playBoard.selectedCell = [];
         } else {
@@ -546,7 +694,12 @@ class PlayBoardLogic {
      * @param {PlayBoardLike} playBoard
      */
     static handlePlanting(p5, playBoard) {
-        let index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+        let index;
+        if (playBoard.gameState.mode === "gamepad") {
+            index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.gamepadX, p5.gamepadY);
+        } else {
+            index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+        }
         // clicked an item from inventory, then clicked a cell:
         if (playBoard.gameState.inventory.selectedItem !== null && index[0] !== -1) {
             if (playBoard.actionPoints > 0) {
@@ -577,7 +730,7 @@ class PlayBoardLogic {
                 }
             } else {
                 if (playBoard.hasActionPoints && playBoard.actionPoints === 0) {
-                    playBoard.floatingWindow = PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("002"));
+                    playBoard.floatingWindow = /** @type {FloatingWindow} */ PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("002"));
                     return;
                 }
             }
@@ -586,7 +739,7 @@ class PlayBoardLogic {
         // clicked item from inventory or clicked somewhere else:
         // handle inventory clicks later to prevent unintentional issues
         PlayBoardLogic.InventoryLogic.handleClick(p5, playBoard.gameState.inventory);
-        if (playBoard.gameState.inventory.selectedItem !== null && index[0] === -1) {
+        if (playBoard.gameState.inventory.selectedItem !== null) {
             playBoard.shadowPlant = PlayBoardLogic.InventoryLogic.createItem(p5, playBoard.gameState.inventory.selectedItem, playBoard.gameState.inventory);
         } else {
             playBoard.shadowPlant = null;
@@ -761,7 +914,7 @@ class PlayBoardLogic {
             // if a tree has a counter=10, insert bamboo into inventory.
             for (let cwp of cells) {
                 if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
-                    PlayBoardLogic.modifyBoard(p5, playBoard,"bamboo");
+                    PlayBoardLogic.modifyBoard(p5, playBoard, "bamboo");
                     playBoard.hasBamboo = true;
                     break;
                 }
