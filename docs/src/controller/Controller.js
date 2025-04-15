@@ -209,7 +209,7 @@ class Controller {
      */
     analogStickPressedListener(axes) {
         if (this.gameState.paused) {
-            this.PauseMenuLogic.handleGamepad(axes, this.pauseMenu);
+            this.PauseMenuLogic.handleAnalogStickPressed(axes, this.pauseMenu);
             return;
         }
         if (this.gameState.playerCanClick === false) {

@@ -274,6 +274,7 @@ class PlayBoardModel {
         this.buttons.forEach(button => {
             button.mode = "gamepad";
         });
+        this.gameState.inventory.mode = "gamepad";
     }
 
     shift2Mouse(p5) {
@@ -281,6 +282,7 @@ class PlayBoardModel {
         this.buttons.forEach(button => {
             button.mode = "mouse";
         });
+        this.gameState.inventory.mode = "mouse";
     }
 }
 
