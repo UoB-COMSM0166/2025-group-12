@@ -13,10 +13,16 @@ export class MenuItem {
         this._onClick = (p5) => {
             console.error("button's onClick function is not overridden");
         };
+        this.isSelected = false;
+        this.mode = "mouse";
     }
 
     set onClick(func) {
         this._onClick = func;
+    }
+
+    get onClick() {
+        return this._onClick;
     }
 
     update(p5) {
@@ -48,13 +54,23 @@ export class MenuItem {
     }
 
     isHovered(p5) {
-        return p5.mouseX > this.x && p5.mouseX < this.x + this.width&&
-            p5.mouseY > this.y && p5.mouseY < this.y + this.height;
+        if(this.mode === "mouse") {
+            return p5.mouseX > this.x && p5.mouseX < this.x + this.width&&
+                p5.mouseY > this.y && p5.mouseY < this.y + this.height
+        }
+        else{
+            return this.isSelected;
+        }
     }
 
     disableHovering(p5) {
-        return p5.mouseX < this.x - this.width * 0.1 || p5.mouseX > this.x + this.width + this.width * 0.1 ||
-            p5.mouseY <  this.y ||  p5.mouseY > this.y + this.height;
+        if(this.mode === "mouse") {
+            return p5.mouseX < this.x - this.width * 0.1 || p5.mouseX > this.x + this.width + this.width * 0.1 ||
+                p5.mouseY <  this.y ||  p5.mouseY > this.y + this.height
+        }
+        else{
+            return !this.isSelected;
+        }
     }
 
     draw(p5) {

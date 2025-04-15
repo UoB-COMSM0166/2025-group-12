@@ -40,6 +40,12 @@ export function loadImages(p5) {
 
     images.set("GameMapBG", p5.loadImage(basePath + "GameMapBG.png"));
     images.set("Lock", p5.loadImage(basePath + "Lock.png"));
+    images.set("MountainLayer", p5.loadImage(basePath + "MountainLayer.png"));
+    images.set("TornadoIcon", p5.loadImage(basePath + "TornadoIcon.png"));
+    images.set("VolcanoIcon", p5.loadImage(basePath + "VolcanoIcon.png"));
+    images.set("EarthquakeIcon", p5.loadImage(basePath + "EarthquakeIcon.png"));
+    images.set("RainIcon", p5.loadImage(basePath + "RainIcon.png"));
+    images.set("TsunamiIcon", p5.loadImage(basePath + "TsunamiIcon.png"));
     return images;
 }
 

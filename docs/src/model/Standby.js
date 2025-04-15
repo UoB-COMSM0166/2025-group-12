@@ -18,14 +18,15 @@ export class StandbyMenu extends Screen {
         this.initAllFloatingWindows(p5);
 
         const buttonConfigs = [
-            {x: 0.52, y: 0.68, image: "Tornado", group: stageGroup.TORNADO},
-            {x: 0.475, y: 0.475, image: "VolcanoLayer", group: stageGroup.VOLCANO},
-            {x: 0.65, y: 0.3, image: "Landslide", group: stageGroup.EARTHQUAKE},
-            {x: 0.18, y: 0.65, image: "Blizzard", group: stageGroup.BLIZZARD},
-            {x: 0.36, y: 0.3, image: "Tsunami", group: stageGroup.TSUNAMI}
+            {x: 0.52, y: 0.68, image: "TornadoIcon", group: stageGroup.TORNADO},
+            {x: 0.475, y: 0.475, image: "VolcanoIcon", group: stageGroup.VOLCANO},
+            {x: 0.65, y: 0.3, image: "EarthquakeIcon", group: stageGroup.EARTHQUAKE},
+            {x: 0.18, y: 0.65, image: "RainIcon", group: stageGroup.BLIZZARD},
+            {x: 0.36, y: 0.3, image: "TsunamiIcon", group: stageGroup.TSUNAMI}
         ];
 
         this.buttons = buttonConfigs.map(cfg => this.createStageButton(p5, cfg.x, cfg.y, cfg.image, cfg.group));
+        this.isStart = true;
     }
 
     createStageButton(p5, xRatio, yRatio, imgName, group) {
@@ -61,6 +62,7 @@ export class StandbyMenu extends Screen {
         this.buttons.forEach(button => button.circle = null);
 
         if (this.handleFloatingWindow()) {
+            console.log("sholud invoke");
             return;
         }
 
@@ -72,6 +74,29 @@ export class StandbyMenu extends Screen {
 
         // clear selected stage group. if a button is clicked, this line of code will not be reached
         this.selectedStageGroup = stageGroup.NO_STAGE;
+    }
+
+    handleGamepad(index){
+        switch (index){
+            case 1:
+                this.cancel();
+                break;
+        }
+    }
+
+    handleAnalogStick(axes, p5) {
+        if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
+            // edges of the grid under old grid-centered coordinates
+            let updateX = p5.gamepadX + axes[0] * p5.mouseSpeed;
+            let updateY = p5.gamepadY + axes[1] * p5.mouseSpeed;
+
+            updateX = updateX <= 0 ? 0 : updateX;
+            updateY = updateY <= 0 ? 0 : updateY;
+            updateX = updateX >= CanvasSize.getSize()[0] ? CanvasSize.getSize()[0] : updateX;
+            updateY = updateY >= CanvasSize.getSize()[1] ? CanvasSize.getSize()[1] : updateY;
+            p5.gamepadX = updateX;
+            p5.gamepadY = updateY;
+        }
     }
 
     draw(p5) {
@@ -90,6 +115,13 @@ export class StandbyMenu extends Screen {
         }
 
         this.drawFloatingWindow(p5);
+
+        if(this.gameState.mode === "gamepad") {
+            p5.fill('yellow');
+            p5.circle(p5.gamepadX, p5.gamepadY, 10);
+        }
+        if(this.gameState.fading) this.playFadeOutAnimation(p5);
+        if(this.isStart) this.playFadeInAnimation(p5);
     }
 
     drawStageInfo(p5, group) {
@@ -148,7 +180,8 @@ export class StandbyMenu extends Screen {
     }
 
     clickedStageButton(p5, stageGroup) {
-        this.gameState.setState(stateCode.PLAY);
+        this.gameState.fading = true;
+        this.gameState.nextState = stateCode.PLAY;
         this.gameState.currentStageGroup = stageGroup;
     }
 
@@ -199,4 +232,26 @@ export class StandbyMenu extends Screen {
 
         this.allFloatingWindows = afw;
     }
+
+    setupGamepad(p5){
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+        });
+    }
+
+    setupMouse(p5) {
+        p5.cursor();
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
+    }
+
+    cancel(){
+        this.selectedStageGroup = stageGroup.NO_STAGE;
+        this.buttons.forEach(button => {
+            button.circle = null;
+        });
+    }
+
 }

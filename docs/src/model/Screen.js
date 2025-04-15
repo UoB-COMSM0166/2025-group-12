@@ -1,9 +1,14 @@
+import {CanvasSize} from "../CanvasSize.js";
+
 export class Screen {
     constructor(gameState) {
         this.gameState = gameState;
         this.buttons = [];
         this.floatingWindow = null;
         this.allFloatingWindows = null;
+        this.fade = 0;
+        this.isStart = true;
+        this.fadeIn = 255;
     }
 
     // init buttons and keyboard listeners.
@@ -76,6 +81,30 @@ export class Screen {
 
     initAllFloatingWindows(p5) {
         console.error("initAllFloatingWindows not implemented!");
+    }
+
+    playFadeInAnimation(p5) {
+        this.fadeIn -= 10;
+        p5.noStroke();
+        p5.fill(0, this.fadeIn);
+        p5.rect(0, 0, CanvasSize.getSize()[0], CanvasSize.getSize()[1]);
+        if(this.fadeIn <= 0){
+            this.fadeIn = 255;
+            this.isStart = false;
+        }
+    }
+
+    playFadeOutAnimation(p5) {
+        this.fade += 10;
+        p5.noStroke();
+        p5.fill(0, this.fade);
+        p5.rect(0, 0, CanvasSize.getSize()[0], CanvasSize.getSize()[1]);
+        if(this.fade >= 255) {
+            this.gameState.fading = false;
+            this.fade = 0;
+            this.gameState.setState(this.gameState.nextState);
+            this.isStart = true;
+        }
     }
 
 }

@@ -4,11 +4,13 @@ import {GameSave} from "./GameSave.js";
 import {MenuItem} from "../items/MenuItem.js";
 import {FloatingWindow} from "./FloatingWindow.js";
 import {Screen} from "./Screen.js";
+import {CanvasSize} from "../CanvasSize.js";
 
 export class StartMenu extends Screen {
     constructor(gameState) {
         super(gameState);
         this.languageManager = this.gameState.languageManager;
+        this.index = 0;
     }
 
     setup(p5) {
@@ -19,7 +21,11 @@ export class StartMenu extends Screen {
         let buttonInter = myutil.relative2absolute(0.1, 0.1)[1];
 
         let newGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
-        newGameButton.onClick = () => this.gameState.setState(stateCode.STANDBY);
+        newGameButton.onClick = () => {
+            // gameState change is in fadeOut animation function
+            this.gameState.fading = true;
+            this.gameState.nextState = stateCode.STANDBY;
+        }
 
         let loadGameButton = new MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
@@ -34,6 +40,7 @@ export class StartMenu extends Screen {
         }
 
         this.buttons.push(newGameButton, loadGameButton, optionsButton);
+        this.isStart = true;
     }
 
     reset(p5) {
@@ -47,6 +54,43 @@ export class StartMenu extends Screen {
         }
         for (let button of this.buttons) {
             button.mouseClick(p5);
+        }
+    }
+
+    handleGamepad(index){
+        switch (index) {
+            case 12:
+                this.buttons[this.index].isSelected = false;
+                if (this.index === 0) this.index = 2;
+                else this.index--;
+                this.buttons[this.index].isSelected = true;
+                break;
+            case 13:
+                this.buttons[this.index].isSelected = false;
+                if (this.index === 2) this.index = 0;
+                else this.index++;
+                this.buttons[this.index].isSelected = true;
+                break;
+        }
+
+    }
+
+    handleAnalogStick(axes) {
+
+    }
+
+    handleAnalogStickPressed(axes) {
+        if(axes[1] < 0){
+            this.buttons[this.index].isSelected = false;
+            if (this.index === 0) this.index = 2;
+            else this.index--;
+            this.buttons[this.index].isSelected = true;
+        }
+        else{
+            this.buttons[this.index].isSelected = false;
+            if (this.index === 2) this.index = 0;
+            else this.index++;
+            this.buttons[this.index].isSelected = true;
         }
     }
 
@@ -66,6 +110,8 @@ export class StartMenu extends Screen {
         }
 
         this.drawFloatingWindow(p5);
+        if(this.gameState.fading) this.playFadeOutAnimation(p5);
+        if(this.isStart) this.playFadeInAnimation(p5);
     }
 
     changeNewToResume() {
@@ -94,6 +140,27 @@ export class StartMenu extends Screen {
         myutil.commonFloatingWindows(p5, afw);
 
         this.allFloatingWindows = afw;
+    }
+
+    setupGamepad(p5){
+        p5.noCursor();
+        this.buttons.forEach(button => {
+            button.mode = "gamepad";
+            button.isSelected = false;
+        });
+        this.buttons[0].isSelected = true;
+    }
+
+    setupMouse(p5) {
+        p5.cursor();
+        this.buttons[this.index].isSelected = false;
+        this.buttons.forEach(button => {
+            button.mode = "mouse";
+        });
+    }
+
+    cancel(){
+
     }
 }
 

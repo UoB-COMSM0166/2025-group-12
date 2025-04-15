@@ -14,21 +14,23 @@ export class MapButton {
         };
         this.circle = null;
         this.stageGroup = stageGroup;
+        this.mode = "mouse";
     }
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
-        let baseColor = "rgb(102, 255, 102)";
-        let hoverColor = "rgb(152, 255, 152)";
-        let buttonColor = this.isHovered ? hoverColor : baseColor;
-        p5.noStroke();
-        // rectangle shape of button
-        p5.fill(buttonColor);
-        p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
-        p5.image(this.img, this.x, this.y, this.width, this.height);
+        // let baseColor = "rgb(102, 255, 102)";
+        // let hoverColor = "rgb(152, 255, 152)";
+        // let buttonColor = this.isHovered ? hoverColor : baseColor;
+        // p5.noStroke();
+        // // rectangle shape of button
+        // p5.fill(buttonColor);
+        // p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
+        if((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width* 0.1, this.y - this.height * 0.1, this.width* 1.2, this.height * 1.2);
+        else p5.image(this.img, this.x, this.y, this.width, this.height);
         if (this.isLocked === true) {
-            p5.fill(100, 100, 100, 100);
-            p5.rect(this.x, this.y, this.width, this.height, 10);
+            // p5.fill(100, 100, 100, 100);
+            // p5.rect(this.x, this.y, this.width, this.height, 10);
             p5.image(p5.images.get("Lock"), this.x + this.width / 4, this.y + this.height / 4, this.width / 2, this.height / 2);
         }
 
@@ -37,6 +39,10 @@ export class MapButton {
 
     set onClick(func) {
         this._onClick = func;
+    }
+
+    get onClick() {
+        return this._onClick;
     }
 
     unlock(gameState) {
@@ -56,8 +62,9 @@ export class MapButton {
     }
 
     hasMouseOver(p5) {
-        return p5.mouseX > this.x && p5.mouseX < this.x + this.width
+        if(this.mode === "mouse") return p5.mouseX > this.x && p5.mouseX < this.x + this.width
             && p5.mouseY > this.y && p5.mouseY < this.y + this.height;
+        else return p5.gamepadX > this.x && p5.gamepadX < this.x + this.width && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
     }
 
     mouseClick(p5) {

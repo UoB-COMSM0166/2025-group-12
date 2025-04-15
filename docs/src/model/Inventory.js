@@ -16,6 +16,8 @@ export class Inventory {
         this.selectedItem = null; // a String
         this.scrollIndex = 0;
         this.maxVisibleItems = 6;
+        this.status = [false, false, false, false, false, false];
+        this.index = -1;
 
         // for fast lookup when creating item
         this.itemPrototypes = this.initPrototypes(p5); // Map<String name, Plant/Seed instance>
@@ -28,6 +30,8 @@ export class Inventory {
         this.inventoryX = CanvasSize.getSize()[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
+        this.mode = "mouse";
+        this.isSelected = false;
     }
 
     // with prototypes, we can find seed or plant type given a name,
@@ -69,11 +73,21 @@ export class Inventory {
         // loop inventory items
         let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
         let index = 0;
-        for (let [key, value] of visibleItems) {
+        for (let i = 0; i < visibleItems.length; i++) {
+            let key = visibleItems[i][0];
+            let value = visibleItems[i][1];
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
             let itemInstance = this.itemPrototypes.get(key);
+            p5.push();
+            if (this.index === i) {
+                p5.stroke('yellow');
+                p5.strokeWeight(3);
+            } else {
+                p5.noStroke();
+            }
             p5.fill(itemInstance.color);
             p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - this.itemInter, this.itemInter);
+            p5.pop();
             p5.fill(0);
             p5.textSize(14);
             p5.textAlign(p5.CENTER, p5.CENTER);
@@ -90,6 +104,7 @@ export class Inventory {
         } else if (event.deltaY < 0) {
             this.scrollIndex = Math.max(this.scrollIndex - 1, 0);
         }
+        console.log(this.scrollIndex)
     }
 
     handleClick(p5) {
@@ -99,12 +114,21 @@ export class Inventory {
         let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
         // record when an inventory item is clicked
         let index = 0;
-        for (let [key, value] of visibleItems) {
+        for (let i = 0; i < visibleItems.length; i++) {
+            let key = visibleItems[i][0];
             let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
-            if (p5.mouseX >= this.itemX && p5.mouseX <= this.itemX + this.itemWidth &&
-                p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - this.itemInter)) {
-                this.selectedItem = key;
-                return;
+            if(this.mode === "mouse"){
+                if (p5.mouseX >= this.itemX && p5.mouseX <= this.itemX + this.itemWidth &&
+                    p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - this.itemInter)) {
+                    this.selectedItem = key;
+                    return;
+                }
+            }
+            else{
+                if(this.index === i && this.isSelected){
+                    this.selectedItem = key;
+                    return;
+                }
             }
             index++;
         }

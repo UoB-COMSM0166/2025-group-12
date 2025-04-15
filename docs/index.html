@@ -1,16 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Green Renaissance</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="lib/p5.js"></script>
-    <script src="lib/p5.sound.min.js"></script>
-  </head>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <body>
-    <script type="module" src="src/Main.js"></script>
-  </body>
+  <title>Green Renaissance</title>
+  <!-- CSS重設，移除預設邊距及隱藏滾動條 -->
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      /* 隱藏畫面外滾動條 */
+    }
+    #canvas-container {
+      width: 90vw;
+      height: 90vh;
+      margin: auto;
+      position: absolute;
+      top: 0; bottom: 0; left: 0; right: 0;
+    }
+  </style>
+  <link rel="stylesheet" href="style.css">
+  <script src="lib/p5.js"></script>
+  <script src="lib/p5.sound.min.js"></script>
+</head>
+
+<body>
+  <script type="module" src="src/Main.js"></script>
+</body>
+
 </html>

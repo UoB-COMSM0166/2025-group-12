@@ -68,6 +68,41 @@ export class Controller {
         }
     }
 
+    gamepadListener(index) {
+        if (this.gameState.paused) {
+            this.pauseMenu.handleGamepad(index);
+            return;
+        }
+        if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleGamepad) {
+            currentMenu.handleGamepad(index);
+        }
+    }
+
+    analogStickListener(axes, p) {
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleAnalogStick) {
+            currentMenu.handleAnalogStick(axes, p);
+        }
+    }
+
+    analogStickPressedListener(axes) {
+        if (this.gameState.paused) {
+            this.pauseMenu.handleAnalogStickPressed(axes);
+            return;
+        }
+        if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        let currentMenu = this.menus[this.gameState.getState()];
+        if (currentMenu && currentMenu.handleAnalogStickPressed) {
+            currentMenu.handleAnalogStickPressed(axes);
+        }
+    }
+
     view(p5) {
         let currentMenu = this.menus[this.gameState.getState()];
         if (currentMenu && currentMenu.draw) {
