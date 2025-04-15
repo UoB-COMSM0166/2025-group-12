@@ -12,6 +12,7 @@ function loadImages(p5) {
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
     images.set("MountainLayer", p5.loadImage(basePath + "MountainLayer.png"));
+    images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
     images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
     images.set("VolcanoLayer", p5.loadImage(basePath + "VolcanoLayer.png"));
     images.set("Lava", p5.loadImage(basePath + "LavaTest.png"));
@@ -34,10 +35,9 @@ function loadImages(p5) {
     images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));
     images.set("alertArrow", p5.loadImage(basePath + "alertArrow.png"));
     images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
-    images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
     images.set("VolcanicBomb", p5.loadImage(basePath + "Bomb.png"));
     images.set("Blizzard", p5.loadImage(basePath + "Blizzard.png"));
-    images.set("Tsunami", p5.loadImage(basePath + "Tsunami.png"));
+    images.set("TsunamiAnimation", p5.loadImage(basePath + "Tsunami.png"));
 
     images.set("GameMapBG", p5.loadImage(basePath + "GameMapBG.png"));
     images.set("Lock", p5.loadImage(basePath + "Lock.png"));

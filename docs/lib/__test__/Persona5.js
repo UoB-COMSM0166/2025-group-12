@@ -1,4 +1,4 @@
-export function createMockP5() {
+function createMockP5() {
     const fn = () => { };
 
     return {
@@ -88,4 +88,25 @@ export function createMockP5() {
         loadSound: fn,
         frameCount: 0,
     };
+}
+
+function simulateKeyDown(key) {
+    const event = new KeyboardEvent('keydown', { key });
+    window.dispatchEvent(event);
+}
+
+function simulateKeyUp(key) {
+    const event = new KeyboardEvent('keyup', { key });
+    window.dispatchEvent(event);
+}
+
+function simulateKeyPress(key) {
+    simulateKeyDown(key);
+    simulateKeyUp(key);
+}
+
+export { createMockP5, simulateKeyDown, simulateKeyUp, simulateKeyPress };
+
+if (typeof module !== 'undefined') {
+    module.exports = { createMockP5, simulateKeyDown, simulateKeyUp, simulateKeyPress };
 }

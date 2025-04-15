@@ -1,4 +1,4 @@
-import { createMockP5 } from "./Persona5.js";
+import { createMockP5, simulateKeyDown, simulateKeyUp } from "./Persona5.js";
 import { tick } from "./Tick.js";
 import { Container } from "../../src/controller/Container.js";
 // --------------------------------------
@@ -140,4 +140,10 @@ test('insert items to the inventory then test scroll', () => {
     // next cycle - wait effect
     tick(p, container, 1);
     expect(inventory.scrollIndex).toBe(1);
+});
+
+test("pressing escape toggles pause", () => {
+    expect(container.gameState.paused).toBe(false);
+    simulateKeyDown('Escape');
+    expect(container.gameState.paused).toBe(true);
 });
