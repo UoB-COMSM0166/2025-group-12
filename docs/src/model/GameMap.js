@@ -307,6 +307,7 @@ class GameMapLogic {
      * @param gameMap
      */
     static handleAnalogStick(p5, axes, gameMap) {
+        if (gameMap.gameState.paused) return;
         if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
             // edges of the grid under old grid-centered coordinates
             let updateX = p5.gamepadX + axes[0] * p5.mouseSpeed;

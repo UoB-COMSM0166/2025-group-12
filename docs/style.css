@@ -8,6 +8,10 @@ canvas {
   display: block;
 }
 
+#p5_loading {
+  display: none;
+}
+
 /*
 
 html, body {

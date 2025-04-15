@@ -53,7 +53,7 @@ new p5((p) => {
                 return;
             }
             container.controller.analogStickPressedListener(axes);
-        })
+        });
     };
 
     p.mouseWheel = (event) => {

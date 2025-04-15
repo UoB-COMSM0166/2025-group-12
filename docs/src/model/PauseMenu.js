@@ -153,13 +153,13 @@ class PauseMenuLogic {
                 break;
             case 12:
                 pauseMenu.buttons[pauseMenu.index].isSelected = false;
-                if (pauseMenu.index === 0) pauseMenu.index = 3;
+                if (pauseMenu.index === 0) pauseMenu.index = pauseMenu.buttons.length - 1;
                 else pauseMenu.index--;
                 pauseMenu.buttons[pauseMenu.index].isSelected = true;
                 break;
             case 13:
                 pauseMenu.buttons[pauseMenu.index].isSelected = false;
-                if (pauseMenu.index === 3) pauseMenu.index = 0;
+                if (pauseMenu.index === pauseMenu.buttons.length - 1) pauseMenu.index = 0;
                 else pauseMenu.index++;
                 pauseMenu.buttons[pauseMenu.index].isSelected = true;
                 break;
