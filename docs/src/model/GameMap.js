@@ -66,7 +66,6 @@ class GameMapModel {
                     if (button.isCleared) {
                         GameMapLogic.copyFloatingWindow(p5, "clear", this);
                     } else {
-                        console.log("new lock?")
                         GameMapLogic.copyFloatingWindow(p5, "lock", this);
                     }
                     this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;

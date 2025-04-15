@@ -96,7 +96,6 @@ class InventoryLogic {
      * @param {InventoryModel} inventory
      */
     static handleScroll(event, inventory) {
-        console.log("scrolled")
         let maxIndex = Math.max(0, inventory.items.size - inventory.maxVisibleItems);
         if (event.deltaY > 0) {
             inventory.scrollIndex = Math.min(inventory.scrollIndex + 1, maxIndex);

@@ -83,7 +83,7 @@ class Tsunami1PlayBoard {
                 }
             }
         }
-        this.PlayBoardLogic.BoardLogic.setCell(8, 15, this.terrainFactory.get(this.terrainTypes.HILL)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(8, 15, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
         this.PlayBoardLogic.BoardLogic.setCell(7, 8, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
         this.PlayBoardLogic.BoardLogic.setCell(7, 9, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
     }
