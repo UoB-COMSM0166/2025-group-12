@@ -7,6 +7,8 @@ const stateCode = {
 
 // game stages are now grouped and the code refers to affiliated group
 // the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
+// MAKE THESE CONSTANTS CONTINUOUS ! ! ! ! !
+// conditions like playBoard.stageGroup >= stageGroup.BLIZZARD present.
 /**
  * @global
  * @typedef {Object} stageGroup

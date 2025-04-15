@@ -22,11 +22,11 @@ class MapButton {
         if ((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
         else p5.image(this.img, this.x, this.y, this.width, this.height);
         if (this.isLocked === true) {
+            p5.noStroke();
             p5.fill(100, 100, 100, 100);
-            p5.rect(this.x, this.y, this.width, this.height, 10);
+            p5.rect(this.x + this.width * 0.1, this.y + this.height * 0.1, this.width * 0.8, this.height * 0.8);
             p5.image(p5.images.get("Lock"), this.x + this.width / 4, this.y + this.height / 4, this.width / 2, this.height / 2);
         }
-
         if (this.circle) this.circle.updateAndDraw(p5);
     }
 

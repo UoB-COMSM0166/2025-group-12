@@ -285,6 +285,9 @@ class GameMapLogic {
             case 1:
                 GameMapLogic.cancel(gameMap);
                 break;
+            case 9:
+                gameMap.gameState.togglePaused();
+                break;
         }
     }
 
