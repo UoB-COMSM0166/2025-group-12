@@ -1,16 +1,4 @@
-import {Inventory} from "./Inventory.js";
-import {Tornado1PlayBoard} from "./stages/Tor1.js";
-import {Tornado2PlayBoard} from "./stages/Tor2.js";
-import {Volcano1PlayBoard} from "./stages/Vol1.js";
-import {LanguageManager} from "../LanguageManager.js";
-import {Tornado3PlayBoard} from "./stages/Tor3.js";
-import {Tornado4PlayBoard} from "./stages/Tor4.js";
-import {Tornado5PlayBoard} from "./stages/Tor5.js";
-import {Earthquake1PlayBoard} from "./stages/Ear1.js";
-import {Blizzard1PlayBoard} from "./stages/Bli1.js";
-import {Tsunami1PlayBoard} from "./stages/Tsu1.js";
-
-export const stateCode = {
+const stateCode = {
     MENU: 1,
     STANDBY: 2,
     PLAY: 4,
@@ -19,7 +7,19 @@ export const stateCode = {
 
 // game stages are now grouped and the code refers to affiliated group
 // the game stage factory, combining with this.clearedStages handles which concrete stage to be allocated.
-export const stageGroup = {
+// MAKE THESE CONSTANTS CONTINUOUS ! ! ! ! !
+// conditions like playBoard.stageGroup >= stageGroup.BLIZZARD present.
+/**
+ * @global
+ * @typedef {Object} stageGroup
+ * @property {number} NO_STAGE
+ * @property {number} TORNADO
+ * @property {number} VOLCANO
+ * @property {number} EARTHQUAKE
+ * @property {number} BLIZZARD
+ * @property {number} TSUNAMI
+ */
+const stageGroup = {
     NO_STAGE: 0,
     TORNADO: 1,     // 5 stages expected
     VOLCANO: 2,     // 1
@@ -29,23 +29,34 @@ export const stageGroup = {
 }
 
 // game state should not handle any switching logic but only stores information
-export class GameState {
-    constructor(p5) {
+class GameState {
+    /**
+     *
+     * @param p5
+     * @param {GameStageFactory} gsf
+     * @param {InventoryModel} inventory
+     */
+    constructor(p5, gsf, inventory) {
         this.state = stateCode.MENU; // default
         this.currentStageGroup = stageGroup.NO_STAGE; // no stage is selected
+        /** @type {null|PlayBoardLike} */
         this.currentStage = null;
-        this.inventory = new Inventory(p5);
+        /** @type {InventoryModel} */
+        this.inventory = inventory;
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
+
         this.clearedStages = new Map();
         this.clearedStages.set(stageGroup.NO_STAGE, 1);
+        /** @type {GameStageFactory} */
+        this.gsf = gsf;
 
-        this.gsf = new GameStageFactory();
-        this.languageManager = new LanguageManager();
-        this.showOptions = false;
-        this.mode = "mouse";
-        this.fading = false;
+        // fade in fade out render
+        this.isFading = false;
         this.nextState = null;
+
+        // gamepad
+        this.mode = "mouse";
     }
 
     setState(newState) {
@@ -65,11 +76,15 @@ export class GameState {
         this.paused = !this.paused;
     }
 
-    setStageCleared(playBoard) {
-        if (this.clearedStages.has(playBoard.stageGroup)) {
-            this.clearedStages.set(playBoard.stageGroup, this.clearedStages.get(playBoard.stageGroup) + 1);
+    /**
+     *
+     * @param boardStageGroup
+     */
+    setStageCleared(boardStageGroup) {
+        if (this.clearedStages.has(boardStageGroup)) {
+            this.clearedStages.set(boardStageGroup, this.clearedStages.get(boardStageGroup) + 1);
         } else {
-            this.clearedStages.set(playBoard.stageGroup, 1);
+            this.clearedStages.set(boardStageGroup, 1);
         }
     }
 
@@ -82,37 +97,10 @@ export class GameState {
         let index = this.clearedStages.get(stageGroup);
         return index !== undefined && index >= numbering;
     }
-
-    // invoked by controller.
-    newGameStage() {
-        return this.gsf.newGameStage(this.currentStageGroup, this);
-    }
 }
 
-class GameStageFactory {
-    constructor() {
-        this.stageClasses = Array.from({length: 20}, () => []);
+export {stateCode, stageGroup, GameState};
 
-        this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
-
-        this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
-
-        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
-
-        this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
-
-        this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
-    }
-
-    // allocate game stage dynamically
-    newGameStage(newStage, gameState) {
-        let StageClasses = this.stageClasses[gameState.currentStageGroup];
-        let index = gameState.clearedStages.get(gameState.currentStageGroup);
-        let StageClass = StageClasses[index != null ? index : 0];
-        return StageClass ? new StageClass(gameState) : null;
-    }
+if (typeof module !== 'undefined') {
+    module.exports = {stateCode, stageGroup, GameState};
 }

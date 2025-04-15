@@ -1,108 +1,163 @@
-import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Bandit, Lumbering} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
+class Tornado5PlayBoard {
+    static PlayBoardLogic;
+    static PlayBoardModel;
 
-export class Tornado5PlayBoard extends PlayBoard {
-    constructor(gameState) {
-        super(gameState);
-        this.stageGroup = stageGroup.TORNADO;
-        this.stageNumbering = "1-5";
+    /**
+     *
+     * @param {typeof PlayBoardModel} PlayBoardModelInjection
+     * @param {typeof PlayBoardLogic} PlayBoardLogicInjection
+     */
+    static setup(PlayBoardModelInjection, PlayBoardLogicInjection) {
+        this.PlayBoardModel = PlayBoardModelInjection;
+        this.PlayBoardLogic = PlayBoardLogicInjection;
+
+        this.plantFactory = this.PlayBoardLogic.plantFactory;
+        this.plantTypes = this.PlayBoardLogic.plantTypes;
+        this.seedTypes = this.PlayBoardLogic.seedTypes;
+        this.movableFactory = this.PlayBoardLogic.movableFactory;
+        this.movableTypes = this.PlayBoardLogic.movableTypes;
+        this.terrainFactory = this.PlayBoardLogic.terrainFactory;
+        this.terrainTypes = this.PlayBoardLogic.terrainTypes;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static concreteBoardInit(playBoard) {
+        playBoard.stageGroup = this.PlayBoardModel.stageGroup.TORNADO;
+        playBoard.stageNumbering = 5;
         // grid parameters
-        this.gridSize = 10;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        playBoard.gridSize = 10;
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
-        this.boardObjects = new BoardCells(this.gridSize);
+        playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
 
         // turn counter
-        this.turn = 1;
-        this.maxTurn = 10;
+        playBoard.turn = 1;
+        playBoard.maxTurn = 10;
     }
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-        this.gameState.inventory.pushItem2Inventory(p5, "Tree", 3);
-        this.gameState.inventory.pushItem2Inventory(p5, "Bush", 3);
-        this.gameState.inventory.pushItem2Inventory(p5, "Orchid", 3);
-        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 3);
-        this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 3);
-        this.gameState.inventory.pushItem2Inventory(p5, "OrchidSeed", 3);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageInventory(p5, playBoard) {
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 3, playBoard.gameState.inventory);
     }
 
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe(p5));
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
             }
         }
-        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
-        this.boardObjects.setCell(7, 5, new Mountain(p5));
-        this.boardObjects.setCell(7, 6, new Mountain(p5));
-        this.boardObjects.setCell(1, 1, new Lumbering(p5));
-        this.boardObjects.setCell(7, 7, new Lumbering(p5));
-        this.boardObjects.setCell(7, 2, new Lumbering(p5));
+        this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+
+        this.PlayBoardLogic.BoardLogic.setCell(7, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 6, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+
+        this.PlayBoardLogic.BoardLogic.setCell(1, 1, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 7, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 2, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+
     }
 
-    nextTurnItems(p5) {
-        switch (this.turn) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+        switch (playBoard.turn) {
             case 2:
-                Bandit.createNewBandit(p5, this, 1, 2);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 1, 2);
                 break;
             case 4:
-                Bandit.createNewBandit(p5, this, 1, 2);
-                Bandit.createNewBandit(p5, this, 7, 8);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 1, 2);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 7, 8);
                 break;
             case 5:
-                Tornado.createNewTornado(p5, this, 0, 4, "d");
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 4, 'd', 1);
                 break;
             case 6:
-                Bandit.createNewBandit(p5, this, 7, 3);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 7, 3);
                 break;
             case 7:
-                Bandit.createNewBandit(p5, this, 8, 7);
-                Bandit.createNewBandit(p5, this, 8, 8);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 8, 7);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 8, 8);
                 break;
             case 8:
-                Tornado.createNewTornado(p5, this, 8, 4, "u");
-                Tornado.createNewTornado(p5, this, 2, 4, "d");
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 8, 4, 'u', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 2, 4, 'd', 1);
                 break;
             case 10:
-                Bandit.createNewBandit(p5, this, 2, 2);
-                Tornado.createNewTornado(p5, this, 4, 2, "r");
-                Tornado.createNewTornado(p5, this, 7, 4, "u");
-                Tornado.createNewTornado(p5, this, 2, 4, "d");
-                Tornado.createNewTornado(p5, this, 4, 8, "l");
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 2, 2);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 4, 2, 'r', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 7, 4, 'u', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 2, 4, 'd', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 4, 8, 'l', 1);
                 break;
         }
     }
 
-    modifyBoard(p5, code) {
-
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
     }
 
-    setFloatingWindow(p5) {
-        if (this.turn === this.maxTurn + 1) {
-            if (this.allFloatingWindows.has("000")) {
-                this.floatingWindow = this.allFloatingWindows.get("000");
-                this.allFloatingWindows.delete("000");
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            if (playBoard.allFloatingWindows.has("000")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("000");
+                playBoard.allFloatingWindows.delete("000");
                 return;
             }
         }
     }
 
-    initAllFloatingWindows(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
         let afw = new Map();
 
-        myutil.commonFloatingWindows(p5, afw);
+        this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Tornado5PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Tornado5PlayBoard};
 }

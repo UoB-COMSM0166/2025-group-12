@@ -1,16 +1,15 @@
-import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
-import {Plant} from "./Plant.js";
-import {Seed} from "./Seed.js";
-
-export class Bamboo extends Plant {
-    constructor(p5) {
-        super();
+/**
+ * @implements {PlantLike}
+ */
+class BambooModel {
+    constructor(p5, superModel, itemTypes, plantTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "Bamboo";
         this.color = "rgb(126,255,97)";
         this.plantType = plantTypes.BAMBOO;
         this.img = p5.images.get(`${this.name}`);
 
-        this.seed = BambooSeed;
+        this.seed = BambooSeedModel;
 
         this.health = 4;
         this.maxHealth = 4;
@@ -24,54 +23,66 @@ export class Bamboo extends Plant {
     getActiveString() {
         return "No active skill.";
     }
+}
 
-    reevaluateSkills(playBoard, cell) {
+class BambooRenderer {
+}
 
+class BambooLogic {
+    static setup(bundle) {
+        BambooLogic.terrainTypes = bundle.terrainTypes;
+        BambooLogic.itemTypes = bundle.itemTypes;
+        BambooLogic.plantTypes = bundle.plantTypes;
+        BambooLogic.superModel = bundle.PlantModel;
+
+        /** @type {typeof BoardLogic} */
+        BambooLogic.BoardLogic = bundle.BoardLogic;
     }
 
-    stringify() {
-        const object = {
-            plantType: this.plantType,
-            health: this.health,
+    static reevaluateSkills() {
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} cell
+     */
+    static spreadBamboo(p5, playBoard, cell) {
+        if (!cell.plant && !cell.seed) {
+            cell.plant = new BambooModel(p5, BambooLogic.superModel, BambooLogic.itemTypes, BambooLogic.plantTypes);
         }
-        if (this.earthCounter) object.earthCounter = this.earthCounter;
-        if (this.coldCounter) object.coldCounter = this.coldCounter;
-        return JSON.stringify(object);
-    }
 
-    static parse(json, p5) {
-        const object = JSON.parse(json);
-        let bamboo = new Bamboo(p5);
-        bamboo.health = object.health;
-        bamboo.earthCounter = object.earthCounter;
-        bamboo.coldCounter = object.coldCounter;
-        return bamboo;
+        for (let adCell of BambooLogic.BoardLogic.getAdjacent8Cells(cell.i, cell.j, playBoard.boardObjects)) {
+            if (adCell.plant || adCell.seed) continue;
+
+            if (adCell.terrain.terrainType === BambooLogic.terrainTypes.LANDSLIDE) {
+                adCell.plant = new BambooModel(p5, BambooLogic.superModel, BambooLogic.itemTypes, BambooLogic.plantTypes);
+                this.spreadBamboo(p5, playBoard, adCell);
+            }
+        }
     }
 }
 
-export class BambooSeed extends Seed {
-    constructor(p5) {
-        super();
+class BambooSeedModel {
+    constructor(p5, superModel, itemTypes, seedTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "BambooSeed";
         this.color = "rgb(126,255,97)";
         this.seedType = seedTypes.BAMBOO;
         this.countdown = 3;
         this.img = this.img = p5.images.get("Seed");
     }
+}
 
-    grow(p5) {
-        this.countdown--;
-        if (this.countdown === 0) {
-            return new Bamboo(p5);
-        } else {
-            return this;
-        }
-    }
+class BambooSeedRenderer {
+}
 
-    static parse(json, p5) {
-        const object = JSON.parse(json);
-        let bambooSeed = new BambooSeed(p5);
-        bambooSeed.countdown = object.countdown;
-        return bambooSeed;
-    }
+class BambooSeedLogic {
+}
+
+export {BambooModel, BambooLogic, BambooRenderer, BambooSeedModel, BambooSeedLogic, BambooSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {BambooModel, BambooLogic, BambooRenderer, BambooSeedModel, BambooSeedLogic, BambooSeedRenderer};
 }

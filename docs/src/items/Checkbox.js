@@ -1,4 +1,4 @@
-export class Checkbox {
+class Checkbox {
     constructor(x, y, width, height, text) {
         // location and size properties
         this.x = x;
@@ -20,11 +20,11 @@ export class Checkbox {
         p5.stroke(0);
         p5.noFill();
         p5.rect(this.x, this.y, this.width, this.height);
-         if(this.isChecked) {
+        if (this.isChecked) {
             p5.strokeWeight(4);
-            p5.line(this.x + this.width * 0.05, this.y + this.height * 0.25, this.x + this.width/2, this.y + this.height);
-            p5.line(this.x + this.width/2, this.y + this.height, this.x + this.width - this.width * 0.05, this.y + this.height * 0.25);
-         }
+            p5.line(this.x + this.width * 0.05, this.y + this.height * 0.25, this.x + this.width / 2, this.y + this.height);
+            p5.line(this.x + this.width / 2, this.y + this.height, this.x + this.width - this.width * 0.05, this.y + this.height * 0.25);
+        }
         p5.pop();
     }
 
@@ -45,4 +45,10 @@ export class Checkbox {
         }
         return false;
     }
+}
+
+export {Checkbox};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Checkbox};
 }

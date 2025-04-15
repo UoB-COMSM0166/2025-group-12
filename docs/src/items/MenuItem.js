@@ -1,4 +1,4 @@
-export class MenuItem {
+class MenuItem {
     constructor(x, y, width, height, text) {
         this.x = x;
         this.y = y;
@@ -26,10 +26,9 @@ export class MenuItem {
     }
 
     update(p5) {
-        if(this.hovering){
+        if (this.hovering) {
             this.hovering = !this.disableHovering(p5);
-        }
-        else{
+        } else {
             this.hovering = this.isHovered(p5);
         }
         if (this.hovering) {
@@ -54,21 +53,19 @@ export class MenuItem {
     }
 
     isHovered(p5) {
-        if(this.mode === "mouse") {
-            return p5.mouseX > this.x && p5.mouseX < this.x + this.width&&
+        if (this.mode === "mouse") {
+            return p5.mouseX > this.x && p5.mouseX < this.x + this.width &&
                 p5.mouseY > this.y && p5.mouseY < this.y + this.height
-        }
-        else{
+        } else {
             return this.isSelected;
         }
     }
 
     disableHovering(p5) {
-        if(this.mode === "mouse") {
+        if (this.mode === "mouse") {
             return p5.mouseX < this.x - this.width * 0.1 || p5.mouseX > this.x + this.width + this.width * 0.1 ||
-                p5.mouseY <  this.y ||  p5.mouseY > this.y + this.height
-        }
-        else{
+                p5.mouseY < this.y || p5.mouseY > this.y + this.height
+        } else {
             return !this.isSelected;
         }
     }
@@ -85,12 +82,11 @@ export class MenuItem {
 
             let topY, bottomY;
             let r = this.width * 0.03;
-            if(i < r){
-                let angle = p5.acos((r-i)/r);
+            if (i < r) {
+                let angle = p5.acos((r - i) / r);
                 topY = this.y + r - (r * p5.sin(angle));
                 bottomY = this.y + this.height - r + (r * p5.sin(angle));
-            }
-            else{
+            } else {
                 topY = this.y;
                 bottomY = this.y + this.height;
             }
@@ -108,4 +104,10 @@ export class MenuItem {
         }
         return false;
     }
+}
+
+export {MenuItem};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MenuItem};
 }

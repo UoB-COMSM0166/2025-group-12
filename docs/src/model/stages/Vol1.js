@@ -1,114 +1,156 @@
-import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Lava, VolcanicBomb, Volcano} from "../../items/Volcano.js";
-import {enemyTypes, terrainTypes} from "../../items/ItemTypes.js";
-import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
+class Volcano1PlayBoard {
+    static PlayBoardLogic;
+    static PlayBoardModel;
 
-export class Volcano1PlayBoard extends PlayBoard {
-    constructor(gameState) {
-        super(gameState);
-        this.stageGroup = stageGroup.VOLCANO;
-        this.stageNumbering = "2-1";
+    /**
+     *
+     * @param {typeof PlayBoardModel} PlayBoardModelInjection
+     * @param {typeof PlayBoardLogic} PlayBoardLogicInjection
+     */
+    static setup(PlayBoardModelInjection, PlayBoardLogicInjection) {
+        this.PlayBoardModel = PlayBoardModelInjection;
+        this.PlayBoardLogic = PlayBoardLogicInjection;
+
+        this.plantFactory = this.PlayBoardLogic.plantFactory;
+        this.plantTypes = this.PlayBoardLogic.plantTypes;
+        this.seedTypes = this.PlayBoardLogic.seedTypes;
+        this.movableFactory = this.PlayBoardLogic.movableFactory;
+        this.movableTypes = this.PlayBoardLogic.movableTypes;
+        this.terrainFactory = this.PlayBoardLogic.terrainFactory;
+        this.terrainTypes = this.PlayBoardLogic.terrainTypes;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static concreteBoardInit(playBoard) {
+        playBoard.stageGroup = this.PlayBoardModel.stageGroup.VOLCANO;
+        playBoard.stageNumbering = 1;
         // grid parameters
-        this.gridSize = 10;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        playBoard.gridSize = 10;
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
-        this.boardObjects = new BoardCells(this.gridSize);
+        playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
 
         // turn counter
-        this.turn = 1;
-        this.maxTurn = 15;
+        playBoard.turn = 1;
+        playBoard.maxTurn = 15;
     }
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-        this.gameState.inventory.pushItem2Inventory(p5, "Tree", 2);
-        this.gameState.inventory.pushItem2Inventory(p5, "Bush", 2);
-        this.gameState.inventory.pushItem2Inventory(p5, "Orchid", 2);
-        this.gameState.inventory.pushItem2Inventory(p5, "TreeSeed", 5);
-        this.gameState.inventory.pushItem2Inventory(p5, "BushSeed", 5);
-        this.gameState.inventory.pushItem2Inventory(p5, "OrchidSeed", 5);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageInventory(p5, playBoard) {
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 5, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 5, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 5, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.FIRE_HERB, 5, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.FIRE_HERB, 5, playBoard.gameState.inventory);
 
-        this.gameState.inventory.pushItem2Inventory(p5, "FireHerb", 5);
-        this.gameState.inventory.pushItem2Inventory(p5, "FireHerbSeed", 5);
     }
 
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe(p5));
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
             }
         }
-        this.boardObjects.setCell(0, 0, new Volcano(p5));
-        this.boardObjects.setCell(0, 1, new Volcano(p5));
-        this.boardObjects.setCell(1, 0, new Volcano(p5));
-        this.boardObjects.setCell(1, 1, new Volcano(p5));
-        this.boardObjects.setCell(1, 2, new Volcano(p5));
-        this.boardObjects.setCell(2, 1, new Volcano(p5));
-        this.boardObjects.setCell(2, 2, new Volcano(p5));
-        this.boardObjects.setCell(2, 0, new Volcano(p5));
-        this.boardObjects.setCell(0, 2, new Volcano(p5));
+        this.PlayBoardLogic.BoardLogic.setCell(8, 8, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
 
-        this.boardObjects.setCell(8, 8, new PlayerBase(p5));
-        this.boardObjects.setCell(4, 5, new Mountain(p5));
-        this.boardObjects.setCell(5, 5, new Mountain(p5));
+        this.PlayBoardLogic.BoardLogic.setCell(4, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+
+        this.PlayBoardLogic.BoardLogic.setCell(0, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(1, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(0, 1, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(1, 1, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(1, 2, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 1, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 2, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(0, 2, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
     }
 
-    nextTurnItems(p5) {
-        this.generateRandomVolBomb(p5);
-        this.generateVolBomb(p5, 8, 8);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+        //this.generateRandomVolBomb(p5, playBoard);
+        this.generateVolBomb(p5, 4, 4, playBoard);
 
-        if (this.turn === 2) {
-            this.generateLava(p5, 3, 3);
-            this.generateLava(p5, 3, 2);
-            this.generateLava(p5, 3, 1);
-            this.generateLava(p5, 3, 0);
-            this.generateLava(p5, 2, 3);
-            this.generateLava(p5, 1, 3);
-            this.generateLava(p5, 0, 3);
+        if (playBoard.turn === 2) {
+            this.generateLava(p5, 3, 3, playBoard);
+            this.generateLava(p5, 3, 2, playBoard);
+            this.generateLava(p5, 3, 1, playBoard);
+            this.generateLava(p5, 3, 0, playBoard);
+            this.generateLava(p5, 2, 3, playBoard);
+            this.generateLava(p5, 1, 3, playBoard);
+            this.generateLava(p5, 0, 3, playBoard);
         } else {
-            this.expandLava(p5);
+            this.expandLava(p5, playBoard);
         }
     }
 
-    generateLava(p5, i, j) {
-        let cell = this.boardObjects.getCell(i, j);
-        let lava = new Lava(p5);
-        lava.cellX = cell.x;
-        lava.cellY = cell.y;
+    /**
+     *
+     * @param p5
+     * @param i
+     * @param j
+     * @param {PlayBoardLike} playBoard
+     */
+    static generateLava(p5, i, j, playBoard) {
+        let cell = this.PlayBoardLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
+        let lava = this.terrainFactory.get(this.terrainTypes.LAVA)();
+        lava.cellX = cell.i;
+        lava.cellY = cell.j;
         cell.terrain = lava;
 
         // kill plant and store its seed
         if (cell.plant !== null) {
-            lava.storeSeed(p5, cell.plant);
+            this.PlayBoardLogic.TerrainLogic.storeSeed(p5, cell.plant, lava);
             cell.removePlant();
         } else if (cell.seed !== null) {
-            lava.storeSeed(p5, cell.seed);
+            this.PlayBoardLogic.TerrainLogic.storeSeed(p5, cell.seed, lava);
             cell.removeSeed();
         }
 
         // kill bandit on this cell
-        if (cell.enemy !== null && cell.enemy.enemyType === enemyTypes.BANDIT) {
+        if (cell.enemy !== null && cell.enemy.movableType === this.movableTypes.BANDIT) {
             cell.enemy.status = false;
-            plantEnemyInteractions.findMovableAndDelete(this, cell.enemy);
+            this.PlayBoardLogic.InteractionLogic.findMovableAndDelete(playBoard, cell.enemy);
         }
     }
 
-    expandLava(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static expandLava(p5, playBoard) {
         // find all lava
         let cells = [];
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                let cell = this.boardObjects.getCell(i, j);
-                if (cell.terrain.terrainType === terrainTypes.LAVA && cell.terrain.name === "Lava") {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                let cell = this.PlayBoardLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
+                if (cell.terrain.terrainType === this.terrainTypes.LAVA && cell.terrain.name === "Lava") {
                     cells.push(cell);
                 }
             }
@@ -116,84 +158,111 @@ export class Volcano1PlayBoard extends PlayBoard {
 
         // expand them
         for (let cell of cells) {
-            for (let adCell of this.boardObjects.getAdjacent4Cells(cell.x, cell.y)) {
+            for (let adCell of this.PlayBoardLogic.BoardLogic.getAdjacent4Cells(cell.i, cell.j, playBoard.boardObjects)) {
                 // if the cell is in ecosystem with 'rejectLava', skip.
                 if (adCell.ecosystem !== null && adCell.ecosystem.rejectLava) continue;
                 // if expands to player base, game over.
-                if (adCell.terrain.terrainType === terrainTypes.BASE) {
-                    myutil.gameOver(this);
+                if (adCell.terrain.terrainType === this.terrainTypes.BASE) {
+                    this.PlayBoardLogic.utilityClass.gameOver(this);
                     return;
                 }
                 // it expands to normal terrain.
-                if (adCell.terrain.terrainType === terrainTypes.STEPPE) {
-                    this.generateLava(p5, adCell.x, adCell.y);
+                if (adCell.terrain.terrainType === this.terrainTypes.STEPPE) {
+                    this.generateLava(p5, adCell.i, adCell.j, playBoard);
                 }
             }
         }
 
         // solidify lava
         for (let cell of cells) {
-            cell.terrain.solidify(p5, this);
+            this.PlayBoardLogic.TerrainLogic.solidify(p5, playBoard, cell.terrain);
         }
 
     }
 
-    generateRandomVolBomb(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static generateRandomVolBomb(p5, playBoard) {
         let i1 = Math.floor(Math.random() * 3);
         let j1 = Math.floor(Math.random() * 3);
-        let i2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
-        let j2 = Math.floor(Math.random() * (this.gridSize - 3)) + 3;
+        let i2 = Math.floor(Math.random() * (playBoard.gridSize - 3)) + 3;
+        let j2 = Math.floor(Math.random() * (playBoard.gridSize - 3)) + 3;
         while (i1 - j1 === i2 - j2) {
             i1 = Math.floor(Math.random() * 3);
             j1 = Math.floor(Math.random() * 3);
         }
-        let [x1, y1] = myutil.cellIndex2Pos(p5, this, i1, j1, p5.CENTER);
-        let [x2, y2] = myutil.cellIndex2Pos(p5, this, i2, j2, p5.CENTER);
-        let bomb = new VolcanicBomb(p5, i1, j1, i2, j2, x1, y1, x2, y2);
-        this.movables.push(bomb);
+        let [x1, y1] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i1, j1, p5.CENTER);
+        let [x2, y2] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i2, j2, p5.CENTER);
+        this.movableFactory.get(this.movableTypes.BOMB)(playBoard, i1, j1, i2, j2, x1, y1, x2, y2);
     }
 
-    generateVolBomb(p5, i, j) {
+    /**
+     *
+     * @param p5
+     * @param i
+     * @param j
+     * @param {PlayBoardLike} playBoard
+     */
+    static generateVolBomb(p5, i, j, playBoard) {
         let i1 = Math.floor(Math.random() * 3);
         let j1 = Math.floor(Math.random() * 3);
         while (i1 - j1 === i - j) {
             i1 = Math.floor(Math.random() * 3);
             j1 = Math.floor(Math.random() * 3);
         }
-        let [x1, y1] = myutil.cellIndex2Pos(p5, this, i1, j1, p5.CENTER);
-        let [x2, y2] = myutil.cellIndex2Pos(p5, this, i, j, p5.CENTER);
-        let bomb = new VolcanicBomb(p5, i1, j1, i, j, x1, y1, x2, y2);
-        this.movables.push(bomb);
+        let [x1, y1] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i1, j1, p5.CENTER);
+        let [x2, y2] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
+
+        this.movableFactory.get(this.movableTypes.BOMB)(playBoard, i1, j1, i, j, x1, y1, x2, y2);
     }
 
-    modifyBoard(p5, code) {
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
     }
 
-    setFloatingWindow(p5) {
-        if (this.turn === 1) {
-            if (this.allFloatingWindows.has("100")) {
-                this.floatingWindow = this.allFloatingWindows.get("100");
-                this.allFloatingWindows.delete("100");
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+        if (playBoard.turn === 1) {
+            if (playBoard.allFloatingWindows.has("100")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("100");
+                playBoard.allFloatingWindows.delete("100");
                 return;
             }
         }
-        if (this.turn === this.maxTurn + 1) {
-            if (this.allFloatingWindows.has("000")) {
-                this.floatingWindow = this.allFloatingWindows.get("000");
-                this.allFloatingWindows.delete("000");
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            if (playBoard.allFloatingWindows.has("000")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("000");
+                playBoard.allFloatingWindows.delete("000");
                 return;
             }
         }
     }
 
-    initAllFloatingWindows(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
         let afw = new Map();
 
-        myutil.commonFloatingWindows(p5, afw);
+        this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        afw.set("100", new FloatingWindow(p5, "rc", "{white:You have more than 6 kind of items in your inventory. Scroll}\\{red:mouse wheel}{white: when your mouse is hovering over the inventory.}", {
-            x: myutil.relative2absolute(0.6, 0.15)[0],
-            y: myutil.relative2absolute(0.6, 0.15)[1],
+        afw.set("100", new this.PlayBoardLogic.FloatingWindow(p5, "rc", "{white:You have more than 6 kind of items in your inventory. Scroll}\\{red:mouse wheel}{white: when your mouse is hovering over the inventory.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.6, 0.15)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.6, 0.15)[1],
             fontSize: 20,
             padding: 10,
             spacingRatio: 0.3,
@@ -201,6 +270,12 @@ export class Volcano1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Volcano1PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Volcano1PlayBoard};
 }

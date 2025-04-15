@@ -1,15 +1,25 @@
-import {terrainTypes} from "./ItemTypes.js";
-import {Terrain} from "./Terrain.js";
-
-export class Mountain extends Terrain {
-    constructor(p5) {
-        super();
+class MountainModel {
+    constructor(p5, superModel, itemTypes, terrainTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "Mountain";
         this.terrainType = terrainTypes.MOUNTAIN;
         this.img = p5.images.get(`${this.name}`);
+        this.weight = 1000;
     }
 
     getWeight() {
-        return 1000; // almost inaccessible.
+        return this.weight;
     }
+}
+
+class MountainRenderer {
+}
+
+class MountainLogic {
+}
+
+export {MountainModel, MountainLogic, MountainRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MountainModel, MountainLogic, MountainRenderer};
 }

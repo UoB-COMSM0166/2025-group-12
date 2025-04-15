@@ -1,16 +1,15 @@
-import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
-import {Plant} from "./Plant.js";
-import {Seed} from "./Seed.js";
-
-export class Palm extends Plant {
-    constructor(p5) {
-        super();
+/**
+ * @implements {PlantLike}
+ */
+class PalmModel {
+    constructor(p5, superModel, itemTypes, plantTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "Palm";
         this.color = "rgb(126,255,97)";
         this.plantType = plantTypes.PALM;
         this.img = p5.images.get(`${this.name}`);
 
-        this.seed = PalmSeed;
+        this.seed = PalmSeedModel;
 
         this.health = 3;
         this.maxHealth = 3;
@@ -24,54 +23,38 @@ export class Palm extends Plant {
     getActiveString() {
         return "No active skill.";
     }
+}
 
-    reevaluateSkills(playBoard, cell) {
+class PalmRenderer {
+}
 
+class PalmLogic {
+    static setup(bundle) {
     }
 
-    stringify() {
-        const object = {
-            plantType: this.plantType,
-            health: this.health,
-        }
-        if (this.earthCounter) object.earthCounter = this.earthCounter;
-        if (this.coldCounter) object.coldCounter = this.coldCounter;
-        return JSON.stringify(object);
-    }
-
-    static parse(json, p5) {
-        const object = JSON.parse(json);
-        let palm = new Palm(p5);
-        palm.health = object.health;
-        palm.earthCounter = object.earthCounter;
-        palm.coldCounter = object.coldCounter;
-        return palm;
+    static reevaluateSkills() {
     }
 }
 
-export class PalmSeed extends Seed {
-    constructor(p5) {
-        super();
+class PalmSeedModel {
+    constructor(p5, superModel, itemTypes, seedTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "PalmSeed";
         this.color = "rgb(126,255,97)";
         this.seedType = seedTypes.PALM;
         this.countdown = 3;
         this.img = this.img = p5.images.get("Seed");
     }
+}
 
-    grow(p5) {
-        this.countdown--;
-        if (this.countdown === 0) {
-            return new Palm(p5);
-        } else {
-            return this;
-        }
-    }
+class PalmSeedRenderer {
+}
 
-    static parse(json, p5) {
-        const object = JSON.parse(json);
-        let palmSeed = new PalmSeed(p5);
-        palmSeed.countdown = object.countdown;
-        return palmSeed;
-    }
+class PalmSeedLogic {
+}
+
+export {PalmModel, PalmLogic, PalmRenderer, PalmSeedModel, PalmSeedLogic, PalmSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PalmModel, PalmLogic, PalmRenderer, PalmSeedModel, PalmSeedLogic, PalmSeedRenderer};
 }

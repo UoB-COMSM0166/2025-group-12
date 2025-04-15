@@ -1,16 +1,15 @@
-import {itemTypes, plantTypes, seedTypes} from "./ItemTypes.js";
-import {Plant} from "./Plant.js";
-import {Seed} from "./Seed.js";
-
-export class FireHerb extends Plant {
-    constructor(p5) {
-        super();
+/**
+ * @implements {PlantLike}
+ */
+class FireHerbModel {
+    constructor(p5, superModel, itemTypes, plantTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "FireHerb";
         this.color = "red";
         this.plantType = plantTypes.FIRE_HERB;
         this.img = p5.images.get(`${this.name}`);
 
-        this.seed = FireHerbSeed;
+        this.seed = FireHerbSeedModel;
 
         this.health = 1;
         this.maxHealth = 1;
@@ -27,54 +26,46 @@ export class FireHerb extends Plant {
     getActiveString() {
         return "No active skill.";
     }
+}
 
-    reevaluateSkills(playBoard, cell) {
-        // do nothing.
+class FireHerbRenderer {
+
+}
+
+class FireHerbLogic {
+    static setup(bundle) {
     }
 
-    stringify() {
-        const object = {
-            plantType: this.plantType,
-            health: this.health,
-        }
-        if (this.earthCounter) object.earthCounter = this.earthCounter;
-        if (this.coldCounter) object.coldCounter = this.coldCounter;
-        return JSON.stringify(object);
-    }
-
-    static parse(json, p5) {
-        const object = JSON.parse(json);
-        let fireHerb = new FireHerb(p5);
-        fireHerb.health = object.health;
-        fireHerb.earthCounter = object.earthCounter;
-        fireHerb.coldCounter = object.coldCounter;
-        return fireHerb;
+    static reevaluateSkills() {
     }
 }
 
-export class FireHerbSeed extends Seed {
-    constructor(p5) {
-        super();
+class FireHerbSeedModel {
+    constructor(p5, superModel, itemTypes, seedTypes) {
+        Object.assign(this, new superModel(itemTypes));
         this.name = "FireHerbSeed";
         this.color = "red";
         this.seedType = seedTypes.FIRE_HERB;
         this.countdown = 1;
         this.img = this.img = p5.images.get("Seed");
     }
+}
 
-    grow(p5) {
-        this.countdown--;
-        if (this.countdown === 0) {
-            return new FireHerb(p5);
-        } else {
-            return this;
-        }
-    }
+class FireHerbSeedRenderer {
+}
 
-    static parse(json, p5) {
-        const object = JSON.parse(json);
-        let fireSeed = new FireHerbSeed(p5);
-        fireSeed.countdown = object.countdown;
-        return fireSeed;
-    }
+class FireHerbSeedLogic {
+}
+
+export {FireHerbModel, FireHerbLogic, FireHerbRenderer, FireHerbSeedModel, FireHerbSeedLogic, FireHerbSeedRenderer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {
+        FireHerbModel,
+        FireHerbLogic,
+        FireHerbRenderer,
+        FireHerbSeedModel,
+        FireHerbSeedLogic,
+        FireHerbSeedRenderer
+    };
 }
