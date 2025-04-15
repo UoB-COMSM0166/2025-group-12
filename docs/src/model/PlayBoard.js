@@ -514,6 +514,8 @@ class PlayBoardLogic {
         PlayBoardLogic.PlantLogic = bundle.PlantLogic;
         /** @type {typeof SeedLogic} */
         PlayBoardLogic.SeedLogic = bundle.SeedLogic;
+        /** @type {typeof TerrainLogic} */
+        PlayBoardLogic.TerrainLogic = bundle.TerrainLogic;
     }
 
     /**
@@ -623,7 +625,8 @@ class PlayBoardLogic {
             }
             // game clear
             if (!playBoard.allFloatingWindows.has("000")) {
-                playBoard.gameState.setState(PlayBoardModel.stateCode.FINISH);
+                playBoard.gameState.isFading = true;
+                playBoard.gameState.nextState = PlayBoardLogic.stateCode.FINISH;
                 return true;
             }
             // common floating windows
@@ -653,7 +656,7 @@ class PlayBoardLogic {
                 PlayBoardSerializer.stringify(playBoard);
                 let spellCaster = PlayBoardLogic.BoardLogic.getCell(playBoard.selectedCell[0], playBoard.selectedCell[1], playBoard.boardObjects);
                 let target = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
-                if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.TREE) {
+                if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.PINE) {
                     PlayBoardLogic.InteractionLogic.rechargeHP(playBoard, spellCaster, target, 1);
                 } else if (spellCaster.plant.plantType === PlayBoardLogic.plantTypes.ORCHID) {
                     PlayBoardLogic.InteractionLogic.sendAnimalFriends(playBoard, spellCaster, target);

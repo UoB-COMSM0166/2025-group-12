@@ -184,7 +184,7 @@ class TornadoLogic {
             let cells = TornadoLogic.BoardLogic.getAdjacent4Cells(index[0], index[1], playBoard.boardObjects);
             let trees = [];
             for (let adCell of cells) {
-                if (adCell !== null && adCell.plant !== null && adCell.plant.name === "Tree") {
+                if (adCell !== null && adCell.plant !== null && adCell.plant.plantType === TornadoLogic.plantTypes.PINE) {
                     if (adCell.plant.hasExtended === true && adCell.plant.status === true) {
                         trees.push(adCell.plant);
                     }

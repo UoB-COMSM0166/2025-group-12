@@ -54,14 +54,15 @@ class MapButton {
     }
 
     hasMouseOver(p5) {
-        let gamepadOver = p5.gamepadX > this.x && p5.gamepadX < this.x + this.width && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
+        let gamepadOver = p5.gamepadX > this.x && p5.gamepadX < this.x + this.width
+            && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
         return (p5.mouseX > this.x && p5.mouseX < this.x + this.width
             && p5.mouseY > this.y && p5.mouseY < this.y + this.height) || gamepadOver;
     }
 
     mouseClick(p5) {
         if (this.hasMouseOver(p5)) {
-            this._onClick(p5);
+            this.onClick(p5);
             return true;
         }
         return false;

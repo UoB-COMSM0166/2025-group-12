@@ -1,5 +1,8 @@
-//
-// export class Tsunami1PlayBoard extends BlizzardPlayBoard {
+// /**
+//  * @implements ScreenLike
+//  * @implements PlayBoardLike
+//  */
+// class Tsunami1PlayBoard extends BlizzardPlayBoard {
 //     constructor(gameState) {
 //         super(gameState);
 //         this.stageGroup = stageGroup.TSUNAMI;
@@ -81,4 +84,10 @@
 //
 //         this.allFloatingWindows = afw;
 //     }
+// }
+//
+// export {Tsunami1PlayBoard};
+//
+// if (typeof module !== 'undefined') {
+//     module.exports = {Tsunami1PlayBoard};
 // }

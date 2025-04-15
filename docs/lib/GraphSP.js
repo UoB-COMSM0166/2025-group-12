@@ -1,9 +1,7 @@
 class DijkstraSP {
-    /** @type {typeof IndexPriorityQueue} */
-    static IPQ = null;
-
-    static setup(object) {
-        DijkstraSP.IPQ = object.IPQ;
+    static setup(bundle) {
+        /** @type {typeof IndexPriorityQueue} */
+        DijkstraSP.IPQ = bundle.IPQ;
     }
 
     constructor(digraph, start) {

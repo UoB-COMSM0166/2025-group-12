@@ -83,7 +83,6 @@ new p5((p) => {
 
         // keep a copy of current state
         container.controller.saveState = container.gameState.getState();
-
     };
 });
 

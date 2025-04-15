@@ -30,14 +30,21 @@ class LavaLogic {
         LavaLogic.BoardLogic = bundle.BoardLogic;
     }
 
+    /**
+     *
+     * @param p5
+     * @param {PlantLike} plant
+     * @param {LavaModel} lava
+     */
     static storeSeed(p5, plant, lava) {
-        if (plant.type === LavaLogic.itemTypes.SEED) {
-            lava.seed = plant.constructor(p5);
-        } else if (plant.type === LavaLogic.itemTypes.PLANT) {
-            lava.seed = new plant.seed(p5);
-        }
     }
 
+    /**
+     *
+     * @param p5
+     * @param playBoard
+     * @param {LavaModel} lava
+     */
     static solidify(p5, playBoard, lava) {
         if (lava.countdown > 0) {
             lava.countdown--;
@@ -46,7 +53,6 @@ class LavaLogic {
             lava.img = p5.images.get(`${lava.name}`);
             lava.hasSolidified = true;
             if (lava.seed != null) {
-                console.log(this)
                 lava.seed.countdown = 1;
                 LavaLogic.BoardLogic.getCell(lava.cellX, lava.cellY, playBoard.boardObjects).seed = lava.seed;
                 lava.seed = null;

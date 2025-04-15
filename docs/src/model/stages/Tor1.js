@@ -1,3 +1,7 @@
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
 class Tornado1PlayBoard {
     static PlayBoardLogic;
     static PlayBoardModel;
@@ -53,7 +57,6 @@ class Tornado1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static setStageTerrain(p5, playBoard) {
-
         for (let i = 0; i < playBoard.gridSize; i++) {
             for (let j = 0; j < playBoard.gridSize; j++) {
                 this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
@@ -93,12 +96,12 @@ class Tornado1PlayBoard {
             return;
         }
         if (code === 103) {
-            this.PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, 2, 4, this.plantFactory.get(this.plantTypes.BUSH)());
+            this.PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, 2, 4, this.plantFactory.get(this.plantTypes.CORN)());
             this.PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, 3, 4, this.plantFactory.get(this.plantTypes.ORCHID)());
             return;
         }
         if (code === 201) {
-            this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.TREE, 1, playBoard.gameState.inventory);
+            this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 1, playBoard.gameState.inventory);
         }
     }
 
@@ -255,7 +258,7 @@ class Tornado1PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("201", new this.PlayBoardLogic.FloatingWindow(p5, "ru", "{white:You've been rewarded a}{red:Tree}\\{white:since you made through last assault.}\\{white:Now click the}{red:Tree}{white:.}", {
+        afw.set("201", new this.PlayBoardLogic.FloatingWindow(p5, "ru", "{white:You've been rewarded a}{red:Pine}\\{white:since you made through last assault.}\\{white:Now click the}{red:Tree}{white:.}", {
             x: this.PlayBoardLogic.utilityClass.relative2absolute(0.76, 0.11)[0],
             y: this.PlayBoardLogic.utilityClass.relative2absolute(0.76, 0.11)[1],
             fontSize: 16,

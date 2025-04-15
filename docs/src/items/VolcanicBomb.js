@@ -118,7 +118,7 @@ class VolcanicBombLogic {
             bomb.hasMoved = true;
             bomb.status = false;
             VolcanicBombLogic.InteractionLogic.findMovableAndDelete(playBoard, bomb);
-            VolcanicBombLogic.hit(p5, playBoard);
+            VolcanicBombLogic.hit(p5, playBoard, bomb);
             return false;
         }
         // during movement
@@ -132,18 +132,23 @@ class VolcanicBombLogic {
             bomb.hasMoved = true;
             return false;
         }
-        if (bomb.countdown === 0) {
-            //this.img = p5.images.get(`${this.name}`);
+        if (bomb.countdown <= 0) {
             bomb.isMoving = true;
             VolcanicBombLogic.move(bomb.moveSpeed, bomb);
             return true;
         }
     }
 
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {VolcanicBombModel} bomb
+     */
     static hit(p5, playBoard, bomb) {
         let cell = VolcanicBombLogic.BoardLogic.getCell(bomb.i2, bomb.j2, playBoard.boardObjects);
 
-        // 1.1. hit a cell with a Tree, hit it.
+        // 1.1. hit a cell with a tree, hit it.
         if (cell.plant !== null && VolcanicBombLogic.baseType(cell.plant) === VolcanicBombLogic.plantTypes.TREE) {
             VolcanicBombLogic.InteractionLogic.plantIsAttacked(playBoard, cell.plant, 1);
             return;
@@ -153,7 +158,7 @@ class VolcanicBombLogic {
         if (cell.plant !== null || cell.seed !== null) {
             let cwt = [];
             for (let c of VolcanicBombLogic.BoardLogic.getAdjacent8Cells(cell.i, cell.j, playBoard.boardObjects)) {
-                if (c.plant !== null && c.plant.plantType === VolcanicBombLogic.plantTypes.TREE) {
+                if (c.plant !== null && VolcanicBombLogic.baseType(c.plant) === VolcanicBombLogic.plantTypes.TREE) {
                     cwt.push(c);
                 }
             }
@@ -177,7 +182,7 @@ class VolcanicBombLogic {
         if (cell.terrain.terrainType === VolcanicBombLogic.terrainTypes.BASE) {
             let cwt = [];
             for (let c of VolcanicBombLogic.BoardLogic.getAdjacent8Cells(cell.i, cell.j, playBoard.boardObjects)) {
-                if (c.plant !== null && c.plant.plantType === VolcanicBombLogic.plantTypes.TREE) {
+                if (c.plant !== null && VolcanicBombLogic.baseType(c.plant) === VolcanicBombLogic.plantTypes.TREE) {
                     cwt.push(c);
                 }
             }

@@ -84,8 +84,8 @@ class InteractionLogic {
         } else if (item.type === InteractionLogic.itemTypes.PLANT) {
             /** @type {PlantLike} */
             let plant = item;
-            // if a tree is attacked by a tornado
-            if (plant.plantType === InteractionLogic.plantTypes.TREE) {
+            // if a pine is attacked by a tornado
+            if (plant.plantType === InteractionLogic.plantTypes.PINE) {
                 for (let i = 0; i < 2 && plant.health > 0 && tornado.health > 0; i++) {
                     plant.health--;
                     tornado.health--;

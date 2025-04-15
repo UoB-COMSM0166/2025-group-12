@@ -13,7 +13,38 @@ class TerrainRenderer {
 
 class TerrainLogic {
     static setup(bundle) {
+        TerrainLogic.itemTypes = bundle.itemTypes;
+        TerrainLogic.plantTypes = bundle.plantTypes;
+        TerrainLogic.seedTypes = bundle.seedTypes;
+        TerrainLogic.plantFactory = bundle.plantFactory;
+        /** @type {LavaLogic} */
+        TerrainLogic.LavaLogic = bundle.LavaLogic;
     }
+
+    /**
+     *
+     * @param p5
+     * @param  plant
+     * @param {LavaModel} lava
+     */
+    static storeSeed(p5, plant, lava) {
+        if (plant.type === TerrainLogic.itemTypes.SEED) {
+            lava.seed = TerrainLogic.plantFactory.get(plant.seedType)();
+        } else if (plant.type === TerrainLogic.itemTypes.PLANT) {
+            lava.seed = TerrainLogic.plantFactory.get(plant.plantType + 1)();
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {LavaModel} lava
+     */
+    static solidify(p5, playBoard, lava) {
+        TerrainLogic.LavaLogic.solidify(p5, playBoard, lava);
+    }
+
 }
 
 class TerrainSerializer {

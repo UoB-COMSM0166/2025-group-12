@@ -1,21 +1,21 @@
 /**
  * @implements {PlantLike}
  */
-class BushModel {
+class CornModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
-        this.name = "Bush";
+        this.name = "Corn";
         this.color = "rgb(126,255,97)";
-        this.plantType = plantTypes.BUSH;
+        this.plantType = plantTypes.CORN;
         this.img = p5.images.get(`${this.name}`);
 
-        this.seed = BushSeedModel;
+        this.seed = CornSeedModel;
 
         this.health = 2;
         this.maxHealth = 2;
         this.status = true;
 
-        // passive: nearby tree's defense extends to 9 cells.
+        // passive: nearby pine's defense extends to 9 cells.
     }
 
     getPassiveString() {
@@ -27,10 +27,10 @@ class BushModel {
     }
 }
 
-class BushRenderer {
+class CornRenderer {
 }
 
-class BushLogic {
+class CornLogic {
     static setup(bundle) {
     }
 
@@ -38,25 +38,25 @@ class BushLogic {
     }
 }
 
-class BushSeedModel {
+class CornSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
-        this.name = "BushSeed";
+        this.name = "CornSeed";
         this.color = "rgb(126,255,97)";
-        this.seedType = seedTypes.BUSH;
+        this.seedType = seedTypes.CORN;
         this.countdown = 2;
         this.img = this.img = p5.images.get("Seed");
     }
 }
 
-class BushSeedRenderer {
+class CornSeedRenderer {
 }
 
-class BushSeedLogic {
+class CornSeedLogic {
 }
 
-export {BushModel, BushLogic, BushRenderer, BushSeedModel, BushSeedLogic, BushSeedRenderer};
+export {CornModel, CornLogic, CornRenderer, CornSeedModel, CornSeedLogic, CornSeedRenderer};
 
 if (typeof module !== 'undefined') {
-    module.exports = {BushModel, BushLogic, BushRenderer, BushSeedModel, BushSeedLogic, BushSeedRenderer};
+    module.exports = {CornModel, CornLogic, CornRenderer, CornSeedModel, CornSeedLogic, CornSeedRenderer};
 }

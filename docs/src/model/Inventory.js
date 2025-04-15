@@ -96,6 +96,7 @@ class InventoryLogic {
      * @param {InventoryModel} inventory
      */
     static handleScroll(event, inventory) {
+        console.log("scrolled")
         let maxIndex = Math.max(0, inventory.items.size - inventory.maxVisibleItems);
         if (event.deltaY > 0) {
             inventory.scrollIndex = Math.min(inventory.scrollIndex + 1, maxIndex);
@@ -115,10 +116,9 @@ class InventoryLogic {
 
         let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
         // record when an inventory item is clicked
-        let index = 0;
         for (let i = 0; i < visibleItems.length; i++) {
             let key = visibleItems[i][0];
-            let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
+            let itemY = inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight;
             if (inventory.mode === "mouse") {
                 if (p5.mouseX >= inventory.itemX && p5.mouseX <= inventory.itemX + inventory.itemWidth &&
                     p5.mouseY >= itemY && p5.mouseY <= itemY + (inventory.itemHeight - inventory.itemInter)) {
@@ -130,7 +130,6 @@ class InventoryLogic {
                     inventory.selectedItem = key;
                     return;
                 }
-                index++;
             }
         }
     }

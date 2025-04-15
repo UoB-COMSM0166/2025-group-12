@@ -1,15 +1,15 @@
 /**
  * @implements {PlantLike}
  */
-class TreeModel {
+class PineModel {
     constructor(p5, superModel, itemTypes, plantTypes) {
         Object.assign(this, new superModel(itemTypes));
-        this.name = "Tree";
+        this.name = "Pine";
         this.color = "rgb(0,255,21)";
-        this.plantType = plantTypes.TREE;
+        this.plantType = plantTypes.PINE;
         this.img = p5.images.get(`${this.name}`);
 
-        this.seed = TreeSeedModel;
+        this.seed = PineSeedModel;
 
         this.health = 3;
         this.maxHealth = 3;
@@ -41,47 +41,47 @@ class TreeModel {
     }
 }
 
-class TreeRenderer {
+class PineRenderer {
 }
 
-class TreeLogic {
+class PineLogic {
     static setup(bundle) {
-        TreeLogic.baseType = bundle.baseType;
-        TreeLogic.plantTypes = bundle.plantTypes;
+        PineLogic.baseType = bundle.baseType;
+        PineLogic.plantTypes = bundle.plantTypes;
 
         /** @type {typeof BoardLogic} */
-        TreeLogic.BoardLogic = bundle.BoardLogic;
+        PineLogic.BoardLogic = bundle.BoardLogic;
     }
 
     /**
      *
      * @param {PlayBoardLike} playBoard
      * @param {CellModel} cell
-     * @param {TreeModel} tree
+     * @param {PineModel} pine
      */
-    static reevaluateSkills(playBoard, cell, tree) {
-        if (cell.plant !== tree) {
-            console.error("reevaluateSkills of Tree has received wrong cell.");
+    static reevaluateSkills(playBoard, cell, pine) {
+        if (cell.plant !== pine) {
+            console.error("reevaluateSkills of Pine has received wrong cell.");
             return;
         }
 
         // set all skills to false first.
-        tree.hasActive = false;
-        tree.hasExtended = false;
+        pine.hasActive = false;
+        pine.hasExtended = false;
 
-        let adjacentCells = TreeLogic.BoardLogic.getAdjacent4Cells(cell.i, cell.j, playBoard.boardObjects);
-        // when a bush is next to this tree, it gains extended passive skill.
+        let adjacentCells = PineLogic.BoardLogic.getAdjacent4Cells(cell.i, cell.j, playBoard.boardObjects);
+        // when a bush is next to this pine, it gains extended passive skill.
         for (let adCell of adjacentCells) {
-            if (adCell.plant !== null && TreeLogic.baseType(adCell.plant) === TreeLogic.plantTypes.BUSH) {
-                tree.hasExtended = true;
+            if (adCell.plant !== null && PineLogic.baseType(adCell.plant) === PineLogic.plantTypes.BUSH) {
+                pine.hasExtended = true;
                 break;
             }
         }
-        // when a bush and a grass is next to this tree, it gains active.
-        if (tree.hasExtended) {
+        // when a bush and a grass is next to this pine, it gains active.
+        if (pine.hasExtended) {
             for (let adCell of adjacentCells) {
-                if (adCell.plant !== null && TreeLogic.baseType(adCell.plant) === TreeLogic.plantTypes.GRASS) {
-                    tree.hasActive = true;
+                if (adCell.plant !== null && PineLogic.baseType(adCell.plant) === PineLogic.plantTypes.GRASS) {
+                    pine.hasActive = true;
                     break;
                 }
             }
@@ -89,25 +89,25 @@ class TreeLogic {
     }
 }
 
-class TreeSeedModel {
+class PineSeedModel {
     constructor(p5, superModel, itemTypes, seedTypes) {
         Object.assign(this, new superModel(itemTypes));
-        this.name = "TreeSeed";
+        this.name = "PineSeed";
         this.color = "rgb(0,255,21)";
-        this.seedType = seedTypes.TREE;
+        this.seedType = seedTypes.PINE;
         this.countdown = 3;
         this.img = this.img = p5.images.get("Seed");
     }
 }
 
-class TreeSeedRenderer {
+class PineSeedRenderer {
 }
 
-class TreeSeedLogic {
+class PineSeedLogic {
 }
 
-export {TreeModel, TreeLogic, TreeRenderer, TreeSeedModel, TreeSeedLogic, TreeSeedRenderer};
+export {PineModel, PineLogic, PineRenderer, PineSeedModel, PineSeedRenderer, PineSeedLogic};
 
 if (typeof module !== 'undefined') {
-    module.exports = {TreeModel, TreeLogic, TreeRenderer, TreeSeedModel, TreeSeedLogic, TreeSeedRenderer};
+    module.exports = {PineModel, PineLogic, PineRenderer, PineSeedModel, PineSeedRenderer, PineSeedLogic};
 }

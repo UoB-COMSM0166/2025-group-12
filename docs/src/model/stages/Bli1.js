@@ -2,7 +2,7 @@
 //  * @implements ScreenLike
 //  * @implements PlayBoardLike
 //  */
-// export class Blizzard1PlayBoard {
+//  class Blizzard1PlayBoard {
 //     constructor(gameState) {
 //
 //         this.stageGroup = stageGroup.BLIZZARD;
@@ -68,4 +68,10 @@
 //
 //         this.allFloatingWindows = afw;
 //     }
+// }
+//
+// export {Blizzard1PlayBoard};
+//
+// if (typeof module !== 'undefined') {
+//     module.exports = {Blizzard1PlayBoard};
 // }

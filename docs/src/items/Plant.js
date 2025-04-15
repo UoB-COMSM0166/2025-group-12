@@ -2,10 +2,10 @@
  * @typedef {Object} PlantLike
  * @property {number} type
  * @property {String} name
+ * @property {*} seed
  * @property {String} color
  * @property {number} plantType
  * @property {p5.Image} img
- * @property {SeedLike} seed
  * @property {number} health
  * @property {number} maxHealth
  * @property {boolean} status
@@ -34,8 +34,8 @@ class PlantRenderer {
 class PlantLogic {
     static setup(bundle) {
         PlantLogic.plantTypes = bundle.plantTypes;
-        /** @type {typeof TreeLogic} */
-        PlantLogic.TreeLogic = bundle.TreeLogic;
+        /** @type {typeof PineLogic} */
+        PlantLogic.PineLogic = bundle.PineLogic;
         /** @type {typeof OrchidLogic} */
         PlantLogic.OrchidLogic = bundle.OrchidLogic;
         /** @type {typeof PlumLogic} */
@@ -50,8 +50,8 @@ class PlantLogic {
      */
     static reevaluateSkills(playBoard, cell, plant) {
         if (plant === null) return;
-        if (plant.plantType === PlantLogic.plantTypes.TREE) {
-            PlantLogic.TreeLogic.reevaluateSkills(playBoard, cell, /** @type {TreeModel} */ plant);
+        if (plant.plantType === PlantLogic.plantTypes.PINE) {
+            PlantLogic.PineLogic.reevaluateSkills(playBoard, cell, /** @type {PineModel} */ plant);
         } else if (plant.plantType === PlantLogic.plantTypes.ORCHID) {
             PlantLogic.OrchidLogic.reevaluateSkills(playBoard, cell, /** @type {OrchidModel} */ plant);
         }

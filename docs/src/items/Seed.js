@@ -43,7 +43,7 @@ class SeedLogic {
     static grow(seedInstance) {
         seedInstance.countdown--;
         if (seedInstance.countdown === 0) {
-            return SeedLogic.plantFactory.get(seedInstance.seedType)();
+            return SeedLogic.plantFactory.get(seedInstance.seedType - 1)();
         } else {
             return seedInstance;
         }

@@ -1,5 +1,8 @@
-//
-// export class Earthquake1PlayBoard extends EarthquakePlayBoard {
+// /**
+//  * @implements ScreenLike
+//  * @implements PlayBoardLike
+//  */
+// class Earthquake1PlayBoard extends EarthquakePlayBoard {
 //     constructor(gameState) {
 //         super(gameState);
 //         this.stageGroup = stageGroup.EARTHQUAKE;
@@ -97,3 +100,9 @@
 //         this.allFloatingWindows = afw;
 //     }
 // }
+//
+//  export {Earthquake1PlayBoard};
+//
+//  if (typeof module !== 'undefined') {
+//      module.exports = {Earthquake1PlayBoard};
+//  }

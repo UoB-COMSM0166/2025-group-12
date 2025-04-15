@@ -70,7 +70,7 @@ class ScreenRenderer {
         p5.fill(0, screen.fadeIn);
         let [canvasWidth, canvasLength] = ScreenRenderer.utilityClass.relative2absolute(1, 1)
         p5.rect(0, 0, canvasWidth, canvasLength);
-        if(screen.fadeIn <= 0){
+        if (screen.fadeIn <= 0) {
             screen.fadeIn = 255;
             screen.isEntering = false;
         }
@@ -92,6 +92,7 @@ class ScreenRenderer {
 
 class ScreenLogic {
     static setup(bundle) {
+        ScreenLogic.p5 = bundle.p5;
         /** @type {typeof InventoryLogic} */
         ScreenLogic.InventoryLogic = bundle.InventoryLogic;
     }
@@ -101,8 +102,8 @@ class ScreenLogic {
      * @param p5
      * @param {ScreenLike} screen
      */
-    static stateTransitionAtFading(p5, screen){
-        if(screen.fade >= 255) {
+    static stateTransitionAtFading(p5, screen) {
+        if (screen.fade >= 255) {
             screen.gameState.isFading = false;
             screen.fade = 0;
             screen.gameState.setState(screen.gameState.nextState);
@@ -137,6 +138,7 @@ class ScreenLogic {
      * @param {ScreenLike} screen
      */
     static handleScroll(event, screen) {
+        let p5 = ScreenLogic.p5;
         if (!screen.gameState) return;
         if (p5.mouseX >= screen.gameState.inventory.inventoryX
             && p5.mouseX <= screen.gameState.inventory.inventoryX + screen.gameState.inventory.inventoryWidth

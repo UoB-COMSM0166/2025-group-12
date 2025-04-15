@@ -14,10 +14,10 @@ import {FloatingWindow} from "../model/FloatingWindow.js";
 
 import {PlantModel, PlantLogic, PlantRenderer, PlantSerializer} from "../items/Plant.js";
 import {SeedModel, SeedLogic, SeedRenderer, SeedSerializer} from "../items/Seed.js";
-import {TreeModel, TreeLogic, TreeRenderer} from "../items/Tree.js";
-import {TreeSeedModel, TreeSeedLogic, TreeSeedRenderer} from "../items/Tree.js";
-import {BushModel, BushLogic, BushRenderer} from "../items/Bush.js";
-import {BushSeedModel, BushSeedLogic, BushSeedRenderer} from "../items/Bush.js";
+import {PineModel, PineLogic, PineRenderer} from "../items/Pine.js";
+import {PineSeedModel, PineSeedLogic, PineSeedRenderer} from "../items/Pine.js";
+import {CornModel, CornLogic, CornRenderer} from "../items/Corn.js";
+import {CornSeedModel, CornSeedLogic, CornSeedRenderer} from "../items/Corn.js";
 import {OrchidModel, OrchidLogic, OrchidRenderer} from "../items/Orchid.js";
 import {OrchidSeedModel, OrchidSeedLogic, OrchidSeedRenderer} from "../items/Orchid.js";
 import {FireHerbModel, FireHerbLogic, FireHerbRenderer} from "../items/FireHerb.js";
@@ -56,14 +56,14 @@ import {TornadoModel, TornadoLogic, TornadoRenderer} from "../items/Tornado.js";
 import {BanditModel, BanditLogic, BanditRenderer} from "../items/Bandit.js";
 
 import {Tornado1PlayBoard} from "../model/stages/Tor1.js";
-// import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
-// import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
-// import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
-// import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
-// import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
-// import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
-// import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
-// import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
+import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
+import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
+import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
+import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
+import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
+//import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
+//import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
+//import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
 
 import {GameSerializer} from "../model/GameSerializer.js";
 import {MenuItem} from "../items/MenuItem.js";
@@ -72,7 +72,7 @@ import {Button} from "../items/Button.js";
 import {InventoryModel, InventoryLogic, InventoryRenderer, InventorySerializer} from "../model/Inventory.js";
 import {GameState, stageGroup, stateCode} from "../model/GameState.js";
 
-import {ScreenModel, ScreenLogic, ScreenRenderer} from "../model/Screen.js";
+import {ScreenLogic, ScreenRenderer} from "../model/Screen.js";
 import {StartMenuModel, StartMenuLogic, StartMenuRenderer} from "../model/StartMenu.js";
 import {GameMapModel, GameMapLogic, GameMapRenderer} from "../model/GameMap.js";
 import {InfoBoxModel, InfoBoxLogic, InfoBoxRenderer} from "../model/InfoBox.js";
@@ -101,7 +101,7 @@ class Container {
         this.UnionFind = UnionFind; // no setup
 
         this.DijkstraSP = DijkstraSP;
-        this.DijkstraSP.setup(this.IndexPriorityQueue);
+        this.DijkstraSP.setup({IPQ: this.IndexPriorityQueue});
 
         this.EdgeWeightedDigraph = EdgeWeightedDigraph;
         this.DirectedEdge = DirectedEdge;
@@ -124,8 +124,8 @@ class Container {
         };
 
         this.plantModules = [
-            entityObject("Tree", TreeModel, TreeLogic, TreeRenderer, null),
-            entityObject("Bush", BushModel, BushLogic, BushRenderer, null),
+            entityObject("Pine", PineModel, PineLogic, PineRenderer, null),
+            entityObject("Corn", CornModel, CornLogic, CornRenderer, null),
             entityObject("Orchid", OrchidModel, OrchidLogic, OrchidRenderer, null),
             entityObject("FireHerb", FireHerbModel, FireHerbLogic, FireHerbRenderer, null),
             entityObject("Bamboo", BambooModel, BambooLogic, BambooRenderer, null),
@@ -141,7 +141,9 @@ class Container {
             if (logic.setup) logic.setup(entityBundle);
             if (renderer.setup) renderer.setup(entityBundle);
 
+            entityBundle[model.name] = model;
             entityBundle[logic.name] = logic;
+            entityBundle[renderer.name] = renderer;
         }
 
         // ----------------------------------
@@ -149,8 +151,8 @@ class Container {
         // ----------------------------------
 
         this.seedModules = [
-            entityObject("Tree", TreeSeedModel, TreeSeedLogic, TreeSeedRenderer, null),
-            entityObject("Bush", BushSeedModel, BushSeedLogic, BushSeedRenderer, null),
+            entityObject("Pine", PineSeedModel, PineSeedLogic, PineSeedRenderer, null),
+            entityObject("Corn", CornSeedModel, CornSeedLogic, CornSeedRenderer, null),
             entityObject("Orchid", OrchidSeedModel, OrchidSeedLogic, OrchidSeedRenderer, null),
             entityObject("FireHerb", FireHerbSeedModel, FireHerbSeedLogic, FireHerbSeedRenderer, null),
             entityObject("Bamboo", BambooSeedModel, BambooSeedLogic, BambooSeedRenderer, null),
@@ -165,19 +167,23 @@ class Container {
             if (model.setup) model.setup(entityBundle);
             if (logic.setup) logic.setup(entityBundle);
             if (renderer.setup) renderer.setup(entityBundle);
+
+            entityBundle[model.name] = model;
+            entityBundle[logic.name] = logic;
+            entityBundle[renderer.name] = renderer;
         }
 
         this.plantFactory = new Map([
-            [plantTypes.TREE, () => new TreeModel(p5, PlantModel, itemTypes, plantTypes)],
-            [plantTypes.BUSH, () => new BushModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.PINE, () => new PineModel(p5, PlantModel, itemTypes, plantTypes)],
+            [plantTypes.CORN, () => new CornModel(p5, PlantModel, itemTypes, plantTypes)],
             [plantTypes.ORCHID, () => new OrchidModel(p5, PlantModel, itemTypes, plantTypes)],
             [plantTypes.FIRE_HERB, () => new FireHerbModel(p5, PlantModel, itemTypes, plantTypes)],
             [plantTypes.BAMBOO, () => new BambooModel(p5, PlantModel, itemTypes, plantTypes)],
             [plantTypes.PLUM, () => new PlumModel(p5, PlantModel, itemTypes, plantTypes)],
             [plantTypes.KIKU, () => new KikuModel(p5, PlantModel, itemTypes, plantTypes)],
             [plantTypes.PALM, () => new PalmModel(p5, PlantModel, itemTypes, plantTypes)],
-            [seedTypes.TREE, () => new TreeSeedModel(p5, SeedModel, itemTypes, seedTypes)],
-            [seedTypes.BUSH, () => new BushSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.PINE, () => new PineSeedModel(p5, SeedModel, itemTypes, seedTypes)],
+            [seedTypes.CORN, () => new CornSeedModel(p5, SeedModel, itemTypes, seedTypes)],
             [seedTypes.ORCHID, () => new OrchidSeedModel(p5, SeedModel, itemTypes, seedTypes)],
             [seedTypes.FIRE_HERB, () => new FireHerbSeedModel(p5, SeedModel, itemTypes, seedTypes)],
             [seedTypes.BAMBOO, () => new BambooSeedModel(p5, SeedModel, itemTypes, seedTypes)],
@@ -218,6 +224,10 @@ class Container {
             if (model.setup) model.setup(entityBundle);
             if (logic.setup) logic.setup(entityBundle);
             if (renderer.setup) renderer.setup(entityBundle);
+
+            entityBundle[model.name] = model;
+            entityBundle[logic.name] = logic;
+            entityBundle[renderer.name] = renderer;
         }
 
         this.terrainFactory = new Map([
@@ -285,6 +295,7 @@ class Container {
             if (logic.setup) logic.setup(movableBundle);
             if (renderer.setup) renderer.setup(movableBundle);
 
+            movableBundle[model.name] = model;
             movableBundle[logic.name] = logic;
             movableBundle[renderer.name] = renderer;
         }
@@ -466,6 +477,7 @@ class Container {
 
             dissolveSnowRange: PlumLogic.plumRange,
 
+            ScreenLogic: ScreenLogic,
             ScreenRenderer: ScreenRenderer,
 
             BoardModel: BoardModel,
@@ -524,9 +536,13 @@ class Container {
             methods: logicMethods
         });
 
-        Tornado1PlayBoard.setup(PlayBoardModel, PlayBoardLogic);
-
-
+        for (let i = 0; i < this.gameStageFactory.stageClasses.length; i++) {
+            let group = this.gameStageFactory.stageClasses[i];
+            for (let j = 0; j < group.length; j++) {
+                let stage = group[j];
+                stage.setup(PlayBoardModel, PlayBoardLogic)
+            }
+        }
     }
 }
 
@@ -548,12 +564,12 @@ class GameStageFactory {
         this.stageClasses = Array.from({length: 20}, () => []);
 
         this.stageClasses[stageGroup.TORNADO].push(Tornado1PlayBoard);
-        //this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
-        //this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
-        //this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
-        //this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
+        this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
 
-        //this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
+        this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
 
         //this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
 

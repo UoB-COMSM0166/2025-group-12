@@ -56,9 +56,11 @@ class KeyboardHandler {
                 }
                 // to dev team: quick skip current stage
                 if (event.key === "c" && !playBoard.skip) {
+                    console.log();
                     playBoard.skip = true;
                     KeyboardHandler.PlayBoardLogic.stageClearSettings(p5, playBoard);
-                    playBoard.gameState.setState(KeyboardHandler.stateCode.FINISH);
+                    playBoard.gameState.isFading = true;
+                    playBoard.gameState.nextState = KeyboardHandler.stateCode.FINISH;
                 }
                 // info box arrows
                 if (event.key === "a" && playBoard.selectedCell.length !== 0) {
