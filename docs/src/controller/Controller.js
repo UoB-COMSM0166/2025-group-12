@@ -45,11 +45,6 @@ class Controller {
     }
 
     clickListener(p5) {
-        if(this.gameState.mode !== "mouse") {
-            this.mouseMoved(p5);
-            return;
-        }
-
         if (this.gameState.isFading) return;
         if (this.gameState.paused) {
             this.PauseMenuLogic.handleClick(p5, this.pauseMenu);
@@ -182,15 +177,16 @@ class Controller {
      */
     gamepadListener(index) {
         if (this.gameState.paused) {
-            this.pauseMenu.handleGamepad(index);
+            this.PauseMenuLogic.handleGamepad(index, this.pauseMenu);
             return;
         }
         if (this.gameState.playerCanClick === false) {
             return;
         }
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleGamepad) {
-            currentMenu.handleGamepad(index);
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleGamepad) {
+            this.logicFactory.get(currentState).handleGamepad(index, currentMenu);
         }
     }
 
@@ -200,9 +196,10 @@ class Controller {
      * @param axes
      */
     analogStickListener(p5, axes) {
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleAnalogStick) {
-            currentMenu.handleAnalogStick(p5, axes, currentMenu);
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStick) {
+            this.logicFactory.get(currentState).handleAnalogStick(p5, axes, currentMenu);
         }
     }
 
@@ -212,15 +209,16 @@ class Controller {
      */
     analogStickPressedListener(axes) {
         if (this.gameState.paused) {
-            this.pauseMenu.handleAnalogStickPressed(axes);
+            this.PauseMenuLogic.handleGamepad(axes, this.pauseMenu);
             return;
         }
         if (this.gameState.playerCanClick === false) {
             return;
         }
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleAnalogStickPressed) {
-            currentMenu.handleAnalogStickPressed(axes);
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStickPressed(axes, currentMenu)) {
+            currentMenu.handleAnalogStickPressed(axes, currentMenu);
         }
     }
 }

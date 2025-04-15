@@ -544,16 +544,19 @@ class PlayBoardLogic {
                 PlayBoardLogic.cancel(playBoard);
                 break;
             case 3:
+                // Y == turn
+                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                    playBoard.buttons[0].onClick();
+                }
+                break;
+            case 6:
+                // left trigger === undo
                 if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
                     playBoard.buttons[1].onClick();
                 }
                 break;
-            case 6:
-                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    playBoard.buttons[2].onClick();
-                }
-                break;
             case 9:
+                // setting button == pause
                 playBoard.gameState.togglePaused();
                 break;
             case 12:
@@ -607,6 +610,10 @@ class PlayBoardLogic {
             p5.gamepadX = PlayBoardLogic.utilityClass.newCoorX(playBoard, oldX, oldY) + playBoard.canvasWidth / 2;
             p5.gamepadY = PlayBoardLogic.utilityClass.newCoorY(playBoard, oldX, oldY) + playBoard.canvasHeight / 2;
         }
+    }
+
+    static handleAnalogStickPressed(){
+
     }
 
     // boilerplate. when floating window is on, click anywhere to disable it.

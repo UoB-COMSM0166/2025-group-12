@@ -311,6 +311,15 @@ class GameMapLogic {
 
     /**
      *
+     * @param axes
+     * @param startMenu
+     */
+    static handleAnalogStickPressed(axes, startMenu) {
+
+    }
+
+    /**
+     *
      * @param {GameMapModel} gameMap
      */
     static handleFloatingWindow(gameMap) {
