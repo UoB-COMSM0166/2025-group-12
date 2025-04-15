@@ -58,14 +58,13 @@ class OrchidLogic {
             console.error("reevaluateSkills of Orchid has received wrong cell.");
             return;
         }
-
         // set all skills to false first.
-        this.hasActive = false;
+        orchid.hasActive = false;
         let adjacentCells = OrchidLogic.BoardLogic.getAdjacent4Cells(cell.i, cell.j, playBoard.boardObjects);
         // when a Tree is next to this Orchid, it gains active skill.
         for (let adCell of adjacentCells) {
             if (adCell.plant !== null && OrchidLogic.baseType(adCell.plant) === OrchidLogic.plantTypes.TREE) {
-                this.hasActive = true;
+                orchid.hasActive = true;
                 break;
             }
         }

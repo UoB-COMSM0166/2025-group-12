@@ -1,9 +1,9 @@
-import {createMockP5} from "./Persona5.js";
-import {tick} from "./Tick.js";
-import {Container} from "../../src/controller/Container.js";
+import { createMockP5, simulateKeyDown, simulateKeyUp } from "./Persona5.js";
+import { tick } from "./Tick.js";
+import { Container } from "../../src/controller/Container.js";
 // --------------------------------------
-import {stateCode} from "../../src/model/GameState.js";
-import {StartMenuLogic} from "../../src/model/StartMenu.js";
+import { stateCode } from "../../src/model/GameState.js";
+import { StartMenuLogic } from "../../src/model/StartMenu.js";
 
 let p;
 beforeAll(() => {
@@ -54,4 +54,10 @@ test('test load game but no save data found', () => {
     /** @type {FloatingWindow} */
     let fw = startMenu.floatingWindow;
     expect(fw.text.toLowerCase().includes('no') && fw.text.toLowerCase().includes('save') && fw.text.toLowerCase().includes('found')).toBe(true);
+});
+
+test("test pause menu does not respond", () => {
+    expect(container.gameState.paused).toBe(false);
+    simulateKeyDown('Escape');
+    expect(container.gameState.paused).toBe(false);
 });
