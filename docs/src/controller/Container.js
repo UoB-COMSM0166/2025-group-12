@@ -61,9 +61,9 @@ import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
 import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
 import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
 import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
-//import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
-//import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
-//import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
+import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
+import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
+import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
 
 import {GameSerializer} from "../model/GameSerializer.js";
 import {MenuItem} from "../items/MenuItem.js";
@@ -525,21 +525,22 @@ class Container {
             "setFloatingWindow",
         ];
 
-        assertInterface({
-            name: "Tornado1PlayBoard",
-            impl: Tornado1PlayBoard,
-            methods: modelMethods
-        });
-        assertInterface({
-            name: "Tornado1PlayBoard",
-            impl: Tornado1PlayBoard,
-            methods: logicMethods
-        });
-
         for (let i = 0; i < this.gameStageFactory.stageClasses.length; i++) {
             let group = this.gameStageFactory.stageClasses[i];
             for (let j = 0; j < group.length; j++) {
                 let stage = group[j];
+
+                assertInterface({
+                    name: stage.name || `Stage_${i}_${j}`,
+                    impl: stage,
+                    methods: modelMethods
+                });
+                assertInterface({
+                    name: stage.name || `Stage_${i}_${j}`,
+                    impl: stage,
+                    methods: logicMethods
+                });
+
                 stage.setup(PlayBoardModel, PlayBoardLogic)
             }
         }
@@ -571,11 +572,11 @@ class GameStageFactory {
 
         this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
 
-        //this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
+        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
 
-        //this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
+        this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
 
-        //this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
+        this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
     }
 
     // allocate game stage dynamically

@@ -19,7 +19,7 @@ class MapButton {
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
-        if((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width* 0.1, this.y - this.height * 0.1, this.width* 1.2, this.height * 1.2);
+        if ((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
         else p5.image(this.img, this.x, this.y, this.width, this.height);
         if (this.isLocked === true) {
             p5.fill(100, 100, 100, 100);
@@ -54,10 +54,13 @@ class MapButton {
     }
 
     hasMouseOver(p5) {
-        let gamepadOver = p5.gamepadX > this.x && p5.gamepadX < this.x + this.width
-            && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
-        return (p5.mouseX > this.x && p5.mouseX < this.x + this.width
-            && p5.mouseY > this.y && p5.mouseY < this.y + this.height) || gamepadOver;
+        if (this.mode === "mouse") {
+            return p5.mouseX > this.x && p5.mouseX < this.x + this.width
+                && p5.mouseY > this.y && p5.mouseY < this.y + this.height;
+        } else {
+            return p5.gamepadX > this.x && p5.gamepadX < this.x + this.width
+                && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
+        }
     }
 
     mouseClick(p5) {

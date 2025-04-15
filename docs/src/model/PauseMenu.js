@@ -167,17 +167,16 @@ class PauseMenuLogic {
 
     }
 
-    static handleAnalogStick(axes, pauseMenu) {
+    static handleAnalogStick(p5, axes, pauseMenu) {
 
     }
 
     /**
      *
-     * @param p5
      * @param axes
      * @param {PauseMenuModel} pauseMenu
      */
-    static handleAnalogStickPressed(p5, axes, pauseMenu) {
+    static handleAnalogStickPressed(axes, pauseMenu) {
         if(axes[1] < 0){
             pauseMenu.buttons[pauseMenu.index].isSelected = false;
             if (pauseMenu.index === 0) pauseMenu.index = 3;

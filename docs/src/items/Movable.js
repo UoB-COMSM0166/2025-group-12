@@ -121,6 +121,17 @@ class MovableLogic {
                 return false;
         }
     }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param dest_i
+     * @param dest_j
+     */
+    static generateSlide(p5, playBoard, dest_i = null, dest_j = 5) {
+        MovableLogic.SlideLogic.generateSlide(p5, playBoard, MovableModel, dest_i, dest_j);
+    }
 }
 
 class MovableSerializer {
@@ -236,26 +247,26 @@ class MovableSerializer {
         let movable = JSON.parse(json);
         switch (movable.movableType) {
             case MovableSerializer.movableTypes.BANDIT:
-                let bandit = MovableSerializer.movableFactory.get("Bandit")(playBoard, movable.cellX, movable.cellY);
+                let bandit = MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.BANDIT)(playBoard, movable.cellX, movable.cellY);
                 bandit.health = movable.health;
                 if (movable.targetCellX != null && movable.targetCellY != null) {  // != null checks both null and undefined
                     bandit.targetCell = MovableSerializer.BoardLogic.getCell(movable.targetCellX, movable.targetCellY, playBoard.boardObjects);
                 }
                 return bandit;
             case MovableSerializer.movableTypes.TORNADO:
-                let tornado = MovableSerializer.movableFactory.get("Tornado")(playBoard, MovableModel, movable.cellX, movable.cellY, movable.direction, movable.countdown)
+                let tornado = MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.TORNADO)(playBoard, MovableModel, movable.cellX, movable.cellY, movable.direction, movable.countdown)
                 tornado.health = movable.health;
                 return tornado;
             case MovableSerializer.movableTypes.BOMB:
-                return MovableSerializer.movableFactory.get("VolcanicBomb")(playBoard, movable.i1, movable.j1, movable.i2, movable.j2, movable.x1, movable.y1, movable.x2, movable.y2, movable.countdown);
+                return MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.BOMB)(playBoard, movable.i1, movable.j1, movable.i2, movable.j2, movable.x1, movable.y1, movable.x2, movable.y2, movable.countdown);
             case MovableSerializer.movableTypes.SLIDE:
-                return MovableSerializer.movableFactory.get("SlideAnimation")(playBoard, movable.cellX, movable.cellY, movable.finalCellX, movable.finalCellY);
+                return MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.SLIDE)(playBoard, movable.cellX, movable.cellY, movable.finalCellX, movable.finalCellY);
             case MovableSerializer.movableTypes.EARTHQUAKE:
-                return MovableSerializer.movableFactory.get("Earthquake")(playBoard);
+                return MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.EARTHQUAKE)(playBoard);
             case MovableSerializer.movableTypes.BLIZZARD:
-                return MovableSerializer.movableFactory.get("Blizzard")(playBoard, movable.cellX, movable.cellY, movable.countdown);
+                return MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.BLIZZARD)(playBoard, movable.cellX, movable.cellY, movable.countdown);
             case MovableSerializer.movableTypes.TSUNAMI:
-                return MovableSerializer.movableFactory.get("TsunamiAnimation")(playBoard, movable.startCol, movable.startRow, movable.range, movable.blockerLimit);
+                return MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.TSUNAMI)(playBoard, movable.startCol, movable.startRow, movable.range, movable.blockerLimit);
             default:
                 console.warn("Unknown enemy type", movable.movableType);
                 return null;

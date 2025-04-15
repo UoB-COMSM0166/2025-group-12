@@ -25,7 +25,7 @@ new p5((p) => {
         anyGamepadButtonPressed((index) => {
             if (container.controller && container.controller.gameState.mode !== "gamepad") {
                 container.controller.gameState.mode = "gamepad";
-                for (const [key, value] of Object.entries(p.controller.menus)) {
+                for (const [key, value] of Object.entries(container.menus)) {
                     if (!value) continue;
                     value.shift2Gamepad(p);
                 }
@@ -38,7 +38,7 @@ new p5((p) => {
         });
 
         analogStickMoved((axes) => {
-            container.controller.analogStickListener(axes, p);
+            container.controller.analogStickListener(p, axes);
         });
 
         analogStickPressed((axes) => {

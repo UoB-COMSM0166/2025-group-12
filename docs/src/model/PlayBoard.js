@@ -516,6 +516,8 @@ class PlayBoardLogic {
         PlayBoardLogic.SeedLogic = bundle.SeedLogic;
         /** @type {typeof TerrainLogic} */
         PlayBoardLogic.TerrainLogic = bundle.TerrainLogic;
+        /** @type {typeof MovableLogic} */
+        PlayBoardLogic.MovableLogic = bundle.MovableLogic;
     }
 
     /**
@@ -535,6 +537,10 @@ class PlayBoardLogic {
         }
     }
 
+    static handleAnalogStickPressed() {
+
+    }
+
     /**
      *
      * @param index
@@ -547,12 +553,12 @@ class PlayBoardLogic {
                 break;
             case 3:
                 if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    playBoard.buttons[1].onClick();
+                    playBoard.buttons[0].onClick();
                 }
                 break;
             case 6:
                 if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    playBoard.buttons[2].onClick();
+                    playBoard.buttons[1].onClick();
                 }
                 break;
             case 9:
@@ -797,6 +803,12 @@ class PlayBoardLogic {
      * @param {PlayBoardLike} playBoard
      */
     static setSeedCountdown(x, y, playBoard) {
+        if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.TSUNAMI) {
+            let cell = PlayBoardLogic.BoardLogic.getCell(x, y, playBoard.boardObjects);
+            if (cell.seed && playBoard.fertilized[x][y]) {
+                cell.seed.countdown = 1;
+            }
+        }
     }
 
     // miscellaneous end turn settings
@@ -850,6 +862,12 @@ class PlayBoardLogic {
             playBoard.endTurn = false;
         }
 
+        // set stage group specific elements
+        PlayBoardLogic.setAndResolveCounter(p5, playBoard);
+        if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.BLIZZARD) {
+            PlayBoardLogic.resetSnowfield(p5, playBoard);
+        }
+
         // set next turn enemies and new inventory items
         PlayBoardLogic.nextTurnItems(p5, playBoard);
 
@@ -896,30 +914,36 @@ class PlayBoardLogic {
 
         // increment earth counters, decrement cold counters.
         for (let cwp of cells) {
-            if (cwp.plant.earthCounter === undefined) {
-                cwp.plant.earthCounter = 1;
-            } else {
-                cwp.plant.earthCounter++;
-            }
-            if (cwp.terrain.terrainType === PlayBoardLogic.terrainTypes.SNOWFIELD) {
-                if (cwp.plant.coldCounter === undefined) {
-                    cwp.plant.coldCounter = 2;
+            if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.EARTHQUAKE) {
+                if (cwp.plant.earthCounter === undefined) {
+                    cwp.plant.earthCounter = 1;
                 } else {
-                    cwp.plant.coldCounter--;
-                    if (cwp.plant.coldCounter <= 0) {
-                        PlayBoardLogic.InteractionLogic.findPlantAndDelete(playBoard, cwp.plant);
+                    cwp.plant.earthCounter++;
+                }
+            }
+            if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.BLIZZARD) {
+                if (cwp.terrain.terrainType === PlayBoardLogic.terrainTypes.SNOWFIELD) {
+                    if (cwp.plant.coldCounter === undefined) {
+                        cwp.plant.coldCounter = 2;
+                    } else {
+                        cwp.plant.coldCounter--;
+                        if (cwp.plant.coldCounter <= 0) {
+                            PlayBoardLogic.InteractionLogic.findPlantAndDelete(playBoard, cwp.plant);
+                        }
                     }
                 }
             }
         }
 
-        if (!playBoard.hasBamboo) {
-            // if a tree has a counter=10, insert bamboo into inventory.
-            for (let cwp of cells) {
-                if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
-                    PlayBoardLogic.modifyBoard(p5, playBoard, "bamboo");
-                    playBoard.hasBamboo = true;
-                    break;
+        if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.EARTHQUAKE) {
+            if (!playBoard.hasBamboo) {
+                // if a tree has a counter=10, insert bamboo into inventory.
+                for (let cwp of cells) {
+                    if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
+                        PlayBoardLogic.modifyBoard(p5, playBoard, "bamboo");
+                        playBoard.hasBamboo = true;
+                        break;
+                    }
                 }
             }
         }
@@ -1071,8 +1095,7 @@ class PlayBoardSerializer {
         // reset movables, need to put movable with cell to the correct cell
 
         playBoard.movables = JSON.parse(status.movables).map(json => {
-            const movable = JSON.parse(json);
-            return PlayBoardSerializer.MovableSerializer.parse(movable, playBoard);
+            return PlayBoardSerializer.MovableSerializer.parse(json, playBoard);
         });
         for (let movable of playBoard.movables) {
             if (movable.cell) {

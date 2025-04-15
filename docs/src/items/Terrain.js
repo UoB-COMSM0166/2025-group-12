@@ -66,6 +66,7 @@ class TerrainSerializer {
                 cellY: terrainInstance.cellY,
                 seed: terrainInstance.seed ? {
                     className: terrainInstance.seed.constructor.name,
+                    seedType: terrainInstance.seed.seedType,
                     countdown: terrainInstance.seed.countdown
                 } : null
             }

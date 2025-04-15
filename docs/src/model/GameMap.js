@@ -291,6 +291,15 @@ class GameMapLogic {
 
     /**
      *
+     * @param axes
+     * @param startMenu
+     */
+    static handleAnalogStickPressed(axes, startMenu) {
+
+    }
+
+    /**
+     *
      * @param p5
      * @param axes
      * @param gameMap
@@ -337,11 +346,8 @@ class GameMapLogic {
         gameMap.buttons.forEach(button => button.circle = null);
 
         if (GameMapLogic.handleFloatingWindow(gameMap)) {
-            console.log("returned")
             return;
         }
-
-        console.log("here?")
 
         for (let button of gameMap.buttons) {
             if (button.mouseClick(p5)) {

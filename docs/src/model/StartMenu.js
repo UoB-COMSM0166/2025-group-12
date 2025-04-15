@@ -174,13 +174,13 @@ class StartMenuLogic {
         switch (index) {
             case 12:
                 startMenu.buttons[startMenu.index].isSelected = false;
-                if (startMenu.index === 0) startMenu.index = 2;
+                if (startMenu.index === 0) startMenu.index =startMenu.buttons.length-1;
                 else startMenu.index--;
                 startMenu.buttons[startMenu.index].isSelected = true;
                 break;
             case 13:
                 startMenu.buttons[startMenu.index].isSelected = false;
-                if (startMenu.index === 2) startMenu.index = 0;
+                if (startMenu.index === startMenu.buttons.length-1) startMenu.index = 0;
                 else startMenu.index++;
                 startMenu.buttons[startMenu.index].isSelected = true;
                 break;
@@ -188,7 +188,7 @@ class StartMenuLogic {
 
     }
 
-    static handleAnalogStick(axes, startMenu) {
+    static handleAnalogStick(p5, axes, startMenu) {
 
     }
 
@@ -200,13 +200,13 @@ class StartMenuLogic {
     static handleAnalogStickPressed(axes, startMenu) {
         if(axes[1] < 0){
             startMenu.buttons[startMenu.index].isSelected = false;
-            if (startMenu.index === 0) startMenu.index = 2;
+            if (startMenu.index === 0) startMenu.index = startMenu.buttons.length-1;
             else startMenu.index--;
             startMenu.buttons[startMenu.index].isSelected = true;
         }
         else{
             startMenu.buttons[startMenu.index].isSelected = false;
-            if (startMenu.index === 2) startMenu.index = 0;
+            if (startMenu.index === startMenu.buttons.length-1) startMenu.index = 0;
             else startMenu.index++;
             startMenu.buttons[startMenu.index].isSelected = true;
         }

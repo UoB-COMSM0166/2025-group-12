@@ -83,7 +83,13 @@ class SlideLogic {
                 return;
             }
         }
-        SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, dest_i, dest_j);
+        if (!dest_i) {
+            SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, cell.i, dest_j);
+        } else if (!dest_j) {
+            SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, dest_i, cell.j);
+        } else {
+            SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, dest_i, dest_j);
+        }
     }
 
     /**
@@ -145,7 +151,7 @@ class SlideLogic {
             landslide.isMoving = false;
         }
 
-        landslide.cell.terrain = SlideLogic.terrainFactory.get("Landslide")();
+        landslide.cell.terrain = SlideLogic.terrainFactory.get(SlideLogic.terrainTypes.LANDSLIDE)();
         // place exit condition here to ensure final cell is included
         if (landslide.cell === landslide.finalCell) landslide.isMoving = false;
 

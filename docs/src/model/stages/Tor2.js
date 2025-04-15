@@ -86,7 +86,7 @@ class Tornado2PlayBoard {
     /**
      *
      * @param p5
-     * @param {number} code
+     * @param code
      * @param {PlayBoardLike} playBoard
      */
     static modifyBoard(p5, playBoard, code) {

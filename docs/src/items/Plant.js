@@ -38,6 +38,8 @@ class PlantLogic {
         PlantLogic.PineLogic = bundle.PineLogic;
         /** @type {typeof OrchidLogic} */
         PlantLogic.OrchidLogic = bundle.OrchidLogic;
+        /** @type {typeof BambooLogic} */
+        PlantLogic.BambooLogic = bundle.BambooLogic;
         /** @type {typeof PlumLogic} */
         PlantLogic.PlumLogic = bundle.PlumLogic;
     }
@@ -55,6 +57,16 @@ class PlantLogic {
         } else if (plant.plantType === PlantLogic.plantTypes.ORCHID) {
             PlantLogic.OrchidLogic.reevaluateSkills(playBoard, cell, /** @type {OrchidModel} */ plant);
         }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {CellModel} cell
+     */
+    static spreadBamboo(p5, playBoard, cell){
+        PlantLogic.BambooLogic.spreadBamboo(p5, playBoard, cell);
     }
 
     static plumRange(i0, j0, i1, j1) {
