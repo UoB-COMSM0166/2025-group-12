@@ -1,5 +1,5 @@
 export function createMockP5() {
-    const fn = () => {};
+    const fn = () => { };
 
     return {
         // General drawing
@@ -59,7 +59,12 @@ export function createMockP5() {
         BLUR: 'blur',
 
         // Color
-        color: (...args) => args.join(','),
+        // Color
+        color: (...args) => ({
+            toString: () => args.join(','),
+            setAlpha: (alpha) => { } // ✅ mock out p5.color(...).setAlpha(...)
+        }),
+
         strokeColor: null,
 
         // Canvas-related

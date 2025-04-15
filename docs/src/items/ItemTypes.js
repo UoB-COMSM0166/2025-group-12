@@ -8,6 +8,8 @@ let itemTypes = {
 }
 
 // notice: the order of plants and seed in the inventory follows below ordering.
+// KEEP plant AND seed TYPES CONTINUOUS AND DIFFER BY 1 ! ! ! ! !
+// to simplify code and apply statements like seedType = this.plantType + 1
 let plantTypes = {
     PALM: 2,
     PINE: 4,
