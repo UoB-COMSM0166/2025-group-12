@@ -109,10 +109,10 @@ Cross-analysis informed four priority improvements:
 
 | **Issue Area** | **Specific Flaw** | **Design Solution** | **Expected Impact (SUS/NASA-TLX)** |
 | --- | --- | --- | --- |
-| Learning Curve | High Q4/Q10 scores | Contextual tutorials + dynamic hints | SUS +15; TLX -20% |
-| UI Clarity | Undefined magic numbers | Real-time labels + UI highlighting | SUS +10; TLX -15% |
-| Strategy Transparency | Unpredictable paths | Path arrows + victory condition cues | TLX frustration -30% |
-| Control Feedback | No undo mechanism | Turn rollback + disaster rewards | TLX effort -25% |
+| Learning Curve | High Q4/Q10 scores | Contextual tutorials + dynamic hints | SUS ▲ ; TLX ▼ |
+| UI Clarity | Undefined magic numbers | Real-time labels + UI highlighting | SUS ▲ ; TLX ▼ |
+| Strategy Transparency | Unpredictable paths | Path arrows + victory condition cues | TLX frustration ▼ |
+| Control Feedback | No undo mechanism | Turn rollback + disaster rewards | TLX effort ▼ |
 
 ## **4. Academic Implications and Limitations**
 
