@@ -1,38 +1,69 @@
-<svg width="320" height="320" viewBox="0 0 320 320"
-     xmlns="http://www.w3.org/2000/svg"
-     aria-labelledby="title desc">
+<svg
+  width="320" height="320"
+  viewBox="0 0 320 320"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-labelledby="title desc"
+  style="
+    /* —— 模組化參數：只要改這裡 —— */
+    --r-outer: 150px;
+    --r-3:     110px;
+    --r-2:      70px;
+    --r-core:   30px;
+
+    --fs-default: 12px;
+    --fs-core:    14px;
+
+    --c-outer:  #d1e9ff;
+    --c-3:      #a6d4fa;
+    --c-2:      #78b6f6;
+    --c-core:   #4a8bf0;
+  "
+>
   <title id="title">Onion Model</title>
-  <desc id="desc">A four‑layer concentric circle diagram</desc>
+  <desc  id="desc">A four‑layer concentric circle diagram with hover interaction</desc>
+
+  <style>
+    /* —— 原本的模組化樣式 —— */
+    circle.outer  { r: var(--r-outer);  fill: var(--c-outer); }
+    circle.layer3 { r: var(--r-3);      fill: var(--c-3);   }
+    circle.layer2 { r: var(--r-2);      fill: var(--c-2);   }
+    circle.core   { r: var(--r-core);   fill: var(--c-core); }
+
+    text {
+      font-size:   var(--fs-default);
+      text-anchor: middle;
+      fill:        #0d47a1;
+    }
+    text.core {
+      font-size: var(--fs-core);
+      fill:      #ffffff;
+    }
+
+    /* —— 互動效果：滑鼠滑過時放大＋改變透明度＋游標變手指 —— */
+    circle {
+      transition: transform 0.3s ease, fill-opacity 0.3s ease;
+      transform-origin: 160px 160px; /* SVG 原點置中 */
+    }
+    circle:hover {
+      transform: scale(1.05);
+      fill-opacity: 0.8;
+      cursor: pointer;
+    }
+  </style>
 
   <!-- 外層圓 -->
-  <circle cx="160" cy="160" r="150" fill="#d1e9ff"/>
-  <!-- 修改開始：新增外層文字標籤 -->
-  <text x="160" y="18" text-anchor="middle" font-size="12" fill="#0d47a1">
-    External Layer
-  </text>
-  <!-- 修改結束 -->
+  <circle class="outer" cx="160" cy="160"/>
+  <text x="160" y="18">External Layer</text>
 
   <!-- Layer 3 圓 -->
-  <circle cx="160" cy="160" r="110" fill="#a6d4fa"/>
-  <!-- 修改開始：新增 Layer 3 文字標籤 -->
-  <text x="160" y="50" text-anchor="middle" font-size="12" fill="#0d47a1">
-    Layer 3
-  </text>
-  <!-- 修改結束 -->
+  <circle class="layer3" cx="160" cy="160"/>
+  <text x="160" y="50">Layer 3</text>
 
   <!-- Layer 2 圓 -->
-  <circle cx="160" cy="160" r="70"  fill="#78b6f6"/>
-  <!-- 修改開始：新增 Layer 2 文字標籤 -->
-  <text x="160" y="95" text-anchor="middle" font-size="12" fill="#0d47a1">
-    Layer 2
-  </text>
-  <!-- 修改結束 -->
+  <circle class="layer2" cx="160" cy="160"/>
+  <text x="160" y="95">Layer 2</text>
 
   <!-- 核心圓 -->
-  <circle cx="160" cy="160" r="30"  fill="#4a8bf0"/>
-  <!-- 修改開始：新增／修改核心文字標籤 -->
-  <text x="160" y="165" text-anchor="middle" font-size="14" fill="#ffffff">
-    Core
-  </text>
-  <!-- 修改結束 -->
+  <circle class="core" cx="160" cy="160"/>
+  <text class="core" x="160" y="165">Green Renaissance</text>
 </svg>
