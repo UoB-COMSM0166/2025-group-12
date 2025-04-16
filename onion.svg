@@ -1,0 +1,11 @@
+<svg width="320" height="320" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc">
+  <title id="title">Onion Model</title>
+  <desc id="desc">A four‑layer concentric circle diagram</desc>
+  <circle cx="160" cy="160" r="150" fill="#d1e9ff"/>
+  <circle cx="160" cy="160" r="110" fill="#a6d4fa"/>
+  <circle cx="160" cy="160" r="70"  fill="#78b6f6"/>
+  <circle cx="160" cy="160" r="30"  fill="#4a8bf0"/>
+  <!-- 標籤 -->
+  <text x="160" y="160" text-anchor="middle" dy="5" fill="#fff">Core</text>
+  <!-- …其他 text… -->
+</svg>
