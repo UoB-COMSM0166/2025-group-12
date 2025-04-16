@@ -1,127 +1,72 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg role="img"
-    width="640" height="640"
-    viewBox="0 0 640 640"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-labelledby="title desc"
-    style="
-    --c-x:    50%;
-    --c-y:    50%;
-
-    --r-outer:      300px;
-    --r-layer3:     220px;
-    --r-layer2:     140px;
-    --r-core:        60px;
-
-    --fs-default: 18px;
-    --fs-core:    20px;
-
-    --c-outer:       #d1e9ff;
-    --c-layer3:      #a6d4fa;
-    --c-layer2:      #78b6f6;
-    --c-core:        #4a8bf0;
-
-    --c-text-outer:   #0d47a1;
-    --c-text-layer3:  #0d47a1;
-    --c-text-layer2:  #d1e9ff;
-    --c-text-core:    #ffffff;
-
-    --y-outer-text:       72;
-    --y-outer-layer3:    136;
-    --y-outer-layer2:    226;
-    --y-outer-core:      320;
-
-  "
->
-    <title id="title">Onion Model</title>
-    <desc id="desc">A four‑layer concentric circle diagram with hover interaction</desc>
-
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
     <style>
-        /* —— 原本的模組化樣式 —— */
-        circle.outer { r: var(--r-outer); 
-                       fill: var(--c-outer); 
-                     }
-        circle.layer3 { r: var(--r-layer3); 
-                        fill: var(--c-layer3); 
-                      }
-        circle.layer2 { r: var(--r-layer2); 
-                        fill: var(--c-layer2); 
-                      }
-        circle.core { r: var(--r-core); 
-                      fill: var(--c-core); 
-                    }
-
-        text.outer-text {
-            font-size: var(--fs-default);
-            text-anchor: middle;
-            /* 修改①：使用最外层文字颜色变量 */
-            fill: var(--c-text-outer);
-        }
-        text.layer3-text {
-            font-size: var(--fs-default);
-            text-anchor: middle;
-            /* 修改②：使用 Layer 3 文字颜色变量 */
-            fill: var(--c-text-layer3);
-        }
-        text.layer2-text {
-            font-size: var(--fs-default);
-            text-anchor: middle;
-            /* 修改③：使用 Layer 2 文字颜色变量 */
-            fill: var(--c-text-layer2);
-        }
-        text.core-text {
-            font-size: var(--fs-core);
-            /* 修改④：使用核心文字颜色变量 */
-            text-anchor: middle;
-            fill: var(--c-text-core);
-        }
-
-        /* —— 互動效果：滑鼠滑過時放大＋改變透明度＋游標變手指 —— */
-        circle {
-            transform-box: fill-box;
-            transition: transform 0.3s ease, fill-opacity 0.3s ease;
-            transform-origin: 50% 50%; /* SVG 原點置中 */
-        }
-        circle:hover {
-            transform: scale(1.05);
-            fill-opacity: 0.8;
-            cursor: pointer;
-        }
-
-        line.callout     {                     /* 修改③ */
-            stroke: var(--c-callout-stroke);
-            stroke-width: 2;
-          }
-          rect.callout-box {                     /* 修改③ */
-            fill:   var(--c-callout-fill);
-            stroke: var(--c-callout-stroke);
-            stroke-width: 2;
-            rx: 8;  /* 圓角 */
-          }
-          text.callout     {                     /* 修改③ */
-            font-size: 16px;
-            text-anchor: middle;
-            fill: var(--c-callout-stroke);
-          }
+      .circle { transition: filter 0.2s, stroke 0.2s; }
+      .info-box { transition: filter 0.2s, stroke 0.2s; }
+      .hover-group:hover .circle,
+      .hover-group:hover .info-box {
+        filter: brightness(1.15);
+        stroke: #333;
+        stroke-width: 4;
+      }
+      .hover-group:hover .info-title { fill: #3e2c1c; }
+      .hover-group:hover .info-desc { fill: #000; }
+      .info-title { font-size: 20px; font-weight: bold; fill: #fff; }
+      .info-desc { font-size: 16px; }
+      .circle-label { font-size: 48px; font-weight: bold; fill: #fff; text-anchor: middle; }
+      .circle-sub { font-size: 18px; fill: #222; text-anchor: middle; }
     </style>
-
-    <!-- 外層圓 -->
-    <!-- <circle class="outer" cx="50%" cy="50%" /> -->
-    <circle class="outer" style="cx: var(--c-x); cy: var(--c-y)" />
-    <text class="outer-text" x="50%" y="72">
-        other professors and other students from the department
-    </text>
-
-    <!-- Layer 3 圓 -->
-    <circle class="layer3" style="cx: var(--c-x); cy: var(--c-y)" />
-    <text class="layer3-text" x="50%" y="136">course lectures demo markers other groups</text>
-
-    <!-- Layer 2 圓 -->
-    <circle class="layer2" style="cx: var(--c-x); cy: var(--c-y)" />
-    <text class="layer2-text" x="50%" y="226">team 12</text>
-
-    <!-- 核心圓 -->
-    <circle class="core" style="cx: var(--c-x); cy: var(--c-y)" />
-    <text class="core-text" x="50%" y="320">Green Renaissance</text>
-
-</svg>
+    <g>
+      <!-- Layer 4 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="400" r="340" fill="#8d6e57"/>
+        <text class="circle-label" x="400" y="120">04</text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="80" width="450" height="100" rx="18" fill="#8d6e57"/>
+        <text class="info-title" x="780" y="120">04 The Wider Environment</text>
+        <text class="info-desc" x="780" y="150">
+            Other professor from the department
+            <tspan font-weight="bold">
+                (potential feedback)
+            </tspan>
+             
+        </text>
+      </g>
+      <!-- Layer 3 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="400" r="250" fill="#b08e74"/>
+        <text class="circle-label" x="400" y="210">03</text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="210" width="450" height="100" rx="18" fill="#b08e74"/>
+        <text class="info-title" x="780" y="250">03 The Containing System</text>
+        <text class="info-desc" x="780" y="280">
+            Course lecturers, demo market and other groups
+        </text>
+      </g>
+      <!-- Layer 2 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="400" r="160" fill="#d1b9a3"/>
+        <text class="circle-label" x="400" y="300">02</text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="320" width="450" height="100" rx="18" fill="#d1b9a3"/>
+        <text class="info-title" x="780" y="360">02 The “Development System”</text>
+        <text class="info-desc" x="780" y="390">
+            Team 12
+        </text>
+      </g>
+      <!-- Layer 1 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="400" r="90" fill="#e8e0d5"/>
+        <text class="circle-label" x="400" y="390" fill="#3e2c1c">01</text>
+        <text class="circle-sub" x="400" y="420" font-size="22" font-weight="bold">
+            Green Renaissance
+        </text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="440" width="450" height="100" rx="18" fill="#e8e0d5"/>
+        <text class="info-title" x="780" y="480" fill="#3e2c1c">01 The Product or Service</text>
+        <text class="info-desc" x="780" y="510">
+            The solution
+        </text>
+      </g>
+    </g>
+  </svg>
+  
