@@ -65,7 +65,12 @@ class StartMenuModel {
             }
         }
 
-        this.buttons.push(newGameButton, loadGameButton);
+        let optionButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Options");
+        optionButton.onClick = () => {
+
+        }
+
+        this.buttons.push(newGameButton, loadGameButton, optionButton);
 
         this.setupInteractive();
 
