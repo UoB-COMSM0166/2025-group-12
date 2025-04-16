@@ -88,7 +88,7 @@ The SUS (10-item Likert scale converted to 0–100) yielded:
 - **Easy scenario: 39.17**, **Hard scenario: 34.58**, both below the industry benchmark of 68 (Bangor et al., 2008)[2](https://commons.erau.edu/cgi/viewcontent.cgi?article=1948&context=jaaer).
 - **Critical items**:
     - Q3 ("Easy to use") and Q7 ("Quick to learn") scored lowest (easy=2.58, hard=2.42), indicating opaque core mechanics[1](https://www.nngroup.com/articles/measuring-perceived-usability/).
-    - Q4 ("Technical support") and Q10 ("Learning effort") exceeded 3.9 in hard scenarios, highlighting steep learning curves.
+    - Q4 ("Technical support") and Q10 ("Learning effort") exceeded 3.6 in hard scenarios, highlighting steep learning curves.
 - **Individual variance**: Maximum SUS=82.5 (hard) vs. minimum=5 (hard), suggesting UI guidance inadequately bridges skill gaps.
 
 ## **2. NASA Task Load Index (NASA-TLX)**
