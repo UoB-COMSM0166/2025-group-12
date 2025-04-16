@@ -1,7 +1,9 @@
+# 2025-group-12
+
+[Kaban](https://succulent-fedora-3cf.notion.site/18c028ddf64e809da9e4f3fcc03ee99d?v=18c028ddf64e80aaa882000ce3420299)
+
+## Your Game
+
 # Onion Model
-
 這是一個四層 Onion Model，同心圓圖示：
-
 ![Onion Model Diagram](/onion.svg)
-
-*圖示說明：外層代表 X，內層代表 Y…*
