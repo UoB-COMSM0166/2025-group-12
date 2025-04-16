@@ -1,108 +1,157 @@
-import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Bandit, Lumbering} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
+class Tornado3PlayBoard {
+    static PlayBoardLogic;
+    static PlayBoardModel;
 
-export class Tornado3PlayBoard extends PlayBoard {
-    constructor(gameState) {
-        super(gameState);
-        this.stageGroup = stageGroup.TORNADO;
-        this.stageNumbering = "1-3";
+    /**
+     *
+     * @param {typeof PlayBoardModel} PlayBoardModelInjection
+     * @param {typeof PlayBoardLogic} PlayBoardLogicInjection
+     */
+    static setup(PlayBoardModelInjection, PlayBoardLogicInjection) {
+        this.PlayBoardModel = PlayBoardModelInjection;
+        this.PlayBoardLogic = PlayBoardLogicInjection;
+
+        this.plantFactory = this.PlayBoardLogic.plantFactory;
+        this.plantTypes = this.PlayBoardLogic.plantTypes;
+        this.seedTypes = this.PlayBoardLogic.seedTypes;
+        this.movableFactory = this.PlayBoardLogic.movableFactory;
+        this.movableTypes = this.PlayBoardLogic.movableTypes;
+        this.terrainFactory = this.PlayBoardLogic.terrainFactory;
+        this.terrainTypes = this.PlayBoardLogic.terrainTypes;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static concreteBoardInit(playBoard) {
+        playBoard.stageGroup = this.PlayBoardModel.stageGroup.TORNADO;
+        playBoard.stageNumbering = 3;
         // grid parameters
-        this.gridSize = 6;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        playBoard.gridSize = 6;
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
-        this.boardObjects = new BoardCells(this.gridSize);
+        playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
 
         // turn counter
-        this.turn = 1;
-        this.maxTurn = 6;
+        playBoard.turn = 1;
+        playBoard.maxTurn = 6;
     }
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-        this.gameState.inventory.setItemOfInventory(p5, "Tree", 1);
-        this.gameState.inventory.setItemOfInventory(p5, "Bush", 1);
-        this.gameState.inventory.setItemOfInventory(p5, "Orchid", 1);
-        this.gameState.inventory.setItemOfInventory(p5, "TreeSeed", 2);
-        this.gameState.inventory.setItemOfInventory(p5, "BushSeed", 2);
-        this.gameState.inventory.setItemOfInventory(p5, "OrchidSeed", 1);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageInventory(p5, playBoard) {
+        this.PlayBoardLogic.InventoryLogic.setItemOfInventory(p5, this.plantTypes.PINE, 1, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.setItemOfInventory(p5, this.plantTypes.CORN, 1, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.setItemOfInventory(p5, this.plantTypes.ORCHID, 1, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.setItemOfInventory(p5, this.seedTypes.PINE, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.setItemOfInventory(p5, this.seedTypes.CORN, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.setItemOfInventory(p5, this.seedTypes.ORCHID, 1, playBoard.gameState.inventory);
     }
 
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe(p5));
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
             }
         }
-        this.boardObjects.setCell(2, 2, new Mountain(p5));
-        this.boardObjects.setCell(2, 3, new Mountain(p5));
-        this.boardObjects.setCell(3, 2, new Mountain(p5));
-        this.boardObjects.setCell(3, 3, new Mountain(p5));
-        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
-        this.boardObjects.setCell(5, 4, new Mountain(p5));
-        this.boardObjects.setCell(4, 5, new Mountain(p5));
-        this.boardObjects.setCell(5, 5, new Mountain(p5));
-        this.boardObjects.setCell(1, 1, new Lumbering(p5));
+        this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+
+        this.PlayBoardLogic.BoardLogic.setCell(2, 2, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 3, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(3, 2, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(3, 3, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 4, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+
+        this.PlayBoardLogic.BoardLogic.setCell(1, 1, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
     }
 
-    nextTurnItems(p5) {
-        if (this.turn === 2) {
-            Bandit.createNewBandit(p5, this, 1, 2);
-            Tornado.createNewTornado(p5, this, 0, 4, 'd', 1);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+        if (playBoard.turn === 2) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 4, 'd', 1);
+            this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 1, 2);
         }
-        if (this.turn === 3) {
-            Tornado.createNewTornado(p5, this, 0, 5, 'd', 1);
+        if (playBoard.turn === 3) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 5, 'd', 1);
         }
-        if (this.turn === 4) {
-            Tornado.createNewTornado(p5, this, 4, 0, 'r', 1);
+        if (playBoard.turn === 4) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 4, 0, 'r', 1);
         }
-        if (this.turn === 5) {
-            Tornado.createNewTornado(p5, this, 0, 5, 'd', 1);
+        if (playBoard.turn === 5) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 5, 'd', 1);
         }
     }
 
-    modifyBoard(p5, code) {
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
     }
 
-    setFloatingWindow(p5) {
-        if (this.turn === 1) {
-            if (this.allFloatingWindows.has("100")) {
-                this.floatingWindow = this.allFloatingWindows.get("100");
-                this.allFloatingWindows.delete("100");
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+        if (playBoard.turn === 1) {
+            if (playBoard.allFloatingWindows.has("100")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("100");
+                playBoard.allFloatingWindows.delete("100");
                 return;
             }
-            if (this.floatingWindow === null && !this.allFloatingWindows.has("100") && this.allFloatingWindows.has("101")) {
-                this.floatingWindow = this.allFloatingWindows.get("101");
-                this.allFloatingWindows.delete("101");
+            if (playBoard.floatingWindow === null && !playBoard.allFloatingWindows.has("100") && playBoard.allFloatingWindows.has("101")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("101");
+                playBoard.allFloatingWindows.delete("101");
                 return;
             }
         }
-        if (this.turn === this.maxTurn + 1) {
-            if (this.allFloatingWindows.has("000")) {
-                this.floatingWindow = this.allFloatingWindows.get("000");
-                this.allFloatingWindows.delete("000");
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            if (playBoard.allFloatingWindows.has("000")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("000");
+                playBoard.allFloatingWindows.delete("000");
                 return;
             }
         }
     }
 
-    initAllFloatingWindows(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
         let afw = new Map();
 
-        myutil.commonFloatingWindows(p5, afw);
+        this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        afw.set("100", new FloatingWindow(p5, null, "{white:The game begins here. Try to save as much resource}\\{white:as you could, to make it through later stages!}", {
-            x: myutil.relative2absolute(1 / 2, 0.15)[0],
-            y: myutil.relative2absolute(1 / 2, 0.15)[1],
+        afw.set("100", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white:The game begins here. Try to save as much resource}\\{white:as you could, to make it through later stages!}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -110,9 +159,9 @@ export class Tornado3PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("101", new FloatingWindow(p5, null, "{red:Multiple tornadoes alert:}\\{white:top left area...}", {
-            x: myutil.relative2absolute(1 / 2, 0.15)[0],
-            y: myutil.relative2absolute(1 / 2, 0.15)[1],
+        afw.set("101", new this.PlayBoardLogic.FloatingWindow(p5, null, "{red:Multiple tornadoes alert:}\\{white:top left area...}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -120,6 +169,12 @@ export class Tornado3PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Tornado3PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Tornado3PlayBoard};
 }

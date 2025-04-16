@@ -1,12 +1,28 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js";
+
 // a semi-transparent floating window with messages.
-export class FloatingWindow {
+class FloatingWindow {
     constructor(p5, triPos, text, boxParam) {
         this.p5 = p5;
         this.triPos = triPos;
+        /** @type {String} */
         this.text = text;
         this.boxParam = boxParam;
-        this.fontSize = boxParam.fontSize;
-        this.padding = boxParam.padding;
+
+        // Calculate scale factor based on the current canvas width compared to a baseline (1280)
+        let [currentWidth, currentHeight] = CanvasSize.getSize();
+        let scaleFactor = currentWidth / 1280; // baseline width 1280 pixels
+        
+        // this.fontSize = boxParam.fontSize;
+        // this.padding = boxParam.padding;
+
+        // Adjust fontSize and padding according to the scale factor
+        this.fontSize = boxParam.fontSize * scaleFactor; // Modified: scale the font size
+        this.padding = boxParam.padding * scaleFactor;   // Modified: scale the padding
+        
+
+
         this.spacingRatio = boxParam.spacingRatio;
         this.fadingSpeed = boxParam.fadingSpeed;
         this.calculateBoxSize();
@@ -160,4 +176,10 @@ export class FloatingWindow {
     static copyOf(fw) {
         return new FloatingWindow(fw.p5, fw.triPos, fw.text, fw.boxParam);
     }
+}
+
+export {FloatingWindow};
+
+if (typeof module !== 'undefined') {
+    module.exports = {FloatingWindow};
 }

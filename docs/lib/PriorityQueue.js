@@ -1,4 +1,4 @@
-export class PriorityQueue {
+class PriorityQueue {
     // Priority Queue based on binary heap
     constructor(compareTo) {
         this.compareTo = compareTo;
@@ -64,7 +64,7 @@ export class PriorityQueue {
 }
 
 // refactor later, this version of IPQ is O(Nlog(N)), much worse than binary heap O(log(N)).
-export class IndexPriorityQueue {
+class IndexPriorityQueue {
     constructor(compareTo) {
         this.compareTo = compareTo; // Comparison function
         this.queue = []; // Stores [index, priority]
@@ -107,4 +107,10 @@ export class IndexPriorityQueue {
     size() {
         return this.queue.length;
     }
+}
+
+export {PriorityQueue, IndexPriorityQueue};
+
+if (typeof module !== 'undefined') {
+    module.exports = {PriorityQueue, IndexPriorityQueue};
 }

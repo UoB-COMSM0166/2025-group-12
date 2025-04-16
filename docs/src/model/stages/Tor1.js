@@ -1,163 +1,206 @@
-import {stageGroup, stateCode} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {Tornado} from "../../items/Tornado.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Bush} from "../../items/Bush.js";
-import {Orchid} from "../../items/Orchid.js";
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
+class Tornado1PlayBoard {
+    static PlayBoardLogic;
+    static PlayBoardModel;
 
-export class Tornado1PlayBoard extends PlayBoard {
-    constructor(gameState) {
-        super(gameState);
-        this.stageGroup = stageGroup.TORNADO;
-        this.stageNumbering = "1-1";
+    /**
+     *
+     * @param {typeof PlayBoardModel} PlayBoardModelInjection
+     * @param {typeof PlayBoardLogic} PlayBoardLogicInjection
+     */
+    static setup(PlayBoardModelInjection, PlayBoardLogicInjection) {
+        this.PlayBoardModel = PlayBoardModelInjection;
+        this.PlayBoardLogic = PlayBoardLogicInjection;
+
+        this.plantFactory = this.PlayBoardLogic.plantFactory;
+        this.plantTypes = this.PlayBoardLogic.plantTypes;
+        this.movableFactory = this.PlayBoardLogic.movableFactory;
+        this.movableTypes = this.PlayBoardLogic.movableTypes;
+        this.terrainFactory = this.PlayBoardLogic.terrainFactory;
+        this.terrainTypes = this.PlayBoardLogic.terrainTypes;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static concreteBoardInit(playBoard) {
+        playBoard.stageGroup = this.PlayBoardModel.stageGroup.TORNADO;
+        playBoard.stageNumbering = 1;
         // grid parameters
-        this.gridSize = 6;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        playBoard.gridSize = 6;
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
-        this.boardObjects = new BoardCells(this.gridSize);
+        playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
 
         // turn counter
-        this.turn = 1;
-        this.maxTurn = 4;
-        this.hasActionPoints = false;
-
-        this.allFloatingWindows = null; // Map<int code, fw>
+        playBoard.turn = 1;
+        playBoard.maxTurn = 4;
+        playBoard.hasActionPoints = false;
     }
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageInventory(p5, playBoard) {
     }
 
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Steppe(p5));
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
             }
         }
-        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
-        this.boardObjects.setCell(4, 3, new Mountain(p5));
-        this.boardObjects.setCell(4, 5, new Mountain(p5));
-        this.boardObjects.setCell(5, 3, new Mountain(p5));
-        this.boardObjects.setCell(5, 4, new Mountain(p5));
-        this.boardObjects.setCell(5, 5, new Mountain(p5));
+        this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 3, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 3, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 4, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
     }
 
-    nextTurnItems(p5) {
-        if (this.turn === 2) {
-            Tornado.createNewTornado(p5, this, 0, 4, 'd');
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+        let movableFactory = this.PlayBoardLogic.movableFactory;
+        let movableTypes = this.PlayBoardLogic.movableTypes;
+        if (playBoard.turn === 2) {
+            movableFactory.get(movableTypes.TORNADO)(playBoard, 0, 4, 'd');
         }
     }
 
-    modifyBoard(p5, code) {
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
+
         if (code === 102) {
-            Tornado.createNewTornado(p5, this, 0, 4, 'd');
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 4, 'd');
             return;
         }
         if (code === 103) {
-            this.boardObjects.plantCell(p5, this, 2, 4, new Bush(p5));
-            this.boardObjects.plantCell(p5, this, 3, 4, new Orchid(p5));
+            this.PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, 2, 4, this.plantFactory.get(this.plantTypes.CORN)());
+            this.PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, 3, 4, this.plantFactory.get(this.plantTypes.ORCHID)());
             return;
         }
         if (code === 201) {
-            this.gameState.inventory.pushItem2Inventory(p5, "Tree", 1);
-        }
-
-    }
-
-    setFloatingWindow(p5) {
-        if (this.turn === 1) {
-            if (this.allFloatingWindows.has("100")) {
-                this.floatingWindow = this.allFloatingWindows.get("100");
-                this.allFloatingWindows.delete("100");
-                return;
-            }
-            if (this.floatingWindow === null && !this.allFloatingWindows.has("100") && this.allFloatingWindows.has("101")) {
-                this.floatingWindow = this.allFloatingWindows.get("101");
-                this.allFloatingWindows.delete("101");
-                return;
-            }
-            if (this.floatingWindow === null && !this.allFloatingWindows.has("101") && this.allFloatingWindows.has("102")) {
-                this.modifyBoard(p5, 102);
-                this.floatingWindow = this.allFloatingWindows.get("102");
-                this.allFloatingWindows.delete("102");
-                return;
-            }
-            if (this.floatingWindow === null && !this.allFloatingWindows.has("102") && this.allFloatingWindows.has("103")) {
-                this.modifyBoard(p5, 103);
-                this.floatingWindow = this.allFloatingWindows.get("103");
-                this.allFloatingWindows.delete("103");
-                return;
-            }
-            if (this.floatingWindow === null && !this.allFloatingWindows.has("103") && this.allFloatingWindows.has("104")) {
-                this.floatingWindow = this.allFloatingWindows.get("104");
-                this.allFloatingWindows.delete("104");
-                return;
-            }
-
-        }
-        if (this.turn === 2) {
-            if (this.allFloatingWindows.has("200")) {
-                this.floatingWindow = this.allFloatingWindows.get("200");
-                this.allFloatingWindows.delete("200");
-                return;
-            }
-            if (this.floatingWindow === null && !this.allFloatingWindows.has("200") && this.allFloatingWindows.has("201")) {
-                this.modifyBoard(p5, 201);
-                this.floatingWindow = this.allFloatingWindows.get("201");
-                this.allFloatingWindows.delete("201");
-                return;
-            }
-            if (this.floatingWindow === null && this.gameState.inventory.selectedItem !== null && !this.allFloatingWindows.has("201") && this.allFloatingWindows.has("202")) {
-                this.floatingWindow = this.allFloatingWindows.get("202");
-                this.allFloatingWindows.delete("202");
-                return;
-            }
-        }
-        if (this.turn === 3) {
-            if (this.allFloatingWindows.has("300")) {
-                this.floatingWindow = this.allFloatingWindows.get("300");
-                this.allFloatingWindows.delete("300");
-                return;
-            }
-            if (this.floatingWindow === null && this.selectedCell.length !== 0 && !this.allFloatingWindows.has("300") && this.allFloatingWindows.has("301")) {
-                this.floatingWindow = this.allFloatingWindows.get("301");
-                this.allFloatingWindows.delete("301");
-                return;
-            }
-        }
-        if (this.turn === 4) {
-            if (this.allFloatingWindows.has("400")) {
-                this.floatingWindow = this.allFloatingWindows.get("400");
-                this.allFloatingWindows.delete("400");
-                return;
-            }
-        }
-
-        if (this.turn === this.maxTurn + 1) {
-            if (this.allFloatingWindows.has("000")) {
-                this.floatingWindow = this.allFloatingWindows.get("000");
-                this.allFloatingWindows.delete("000");
-                return;
-            }
+            this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 1, playBoard.gameState.inventory);
         }
     }
 
-    initAllFloatingWindows(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+        if (playBoard.turn === 1) {
+            if (playBoard.allFloatingWindows.has("100")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("100");
+                playBoard.allFloatingWindows.delete("100");
+                return;
+            }
+            if (playBoard.floatingWindow === null && !playBoard.allFloatingWindows.has("100") && playBoard.allFloatingWindows.has("101")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("101");
+                playBoard.allFloatingWindows.delete("101");
+                return;
+            }
+            if (playBoard.floatingWindow === null && !playBoard.allFloatingWindows.has("101") && playBoard.allFloatingWindows.has("102")) {
+                this.modifyBoard(p5, playBoard, 102);
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("102");
+                playBoard.allFloatingWindows.delete("102");
+                return;
+            }
+            if (playBoard.floatingWindow === null && !playBoard.allFloatingWindows.has("102") && playBoard.allFloatingWindows.has("103")) {
+                this.modifyBoard(p5, playBoard, 103);
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("103");
+                playBoard.allFloatingWindows.delete("103");
+                return;
+            }
+            if (playBoard.floatingWindow === null && !playBoard.allFloatingWindows.has("103") && playBoard.allFloatingWindows.has("104")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("104");
+                playBoard.allFloatingWindows.delete("104");
+                return;
+            }
+
+        }
+        if (playBoard.turn === 2) {
+            if (playBoard.allFloatingWindows.has("200")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("200");
+                playBoard.allFloatingWindows.delete("200");
+                return;
+            }
+            if (playBoard.floatingWindow === null && !playBoard.allFloatingWindows.has("200") && playBoard.allFloatingWindows.has("201")) {
+                this.modifyBoard(p5, playBoard, 201);
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("201");
+                playBoard.allFloatingWindows.delete("201");
+                return;
+            }
+            if (playBoard.floatingWindow === null && playBoard.gameState.inventory.selectedItem !== null && !playBoard.allFloatingWindows.has("201") && playBoard.allFloatingWindows.has("202")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("202");
+                playBoard.allFloatingWindows.delete("202");
+                return;
+            }
+        }
+        if (playBoard.turn === 3) {
+            if (playBoard.allFloatingWindows.has("300")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("300");
+                playBoard.allFloatingWindows.delete("300");
+                return;
+            }
+            if (playBoard.floatingWindow === null && playBoard.selectedCell.length !== 0 && !playBoard.allFloatingWindows.has("300") && playBoard.allFloatingWindows.has("301")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("301");
+                playBoard.allFloatingWindows.delete("301");
+                return;
+            }
+        }
+        if (playBoard.turn === 4) {
+            if (playBoard.allFloatingWindows.has("400")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("400");
+                playBoard.allFloatingWindows.delete("400");
+                return;
+            }
+        }
+
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            if (playBoard.allFloatingWindows.has("000")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("000");
+                playBoard.allFloatingWindows.delete("000");
+                return;
+            }
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
         let afw = new Map();
 
-        myutil.commonFloatingWindows(p5, afw);
+        this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        afw.set("100", new FloatingWindow(p5, null, "{white: Welcome to the game.}\\ {white: Your goal is to protect your house by growing plants.}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+        afw.set("100", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white: Welcome to the game.}\\ {white: Your goal is to protect your house by growing plants.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
             padding: 10,
             spacingRatio: 0.3,
@@ -165,9 +208,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("101", new FloatingWindow(p5, "uc", "{white:There is your house. It will be destroyed by}\\ {white:natural disasters if you do nothing.}", {
-            x: myutil.relative2absolute(1 / 2, 2 / 3 + 0.01)[0],
-            y: myutil.relative2absolute(1 / 2, 2 / 3 + 0.01)[1],
+        afw.set("101", new this.PlayBoardLogic.FloatingWindow(p5, "uc", "{white:There is your house. It will be destroyed by}\\ {white:natural disasters if you do nothing.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 2 / 3 + 0.01)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 2 / 3 + 0.01)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -175,9 +218,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("102", new FloatingWindow(p5, "ld", "{white:A tornado!}", {
-            x: myutil.relative2absolute(0.67, 0.45)[0],
-            y: myutil.relative2absolute(0.67, 0.45)[1],
+        afw.set("102", new this.PlayBoardLogic.FloatingWindow(p5, "ld", "{white:A tornado!}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.67, 0.45)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.67, 0.45)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -185,9 +228,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("103", new FloatingWindow(p5, "lu", "{white:We have prepared some plants}\\{white:to block its way.}", {
-            x: myutil.relative2absolute(0.69, 0.52)[0],
-            y: myutil.relative2absolute(0.69, 0.52)[1],
+        afw.set("103", new this.PlayBoardLogic.FloatingWindow(p5, "lu", "{white:We have prepared some plants}\\{white:to block its way.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.52)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.52)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -195,9 +238,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("104", new FloatingWindow(p5, "uc", "{white:click the turn button and}\\{white:let's see what happens next.}", {
-            x: myutil.relative2absolute(0.5, 0.16)[0],
-            y: myutil.relative2absolute(0.5, 0.16)[1],
+        afw.set("104", new this.PlayBoardLogic.FloatingWindow(p5, "uc", "{white:click the turn button and}\\{white:let's see what happens next.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.5, 0.16)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.5, 0.16)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -205,9 +248,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("200", new FloatingWindow(p5, null, "{white:Your plants sacrificed their}\\{white:life to protect your house.}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+        afw.set("200", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white:Your plants sacrificed their}\\{white:life to protect your house.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -215,9 +258,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("201", new FloatingWindow(p5, "ru", "{white:You've been rewarded a}{red:Tree}\\{white:since you made through last assault.}\\{white:Now click the}{red:Tree}{white:.}", {
-            x: myutil.relative2absolute(0.76, 0.11)[0],
-            y: myutil.relative2absolute(0.76, 0.11)[1],
+        afw.set("201", new this.PlayBoardLogic.FloatingWindow(p5, "ru", "{white:You've been rewarded a}{red:Pine}\\{white:since you made through last assault.}\\{white:Now click the}{red:Tree}{white:.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.76, 0.11)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.76, 0.11)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -225,9 +268,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("202", new FloatingWindow(p5, "lu", "{white:Click this cell to transplant it.}", {
-            x: myutil.relative2absolute(0.64, 0.56)[0],
-            y: myutil.relative2absolute(0.64, 0.56)[1],
+        afw.set("202", new this.PlayBoardLogic.FloatingWindow(p5, "lu", "{white:Click this cell to transplant it.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.64, 0.56)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.64, 0.56)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -235,9 +278,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("300", new FloatingWindow(p5, "lu", "{white:You can click a cell to check relevant}\\{white:information from left bottom box.}", {
-            x: myutil.relative2absolute(0.69, 0.58)[0],
-            y: myutil.relative2absolute(0.69, 0.58)[1],
+        afw.set("300", new this.PlayBoardLogic.FloatingWindow(p5, "lu", "{white:You can click a cell to check relevant}\\{white:information from left bottom box.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.58)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.58)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -245,9 +288,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("301", new FloatingWindow(p5, "dc", "{white:Click arrows or press }{red:A, D, }\\{red:<- or ->}{white: keys to turn pages.}", {
-            x: myutil.relative2absolute(0.1, 0.6)[0],
-            y: myutil.relative2absolute(0.1, 0.6)[1],
+        afw.set("301", new this.PlayBoardLogic.FloatingWindow(p5, "dc", "{white:Click arrows or press }{red:A, D, }\\{red:<- or ->}{white: keys to turn pages.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.1, 0.6)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.1, 0.6)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -255,9 +298,9 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: true
         }));
 
-        afw.set("400", new FloatingWindow(p5, null, "{white:All plants on the field alive at the end of}\\{white:each stage will be added to your inventory}\\{white:and you can transplant them in later stages.}", {
-            x: myutil.relative2absolute(1 / 2, 1 / 4)[0],
-            y: myutil.relative2absolute(1 / 2, 1 / 4)[1],
+        afw.set("400", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white:All plants on the field alive at the end of}\\{white:each stage will be added to your inventory}\\{white:and you can transplant them in later stages.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -265,6 +308,12 @@ export class Tornado1PlayBoard extends PlayBoard {
             playerCanClick: false
         }));
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Tornado1PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Tornado1PlayBoard};
 }

@@ -1,73 +1,127 @@
-import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Blizzard, Plum, Snowfield} from "../../items/Blizzard.js";
-import {BlizzardPlayBoard} from "./BlizzardPlayboard.js";
-import {Bandit} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
+class Blizzard1PlayBoard {
+    static PlayBoardLogic;
+    static PlayBoardModel;
 
-export class Blizzard1PlayBoard extends BlizzardPlayBoard {
-    constructor(gameState) {
-        super(gameState);
-        this.stageNumbering = "4-1";
+    /**
+     *
+     * @param {typeof PlayBoardModel} PlayBoardModelInjection
+     * @param {typeof PlayBoardLogic} PlayBoardLogicInjection
+     */
+    static setup(PlayBoardModelInjection, PlayBoardLogicInjection) {
+        this.PlayBoardModel = PlayBoardModelInjection;
+        this.PlayBoardLogic = PlayBoardLogicInjection;
+
+        this.plantFactory = this.PlayBoardLogic.plantFactory;
+        this.plantTypes = this.PlayBoardLogic.plantTypes;
+        this.seedTypes = this.PlayBoardLogic.seedTypes;
+        this.movableFactory = this.PlayBoardLogic.movableFactory;
+        this.movableTypes = this.PlayBoardLogic.movableTypes;
+        this.terrainFactory = this.PlayBoardLogic.terrainFactory;
+        this.terrainTypes = this.PlayBoardLogic.terrainTypes;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static concreteBoardInit(playBoard) {
+        playBoard.stageGroup = this.PlayBoardModel.stageGroup.BLIZZARD;
+        playBoard.stageNumbering = 1;
         // grid parameters
-        this.gridSize = 10;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        playBoard.gridSize = 10;
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
-        this.boardObjects = new BoardCells(this.gridSize);
+        playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
 
         // turn counter
-        this.turn = 1;
-        this.maxTurn = 15;
+        playBoard.turn = 1;
+        playBoard.maxTurn = 15;
     }
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-        this.gameState.inventory.pushItem2Inventory(p5, "Plum", 2);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageInventory(p5, playBoard) {
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PLUM, 2, playBoard.gameState.inventory);
     }
 
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                this.boardObjects.setCell(i, j, new Snowfield(p5));
-                this.snowfields.push([i,j]);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.SNOWFIELD)(), playBoard.boardObjects);
+                playBoard.snowfields.push([i, j]);
             }
         }
-        this.boardObjects.setCell(8, 8, new PlayerBase(p5));
-        this.snowfields = this.snowfields.filter(index => !(index[0] === 8 && index[1] === 8)); // remember to exclude cells with terrain
+        this.PlayBoardLogic.BoardLogic.setCell(8, 8, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        playBoard.snowfields = playBoard.snowfields.filter(index => !(index[0] === 8 && index[1] === 8)); // remember to exclude cells with terrain
     }
 
-    nextTurnItems(p5) {
-        this.resetSnowfield(p5, this);
-
-        if (this.turn === 2) {
-            Blizzard.createNewBlizzard(p5, this, 4, 4, 0);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+        if (playBoard.turn === 2) {
+            this.movableFactory.get(this.movableTypes.BLIZZARD)(playBoard, 4, 4, 0);
         }
-        if (this.turn === 3) {
-            Tornado.createNewTornado(p5, this, 3, 0, 'r');
+        if (playBoard.turn === 3) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 3, 0, 'r');
         }
     }
 
-    modifyBoard(p5, code) {
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
     }
 
-    setFloatingWindow(p5) {
-        if (this.turn === this.maxTurn + 1) {
-            if (this.allFloatingWindows.has("000")) {
-                this.floatingWindow = this.allFloatingWindows.get("000");
-                this.allFloatingWindows.delete("000");
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            if (playBoard.allFloatingWindows.has("000")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("000");
+                playBoard.allFloatingWindows.delete("000");
                 return;
             }
         }
     }
 
-    initAllFloatingWindows(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
         let afw = new Map();
 
-        myutil.commonFloatingWindows(p5, afw);
+        this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Blizzard1PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Blizzard1PlayBoard};
 }

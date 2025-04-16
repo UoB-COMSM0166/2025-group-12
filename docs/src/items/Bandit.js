@@ -1,17 +1,13 @@
-import {Enemy} from "./Enemy.js";
-import {myutil} from "../../lib/myutil.js";
-import {plantEnemyInteractions} from "./PlantEnemyInter.js";
-import {DijkstraSP, EdgeWeightedDigraph, DirectedEdge} from "../controller/GraphSP.js";
-import {enemyTypes, terrainTypes} from "./ItemTypes.js";
-import {Terrain} from "./Terrain.js";
-
-export class Bandit extends Enemy {
-    constructor(p5, x, y) {
-        super(x, y);
+/**
+ * @implements {MovableLike}
+ */
+class BanditModel {
+    constructor(p5, superModel, itemTypes, movableTypes, x, y) {
+        Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Bandit";
         this.img = p5.images.get(`${this.name}`);
 
-        this.enemyType = enemyTypes.BANDIT;
+        this.movableType = movableTypes.BANDIT;
 
         this.health = 3;
         this.maxHealth = 3;
@@ -20,7 +16,9 @@ export class Bandit extends Enemy {
         // at the beginning of end turn movement, isMoving = false, targetCell = null
         // during movement, isMoving = true, targetCell != null
         // at the end of movement, isMoving = true, targetCell = null
+        /** @type {CellModel} */
         this.cell = null;
+        /** @type {CellModel} */
         this.targetCell = null;
         this.isMoving = false;
         this.hasMoved = true;
@@ -28,116 +26,170 @@ export class Bandit extends Enemy {
         this.moveSpeed = 5;
     }
 
-    draw(p5) {
-        let imgSize = myutil.relative2absolute(1 / 32, 0)[0];
-        p5.image(this.img, this.x - imgSize / 2, this.y - imgSize, imgSize, imgSize);
-    }
-
-    static createNewBandit(p5, playBoard, i, j) {
-        if (playBoard.boardObjects.getCell(i, j).enemy !== null) {
-            return;
+    static create(p5, playBoard, superModel, i, j) {
+        let cell = BanditLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
+        if (cell.enemy !== null) {
+            return cell.enemy;
         }
-        let [avgX, avgY] = myutil.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
-        let bandit = new Bandit(p5, avgX, avgY);
+        let [avgX, avgY] = BanditLogic.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
+        let bandit = new BanditModel(p5, superModel, BanditLogic.itemTypes, BanditLogic.movableTypes, avgX, avgY);
         playBoard.movables.push(bandit);
-        playBoard.boardObjects.getCell(i, j).enemy = bandit;
-        bandit.cell = playBoard.boardObjects.getCell(i, j);
+        cell.enemy = bandit;
+        bandit.cell = cell;
+        return bandit;
+    }
+}
+
+class BanditRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        BanditRenderer.utilityClass = bundle.utilityClass;
     }
 
-    movements(p5, playBoard) {
-        if (!this.status || this.hasMoved) {
+    /**
+     *
+     * @param p5
+     * @param {BanditModel} bandit
+     */
+    static draw(p5, bandit) {
+        let imgSize = BanditRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+        p5.image(bandit.img, bandit.x - imgSize / 2, bandit.y - imgSize, imgSize, imgSize);
+    }
+}
+
+class BanditLogic {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        BanditLogic.utilityClass = bundle.utilityClass;
+        /** @type {typeof DijkstraSP} */
+        BanditLogic.DijkstraSP = bundle.DijkstraSP;
+        /** @type {typeof EdgeWeightedDigraph} */
+        BanditLogic.EdgeWeightedDigraph = bundle.EdgeWeightedDigraph;
+        /** @type {typeof DirectedEdge} */
+        BanditLogic.DirectedEdge = bundle.DirectedEdge;
+        BanditLogic.baseType = bundle.baseType;
+        BanditLogic.itemTypes = bundle.itemTypes;
+        BanditLogic.plantTypes = bundle.plantTypes;
+        BanditLogic.terrainTypes = bundle.terrainTypes;
+        BanditLogic.movableTypes = bundle.movableTypes;
+
+        /** @type {typeof BoardLogic} */
+        BanditLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        BanditLogic.InteractionLogic = bundle.InteractionLogic;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BanditModel} bandit
+     */
+    static movements(p5, playBoard, bandit) {
+        if (!bandit.status || bandit.hasMoved) {
             return false;
         }
 
         // end movement
-        if (this.isMoving === true && this.targetCell === null) {
-            this.isMoving = false;
-            this.hasMoved = true;
-            this.direction = [];
+        if (bandit.isMoving === true && bandit.targetCell === null) {
+            bandit.isMoving = false;
+            bandit.hasMoved = true;
+            bandit.direction = [];
             return false;
         }
         // during movement
-        if (this.isMoving === true && this.targetCell !== null) {
-            this.move(p5, playBoard);
+        if (bandit.isMoving === true && bandit.targetCell !== null) {
+            BanditLogic.move(p5, playBoard, bandit);
             return true;
         }
         // before movement
-        if (this.isMoving === false && this.targetCell === null) {
-            this.setTarget(playBoard);
+        if (bandit.isMoving === false && bandit.targetCell === null) {
+            BanditLogic.setTarget(playBoard, bandit);
             // if setting target fails, the bandit holds.
-            if (this.targetCell === null) {
-                this.hasMoved = true;
+            if (bandit.targetCell === null) {
+                bandit.hasMoved = true;
                 return false;
             }
 
-            if (this.cell) {
-                this.cell.enemy = null;
-                this.cell = null;
+            if (bandit.cell) {
+                bandit.cell.enemy = null;
+                bandit.cell = null;
             }
-            this.isMoving = true;
-            this.move(p5, playBoard);
+            bandit.isMoving = true;
+            BanditLogic.move(p5, playBoard, bandit);
             return true;
         }
     }
 
-    move(p5, playBoard) {
-        let [dx, dy] = this.direction;
-        let oldX = myutil.oldCoorX(playBoard, this.x, this.y) + this.moveSpeed * dx;
-        let oldY = myutil.oldCoorY(playBoard, this.x, this.y) + this.moveSpeed * dy;
-        let newX = myutil.newCoorX(playBoard, oldX, oldY);
-        let newY = myutil.newCoorY(playBoard, oldX, oldY);
-        this.x = newX;
-        this.y = newY;
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {BanditModel} bandit
+     */
+    static move(p5, playBoard, bandit) {
+        let [dx, dy] = bandit.direction;
+        let oldX = BanditLogic.utilityClass.oldCoorX(playBoard, bandit.x, bandit.y) + bandit.moveSpeed * dx;
+        let oldY = BanditLogic.utilityClass.oldCoorY(playBoard, bandit.x, bandit.y) + bandit.moveSpeed * dy;
+        let newX = BanditLogic.utilityClass.newCoorX(playBoard, oldX, oldY);
+        let newY = BanditLogic.utilityClass.newCoorY(playBoard, oldX, oldY);
+        bandit.x = newX;
+        bandit.y = newY;
 
-        let [targetX, targetY] = myutil.cellIndex2Pos(p5, playBoard, this.targetCell.x, this.targetCell.y, p5.CENTER);
+        let [targetX, targetY] = BanditLogic.utilityClass.cellIndex2Pos(p5, playBoard, bandit.targetCell.i, bandit.targetCell.j, p5.CENTER);
 
-        // when arriving at target, set this.cell to target cell, and set targetCell -> null
-        if (myutil.manhattanDistance(this.x, this.y, targetX, targetY) < 2) {
-            this.x = targetX;
-            this.y = targetY;
-            this.cell = this.targetCell;
-            this.cell.enemy = this;
-            this.targetCell = null;
+        // when arriving at target, set bandit.cell to target cell, and set targetCell -> null
+        if (BanditLogic.utilityClass.manhattanDistance(bandit.x, bandit.y, targetX, targetY) < 2) {
+            bandit.x = targetX;
+            bandit.y = targetY;
+            bandit.cell = bandit.targetCell;
+            bandit.cell.enemy = bandit;
+            bandit.targetCell = null;
         }
 
     }
 
-    setTarget(playBoard) {
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {BanditModel} bandit
+     */
+    static setTarget(playBoard, bandit) {
         // if the bandit is at the same cell with a plant, it first tries to leave.
-        if (this.cell.plant !== null) {
-            let G = this.graph(playBoard);
+        if (bandit.cell.plant !== null) {
+            let G = BanditLogic.graph(playBoard, bandit);
             let directions = [[1, 0], [0, 1], [-1, 0], [0, -1]];
             let possibleDirections = [];
             for (let [dx, dy] of directions) {
                 // skip out-of-bound
-                if (this.cell.x + dx < 0 || this.cell.x + dx >= playBoard.gridSize || this.cell.y + dy < 0 || this.cell.y + dy >= playBoard.gridSize) {
+                if (bandit.cell.i + dx < 0 || bandit.cell.i + dx >= playBoard.gridSize || bandit.cell.j + dy < 0 || bandit.cell.j + dy >= playBoard.gridSize) {
                     continue;
                 }
                 // the target cell must not be occupied by another enemy or plant already
                 if (G.edges().find(e => {
-                        return e.from() === this.cell.x + this.cell.y * playBoard.gridSize
-                            && e.to() === (this.cell.x + dx) + (this.cell.y + dy) * playBoard.gridSize
-                    }).weight < 100 && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).plant === null
-                    && playBoard.boardObjects.getCell(this.cell.x + dx, this.cell.y + dy).seed === null) {
+                        return e.from() === bandit.cell.i + bandit.cell.j * playBoard.gridSize
+                            && e.to() === (bandit.cell.i + dx) + (bandit.cell.j + dy) * playBoard.gridSize
+                    }).weight < 100 && BanditLogic.BoardLogic.getCell(bandit.cell.i + dx, bandit.cell.j + dy, playBoard.boardObjects).plant === null
+                    && BanditLogic.BoardLogic.getCell(bandit.cell.i + dx, bandit.cell.j + dy, playBoard.boardObjects).seed === null) {
                     possibleDirections.push([dx, dy]);
                 }
             }
             if (possibleDirections.length > 0) {
                 let index = Math.floor(Math.random() * possibleDirections.length);
-                this.targetCell = playBoard.boardObjects.getCell(this.cell.x + possibleDirections[index][0], this.cell.y + possibleDirections[index][1]);
-                this.direction = [this.targetCell.y - this.cell.y, this.targetCell.x - this.cell.x];
+                bandit.targetCell = BanditLogic.BoardLogic.getCell(bandit.cell.i + possibleDirections[index][0], bandit.cell.j + possibleDirections[index][1], playBoard.boardObjects);
+                bandit.direction = [bandit.targetCell.j - bandit.cell.j, bandit.targetCell.i - bandit.cell.i];
                 return;
             }
             // if no way out, the bandit dies of forest insects and animal attacks.
             // they may deserve a better ending? refactor
-            this.status = false;
-            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
+            bandit.status = false;
+            BanditLogic.InteractionLogic.findMovableAndDelete(playBoard, bandit);
             return;
         }
 
         // get all living plants and seeds
-        let cellsWithPlant = playBoard.boardObjects.getAllCellsWithPlant();
-        let cellsWithSeed = playBoard.boardObjects.getAllCellsWithSeed();
+        let cellsWithPlant = BanditLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
+        let cellsWithSeed = BanditLogic.BoardLogic.getAllCellsWithSeed(playBoard.boardObjects);
         let allTargets = [...cellsWithPlant, ...cellsWithSeed];
 
         if (allTargets.length === 0) {
@@ -145,52 +197,59 @@ export class Bandit extends Enemy {
         }
 
         // create graph and pick a target according to playground status
-        let G = this.graph(playBoard);
-        let path = this.pickLuckyPlant(playBoard, G, allTargets);
+        let G = BanditLogic.graph(playBoard, bandit);
+        let path = BanditLogic.pickLuckyPlant(playBoard, G, allTargets, bandit);
         if (path === null || path.length === 0) {
             return;
         }
 
         // don't go along one direction then switch to another. move zigzag
-        let targetPlantCell = playBoard.boardObjects.getCell(path[path.length - 1].to() % playBoard.gridSize, Math.floor(path[path.length - 1].to() / playBoard.gridSize));
+        let targetPlantCell = BanditLogic.BoardLogic.getCell(path[path.length - 1].to() % playBoard.gridSize, Math.floor(path[path.length - 1].to() / playBoard.gridSize), playBoard.boardObjects);
         let nextEdge = path[0];
-        let nextCell = playBoard.boardObjects.getCell(nextEdge.to() % playBoard.gridSize, Math.floor(nextEdge.to() / playBoard.gridSize));
-        let altCellIndex = myutil.findAlternativeCell(this.cell.x, this.cell.y, targetPlantCell.x, targetPlantCell.y, nextCell.x, nextCell.y);
+        let nextCell = BanditLogic.BoardLogic.getCell(nextEdge.to() % playBoard.gridSize, Math.floor(nextEdge.to() / playBoard.gridSize), playBoard.boardObjects);
+        let altCellIndex = BanditLogic.utilityClass.findAlternativeCell(bandit.cell.i, bandit.cell.j, targetPlantCell.i, targetPlantCell.j, nextCell.i, nextCell.j);
         if (altCellIndex !== null) {
-            let dist = myutil.euclideanDistance(nextCell.x, nextCell.y, targetPlantCell.x, targetPlantCell.y);
-            let altDist = myutil.euclideanDistance(altCellIndex[0], altCellIndex[1], targetPlantCell.x, targetPlantCell.y);
+            let dist = BanditLogic.utilityClass.euclideanDistance(nextCell.i, nextCell.j, targetPlantCell.i, targetPlantCell.j);
+            let altDist = BanditLogic.utilityClass.euclideanDistance(altCellIndex[0], altCellIndex[1], targetPlantCell.i, targetPlantCell.j);
             if (dist > altDist &&
-                G.adj[this.cell.x + this.cell.y * playBoard.gridSize].find(edge => edge.to() === nextCell.x + nextCell.y * playBoard.gridSize).weight >=
-                G.adj[this.cell.x + this.cell.y * playBoard.gridSize].find(edge => edge.to() === altCellIndex[0] + altCellIndex[1] * playBoard.gridSize).weight
+                G.adj[bandit.cell.i + bandit.cell.j * playBoard.gridSize].find(edge => edge.to() === nextCell.i + nextCell.j * playBoard.gridSize).weight >=
+                G.adj[bandit.cell.i + bandit.cell.j * playBoard.gridSize].find(edge => edge.to() === altCellIndex[0] + altCellIndex[1] * playBoard.gridSize).weight
             ) {
-                nextCell = playBoard.boardObjects.getCell(altCellIndex[0], altCellIndex[1]);
+                nextCell = BanditLogic.BoardLogic.getCell(altCellIndex[0], altCellIndex[1], playBoard.boardObjects);
             }
         }
 
         // If adjacent to the target plant, attack instead of moving
         if (path.length === 1) {
-            plantEnemyInteractions.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);
-            this.hasMoved = true;
+            BanditLogic.InteractionLogic.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);
+            bandit.hasMoved = true;
             return;
         }
 
-        this.targetCell = nextCell;
-        this.direction = [this.targetCell.y - this.cell.y, this.targetCell.x - this.cell.x]; // the row and col is reversed to fit the board's matrix-like cell positioning
+        bandit.targetCell = nextCell;
+        bandit.direction = [bandit.targetCell.j - bandit.cell.j, bandit.targetCell.i - bandit.cell.i]; // the row and col is reversed to fit the board's matrix-like cell positioning
     }
 
-    pickLuckyPlant(playBoard, G, allTargets) {
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param G
+     * @param {Array<CellModel>} allTargets
+     * @param {BanditModel} bandit
+     */
+    static pickLuckyPlant(playBoard, G, allTargets, bandit) {
         // pick the one with the lowest path weight
-        let dijkstraSP = new DijkstraSP(G, this.cell.x + this.cell.y * playBoard.gridSize)
-        let minWeight = dijkstraSP.minWeightTo(allTargets[0].x + allTargets[0].y * playBoard.gridSize);
+        let dijkstraSP = new BanditLogic.DijkstraSP(G, bandit.cell.i + bandit.cell.j * playBoard.gridSize)
+        let minWeight = dijkstraSP.minWeightTo(allTargets[0].i + allTargets[0].j * playBoard.gridSize);
         let index = 0;
         for (let i = 0; i < allTargets.length; i++) {
-            let vertex = allTargets[i].x + allTargets[i].y * playBoard.gridSize;
+            let vertex = allTargets[i].i + allTargets[i].j * playBoard.gridSize;
             if (dijkstraSP.minWeightTo(vertex) < minWeight) {
                 index = i;
             }
         }
 
-        let path = dijkstraSP.pathTo(allTargets[index].x + allTargets[index].y * playBoard.gridSize);
+        let path = dijkstraSP.pathTo(allTargets[index].i + allTargets[index].j * playBoard.gridSize);
 
         // if min weight is too high, hold still.
         // --- any weight higher than 100 will be marked inaccessible.
@@ -208,35 +267,40 @@ export class Bandit extends Enemy {
         // if all plants in the priority queue is inaccessible, return null.
     }
 
-    graph(playBoard) {
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param {BanditModel} bandit
+     */
+    static graph(playBoard, bandit) {
         let N = playBoard.gridSize;
-        let G = new EdgeWeightedDigraph(N * N);
+        let G = new BanditLogic.EdgeWeightedDigraph(N * N);
 
         // set weight according to terrain.
         for (let i = 0; i < N; i++) {
             for (let j = 0; j < N; j++) {
                 if (i + 1 < N) {
-                    G.addEdge(new DirectedEdge(i + j * N, (i + 1) + j * N, 1 + playBoard.boardObjects.getCell(i + 1, j).terrain.getWeight()));
+                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, (i + 1) + j * N, 1 + BanditLogic.BoardLogic.getCell(i + 1, j, playBoard.boardObjects).terrain.getWeight()));
                 }
                 if (j + 1 < N) {
-                    G.addEdge(new DirectedEdge(i + j * N, i + (j + 1) * N, 1 + playBoard.boardObjects.getCell(i, j + 1).terrain.getWeight()));
+                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, i + (j + 1) * N, 1 + BanditLogic.BoardLogic.getCell(i, j + 1, playBoard.boardObjects).terrain.getWeight()));
                 }
                 if (i - 1 >= 0) {
-                    G.addEdge(new DirectedEdge(i + j * N, (i - 1) + j * N, 1 + playBoard.boardObjects.getCell(i - 1, j).terrain.getWeight()));
+                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, (i - 1) + j * N, 1 + BanditLogic.BoardLogic.getCell(i - 1, j, playBoard.boardObjects).terrain.getWeight()));
                 }
                 if (j - 1 >= 0) {
-                    G.addEdge(new DirectedEdge(i + j * N, i + (j - 1) * N, 1 + playBoard.boardObjects.getCell(i, j - 1).terrain.getWeight()));
+                    G.addEdge(new BanditLogic.DirectedEdge(i + j * N, i + (j - 1) * N, 1 + BanditLogic.BoardLogic.getCell(i, j - 1, playBoard.boardObjects).terrain.getWeight()));
                 }
             }
         }
 
         // set weight to avoid tornado.
-        let cellsWithEnemy = playBoard.boardObjects.getAllCellsWithEnemy();
+        let cellsWithEnemy = BanditLogic.BoardLogic.getAllCellsWithEnemy(playBoard.boardObjects);
         for (let cwe of cellsWithEnemy) {
-            let x = cwe.x;
-            let y = cwe.y;
+            let x = cwe.i;
+            let y = cwe.j;
 
-            if (cwe.enemy && cwe.enemy.enemyType === enemyTypes.TORNADO) {
+            if (cwe.enemy && cwe.enemy.movableType === BanditLogic.movableTypes.TORNADO) {
                 for (let i = 0; i < N - 1; i++) {
                     G.setWeightIfHasEdge(i + y * N, (i + 1) + y * N, 10, 'a');
                 }
@@ -246,7 +310,7 @@ export class Bandit extends Enemy {
             }
 
             // Avoid enemy clashes
-            if (x !== this.cell.x || y !== this.cell.y) {
+            if (x !== bandit.cell.i || y !== bandit.cell.j) {
                 let directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
                 for (let [dx, dy] of directions) {
                     if (x + dx >= 0 && x + dx < N && y + dy >= 0 && y + dy < N) {
@@ -259,44 +323,10 @@ export class Bandit extends Enemy {
         return G;
     }
 
-    stringify() {
-        const object = {
-            enemyType: this.enemyType,
-            x: this.x,
-            y: this.y,
-            health: this.health,
-            cellX: this.cell?.x,
-            cellY: this.cell?.y,
-            targetCellX: this.targetCell?.x,
-            targetCellY: this.targetCell?.y,
-        }
-        return JSON.stringify(object);
-    }
-
-    static parse(json, p5, playBoard) {
-        const object = JSON.parse(json);
-        let bandit = new Bandit(p5, object.x, object.y);
-        bandit.health = object.health;
-        if (object.cellX != null && object.cellY != null) {  // != null checks both null and undefined
-            bandit.cell = playBoard.boardObjects.getCell(object.cellX, object.cellY);
-        }
-        if (object.targetCellX != null && object.targetCellY != null) {  // != null checks both null and undefined
-            bandit.targetCell = playBoard.boardObjects.getCell(object.targetCellX, object.targetCellY);
-        }
-        return bandit;
-    }
-
 }
 
-export class Lumbering extends Terrain {
-    constructor(p5) {
-        super();
-        this.name = "Lumbering";
-        this.terrainType = terrainTypes.LUMBERING;
-        this.img = p5.images.get(`${this.name}`);
-    }
+export {BanditModel, BanditLogic, BanditRenderer};
 
-    getWeight() {
-        return 0;
-    }
+if (typeof module !== 'undefined') {
+    module.exports = {BanditModel, BanditLogic, BanditRenderer};
 }

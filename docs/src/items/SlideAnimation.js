@@ -1,105 +1,177 @@
-import {Enemy} from "./Enemy.js";
-import {enemyTypes, terrainTypes} from "./ItemTypes.js";
-import {PlayBoard} from "../model/Play.js";
-import {plantEnemyInteractions} from "./PlantEnemyInter.js";
-import {myutil} from "../../lib/myutil.js";
-import {Landslide} from "./Earthquake.js";
-
-export class SlideAnimation extends Enemy {
-    constructor(firstCell, finalCell) {
-        super(-1, -1);
-        this.name = "slideAnimation";
-        this.enemyType = enemyTypes.SLIDE;
+/**
+ * @implements {MovableLike}
+ */
+class SlideModel {
+    /**
+     *
+     * @param p5
+     * @param {typeof MovableModel} superModel
+     * @param itemTypes
+     * @param movableTypes
+     * @param {CellModel} firstCell
+     * @param {CellModel} finalCell
+     * @param x
+     * @param y
+     */
+    constructor(p5, superModel, itemTypes, movableTypes, firstCell, finalCell, x = -1, y = -1) {
+        Object.assign(this, new superModel(itemTypes, x, y));
+        this.name = "SlideAnimation";
+        this.movableType = movableTypes.SLIDE;
 
         this.cell = firstCell;
         this.finalCell = finalCell;
 
-        this.isMoving = false;
-        this.hasMoved = true;
-
         this.accumulate = 0;
     }
 
-    draw() {
+    static create(p5, playBoard, superModel, start_i, start_j, dest_i, dest_j) {
+        let slide = new SlideModel(p5, superModel, SlideLogic.itemTypes, SlideLogic.movableTypes,
+            SlideLogic.BoardLogic.getCell(start_i, start_j, playBoard.boardObjects),
+            SlideLogic.BoardLogic.getCell(dest_i, dest_j, playBoard.boardObjects));
+        playBoard.movables.push(slide);
+        return slide;
+    }
+}
+
+class SlideRenderer {
+    static setup(bundle) {
     }
 
-    movements(p5, playBoard) {
-        if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of SlideAnimation has received invalid PlayBoard.');
+    static draw(p5) {
+    }
+}
+
+class SlideLogic {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        SlideLogic.utilityClass = bundle.utilityClass;
+        SlideLogic.baseType = bundle.baseType;
+        SlideLogic.itemTypes = bundle.itemTypes;
+        SlideLogic.plantTypes = bundle.plantTypes;
+        SlideLogic.terrainTypes = bundle.terrainTypes;
+        SlideLogic.movableTypes = bundle.movableTypes;
+
+        /** @type {typeof BoardLogic} */
+        SlideLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        SlideLogic.InteractionLogic = bundle.InteractionLogic;
+
+        SlideLogic.terrainFactory = bundle.terrainFactory;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {MovableModel} superModel
+     * @param dest_i
+     * @param dest_j
+     */
+    static generateSlide(p5, playBoard, superModel, dest_i, dest_j) {
+        let hills = [];
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
+                let cell = SlideLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
+                if (cell.terrain.terrainType === SlideLogic.terrainTypes.HILL && cell.terrain.canSlide) {
+                    hills.push(cell);
+                }
+            }
+        }
+        let cell = hills[Math.floor(Math.random() * hills.length)];
+        for (let adCell of SlideLogic.BoardLogic.getAdjacent8Cells(cell.i, cell.j, playBoard.boardObjects)) {
+            if (adCell.plant !== null && SlideLogic.baseType(adCell.plant) === SlideLogic.plantTypes.TREE && adCell.ecosystem !== null) {
+                return;
+            }
+        }
+        if (!dest_i) {
+            SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, cell.i, dest_j);
+        } else if (!dest_j) {
+            SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, dest_i, cell.j);
+        } else {
+            SlideModel.create(p5, playBoard, superModel, cell.i, cell.j, dest_i, dest_j);
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {SlideModel} landslide
+     */
+    static movements(p5, playBoard, landslide) {
+        if (landslide.hasMoved) {
             return false;
         }
-        if (this.hasMoved) {
-            return false;
-        }
-        if (this.isMoving) {
-            this.move(p5, playBoard);
+        if (landslide.isMoving) {
+            SlideLogic.move(p5, playBoard, landslide);
             return true;
         }
-        this.isMoving = true;
+        landslide.isMoving = true;
         return true;
     }
 
-    move(p5, playBoard) {
-        this.accumulate += 1;
-        if (this.accumulate >= 20) {
-            this.slide(p5, playBoard);
-            this.accumulate = 0;
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {SlideModel} landslide
+     */
+    static move(p5, playBoard, landslide) {
+        landslide.accumulate += 1;
+        if (landslide.accumulate >= 20) {
+            SlideLogic.slide(p5, playBoard, landslide);
+            landslide.accumulate = 0;
         }
-        if (!this.isMoving) {
-            this.hasMoved = true;
-            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
+        if (!landslide.isMoving) {
+            landslide.hasMoved = true;
+            SlideLogic.InteractionLogic.findMovableAndDelete(playBoard, landslide);
         }
     }
 
-    slide(p5, playBoard) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {SlideModel} landslide
+     */
+    static slide(p5, playBoard, landslide) {
         // some terrain can block landslide
-        if (this.cell.terrain.terrainType === terrainTypes.MOUNTAIN) {
-            this.isMoving = false;
+        if (landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.MOUNTAIN) {
+            landslide.isMoving = false;
         }
 
         // kill plants and bandit on this cell:
-        if (this.cell.plant !== null) this.cell.removePlant();
-        else if (this.cell.seed !== null) this.cell.removeSeed();
-        else if (this.cell.enemy?.enemyType === enemyTypes.BANDIT) this.cell.enemy = null;
+        if (landslide.cell.plant !== null) landslide.cell.removePlant();
+        else if (landslide.cell.seed !== null) landslide.cell.removeSeed();
+        else if (landslide.cell.enemy?.movableType === SlideLogic.movableTypes.BANDIT) landslide.cell.enemy = null;
 
         // if cell is player base, game over.
-        if (this.cell.terrain.terrainType === terrainTypes.BASE) {
-            myutil.gameOver(playBoard);
-            this.isMoving = false;
+        if (landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.BASE) {
+            SlideLogic.utilityClass.gameOver(playBoard);
+            landslide.isMoving = false;
         }
 
-        this.cell.terrain = new Landslide(p5);
+        landslide.cell.terrain = SlideLogic.terrainFactory.get(SlideLogic.terrainTypes.LANDSLIDE)();
         // place exit condition here to ensure final cell is included
-        if (this.cell === this.finalCell) this.isMoving = false;
+        if (landslide.cell === landslide.finalCell) landslide.isMoving = false;
 
         // find next cell
         let direction = [0, 0];
-        if (this.finalCell.x - this.cell.x !== 0) {
-            direction[0] = (this.finalCell.x - this.cell.x) / Math.abs(this.finalCell.x - this.cell.x);
+        if (landslide.finalCell.i - landslide.cell.i !== 0) {
+            direction[0] = (landslide.finalCell.i - landslide.cell.i) / Math.abs(landslide.finalCell.i - landslide.cell.i);
         }
-        if (this.finalCell.y - this.cell.y !== 0) {
-            direction[1] = (this.finalCell.y - this.cell.y) / Math.abs(this.finalCell.y - this.cell.y);
+        if (landslide.finalCell.j - landslide.cell.j !== 0) {
+            direction[1] = (landslide.finalCell.j - landslide.cell.j) / Math.abs(landslide.finalCell.j - landslide.cell.j);
         }
         if (direction[0] !== 0 && direction[1] !== 0) {
             direction[Math.floor(Math.random() * 2)] = 0;
         }
-        this.cell = playBoard.boardObjects.getCell(this.cell.x + direction[0], this.cell.y + direction[1]);
-
+        landslide.cell = SlideLogic.BoardLogic.getCell(landslide.cell.i + direction[0], landslide.cell.j + direction[1], playBoard.boardObjects);
     }
+}
 
-    stringify() {
-        const object = {
-            enemyType: this.enemyType,
-            cellX: this.cell?.x,
-            cellY: this.cell?.y,
-            finalCellX: this.finalCell?.x,
-            finalCellY: this.finalCell?.y,
-        }
-        return JSON.stringify(object);
-    }
+export {SlideModel, SlideLogic, SlideRenderer};
 
-    static parse(json, p5, playBoard) {
-        const object = JSON.parse(json);
-        return new SlideAnimation(playBoard.boardObjects.getCell(object.cellX, object.cellY), playBoard.boardObjects.getCell(object.finalCellX, object.finalCellY));
-    }
+if (typeof module !== 'undefined') {
+    module.exports = {SlideModel, SlideLogic, SlideRenderer};
 }

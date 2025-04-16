@@ -1,114 +1,121 @@
-import {baseType, enemyTypes, itemTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
-import {Enemy} from "./Enemy.js";
-import {plantEnemyInteractions} from "./PlantEnemyInter.js";
-import {Terrain} from "./Terrain.js";
-
-export class Earthquake extends Enemy {
-    constructor() {
-        super(-1, -1);
+/**
+ * @implements {MovableLike}
+ */
+class EarthquakeModel {
+    /**
+     * @param p5
+     * @param {typeof MovableModel} superModel
+     * @param itemTypes
+     * @param movableTypes
+     * @param x
+     * @param y
+     */
+    constructor(p5, superModel, itemTypes, movableTypes, x = -1, y = -1) {
+        Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Earthquake";
-        this.enemyType = enemyTypes.EARTHQUAKE;
-
+        this.movableType = movableTypes.EARTHQUAKE;
         this.status = true;
 
-        this.isMoving = false;
-        this.hasMoved = true;
         this.isShaking = false;
+
+        this.shakeDuration = 60;
+        this.startFrame = 0;
     }
 
-    draw(p5) {
-
-    }
-
-    static createNewEarthquake(p5, playBoard) {
-        let earthquake = new Earthquake();
+    static create(p5, playBoard, superModel, x = -1, y = -1) {
+        let earthquake = new EarthquakeModel(p5, superModel, EarthquakeLogic.itemTypes, EarthquakeLogic.movableTypes, x, y);
         playBoard.movables.push(earthquake);
+        return earthquake;
+    }
+}
+
+class EarthquakeRenderer {
+    static setup(bundle) {
     }
 
-    movements(p5, playBoard) {
-        if (!this.status || this.hasMoved) {
+    static draw(p5) {
+    }
+}
+
+class EarthquakeLogic {
+    static setup(bundle) {
+        EarthquakeLogic.baseType = bundle.baseType;
+        EarthquakeLogic.plantTypes = bundle.plantTypes;
+        EarthquakeLogic.itemTypes = bundle.itemTypes;
+        EarthquakeLogic.terrainTypes = bundle.terrainTypes;
+        EarthquakeLogic.movableTypes = bundle.movableTypes;
+        /** @type {typeof BoardLogic} */
+        EarthquakeLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        EarthquakeLogic.InteractionLogic = bundle.InteractionLogic;
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {EarthquakeModel} earthquake
+     */
+    static movements(p5, playBoard, earthquake) {
+        if (!earthquake.status || earthquake.hasMoved) {
             return false;
         }
         // end movement
-        if (this.isMoving && !this.isShaking) {
-            this.isMoving = false;
-            this.hasMoved = true;
-            this.status = false;
-            this.hit(p5, playBoard);
-            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
+        if (earthquake.isMoving && !earthquake.isShaking) {
+            earthquake.isMoving = false;
+            earthquake.hasMoved = true;
+            earthquake.status = false;
+            EarthquakeLogic.hit(p5, playBoard);
+            EarthquakeLogic.InteractionLogic.findMovableAndDelete(playBoard, earthquake);
             return false;
         }
         // during movement
-        if (this.isMoving && this.isShaking) {
-            this.shake(p5);
+        if (earthquake.isMoving && earthquake.isShaking) {
+            EarthquakeLogic.shake(p5, earthquake);
             return true;
         }
         // before movement
-        this.isMoving = true;
-        this.isShaking = true;
-        this.shakeDuration = 60;
-        this.startFrame = p5.frameCount;
+        earthquake.isMoving = true;
+        earthquake.isShaking = true;
+        earthquake.shakeDuration = 60;
+        earthquake.startFrame = p5.frameCount;
         return true;
     }
 
-    shake(p5) {
+    /**
+     *
+     * @param p5
+     * @param {EarthquakeModel} earthquake
+     */
+    static shake(p5, earthquake) {
         let shakeAmount = 10;
         let shakeX = p5.random(-shakeAmount, shakeAmount);
         let shakeY = p5.random(-shakeAmount, shakeAmount);
         p5.translate(shakeX, shakeY);
 
         // Stop shaking after a duration
-        if (p5.frameCount > this.startFrame + this.shakeDuration) {
-            this.isShaking = false;
+        if (p5.frameCount > earthquake.startFrame + earthquake.shakeDuration) {
+            earthquake.isShaking = false;
         }
     }
 
     // deal damage to all trees
-    hit(p5, playBoard) {
-        for (let cwp of playBoard.boardObjects.getAllCellsWithPlant()) {
-            if (baseType(cwp.plant) === plantTypes.TREE) {
-                plantEnemyInteractions.plantIsAttacked(playBoard, cwp.plant, 1);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static hit(p5, playBoard) {
+        for (let cwp of EarthquakeLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
+            if (EarthquakeLogic.baseType(cwp.plant) === EarthquakeLogic.plantTypes.TREE) {
+                EarthquakeLogic.InteractionLogic.plantIsAttacked(playBoard, cwp.plant, 1);
             }
         }
     }
-
-    stringify() {
-        const object = {
-            enemyType: this.enemyType,
-        }
-        return JSON.stringify(object);
-    }
-
-    static parse(json, p5, playBoard) {
-        return new Earthquake();
-    }
-
 }
 
-export class Hill extends Terrain {
-    constructor(p5, canSlide = false) {
-        super();
-        this.name = "Hill";
-        this.terrainType = terrainTypes.HILL;
-        this.img = p5.images.get(`${this.name}`);
+export {EarthquakeModel, EarthquakeLogic, EarthquakeRenderer};
 
-        this.canSlide = canSlide;
-    }
-
-    getWeight() {
-        return 20;
-    }
-}
-
-export class Landslide extends Terrain {
-    constructor(p5) {
-        super();
-        this.name = "Landslide";
-        this.terrainType = terrainTypes.LANDSLIDE;
-        this.img = p5.images.get(`${this.name}`);
-    }
-
-    getWeight() {
-        return 0;
-    }
+if (typeof module !== 'undefined') {
+    module.exports = {EarthquakeModel, EarthquakeLogic, EarthquakeRenderer};
 }

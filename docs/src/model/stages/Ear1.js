@@ -1,106 +1,150 @@
-import {stageGroup} from "../GameState.js";
-import {PlayBoard} from "../Play.js";
-import {myutil} from "../../../lib/myutil.js";
-import {BoardCells} from "../BoardCells.js";
-import {Steppe} from "../../items/Steppe.js";
-import {PlayerBase} from "../../items/PlayerBase.js";
-import {Mountain} from "../../items/Mountain.js";
-import {FloatingWindow} from "../FloatingWindow.js";
-import {Bandit, Lumbering} from "../../items/Bandit.js";
-import {Tornado} from "../../items/Tornado.js";
-import {baseType, enemyTypes, plantTypes, terrainTypes} from "../../items/ItemTypes.js";
-import {Earthquake, Hill, Landslide} from "../../items/Earthquake.js";
-import {plantEnemyInteractions} from "../../items/PlantEnemyInter.js";
-import {Enemy} from "../../items/Enemy.js";
-import {EarthquakePlayBoard} from "./EarthquakePlayboard.js";
+/**
+ * @implements ScreenLike
+ * @implements PlayBoardLike
+ */
+class Earthquake1PlayBoard {
+    static PlayBoardLogic;
+    static PlayBoardModel;
 
-export class Earthquake1PlayBoard extends EarthquakePlayBoard {
-    constructor(gameState) {
-        super(gameState);
-        this.stageNumbering = "3-1";
+    /**
+     *
+     * @param {typeof PlayBoardModel} PlayBoardModelInjection
+     * @param {typeof PlayBoardLogic} PlayBoardLogicInjection
+     */
+    static setup(PlayBoardModelInjection, PlayBoardLogicInjection) {
+        this.PlayBoardModel = PlayBoardModelInjection;
+        this.PlayBoardLogic = PlayBoardLogicInjection;
+
+        this.plantFactory = this.PlayBoardLogic.plantFactory;
+        this.plantTypes = this.PlayBoardLogic.plantTypes;
+        this.seedTypes = this.PlayBoardLogic.seedTypes;
+        this.movableFactory = this.PlayBoardLogic.movableFactory;
+        this.movableTypes = this.PlayBoardLogic.movableTypes;
+        this.terrainFactory = this.PlayBoardLogic.terrainFactory;
+        this.terrainTypes = this.PlayBoardLogic.terrainTypes;
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    static concreteBoardInit(playBoard) {
+        playBoard.stageGroup = this.PlayBoardModel.stageGroup.EARTHQUAKE;
+        playBoard.stageNumbering = 1;
         // grid parameters
-        this.gridSize = 8;
-        [this.cellWidth, this.cellHeight] = myutil.relative2absolute(1 / 16, 1 / 9);
+        playBoard.gridSize = 8;
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
-        this.boardObjects = new BoardCells(this.gridSize);
+        playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
 
         // turn counter
-        this.turn = 1;
-        this.maxTurn = 15;
+        playBoard.turn = 1;
+        playBoard.maxTurn = 15;
     }
 
-    // set stage inventory at entering, called by controller
-    setStageInventory(p5) {
-
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageInventory(p5, playBoard) {
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 2, playBoard.gameState.inventory);
     }
 
-    // set stage terrain, called when the stage is loaded or reset
-    setStageTerrain(p5) {
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setStageTerrain(p5, playBoard) {
+        for (let i = 0; i < playBoard.gridSize; i++) {
+            for (let j = 0; j < playBoard.gridSize; j++) {
                 if (j <= 1) {
                     if (j === 0) {
-                        this.boardObjects.setCell(i, j, new Hill(p5, true));
+                        let hill = this.terrainFactory.get(this.terrainTypes.HILL)();
+                        hill.setCanSlide(true);
+                        this.PlayBoardLogic.BoardLogic.setCell(i, j, hill, playBoard.boardObjects);
                     } else {
-                        this.boardObjects.setCell(i, j, new Hill(p5));
+                        this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.HILL)(), playBoard.boardObjects);
                     }
                 } else {
-                    this.boardObjects.setCell(i, j, new Steppe(p5));
+                    this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
                 }
             }
         }
-        this.boardObjects.setCell(3, 3, new PlayerBase(p5));
-        this.boardObjects.setCell(4, 3, new PlayerBase(p5));
-        this.boardObjects.setCell(3, 4, new PlayerBase(p5));
-        this.boardObjects.setCell(4, 4, new PlayerBase(p5));
+        this.PlayBoardLogic.BoardLogic.setCell(3, 3, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 3, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(3, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
     }
 
-    nextTurnItems(p5) {
-        this.setAndResolveCounter(p5);
-
-        if (this.turn === 2 || this.turn === 4 || this.turn === 6 || this.turn === 8 || this.turn === 10) {
-            Earthquake.createNewEarthquake(p5, this);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static nextTurnItems(p5, playBoard) {
+        if (playBoard.turn === 2 || playBoard.turn === 4 || playBoard.turn === 6 || playBoard.turn === 8 || playBoard.turn === 10) {
+            this.movableFactory.get(this.movableTypes.EARTHQUAKE)(playBoard);
         }
 
-        if (this.turn === 3 || this.turn === 5 || this.turn === 7 || this.turn === 9 || this.turn === 11) {
-            this.generateSlide(p5);
+        if (playBoard.turn === 3 || playBoard.turn === 5 || playBoard.turn === 7 || playBoard.turn === 9 || playBoard.turn === 11) {
+            this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard);
         }
 
         // spread bamboo after generating slide
-        for (let cwp of this.boardObjects.getAllCellsWithPlant()) {
-            if (cwp.plant.plantType === plantTypes.BAMBOO) {
-                this.spreadBamboo(p5, cwp);
+        for (let cwp of this.PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
+            if (cwp.plant.plantType === this.plantTypes.BAMBOO) {
+                this.PlayBoardLogic.PlantLogic.spreadBamboo(p5, playBoard, cwp);
             }
         }
     }
 
-    modifyBoard(p5, code) {
+    /**
+     *
+     * @param p5
+     * @param code
+     * @param {PlayBoardLike} playBoard
+     */
+    static modifyBoard(p5, playBoard, code) {
         if (code === "bamboo") {
-            this.floatingWindow = this.allFloatingWindows.get("bamboo");
-            this.allFloatingWindows.delete("bamboo");
-            this.gameState.inventory.pushItem2Inventory(p5, "Bamboo", 1);
+            playBoard.floatingWindow = playBoard.allFloatingWindows.get("bamboo");
+            playBoard.allFloatingWindows.delete("bamboo");
+            this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.BAMBOO, 1, playBoard.gameState.inventory);
         }
     }
 
-    setFloatingWindow(p5) {
-        if (this.turn === this.maxTurn + 1) {
-            if (this.allFloatingWindows.has("000")) {
-                this.floatingWindow = this.allFloatingWindows.get("000");
-                this.allFloatingWindows.delete("000");
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static setFloatingWindow(p5, playBoard) {
+        if (playBoard.turn === playBoard.maxTurn + 1) {
+            if (playBoard.allFloatingWindows.has("000")) {
+                playBoard.floatingWindow = playBoard.allFloatingWindows.get("000");
+                playBoard.allFloatingWindows.delete("000");
                 return;
             }
         }
     }
 
-    initAllFloatingWindows(p5) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static initAllFloatingWindows(p5, playBoard) {
         let afw = new Map();
 
-        myutil.commonFloatingWindows(p5, afw);
+        this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        afw.set("bamboo", new FloatingWindow(p5, null, "{white:A bamboo is added to your inventory.}", {
-            x: myutil.relative2absolute(1 / 2, 0.15)[0],
-            y: myutil.relative2absolute(1 / 2, 0.15)[1],
+        afw.set("bamboo", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white:A bamboo is added to your inventory.}", {
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -108,6 +152,12 @@ export class Earthquake1PlayBoard extends EarthquakePlayBoard {
             playerCanClick: true
         }));
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
+}
+
+export {Earthquake1PlayBoard};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Earthquake1PlayBoard};
 }

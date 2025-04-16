@@ -1,4 +1,4 @@
-export class MapButton {
+class MapButton {
     constructor(x, y, size, img, stageGroup) {
         this.x = x;
         this.y = y;
@@ -19,21 +19,14 @@ export class MapButton {
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
-        // let baseColor = "rgb(102, 255, 102)";
-        // let hoverColor = "rgb(152, 255, 152)";
-        // let buttonColor = this.isHovered ? hoverColor : baseColor;
-        // p5.noStroke();
-        // // rectangle shape of button
-        // p5.fill(buttonColor);
-        // p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
-        if((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width* 0.1, this.y - this.height * 0.1, this.width* 1.2, this.height * 1.2);
+        if ((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
         else p5.image(this.img, this.x, this.y, this.width, this.height);
         if (this.isLocked === true) {
-            // p5.fill(100, 100, 100, 100);
-            // p5.rect(this.x, this.y, this.width, this.height, 10);
+            p5.noStroke();
+            p5.fill(100, 100, 100, 100);
+            p5.rect(this.x + this.width * 0.1, this.y + this.height * 0.1, this.width * 0.8, this.height * 0.8);
             p5.image(p5.images.get("Lock"), this.x + this.width / 4, this.y + this.height / 4, this.width / 2, this.height / 2);
         }
-
         if (this.circle) this.circle.updateAndDraw(p5);
     }
 
@@ -53,7 +46,6 @@ export class MapButton {
             this.isLocked = true;
             this.isCleared = true;
         }
-
     }
 
     createNewCircle(p5) {
@@ -62,14 +54,18 @@ export class MapButton {
     }
 
     hasMouseOver(p5) {
-        if(this.mode === "mouse") return p5.mouseX > this.x && p5.mouseX < this.x + this.width
-            && p5.mouseY > this.y && p5.mouseY < this.y + this.height;
-        else return p5.gamepadX > this.x && p5.gamepadX < this.x + this.width && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
+        if (this.mode === "mouse") {
+            return p5.mouseX > this.x && p5.mouseX < this.x + this.width
+                && p5.mouseY > this.y && p5.mouseY < this.y + this.height;
+        } else {
+            return p5.gamepadX > this.x && p5.gamepadX < this.x + this.width
+                && p5.gamepadY > this.y && p5.gamepadY < this.y + this.height;
+        }
     }
 
     mouseClick(p5) {
         if (this.hasMouseOver(p5)) {
-            this._onClick(p5);
+            this.onClick(p5);
             return true;
         }
         return false;
@@ -130,4 +126,10 @@ class CircleAnimation {
         p5.endShape();
         p5.pop();
     }
+}
+
+export {MapButton};
+
+if (typeof module !== 'undefined') {
+    module.exports = {MapButton};
 }

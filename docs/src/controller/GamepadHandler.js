@@ -1,7 +1,3 @@
-import {CanvasSize} from "../CanvasSize.js";
-import {StandbyMenu} from "./Standby.js";
-import {stateCode} from "./GameState.js";
-
 let gamepadIndex = null;
 let buttonStates = {};
 let gamepadListeners = {};
@@ -24,26 +20,26 @@ window.addEventListener("gamepaddisconnected", () => {
     gamepadListeners = {};
 });
 
-export function Gamepad(buttonIndex, callback) {
+function Gamepad(buttonIndex, callback) {
     if (!gamepadListeners[buttonIndex]) {
         gamepadListeners[buttonIndex] = [];
     }
     gamepadListeners[buttonIndex].push(callback);
 }
 
-export function anyGamepadButtonPressed(callback) {
+function anyGamepadButtonPressed(callback) {
     globalButtonListener = callback;
 }
 
-export function analogStickMoved(callback) {
+function analogStickMoved(callback) {
     analogStickListener = callback;
 }
 
-export function analogStickPressed(callback) {
+function analogStickPressed(callback) {
     analogButtonListener = callback;
 }
 
-export function pollGamepad(p5, currentMenu, saveState) {
+function pollGamepad(p5, currentMenu, saveState) {
     if (gamepadIndex === null) return;
 
     const gamepad = navigator.getGamepads()[gamepadIndex];
@@ -51,7 +47,7 @@ export function pollGamepad(p5, currentMenu, saveState) {
 
     const currentAxes = gamepad.axes.slice(0, 4);
 
-    if(analogStickListener){
+    if (analogStickListener) {
         analogStickListener(currentAxes);
     }
     lastAxes = currentAxes;
@@ -65,19 +61,25 @@ export function pollGamepad(p5, currentMenu, saveState) {
             gamepadListeners[index].forEach(fn => fn());
         }
 
-        if(!wasPressed && isPressed) {
+        if (!wasPressed && isPressed) {
             globalButtonListener(index);
         }
 
         buttonStates[index] = isPressed;
     });
 
-    if((Math.abs(currentAxes[0]) > 0.2 || Math.abs(currentAxes[1]) > 0.2) && !leftStick) {
+    if ((Math.abs(currentAxes[0]) > 0.2 || Math.abs(currentAxes[1]) > 0.2) && !leftStick) {
         analogButtonListener(currentAxes);
         leftStick = true;
     }
 
-    if(Math.abs(currentAxes[0]) < 0.2 && Math.abs(currentAxes[1]) < 0.2){
+    if (Math.abs(currentAxes[0]) < 0.2 && Math.abs(currentAxes[1]) < 0.2) {
         leftStick = false;
     }
+}
+
+export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad};
 }

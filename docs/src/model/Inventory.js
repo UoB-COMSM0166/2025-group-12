@@ -1,221 +1,269 @@
-import {Tree, TreeSeed} from "../items/Tree.js";
-import {Bush, BushSeed} from "../items/Bush.js";
-import {Orchid, OrchidSeed} from "../items/Orchid.js";
-import {CanvasSize} from "../CanvasSize.js";
-import {myutil} from "../../lib/myutil.js"
-import {itemTypes, plantTypes, seedTypes} from "../items/ItemTypes.js";
-import {FireHerb, FireHerbSeed} from "../items/FireHerb.js";
-import {Bamboo, BambooSeed} from "../items/Bamboo.js";
-import {Plum, PlumSeed} from "../items/Blizzard.js";
-import {Kiku, KikuSeed} from "../items/Kiku.js";
-import {Palm, PalmSeed} from "../items/Palm.js";
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js"; // 修改部分
 
-export class Inventory {
-    constructor(p5) {
-        this.items = new Map(); // <String name, int count>
-        this.selectedItem = null; // a String
+
+class InventoryModel {
+    static setup(bundle) {
+        InventoryModel.utilityClass = bundle.utilityClass;
+        /** @type {Map} */
+        InventoryModel.plantFactory = bundle.plantFactory;
+    }
+
+    constructor() {
+        this.items = new Map(); // <plantTypes plantType, int count>
+        this.selectedItem = null; // plantType
         this.scrollIndex = 0;
         this.maxVisibleItems = 6;
-        this.status = [false, false, false, false, false, false];
+
+        this.status = Array.from({length: this.maxVisibleItems}, () => false);
         this.index = -1;
 
         // for fast lookup when creating item
-        this.itemPrototypes = this.initPrototypes(p5); // Map<String name, Plant/Seed instance>
+        this.itemPrototypes = InventoryModel.plantFactory; // Map<plantTypes plantType, Function create>
 
         // inventory and item parameters
-        [this.padding, this.itemHeight] = myutil.relative2absolute(0.01, 0.06);
-        [this.inventoryWidth, this.inventoryY] = myutil.relative2absolute(0.1, 0.03);
-        this.itemInter = myutil.relative2absolute(0.01, 0.01)[1];
+        this.padding = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[0];
+        this.itemHeight = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[1];
+        this.inventoryWidth = InventoryModel.utilityClass.relative2absolute(0.1, 0.03)[0];
+        this.inventoryY = InventoryModel.utilityClass.relative2absolute(0.1, 0.03)[1];
+        this.itemInter = InventoryModel.utilityClass.relative2absolute(0.01, 0.01)[1];
         this.inventoryHeight = Math.min(this.items.size, this.maxVisibleItems) * this.itemHeight + this.padding * 2;
-        this.inventoryX = CanvasSize.getSize()[0] - this.inventoryWidth - this.padding;
+        this.inventoryX = InventoryModel.utilityClass.relative2absolute(1, 1)[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
+
         this.mode = "mouse";
         this.isSelected = false;
     }
+}
 
-    // with prototypes, we can find seed or plant type given a name,
-    // while name is a concrete String rather than a reference
-    // so we can create it multiple times.
-    initPrototypes(p5) {
-        return new Map([
-            ["Tree", new Tree(p5)],
-            ["Bush", new Bush(p5)],
-            ["Orchid", new Orchid(p5)],
-            ["FireHerb", new FireHerb(p5)],
-            ["Bamboo", new Bamboo(p5)],
-            ["Plum", new Plum(p5)],
-            ["Kiku", new Kiku(p5)],
-            ["Palm", new Palm(p5)],
-            ["TreeSeed", new TreeSeed(p5)],
-            ["BushSeed", new BushSeed(p5)],
-            ["OrchidSeed", new OrchidSeed(p5)],
-            ["FireHerbSeed", new FireHerbSeed(p5)],
-            ["BambooSeed", new BambooSeed(p5)],
-            ["PlumSeed", new PlumSeed(p5)],
-            ["KikuSeed", new KikuSeed(p5)],
-            ["PalmSeed", new PalmSeed(p5)],
-        ]);
+class InventoryRenderer {
+    static setup(bundle) {
+        InventoryRenderer.Button = bundle.Button;
     }
 
-    draw(p5) {
+    /**
+     *
+     * @param p5
+     * @param {InventoryModel} inventory
+     */
+    static draw(p5, inventory) {
         p5.noStroke();
         // Inventory background
         p5.fill(100, 100, 100, 200);
-        p5.rect(this.inventoryX, this.inventoryY, this.inventoryWidth, this.inventoryHeight, 10);
+        p5.rect(inventory.inventoryX, inventory.inventoryY, inventory.inventoryWidth, inventory.inventoryHeight, 10);
 
         // Inventory title text
         p5.fill(255);
         p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.textSize(14);
-        p5.text("Inventory", this.inventoryX + this.inventoryWidth / 2, this.inventoryY + this.padding);
+        
+        // p5.textSize(14);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.mini)  // Adjust font parameters according to UI design
+
+
+        p5.text("Inventory", inventory.inventoryX + inventory.inventoryWidth / 2, inventory.inventoryY + inventory.padding);
 
         // loop inventory items
-        let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
+        let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
         let index = 0;
         for (let i = 0; i < visibleItems.length; i++) {
             let key = visibleItems[i][0];
             let value = visibleItems[i][1];
-            let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
-            let itemInstance = this.itemPrototypes.get(key);
+            let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
+            let itemInstance = inventory.itemPrototypes.get(key)();
             p5.push();
-            if (this.index === i) {
-                p5.stroke('yellow');
+            if (inventory.index === i) {
+                p5.stroke("rgb(200, 200, 0)");
                 p5.strokeWeight(3);
             } else {
                 p5.noStroke();
             }
             p5.fill(itemInstance.color);
-            p5.rect(this.itemX, itemY, this.itemWidth, this.itemHeight - this.itemInter, this.itemInter);
+            p5.rect(inventory.itemX, itemY, inventory.itemWidth, inventory.itemHeight - inventory.itemInter, inventory.itemInter);
             p5.pop();
             p5.fill(0);
-            p5.textSize(14);
+            
+            // p5.textSize(14);
+            let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+            p5.textSize(fontSizes.mini)  // Adjust font parameters according to UI design
+
             p5.textAlign(p5.CENTER, p5.CENTER);
-            p5.text(itemInstance.name, this.inventoryX + this.itemWidth / 2 + this.padding, itemY + (this.itemHeight - this.itemInter) / 2);
-            p5.text(value, this.inventoryX + this.inventoryWidth - (this.inventoryWidth - (this.itemWidth + this.padding)) / 2, itemY + (this.itemHeight - this.itemInter) / 2);
+            p5.text(itemInstance.name, inventory.inventoryX + inventory.itemWidth / 2 + inventory.padding, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
+            p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             index++;
         }
     }
+}
 
-    handleScroll(event) {
-        let maxIndex = Math.max(0, this.items.size - this.maxVisibleItems);
-        if (event.deltaY > 0) {
-            this.scrollIndex = Math.min(this.scrollIndex + 1, maxIndex);
-        } else if (event.deltaY < 0) {
-            this.scrollIndex = Math.max(this.scrollIndex - 1, 0);
-        }
-        console.log(this.scrollIndex)
+class InventoryLogic {
+    static setup(bundle) {
+        InventoryLogic.plantTypes = bundle.plantTypes;
+        InventoryLogic.seedTypes = bundle.seedTypes;
+        InventoryLogic.itemTypes = bundle.itemTypes;
     }
 
-    handleClick(p5) {
-        // clear item when clicked somewhere else
-        this.selectedItem = null;
+    /**
+     *
+     * @param event
+     * @param {InventoryModel} inventory
+     */
+    static handleScroll(event, inventory) {
+        let maxIndex = Math.max(0, inventory.items.size - inventory.maxVisibleItems);
+        if (event.deltaY > 0) {
+            inventory.scrollIndex = Math.min(inventory.scrollIndex + 1, maxIndex);
+        } else if (event.deltaY < 0) {
+            inventory.scrollIndex = Math.max(inventory.scrollIndex - 1, 0);
+        }
+    }
 
-        let visibleItems = Array.from(this.items.entries()).slice(this.scrollIndex, this.scrollIndex + this.maxVisibleItems);
+    /**
+     *
+     * @param p5
+     * @param {InventoryModel} inventory
+     */
+    static handleClick(p5, inventory) {
+        // clear item when clicked somewhere else
+        inventory.selectedItem = null;
+
+        let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
         // record when an inventory item is clicked
-        let index = 0;
         for (let i = 0; i < visibleItems.length; i++) {
             let key = visibleItems[i][0];
-            let itemY = this.inventoryY + this.padding * 2 + index * this.itemHeight;
-            if(this.mode === "mouse"){
-                if (p5.mouseX >= this.itemX && p5.mouseX <= this.itemX + this.itemWidth &&
-                    p5.mouseY >= itemY && p5.mouseY <= itemY + (this.itemHeight - this.itemInter)) {
-                    this.selectedItem = key;
+            let itemY = inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight;
+            if (inventory.mode === "mouse") {
+                if (p5.mouseX >= inventory.itemX && p5.mouseX <= inventory.itemX + inventory.itemWidth &&
+                    p5.mouseY >= itemY && p5.mouseY <= itemY + (inventory.itemHeight - inventory.itemInter)) {
+                    inventory.selectedItem = key;
+                    return;
+                }
+            } else {
+                if (inventory.index === i && inventory.isSelected) {
+                    inventory.selectedItem = key;
                     return;
                 }
             }
-            else{
-                if(this.index === i && this.isSelected){
-                    this.selectedItem = key;
-                    return;
-                }
-            }
-            index++;
         }
     }
 
     // invoke this function when an item from inventory is placed to playing board
-    itemDecrement() {
-        if (this.selectedItem === null || !this.items.has(this.selectedItem)) {
+    /**
+     *
+     * @param {InventoryModel} inventory
+     */
+    static itemDecrement(inventory) {
+        if (inventory.selectedItem === null || !inventory.items.has(inventory.selectedItem)) {
             return;
         }
 
         // update data
-        let value = this.items.get(this.selectedItem) - 1;
+        let value = inventory.items.get(inventory.selectedItem) - 1;
         if (value === 0) {
-            this.items.delete(this.selectedItem);
+            inventory.items.delete(inventory.selectedItem);
         } else {
-            this.items.set(this.selectedItem, value);
+            inventory.items.set(inventory.selectedItem, value);
         }
-        this.selectedItem = null;
+        inventory.selectedItem = null;
 
         // update inventory height after decreasing
-        this.updateInventoryHeight();
+        InventoryLogic.updateInventoryHeight(inventory);
     }
 
     // return a new item according to its name.
     // use prototypes for type lookup and creation
-    createItem(p5, name) {
+    /**
+     *
+     * @param p5
+     * @param plantType
+     * @param {InventoryModel} inventory
+     */
+    static createItem(p5, plantType, inventory) {
         // fetch an instance from item prototypes
-        let item = this.itemPrototypes.get(name);
-        if (item === null) {
-            console.error("input of createItem is unknown?");
+        let item = inventory.itemPrototypes.get(plantType)();
+        if (!item) {
+            console.error("plantType is unknown?");
             return null;
         }
-
-        return new item.constructor(p5);
+        return item;
     }
 
     // add item into the inventory.
-    pushItem2Inventory(p5, name, quantity) {
+    /**
+     *
+     * @param p5
+     * @param plantType
+     * @param quantity
+     * @param {InventoryModel} inventory
+     */
+    static pushItem2Inventory(p5, plantType, quantity, inventory) {
         // if the item is already in inventory:
-        if (this.items.has(name)) {
-            this.items.set(name, this.items.get(name) + quantity);
+        if (inventory.items.has(plantType)) {
+            inventory.items.set(plantType, inventory.items.get(plantType) + quantity);
             return;
         }
         // if the item is not in inventory:
-        if (this.createItem(p5, name) !== null) {
-            this.items.set(name, quantity);
+        if (InventoryLogic.createItem(p5, plantType, inventory) !== null) {
+            inventory.items.set(plantType, quantity);
         }
         // if the item is invalid:
         // do nothing. createItem has printed error info.
 
         // update inventory height after pushing:
-        this.updateInventoryHeight();
+        InventoryLogic.updateInventoryHeight(inventory);
     }
 
     // to set item to a specific number.
-    setItemOfInventory(p5, name, quantity) {
-        this.items.set(name, quantity);
-        this.updateInventoryHeight();
+    /**
+     *
+     * @param p5
+     * @param plantType
+     * @param quantity
+     * @param {InventoryModel} inventory
+     */
+    static setItemOfInventory(p5, plantType, quantity, inventory) {
+        inventory.items.set(plantType, quantity);
+        InventoryLogic.updateInventoryHeight(inventory);
     }
 
     // store inventory items so next method can load it
-    saveInventory() {
+    /**
+     *
+     * @param {InventoryModel} inventory
+     */
+    static saveInventory(inventory) {
         let tmpItems = new Map();
-        for (let [key, value] of this.items.entries()) {
+        for (let [key, value] of inventory.items.entries()) {
             tmpItems.set(key, value);
         }
         return tmpItems;
     }
 
+    /**
+     *
+     * @param {Map} savedItems
+     * @param {InventoryModel} inventory
+     */
     // load saved inventory items when quit a stage
-    loadInventory(tmpItems) {
-        this.items = new Map();
-        for (let [key, value] of tmpItems.entries()) {
-            this.items.set(key, value);
+    static loadInventory(savedItems, inventory) {
+        inventory.items = new Map();
+        for (let [key, value] of savedItems.entries()) {
+            inventory.items.set(key, value);
         }
-        this.updateInventoryHeight();
+        InventoryLogic.updateInventoryHeight(inventory);
     }
 
     // update inventory height after insertion or delete
     // and secretly sort items by type. may want to refactor
-    updateInventoryHeight() {
-        this.inventoryHeight = Math.min(this.items.size, this.maxVisibleItems) * this.itemHeight + this.padding * 2;
+    /**
+     *
+     * @param {InventoryModel} inventory
+     */
+    static updateInventoryHeight(inventory) {
+        inventory.inventoryHeight = Math.min(inventory.items.size, inventory.maxVisibleItems) * inventory.itemHeight + inventory.padding * 2;
 
-        this.items = new Map([...this.items].sort(([key1], [key2]) => {
-            let instance1 = this.itemPrototypes.get(key1);
-            let instance2 = this.itemPrototypes.get(key2);
+        inventory.items = new Map([...inventory.items].sort(([key1], [key2]) => {
+            let instance1 = inventory.itemPrototypes.get(key1)();
+            let instance2 = inventory.itemPrototypes.get(key2)();
             const type1 = "plantType" in instance1 ? instance1.plantType : instance1.seedType;
             const type2 = "plantType" in instance2 ? instance2.plantType : instance2.seedType;
             return type1 - type2;
@@ -223,30 +271,51 @@ export class Inventory {
     }
 
     // when a stage is cleared, remove all seeds and bamboo from inventory.
-    removeAllSeedsAndBamboo() {
-        for (let [name, instance] of this.itemPrototypes.entries()) {
-            if (instance.type === itemTypes.SEED) {
-                this.items.delete(name);
+    /**
+     *
+     * @param {InventoryModel} inventory
+     */
+    static removeAllSeedsAndBamboo(inventory) {
+        for (let [type, instanceConstructor] of inventory.itemPrototypes.entries()) {
+            let instance = instanceConstructor();
+            if (instance.type === InventoryLogic.itemTypes.SEED) {
+                inventory.items.delete(type);
             }
-            if (instance.type === itemTypes.PLANT && instance.plantType === plantTypes.BAMBOO) {
-                this.items.delete(name);
+            if (instance.type === InventoryLogic.itemTypes.PLANT && instance.plantType === InventoryLogic.plantTypes.BAMBOO) {
+                inventory.items.delete(type);
             }
         }
-        this.updateInventoryHeight();
+        InventoryLogic.updateInventoryHeight(inventory);
     }
+}
 
-    stringify() {
+class InventorySerializer {
+    /**
+     *
+     * @param {InventoryModel} inventory
+     */
+    static stringify(inventory) {
         const object = {
-            items: Array.from(this.items.entries())
+            items: Array.from(inventory.items.entries())
         }
         return JSON.stringify(object);
     }
 
-    static parse(json, p5) {
+    /**
+     *
+     * @param json
+     * @param p5
+     * @param {InventoryModel} inventoryInstance
+     */
+    static parse(json, p5, inventoryInstance) {
         const object = JSON.parse(json);
-        let inv = new Inventory(p5);
-        inv.items = new Map(object.items);
-        inv.updateInventoryHeight();
-        return inv;
+        InventoryLogic.loadInventory(new Map(object.items), inventoryInstance);
+        return inventoryInstance;
     }
+}
+
+export {InventoryModel, InventoryLogic, InventoryRenderer, InventorySerializer};
+
+if (typeof module !== 'undefined') {
+    module.exports = {InventoryModel, InventoryLogic, InventoryRenderer, InventorySerializer};
 }

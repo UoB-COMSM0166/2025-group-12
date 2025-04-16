@@ -1,33 +1,30 @@
-import {Enemy} from "./Enemy.js";
-import {enemyTypes, plantTypes, terrainTypes} from "./ItemTypes.js";
-import {PlayBoard} from "../model/Play.js";
-import {plantEnemyInteractions} from "./PlantEnemyInter.js";
-import {myutil} from "../../lib/myutil.js";
-
-export class TsunamiAnimation extends Enemy {
-    constructor(p5, playBoard, startCol, startRow, range = 1, blockerLimit = 3) {
-        super(-1, -1);
-        this.name = "Tsunami";
-        this.enemyType = enemyTypes.TSUNAMI;
+/**
+ * @implements {MovableLike}
+ */
+class TsunamiModel {
+    constructor(p5, playBoard, superModel, itemTypes, movableTypes, startCol, startRow, range = 1, blockerLimit = 3, x = -1, y = -1) {
+        Object.assign(this, new superModel(itemTypes, x, y));
+        this.name = "TsunamiAnimation";
+        this.movableType = movableTypes.TSUNAMI;
         this.img = this.img = p5.images.get(`${this.name}`);
-
-        this.playBoard = playBoard;
 
         this.startCol = startCol;
         this.startRow = startRow;
 
+        this.gridSize = playBoard.gridSize;
+
         // maximum range able to reach
-        this.range = Array.from({length: this.playBoard.gridSize}, () => range);
+        this.range = Array.from({length: this.gridSize}, () => range);
 
         // 0 <= moved length[i] <= this.range[i]
-        this.movedLength = Array.from({length: this.playBoard.gridSize}, () => 0);
+        this.movedLength = Array.from({length: this.gridSize}, () => 0);
 
         // when blocker[i] -> 0, decrease range[i] by 1
         this.blockerLimit = blockerLimit;
-        this.blocker = Array.from({length: this.playBoard.gridSize}, () => this.blockerLimit);
+        this.blocker = Array.from({length: this.gridSize}, () => this.blockerLimit);
 
         // loop through this to end moving
-        this.isMovingArray = Array.from({length: this.playBoard.gridSize}, () => false);
+        this.isMovingArray = Array.from({length: this.gridSize}, () => false);
 
         this.isMoving = false;
         this.hasMoved = true;
@@ -35,100 +32,149 @@ export class TsunamiAnimation extends Enemy {
         this.accumulate = 0;
     }
 
-    static createNewTsunami(p5, playBoard, startCol, startRow, range) {
-        let tsunami = new TsunamiAnimation(p5, playBoard, startCol, startRow, range);
+    static create(p5, playBoard, superModel, startCol, startRow, range = 1, blockerLimit = 3) {
+        let tsunami = new TsunamiModel(p5, playBoard, superModel, TsunamiLogic.itemTypes, TsunamiLogic.movableTypes, startCol, startRow, range, blockerLimit);
         playBoard.movables.push(tsunami);
+        return tsunami;
+    }
+}
+
+class TsunamiRenderer {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        TsunamiRenderer.utilityClass = bundle.utilityClass;
     }
 
-    draw(p5) {
-        let imgSize = myutil.relative2absolute(1 / 40, 0)[0];
-        if (this.startCol !== -1) {
-            for (let i = 0; i < this.playBoard.gridSize; i++) {
-                for (let j = 0; j <= this.movedLength[i]; j++) {
-                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this.playBoard, i, this.startCol + j, p5.CENTER);
-                    p5.image(this.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {TsunamiModel} tsunami
+     */
+    static draw(p5, playBoard, tsunami) {
+        let imgSize = TsunamiRenderer.utilityClass.relative2absolute(1 / 40, 0)[0];
+        if (tsunami.startCol !== -1) {
+            for (let i = 0; i < tsunami.gridSize; i++) {
+                for (let j = 0; j <= tsunami.movedLength[i]; j++) {
+                    let [avgX, avgY] = TsunamiRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, tsunami.startCol + j, p5.CENTER);
+                    p5.image(tsunami.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
                 }
             }
         } else {
-            for (let j = 0; j < this.playBoard.gridSize; j++) {
-                for (let i = 0; i <= this.movedLength[j]; i++) {
-                    let [avgX, avgY] = myutil.cellIndex2Pos(p5, this.playBoard, this.startRow + i, j, p5.CENTER);
-                    p5.image(this.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
+            for (let j = 0; j < tsunami.gridSize; j++) {
+                for (let i = 0; i <= tsunami.movedLength[j]; i++) {
+                    let [avgX, avgY] = TsunamiRenderer.utilityClass.cellIndex2Pos(p5, playBoard, tsunami.startRow + i, j, p5.CENTER);
+                    p5.image(tsunami.img, avgX - imgSize / 2, avgY - imgSize / 2, imgSize, imgSize);
                 }
             }
         }
     }
+}
 
-    checkIsMoving() {
-        for (let isMoving of this.isMovingArray) {
+class TsunamiLogic {
+    static setup(bundle) {
+        /** @type {typeof myUtil} */
+        TsunamiLogic.utilityClass = bundle.utilityClass;
+        TsunamiLogic.baseType = bundle.baseType;
+        TsunamiLogic.itemTypes = bundle.itemTypes;
+        TsunamiLogic.plantTypes = bundle.plantTypes;
+        TsunamiLogic.terrainTypes = bundle.terrainTypes;
+        TsunamiLogic.movableTypes = bundle.movableTypes;
+
+        /** @type {typeof BoardLogic} */
+        TsunamiLogic.BoardLogic = bundle.BoardLogic;
+        /** @type {typeof InteractionLogic} */
+        TsunamiLogic.InteractionLogic = bundle.InteractionLogic;
+    }
+
+    /**
+     *
+     * @param {TsunamiModel} tsunami
+     */
+    static checkIsMoving(tsunami) {
+        for (let isMoving of tsunami.isMovingArray) {
             if (isMoving) return true;
         }
         return false;
     }
 
-    movements(p5, playBoard) {
-        if (!(playBoard instanceof PlayBoard)) {
-            console.error('movements of TsunamiAnimation has received invalid PlayBoard.');
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {TsunamiModel} tsunami
+     */
+    static movements(p5, playBoard, tsunami) {
+        if (tsunami.hasMoved) {
             return false;
         }
-        if (this.hasMoved) {
-            return false;
-        }
-        if (this.isMoving) {
-            this.move(p5, playBoard);
+        if (tsunami.isMoving) {
+            TsunamiLogic.move(p5, playBoard, tsunami);
             return true;
         }
-        this.isMoving = true;
-        this.isMovingArray = this.isMovingArray.map(value => true);
+        tsunami.isMoving = true;
+        tsunami.isMovingArray = tsunami.isMovingArray.map(value => true);
         return true;
     }
 
-    move(p5, playBoard) {
-        this.accumulate += 1;
-        if (this.accumulate >= 20) {
-            this.slide(p5, playBoard);
-            this.accumulate = 0;
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {TsunamiModel} tsunami
+     */
+    static move(p5, playBoard, tsunami) {
+        tsunami.accumulate += 1;
+        if (tsunami.accumulate >= 20) {
+            TsunamiLogic.slide(p5, playBoard, tsunami);
+            tsunami.accumulate = 0;
         }
-        if (!this.isMoving) {
-            this.hasMoved = true;
-            plantEnemyInteractions.findMovableAndDelete(playBoard, this);
+        if (!tsunami.isMoving) {
+            tsunami.hasMoved = true;
+            TsunamiLogic.InteractionLogic.findMovableAndDelete(playBoard, tsunami);
         }
     }
 
-    slide(p5, playBoard) {
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     * @param {TsunamiModel} tsunami
+     */
+    static slide(p5, playBoard, tsunami) {
         let gameOver = false;
-        for (let i = 0; i < this.isMovingArray.length; i++) {
-            if (this.isMovingArray[i]) {
-                if (this.movedLength[i] < this.range[i]) {
+        for (let i = 0; i < tsunami.isMovingArray.length; i++) {
+            if (tsunami.isMovingArray[i]) {
+                if (tsunami.movedLength[i] < tsunami.range[i]) {
                     let cell;
-                    if (this.startCol !== -1) {
-                        cell = playBoard.boardObjects.getCell(i, this.startCol + this.movedLength[i] + 1);
-                        if (cell.terrain.terrainType === terrainTypes.SEA) this.range[i] += 1;
+                    if (tsunami.startCol !== -1) {
+                        cell = TsunamiLogic.BoardLogic.getCell(i, tsunami.startCol + tsunami.movedLength[i] + 1, playBoard.boardObjects);
+                        if (cell.terrain.terrainType === TsunamiLogic.terrainTypes.SEA) tsunami.range[i] += 1;
                     } else {
-                        cell = playBoard.boardObjects.getCell(this.startRow + this.movedLength[i] + 1, i);
-                        if (cell.terrain.terrainType === terrainTypes.SEA) this.range[i] += 1;
+                        cell = TsunamiLogic.BoardLogic.getCell(tsunami.startRow + tsunami.movedLength[i] + 1, i, playBoard.boardObjects);
+                        if (cell.terrain.terrainType === TsunamiLogic.terrainTypes.SEA) tsunami.range[i] += 1;
                     }
-                    this.movedLength[i] += 1;
+                    tsunami.movedLength[i] += 1;
 
                     // interact with plant
                     if (cell.plant || cell.seed) {
                         // decrease max range according to plant health
                         // if the plant is palm, invoke its passive skill (placeholder)
-                        if (cell?.plant.plantType === plantTypes.PALM) {
+                        if (cell?.plant.plantType === TsunamiLogic.plantTypes.PALM) {
                             cell.plant.health--;
                             if (cell.plant.health === 0) {
-                                plantEnemyInteractions.findPlantAndDelete(playBoard, cell.plant);
+                                TsunamiLogic.InteractionLogic.findPlantAndDelete(playBoard, cell.plant);
                             }
-                            this.range[i] -= 2;
+                            tsunami.range[i] -= 2;
                         }
                         // else, use health to offset range
                         else {
                             let health = cell.seed ? 1 : cell.plant.health;
                             while (health > 0) {
-                                this.blocker[i] -= 1;
-                                if (this.blocker[i] <= 0) {
-                                    this.range[i] -= 1;
-                                    this.blocker[i] = this.blockerLimit;
+                                tsunami.blocker[i] -= 1;
+                                if (tsunami.blocker[i] <= 0) {
+                                    tsunami.range[i] -= 1;
+                                    tsunami.blocker[i] = tsunami.blockerLimit;
                                 }
                                 health--;
                             }
@@ -144,46 +190,36 @@ export class TsunamiAnimation extends Enemy {
                     }
 
                     // interact with enemy
-                    if (cell.enemy?.enemyType === enemyTypes.BANDIT) {
-                        plantEnemyInteractions.findMovableAndDelete(playBoard, cell.enemy);
+                    if (cell.enemy?.movableType === TsunamiLogic.movableTypes.BANDIT) {
+                        TsunamiLogic.InteractionLogic.findMovableAndDelete(playBoard, cell.enemy);
                     }
 
                     // interact with terrain
                     switch (cell.terrain.terrainType) {
-                        case terrainTypes.BASE:
+                        case TsunamiLogic.terrainTypes.BASE:
                             gameOver = true;
                             break;
-                        case terrainTypes.VOLCANO:
-                        case terrainTypes.MOUNTAIN:
-                            this.range[i] = 0;
+                        case TsunamiLogic.terrainTypes.VOLCANO:
+                        case TsunamiLogic.terrainTypes.MOUNTAIN:
+                            tsunami.range[i] = 0;
                             break;
-                        case terrainTypes.LUMBERING:
-                            this.range[i] -= 1;
+                        case TsunamiLogic.terrainTypes.LUMBERING:
+                            tsunami.range[i] -= 1;
                             break;
                     }
                 } else {
-                    this.isMovingArray[i] = false;
+                    tsunami.isMovingArray[i] = false;
                 }
             }
-            if (gameOver) myutil.gameOver(playBoard);
+            if (gameOver) TsunamiLogic.utilityClass.gameOver(playBoard);
         }
 
-        if (!this.checkIsMoving()) this.isMoving = false;
+        if (!TsunamiLogic.checkIsMoving(tsunami)) tsunami.isMoving = false;
     }
+}
 
-    stringify() {
-        const object = {
-            enemyType: this.enemyType,
-            startCol: this.startCol,
-            startRow: this.startRow,
-            range: this.range[0],
-            blockerLimit: this.blockerLimit[0],
-        }
-        return JSON.stringify(object);
-    }
+export {TsunamiModel, TsunamiLogic, TsunamiRenderer};
 
-    static parse(json, p5, playBoard) {
-        const object = JSON.parse(json);
-        return new TsunamiAnimation(p5, playBoard, object.startCol, object.startRow, object.range, object.blockerLimit);
-    }
+if (typeof module !== 'undefined') {
+    module.exports = {TsunamiModel, TsunamiLogic, TsunamiRenderer};
 }

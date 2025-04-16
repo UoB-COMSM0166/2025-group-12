@@ -1,198 +1,230 @@
-import {stateCode, stageGroup, GameState} from "../model/GameState.js";
-import {StartMenu} from "../model/Menu.js";
-import {StandbyMenu} from "../model/Standby.js";
-import {InputHandler} from "./input.js";
-import {PauseMenu} from "../model/PauseMenu.js";
-import {Options} from "../model/Options.js";
+class Controller {
+    constructor(bundle) {
+        /** @type {GameState} */
+        this.gameState = bundle.gameState;
+        this.menus = bundle.menus;
+        this.pauseMenu = bundle.pauseMenu;
+        this.keyboardHandler = bundle.keyboardHandler;
+        this.stateCode = bundle.stateCode;
+        /** @type {stateCode} */
+        this.saveState = bundle.initialState;
+        /** @type {typeof ScreenLogic} */
+        this.ScreenLogic = bundle.ScreenLogic;
+        /** @type {typeof StartMenuLogic} */
+        this.StartMenuLogic = bundle.StartMenuLogic;
+        /** @type {typeof GameMapLogic} */
+        this.GameMapLogic = bundle.GameMapLogic;
+        /** @type {typeof PlayBoardModel} */
+        this.PlayBoardModel = bundle.PlayBoardModel;
+        /** @type {typeof PlayBoardLogic} */
+        this.PlayBoardLogic = bundle.PlayBoardLogic;
+        /** @type {typeof PauseMenuLogic} */
+        this.PauseMenuLogic = bundle.PauseMenuLogic;
+        /** @type {typeof InventoryLogic} */
+        this.InventoryLogic = bundle.InventoryLogic;
+        /** @type {typeof MovableLogic} */
+        this.MovableLogic = bundle.MovableLogic;
 
-// controller should never invoke any specific field but only encapsulated methods.
-export class Controller {
-    constructor(p5) {
-        this.gameState = new GameState(p5);
-
-        this.menus = {
-            [stateCode.MENU]: new StartMenu(this.gameState),
-            [stateCode.STANDBY]: new StandbyMenu(this.gameState),
-            [stateCode.PLAY]: null
-        };
-
-        this.pauseMenu = new PauseMenu(this.gameState);
-        this.options = new Options(this);
-        // key input
-        this.input = new InputHandler(this.gameState);
-        this.saveState = stateCode.MENU; // default
+        this.logicFactory = new Map([
+            [this.stateCode.MENU, this.StartMenuLogic],
+            [this.stateCode.STANDBY, this.GameMapLogic],
+            [this.stateCode.PLAY, this.PlayBoardLogic],
+        ])
     }
 
-    setup(p5) {
-        for (let menu of Object.values(this.menus)) {
-            if (menu && menu.setup) {
-                menu.setup(p5);
+    mouseMoved(p5) {
+        if (this.gameState.mode !== "mouse") {
+            this.gameState.mode = "mouse";
+            for (const [_, value] of Object.entries(this.menus)) {
+                if (!value) continue;
+                value.shift2Mouse(p5);
             }
+            this.pauseMenu.shift2Mouse(p5);
+            console.log("Input mode changed to mouse");
         }
-        this.pauseMenu.setup(p5);
-        this.options.setup(p5);
-    }
-
-    reset(p5) {
-        for (let menu of Object.values(this.menus)) {
-            if (menu && menu.reset) {
-                menu.reset(p5);
-            }
-        }
-       // this.pauseMenu.reset(p5);
-        this.options.reset(p5);
     }
 
     clickListener(p5) {
+        if (this.gameState.isFading) return;
         if (this.gameState.paused) {
-            this.pauseMenu.handleClick(p5);
+            this.PauseMenuLogic.handleClick(p5, this.pauseMenu);
             return;
         }
         if (this.gameState.playerCanClick === false) {
             return;
         }
-        if (this.gameState.showOptions){
-            this.options.handleClick(p5);
-            return;
-        }
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleClick) {
-            currentMenu.handleClick(p5);
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleClick) {
+            this.logicFactory.get(currentState).handleClick(p5, currentMenu);
         }
     }
 
     scrollListener(p5, event) {
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleScroll) {
-            currentMenu.handleScroll(p5, event);
+        if(this.gameState.mode !== "mouse") {
+            this.mouseMoved(p5);
+            return;
+        }
+
+        if (this.gameState.isFading) return;
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleScroll) {
+            this.logicFactory.get(currentState).handleScroll(event, currentMenu);
         }
     }
 
-    gamepadListener(index) {
-        if (this.gameState.paused) {
-            this.pauseMenu.handleGamepad(index);
-            return;
-        }
-        if (this.gameState.playerCanClick === false) {
-            return;
-        }
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleGamepad) {
-            currentMenu.handleGamepad(index);
-        }
+    mainLoopEntry(p5) {
+        this.handleFading(p5);
+
+        // create play stage
+        this.setPlayStage(p5);
+
+        // when game state changes, load or save data accordingly
+        this.setData(p5, this.gameState.getState());
     }
 
-    analogStickListener(axes, p) {
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleAnalogStick) {
-            currentMenu.handleAnalogStick(axes, p);
-        }
-    }
-
-    analogStickPressedListener(axes) {
-        if (this.gameState.paused) {
-            this.pauseMenu.handleAnalogStickPressed(axes);
-            return;
-        }
-        if (this.gameState.playerCanClick === false) {
-            return;
-        }
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.handleAnalogStickPressed) {
-            currentMenu.handleAnalogStickPressed(axes);
-        }
-    }
-
-    view(p5) {
-        let currentMenu = this.menus[this.gameState.getState()];
-        if (currentMenu && currentMenu.draw) {
-            currentMenu.draw(p5);
-        }
-        if (this.gameState.paused) {
-            p5.push();
-            p5.filter(p5.BLUR, 3);
-            p5.pop();
-            this.pauseMenu.draw(p5);
-        }
-
-        if (this.gameState.showOptions) {
-            this.options.draw(p5);
-        }
+    handleFading(p5) {
+        this.ScreenLogic.stateTransitionAtFading(p5, this.menus[this.gameState.getState()]);
     }
 
     // when shift to PLAY from STANDBY, create the new play board
     setPlayStage(p5) {
-        if (this.gameState.getState() === stateCode.PLAY
-            && (this.menus[stateCode.PLAY] === null || this.menus[stateCode.PLAY].stageGroup !== this.gameState.currentStageGroup)) {
-            this.menus[stateCode.PLAY] = this.gameState.newGameStage();
-            this.menus[stateCode.PLAY].setup(p5);
-            this.gameState.currentStage = this.menus[stateCode.PLAY];
-            this.gameState.currentStageGroup = this.menus[stateCode.PLAY].stageGroup;
+        if (this.gameState.getState() === this.stateCode.PLAY
+            && (this.menus[this.stateCode.PLAY] === null || this.menus[this.stateCode.PLAY].stageGroup !== this.gameState.currentStageGroup)) {
+
+            let stagePackage = this.gameState.gsf.newGameStage(this.gameState.currentStageGroup, this.gameState);
+            this.PlayBoardModel.concreteBoardInit = stagePackage.concreteBoardInit.bind(stagePackage);
+            this.PlayBoardModel.setStageInventory = stagePackage.setStageInventory.bind(stagePackage);
+            this.PlayBoardModel.setStageTerrain = stagePackage.setStageTerrain.bind(stagePackage);
+            this.PlayBoardModel.initAllFloatingWindows = stagePackage.initAllFloatingWindows.bind(stagePackage);
+            this.PlayBoardLogic.nextTurnItems = stagePackage.nextTurnItems.bind(stagePackage);
+            this.PlayBoardLogic.modifyBoard = stagePackage.modifyBoard.bind(stagePackage);
+            this.PlayBoardLogic.setFloatingWindow = stagePackage.setFloatingWindow.bind(stagePackage);
+
+            this.menus[this.stateCode.PLAY] = new this.PlayBoardModel(p5, this.gameState);
+            this.gameState.currentStage = this.menus[this.stateCode.PLAY];
+            this.gameState.currentStageGroup = this.menus[this.stateCode.PLAY].stageGroup;
         }
     }
 
     // deal with 1. player-movable switching, 2. data transferring when switching menu
     setData(p5, newState) {
         // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
-        if (newState === stateCode.FINISH) {
-            this.menus[stateCode.PLAY] = null;
+        if (newState === this.stateCode.FINISH) {
+            this.menus[this.stateCode.PLAY] = null;
             this.gameState.inventory.scrollIndex = 0;
-            this.gameState.setState(stateCode.STANDBY);
+            this.gameState.setState(this.stateCode.STANDBY);
             this.gameState.setPlayerCanClick(true);
             return;
         }
 
         // if movables has objects to move, skip other phases
-        if (newState === stateCode.PLAY && !this.gameState.playerCanClick) {
+        if (newState === this.stateCode.PLAY && !this.gameState.playerCanClick) {
             this.handleMovables(p5);
             return;
         }
 
         // if we go to PLAY from STANDBY, save inventory then push stage items
-        if (this.saveState === stateCode.STANDBY && newState === stateCode.PLAY) {
+        if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.PLAY) {
             this.gameState.inventory.scrollIndex = 0;
-            this.menus[stateCode.PLAY].tmpInventoryItems = this.gameState.inventory.saveInventory();
-            this.menus[stateCode.PLAY].setStageInventory(p5);
+            this.menus[this.stateCode.PLAY].tmpInventoryItems = this.InventoryLogic.saveInventory(this.gameState.inventory);
+            this.PlayBoardModel.setStageInventory(p5, this.menus[this.stateCode.PLAY]);
             return;
         }
 
         // if we quit PLAY to STANDBY, reset inventory and board
-        if (this.saveState === stateCode.PLAY && newState === stateCode.STANDBY) {
+        if (this.saveState === this.stateCode.PLAY && newState === this.stateCode.STANDBY) {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;
-            this.gameState.inventory.loadInventory(this.menus[stateCode.PLAY].tmpInventoryItems);
+            this.InventoryLogic.loadInventory(this.menus[this.stateCode.PLAY].tmpInventoryItems, this.gameState.inventory)
             // destroy the play board
-            this.menus[stateCode.PLAY] = null;
+            this.menus[this.stateCode.PLAY] = null;
             return;
         }
 
         // if we go back to start menu from standby, we set New Game button into Resume Game.
-        if (this.saveState === stateCode.STANDBY && newState === stateCode.MENU) {
-            this.menus[stateCode.MENU].changeNewToResume();
-            return;
+        if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.MENU) {
+            this.StartMenuLogic.changeNewToResume(this.menus[this.stateCode.MENU]);
         }
     }
 
     handleMovables(p5) {
         // if movables has objects not moved:
-        for (let movable of this.menus[stateCode.PLAY].movables) {
+        for (let movable of this.menus[this.stateCode.PLAY].movables) {
             if (!movable.hasMoved) {
-                movable.movements(p5, this.menus[stateCode.PLAY]);
+                this.MovableLogic.movements(p5, this.menus[this.stateCode.PLAY], /** @type {MovableLike} */ movable);
                 return;
             }
             // don't delete dead movable object here, it distorts the iterator
             // encapsulate delete within each class
         }
+
         // all moved, if it not end turn, set player can click
-        if (!this.menus[stateCode.PLAY].endTurn) {
+        if (!this.menus[this.stateCode.PLAY].endTurn) {
             this.gameState.setPlayerCanClick(true);
         }
         // if it at end turn, invoke end turn stuff
         else {
-            this.menus[stateCode.PLAY].endTurnActivity(p5);
+            this.PlayBoardLogic.endTurnActivity(p5, this.menus[this.stateCode.PLAY]);
         }
     }
 
+    /**
+     *
+     * @param index
+     */
+    gamepadListener(index) {
+        if (this.gameState.paused) {
+            this.PauseMenuLogic.handleGamepad(index, this.pauseMenu);
+            return;
+        }
+        if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleGamepad) {
+            this.logicFactory.get(currentState).handleGamepad(index, currentMenu);
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param axes
+     */
+    analogStickListener(p5, axes) {
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStick) {
+            this.logicFactory.get(currentState).handleAnalogStick(p5, axes, currentMenu);
+        }
+    }
+
+    /**
+     *
+     * @param axes
+     */
+    analogStickPressedListener(axes) {
+        if (this.gameState.paused) {
+            this.PauseMenuLogic.handleAnalogStickPressed(axes, this.pauseMenu);
+            return;
+        }
+        if (this.gameState.playerCanClick === false) {
+            return;
+        }
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStickPressed(axes, currentMenu)) {
+            currentMenu.handleAnalogStickPressed(axes, currentMenu);
+        }
+    }
 }
 
+export {Controller};
+
+if (typeof module !== 'undefined') {
+    module.exports = {Controller};
+}
