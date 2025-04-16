@@ -1,6 +1,3 @@
-// @ts-nocheck
-
-// Define resolution enumerations and add a currentResolution property
 let resolutions = {
     qHD: 0,      // qHD mode (e.g., 960x540)
     WXGA: 1,     // WXGA mode (e.g., 1280x720)
@@ -42,16 +39,16 @@ let CanvasSize = {
     // getFontSize now returns font sizes according to the current resolution mode
     getFontSize: () => {
         if (CanvasSize.currentResolution === resolutions.qHD) {
-            return { mini: 10, letter: 14, small: 16, medium: 18, large: 20, huge: 24, large: 46 };
+            return { mini: 10, letter: 14, small: 16, medium: 18, large: 20, huge: 24};
         } else if (CanvasSize.currentResolution === resolutions.WXGA) {
-            return { mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28, large: 50 };
+            return { mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
 
         } else if (CanvasSize.currentResolution === resolutions.FHD) {
-            return { mini: 18, letter: 22, small: 24, medium: 26, large: 28, huge: 32, large: 54 };
+            return { mini: 18, letter: 22, small: 24, medium: 26, large: 28, huge: 32};
         } else if (CanvasSize.currentResolution === resolutions.QHD) {
-            return { mini: 22, letter: 16, small: 28, medium: 30, large: 32, huge: 36, large: 58 };
+            return { mini: 22, letter: 16, small: 28, medium: 30, large: 32, huge: 36};
         }
-        return { mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28, large: 50 };
+        return { mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
     },
 
     // A function to automatically detect the resolution mode based on window size.
