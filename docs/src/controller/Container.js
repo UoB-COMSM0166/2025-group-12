@@ -9,7 +9,7 @@ import {Controller} from "./Controller.js";
 import {Renderer} from "./Renderer.js";
 import {KeyboardHandler} from "./KeyboardHandler.js";
 
-import {CanvasSize} from "../CanvasSize.js";
+import {CanvasSize, resolutions} from "../CanvasSize.js";
 import {FloatingWindow} from "../model/FloatingWindow.js";
 
 import {PlantModel, PlantLogic, PlantRenderer, PlantSerializer} from "../items/Plant.js";
@@ -91,8 +91,9 @@ class Container {
         // ----------------------
 
         this.CanvasSize = CanvasSize; // no setup
-        this.FloatingWindow = FloatingWindow; // no setup
-
+        this.resolutions = resolutions;
+        this.FloatingWindow = FloatingWindow;
+        this.FloatingWindow.setup({CanvasSize: this.CanvasSize});
         this.utilityClass = myUtil;
         this.utilityClass.setup({CanvasSize: this.CanvasSize, FloatingWindow: this.FloatingWindow});
 
@@ -321,6 +322,7 @@ class Container {
 
         this.MenuItem = MenuItem;
         this.Button = Button;
+        this.Button.setup({CanvasSize: this.CanvasSize});
         this.MapButton = MapButton;
 
         // initialize serializer

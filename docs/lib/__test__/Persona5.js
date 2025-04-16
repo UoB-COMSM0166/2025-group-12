@@ -7,6 +7,7 @@ function createMockP5() {
         strokeWeight: fn,
         noStroke: fn,
         fill: fn,
+        noFill: fn,
         rect: fn,
         line: fn,
         quad: fn,

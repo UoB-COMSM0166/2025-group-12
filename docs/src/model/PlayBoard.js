@@ -1,6 +1,3 @@
-// @ts-nocheck
-import { CanvasSize } from "../CanvasSize.js"; // 修改部分
-
 /**
  * @typedef {Object} PlayBoardLike
  * @property {GameState} gameState
@@ -328,7 +325,8 @@ class PlayBoardRenderer {
                 for (let j = 0; j < playBoard.gridSize; j++) {
                     if (PlayBoardRenderer.InteractionLogic.activeRange1(i, j, playBoard.selectedCell[0], playBoard.selectedCell[1])) {
                         let [x1, y1, x2, y2, x3, y3, x4, y4] = PlayBoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
-                        p5.stroke('rgb(150,150,0)');
+                        p5.noFill();
+                        p5.stroke('rgb(150, 150, 0)');
                         p5.strokeWeight(2);
                         p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
                     }
@@ -427,10 +425,9 @@ class PlayBoardRenderer {
 
         // stage number text
         let [stageNumberingX, stageNumberingY] = PlayBoardRenderer.utilityClass.relative2absolute(0.38, 0.04);
-        
-        // p5.textSize(20);
-        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
-        p5.textSize(fontSizes.small)  // Adjust font parameters according to UI design
+
+        let fontSizes = PlayBoardRenderer.utilityClass.getFontSize();
+        p5.textSize(fontSizes.small);
         
         p5.fill('red');
         p5.noStroke();
@@ -698,12 +695,9 @@ class PlayBoardLogic {
             playBoard.selectedCell = [];
         } else {
             playBoard.selectedCell = [index[0], index[1]];
-            // a shortcut to direct to plant active skill page
-            let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
-            if (cell.plant !== null && cell.plant.hasActive) {
-                PlayBoardLogic.InfoBoxLogic.setStatus(p5, 'a', playBoard.infoBox);
-            }
         }
+        // update infobox status
+        PlayBoardLogic.InfoBoxLogic.updateInfoBox(playBoard);
     }
 
     /**
@@ -781,11 +775,6 @@ class PlayBoardLogic {
             if (button.mouseClick(p5) && button === playBoard.infoBox.activateButton) {
                 return;
             }
-        }
-
-        // clicked info box arrows when info box exists
-        if (PlayBoardLogic.InfoBoxLogic.handleClickArrow(p5, playBoard)) {
-            return;
         }
 
         // inventory item and planting

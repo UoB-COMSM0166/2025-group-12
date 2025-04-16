@@ -56,7 +56,8 @@ class InfoBoxRenderer {
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
-        p5.textSize(16);
+        let fontSizes = InfoBoxRenderer.utilityClass.getFontSize();
+        p5.textSize(fontSizes.small);
         // draw right bottom corner: general info + ecosystem
         // draw background box
         p5.fill(50);

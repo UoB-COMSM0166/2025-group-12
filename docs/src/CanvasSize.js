@@ -7,14 +7,10 @@ let resolutions = {
 
 let CanvasSize = {
     canvasWidth: 1280,   // Default canvas width
-    canvasHeight: 720,   // Default canvas heigh
-    // Stores the current resolution mode (default is WXGA)
+    canvasHeight: 720,   // Default canvas height
     currentResolution: resolutions.WXGA,
 
-    // setSize now accepts a resolution mode parameter to set canvas dimensions 
-    // and updates currentResolution accordingly
     setSize: (resolution) => {
-        // Update the current resolution mode
         CanvasSize.currentResolution = resolution;
         if (resolution === resolutions.qHD) {
             CanvasSize.canvasWidth = 960;
@@ -31,29 +27,28 @@ let CanvasSize = {
         }
     },
 
-    // Get the current canvas size as an array [width, height]
+    getScaleFactor() {
+        return CanvasSize.canvasWidth / 1280;
+    },
+
     getSize: () => {
         return [CanvasSize.canvasWidth, CanvasSize.canvasHeight];
     },
 
-    // getFontSize now returns font sizes according to the current resolution mode
     getFontSize: () => {
         if (CanvasSize.currentResolution === resolutions.qHD) {
-            return { mini: 10, letter: 14, small: 16, medium: 18, large: 20, huge: 24};
+            return {mini: 10, letter: 14, small: 16, medium: 18, large: 20, huge: 24};
         } else if (CanvasSize.currentResolution === resolutions.WXGA) {
-            return { mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
-
+            return {mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
         } else if (CanvasSize.currentResolution === resolutions.FHD) {
-            return { mini: 18, letter: 22, small: 24, medium: 26, large: 28, huge: 32};
+            return {mini: 18, letter: 22, small: 24, medium: 26, large: 28, huge: 32};
         } else if (CanvasSize.currentResolution === resolutions.QHD) {
-            return { mini: 22, letter: 16, small: 28, medium: 30, large: 32, huge: 36};
+            return {mini: 22, letter: 16, small: 28, medium: 30, large: 32, huge: 36};
         }
-        return { mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
+        return {mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
     },
 
-    // A function to automatically detect the resolution mode based on window size.
     detectResolution: (windowWidth, windowHeight) => {
-        // determine resolution mode based on the window's width.
         if (windowWidth < 1000) {
             return resolutions.qHD;
         } else if (windowWidth < 1400) {
@@ -66,8 +61,8 @@ let CanvasSize = {
     }
 }
 
-export { resolutions, CanvasSize };
+export {resolutions, CanvasSize};
 
 if (typeof module !== 'undefined') {
-    module.exports = { resolutions, CanvasSize };
+    module.exports = {resolutions, CanvasSize};
 }

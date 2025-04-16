@@ -42,12 +42,12 @@ class KeyboardHandler {
             let playBoard = this.gameState.currentStage;
             // a keyboard shortcut to activate plant skill
             if (playBoard != null) {
-                // active skill
+                // active skill - higher priority
                 if (event.key === "e" && playBoard.infoBox.activateButton !== null) {
                     playBoard.infoBox.activateButton._onClick(p5);
                 }
                 // toggle display ecosystem
-                if (event.key === "e" && playBoard.infoBox.displayButton !== null) {
+                if (event.key === "e" && playBoard.infoBox.activateButton === null && playBoard.infoBox.displayButton !== null) {
                     playBoard.infoBox.displayButton._onClick(p5);
                 }
                 // turn button
@@ -61,19 +61,6 @@ class KeyboardHandler {
                     KeyboardHandler.PlayBoardLogic.stageClearSettings(p5, playBoard);
                     playBoard.gameState.isFading = true;
                     playBoard.gameState.nextState = KeyboardHandler.stateCode.FINISH;
-                }
-                // info box arrows
-                if (event.key === "a" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
-                }
-                if (event.key === "ArrowLeft" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
-                }
-                if (event.key === "d" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
-                }
-                if (event.key === "ArrowRight" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
                 }
             }
         })

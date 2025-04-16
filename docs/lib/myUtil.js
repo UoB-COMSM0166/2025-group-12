@@ -33,6 +33,14 @@ class myUtil {
         return Math.abs(x0 - x1) ** 2 + Math.abs(y0 - y1) ** 2;
     }
 
+    static getFontSize(){
+        return myUtil.CanvasSize.getFontSize();
+    }
+
+    static getScaleFactor(){
+        return myUtil.CanvasSize.getScaleFactor();
+    }
+
     static findAlternativeCell(sx, sy, tx, ty, x0, y0) {
         let directions = [[0, -1], [1, 0], [0, 1], [-1, 0]];
         let dist = myUtil.manhattanDistance(x0, y0, tx, ty);

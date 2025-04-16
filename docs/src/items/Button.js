@@ -1,4 +1,8 @@
 class Button {
+    static setup(bundle){
+        Button.CanvasSize = bundle.CanvasSize;
+    }
+
     constructor(x, y, width, height, text) {
         // location and size properties
         this.x = x;
@@ -29,7 +33,7 @@ class Button {
         p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
         // inner text
         p5.fill(255);
-        p5.textSize(18);
+        p5.textSize(Button.CanvasSize.getFontSize().medium);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.text(this.text, this.x + this.width / 2, this.y + this.height / 2);
         p5.pop();
