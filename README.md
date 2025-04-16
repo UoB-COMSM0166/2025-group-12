@@ -7,3 +7,6 @@
 # Onion Model
 這是一個四層 Onion Model，同心圓圖示：
 ![Onion Model Diagram](/onion.svg)
+
+# Onion Model Demo
+![Interactive Onion](/onion.svg)
