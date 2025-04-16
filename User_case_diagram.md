@@ -6,7 +6,7 @@ config:
 ---
 %%{init: { "theme":"mc", "look": "classic", "flowchart":{"htmlLabels": false } } }%%
 flowchart TD
-  Player([Player])
+  Actor([Player])
   EnterGame((Enter Game))
   NewGame((New Game))
   LoadGame((Load Game))
