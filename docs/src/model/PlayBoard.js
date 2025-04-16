@@ -325,7 +325,7 @@ class PlayBoardRenderer {
                 for (let j = 0; j < playBoard.gridSize; j++) {
                     if (PlayBoardRenderer.InteractionLogic.activeRange1(i, j, playBoard.selectedCell[0], playBoard.selectedCell[1])) {
                         let [x1, y1, x2, y2, x3, y3, x4, y4] = PlayBoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
-                        p5.stroke('rgb(150,150,0)');
+                        p5.stroke('rgba(150, 150, 0, 100)');
                         p5.strokeWeight(2);
                         p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
                     }
@@ -340,7 +340,7 @@ class PlayBoardRenderer {
                 let isCursorInQuad = playBoard.gameState.mode === "mouse" ? PlayBoardRenderer.utilityClass.isCursorInQuad(p5.mouseX, p5.mouseY, x1, y1, x2, y2, x3, y3, x4, y4)
                     : PlayBoardRenderer.utilityClass.isCursorInQuad(p5.gamepadX, p5.gamepadY, x1, y1, x2, y2, x3, y3, x4, y4)
                 if (isCursorInQuad) {
-                    p5.stroke('rgb(255,255,0)');
+                    p5.stroke('rgb(255, 255, 0)');
                     p5.strokeWeight(2);
                     p5.noFill();
                     p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
@@ -691,12 +691,9 @@ class PlayBoardLogic {
             playBoard.selectedCell = [];
         } else {
             playBoard.selectedCell = [index[0], index[1]];
-            // a shortcut to direct to plant active skill page
-            let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
-            if (cell.plant !== null && cell.plant.hasActive) {
-                PlayBoardLogic.InfoBoxLogic.setStatus(p5, 'a', playBoard.infoBox);
-            }
         }
+        // update infobox status
+        PlayBoardLogic.InfoBoxLogic.updateInfoBox(playBoard);
     }
 
     /**
@@ -774,11 +771,6 @@ class PlayBoardLogic {
             if (button.mouseClick(p5) && button === playBoard.infoBox.activateButton) {
                 return;
             }
-        }
-
-        // clicked info box arrows when info box exists
-        if (PlayBoardLogic.InfoBoxLogic.handleClickArrow(p5, playBoard)) {
-            return;
         }
 
         // inventory item and planting

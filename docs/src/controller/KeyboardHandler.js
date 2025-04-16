@@ -62,19 +62,6 @@ class KeyboardHandler {
                     playBoard.gameState.isFading = true;
                     playBoard.gameState.nextState = KeyboardHandler.stateCode.FINISH;
                 }
-                // info box arrows
-                if (event.key === "a" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
-                }
-                if (event.key === "ArrowLeft" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickLeftArrow(p5, playBoard.infoBox);
-                }
-                if (event.key === "d" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
-                }
-                if (event.key === "ArrowRight" && playBoard.selectedCell.length !== 0) {
-                    KeyboardHandler.InfoBoxLogic.clickRightArrow(p5, playBoard.infoBox);
-                }
             }
         })
         window.addEventListener('keyup', e => {
