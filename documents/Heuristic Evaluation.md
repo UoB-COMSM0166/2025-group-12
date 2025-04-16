@@ -93,7 +93,7 @@ The SUS (10-item Likert scale converted to 0–100) yielded:
 
 ## **2. NASA Task Load Index (NASA-TLX)**
 
-NASA-TLX subscales (0–20) analysis showed[4](https://journals.sagepub.com/doi/full/10.1177/17479541221141694):
+NASA-TLX subscales (0–20) analysis showed
 
 | **Dimension** | **Easy** | **Hard** | **Δ** |
 | --- | --- | --- | --- |
@@ -101,7 +101,7 @@ NASA-TLX subscales (0–20) analysis showed[4](https://journals.sagepub.com/doi/
 | Effort | 6.67 | 12.83 | +92% ▲▲ |
 | Frustration | 6.58 | 9.33 | +42% ▲ |
 
-Total workload increased by 60% in hard scenarios (55.08 vs. 34.50), driven by strategic complexity. **Temporal demand** (4.92 vs. 3.75) correlated with "unclear enemy pathfinding" feedback (r=0.71, p<0.05)[4](https://journals.sagepub.com/doi/full/10.1177/17479541221141694), while **frustration** linked to "auto-skip turns" (β=0.63, p<0.01)[5](https://www.diva-portal.org/smash/get/diva2:1121098/FULLTEXT01.pdf).
+Total workload increased by 60% in hard scenarios (55.08 vs. 34.50), driven by strategic complexity.
 
 ## **3. Design Optimization Matrix**
 
@@ -124,7 +124,6 @@ This study validates SUS and NASA-TLX as complementary tools: SUS identifies glo
 - Brooke, J. (1996). SUS: A quick and dirty usability scale. In P. W. Jordan et al. (Eds.), *Usability Evaluation in Industry* (pp. 189–194). Taylor & Francis.
 - Hart, S. G., & Staveland, L. E. (1988). Development of NASA-TLX. In P. A. Hancock & N. Meshkati (Eds.), *Human Mental Workload* (pp. 139–183). North-Holland.
 - Laskey, J., & Keebler, J. (2023). Feasibility of game-based VR in education. *Journal of Aviation/Aerospace Education & Research, 32*(1). https://doi.org/10.15394/jaaer.2023.1948[2](https://commons.erau.edu/cgi/viewcontent.cgi?article=1948&context=jaaer)
-- Mullen, T., et al. (2024). Subjective task load in modified Touch games. *International Journal of Sports Science*, 42(3), 201–215.[4](https://journals.sagepub.com/doi/full/10.1177/17479541221141694)
 
 ---
 
