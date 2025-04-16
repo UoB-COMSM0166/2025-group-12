@@ -1,69 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg
   width="320" height="320"
   viewBox="0 0 320 320"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-labelledby="title desc"
-  style="
-    /* —— 模組化參數：只要改這裡 —— */
-    --r-outer: 150px;
-    --r-3:     110px;
-    --r-2:      70px;
-    --r-core:   30px;
+  xmlns="http://www.w3.org/2000/svg">
 
-    --fs-default: 12px;
-    --fs-core:    14px;
+  <!-- ╭───── A11y ─────╮ -->
+  <title>Onion Model</title>
+  <desc>A four‑layer concentric circle diagram with CSS hover effect</desc>
+  <!-- ╰─────────────────╯ -->
 
-    --c-outer:  #d1e9ff;
-    --c-3:      #a6d4fa;
-    --c-2:      #78b6f6;
-    --c-core:   #4a8bf0;
-  "
->
-  <title id="title">Onion Model</title>
-  <desc  id="desc">A four‑layer concentric circle diagram with hover interaction</desc>
-
-  <style>
-    /* —— 原本的模組化樣式 —— */
-    circle.outer  { r: var(--r-outer);  fill: var(--c-outer); }
-    circle.layer3 { r: var(--r-3);      fill: var(--c-3);   }
-    circle.layer2 { r: var(--r-2);      fill: var(--c-2);   }
-    circle.core   { r: var(--r-core);   fill: var(--c-core); }
-
-    text {
-      font-size:   var(--fs-default);
-      text-anchor: middle;
-      fill:        #0d47a1;
-    }
-    text.core {
-      font-size: var(--fs-core);
-      fill:      #ffffff;
+  <!-- ★ 模組化參數（CSS Custom Properties） -->
+  <style><![CDATA[
+    :root{
+      /* 半徑 */
+      --r1:150;--r2:110;--r3:70;--r4:30;
+      /* 顏色 */
+      --c1:#d1e9ff;--c2:#a6d4fa;--c3:#78b6f6;--c4:#4a8bf0;
+      /* 字級 */
+      --fs:12px;--fs-core:14px;
     }
 
-    /* —— 互動效果：滑鼠滑過時放大＋改變透明度＋游標變手指 —— */
-    circle {
-      transition: transform 0.3s ease, fill-opacity 0.3s ease;
-      transform-origin: 160px 160px; /* SVG 原點置中 */
+    /* 圓形基本樣式 */
+    circle{
+      cx:160; cy:160;               /* 圓心固定 */
+      transition:transform .3s ease,fill-opacity .3s ease;
+      transform-origin:160px 160px; /* 從中心縮放 */
     }
-    circle:hover {
-      transform: scale(1.05);
-      fill-opacity: 0.8;
-      cursor: pointer;
-    }
-  </style>
+    /* 四層圓：半徑＋顏色 */
+    .outer  {r:var(--r1); fill:var(--c1);}
+    .layer3 {r:var(--r2); fill:var(--c2);}
+    .layer2 {r:var(--r3); fill:var(--c3);}
+    .core   {r:var(--r4); fill:var(--c4);}
 
-  <!-- 外層圓 -->
-  <circle class="outer" cx="160" cy="160"/>
+    /* Hover 動畫 */
+    circle:hover{transform:scale(1.05);fill-opacity:.8;cursor:pointer;}
+
+    /* 文字 */
+    text{font-size:var(--fs);text-anchor:middle;fill:#0d47a1;}
+    text.core{font-size:var(--fs-core);fill:#fff;}
+  ]]></style>
+
+  <!-- 4 個圓層 -->
+  <circle class="outer"/>
+  <circle class="layer3"/>
+  <circle class="layer2"/>
+  <circle class="core"/>
+
+  <!-- 標籤 -->
   <text x="160" y="18">External Layer</text>
-
-  <!-- Layer 3 圓 -->
-  <circle class="layer3" cx="160" cy="160"/>
   <text x="160" y="50">Layer 3</text>
-
-  <!-- Layer 2 圓 -->
-  <circle class="layer2" cx="160" cy="160"/>
   <text x="160" y="95">Layer 2</text>
-
-  <!-- 核心圓 -->
-  <circle class="core" cx="160" cy="160"/>
-  <text class="core" x="160" y="165">Green Renaissance</text>
+  <text class="core" x="160" y="165">Green Renaissance</text>
 </svg>
