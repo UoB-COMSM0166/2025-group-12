@@ -1,3 +1,6 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js";
+
 class InfoBoxModel {
     static setup(bundle) {
         InfoBoxModel.utilityClass = bundle.utilityClass;
@@ -65,11 +68,22 @@ class InfoBoxRenderer {
         }
 
         p5.fill(255);
-        p5.textSize(20);
+        
+
+        // p5.textSize(20);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.small)  // Adjust font parameters according to UI design
+
+
+
         p5.textAlign(p5.CENTER, p5.TOP);
         p5.text(title, infoBox.boxX + infoBox.boxWidth / 2, infoBox.boxY + infoBox.paddingY);
 
-        p5.textSize(18);
+        // p5.textSize(18);
+        // let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.letter)  // Adjust font parameters according to UI design
+
+
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
         p5.text(info, infoBox.boxX + infoBox.paddingX, infoBox.boxY + infoBox.paddingY + 24, infoBox.boxWidth - infoBox.paddingX * 2);
@@ -131,7 +145,10 @@ class InfoBoxRenderer {
                     break;
             }
         }
-        p5.textSize(18);
+        // p5.textSize(18);
+        // let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.letter)  // Adjust font parameters according to UI design
+
         p5.fill(255);
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);

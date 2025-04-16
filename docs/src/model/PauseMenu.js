@@ -1,3 +1,6 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js"; // 修改部分
+
 /**
  * @implements ScreenLike
  */
@@ -104,7 +107,11 @@ class PauseMenuRenderer {
     static draw(p5, pauseMenu) {
         p5.background(0, 0, 0, 80);
         p5.fill(255);
-        p5.textSize(50);
+
+        // p5.textSize(50);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.large)  // Adjust font parameters according to UI design
+
         p5.textAlign(p5.CENTER, p5.CENTER);
         let [textX, textY] = PauseMenuRenderer.utilityClass.relative2absolute(0.5, 0.2);
         p5.text("PAUSE", textX, textY);

@@ -1,3 +1,7 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js";
+
+
 /**
  * @implements ScreenLike
  */
@@ -238,11 +242,21 @@ class GameMapRenderer {
 
         p5.fill("rgb(255, 255, 128)");
         p5.textAlign(p5.CENTER, p5.TOP);
-        p5.textSize(20);
+
+        // p5.textSize(20);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.small)  // Adjust font parameters according to UI design
+        
         p5.text(`${enemy}`, boxX + boxWidth / 2, boxY + paddingY);
-        p5.textSize(16);
+        
+        // p5.textSize(16);
+        p5.textSize(fontSizes.letter)  // Adjust font parameters according to UI design
+        
         p5.text(`"${text}"`, boxX + boxWidth / 2, boxY + 3 * paddingY);
-        p5.textSize(20);
+        
+        // p5.textSize(20);
+        p5.textSize(fontSizes.small)  // Adjust font parameters according to UI design
+        
         p5.text(`progress:`, boxX + boxWidth / 2, boxY + 5 * paddingY);
 
         GameMapRenderer.utilityClass.drawHealthBar(p5, {

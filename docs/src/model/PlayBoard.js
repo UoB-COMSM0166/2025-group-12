@@ -1,3 +1,6 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js"; // 修改部分
+
 /**
  * @typedef {Object} PlayBoardLike
  * @property {GameState} gameState
@@ -424,7 +427,11 @@ class PlayBoardRenderer {
 
         // stage number text
         let [stageNumberingX, stageNumberingY] = PlayBoardRenderer.utilityClass.relative2absolute(0.38, 0.04);
-        p5.textSize(20);
+        
+        // p5.textSize(20);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.small)  // Adjust font parameters according to UI design
+        
         p5.fill('red');
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);

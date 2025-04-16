@@ -1,3 +1,7 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js"; // 修改部分
+
+
 class InventoryModel {
     static setup(bundle) {
         InventoryModel.utilityClass = bundle.utilityClass;
@@ -52,7 +56,12 @@ class InventoryRenderer {
         // Inventory title text
         p5.fill(255);
         p5.textAlign(p5.CENTER, p5.CENTER);
-        p5.textSize(14);
+        
+        // p5.textSize(14);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.mini)  // Adjust font parameters according to UI design
+
+
         p5.text("Inventory", inventory.inventoryX + inventory.inventoryWidth / 2, inventory.inventoryY + inventory.padding);
 
         // loop inventory items
@@ -74,7 +83,11 @@ class InventoryRenderer {
             p5.rect(inventory.itemX, itemY, inventory.itemWidth, inventory.itemHeight - inventory.itemInter, inventory.itemInter);
             p5.pop();
             p5.fill(0);
-            p5.textSize(14);
+            
+            // p5.textSize(14);
+            let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+            p5.textSize(fontSizes.mini)  // Adjust font parameters according to UI design
+
             p5.textAlign(p5.CENTER, p5.CENTER);
             p5.text(itemInstance.name, inventory.inventoryX + inventory.itemWidth / 2 + inventory.padding, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);

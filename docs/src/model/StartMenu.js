@@ -1,3 +1,6 @@
+// @ts-nocheck
+import { CanvasSize } from "../CanvasSize.js";
+
 /**
  * @implements ScreenLike
  */
@@ -130,7 +133,11 @@ class StartMenuRenderer {
     static draw(p5, startMenu) {
         p5.background(50);
         p5.fill(255);
-        p5.textSize(32);
+
+        // p5.textSize(32);
+        let fontSizes = CanvasSize.getFontSize();  // Get the font size based on the resolution
+        p5.textSize(fontSizes.large)  // Adjust font parameters according to UI design
+
         p5.textAlign(p5.CENTER, p5.TOP);
         let [textX, textY] = StartMenuRenderer.utilityClass.relative2absolute(0.5, 0.1);
         p5.text('startMenu', textX, textY);
