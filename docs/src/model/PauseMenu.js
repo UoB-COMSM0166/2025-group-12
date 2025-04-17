@@ -153,6 +153,9 @@ class PauseMenuLogic {
             case 1:
                 PauseMenuLogic.cancel(pauseMenu);
                 break;
+            case 9:
+                pauseMenu.gameState.togglePaused();
+                break;
             case 12:
                 pauseMenu.buttons[pauseMenu.index].isSelected = false;
                 if (pauseMenu.index === 0) pauseMenu.index = pauseMenu.buttons.length - 1;
