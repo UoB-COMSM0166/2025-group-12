@@ -325,13 +325,13 @@ class PlayBoardRenderer {
                 for (let j = 0; j < playBoard.gridSize; j++) {
                     if (PlayBoardRenderer.InteractionLogic.activeRange1(i, j, playBoard.selectedCell[0], playBoard.selectedCell[1])) {
                         let [x1, y1, x2, y2, x3, y3, x4, y4] = PlayBoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
-                        p5.noFill();
-                        p5.stroke('rgb(150, 150, 0)');
+                        p5.fill('rgba(150, 150, 0, 0.65)');
                         p5.strokeWeight(2);
                         p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
                     }
                 }
             }
+            p5.noFill();
         }
 
         // highlight the cell mouse hovering on
@@ -718,7 +718,6 @@ class PlayBoardLogic {
                 PlayBoardSerializer.stringify(playBoard);
                 let item = PlayBoardLogic.InventoryLogic.createItem(p5, playBoard.gameState.inventory.selectedItem, playBoard.gameState.inventory);
                 if (PlayBoardLogic.BoardLogic.plantCell(p5, playBoard, index[0], index[1], item)) {
-                    console.log(`Placed ${playBoard.gameState.inventory.selectedItem} at row ${index[0]}, col ${index[1]}`);
                     playBoard.shadowPlant = null;
                     if (playBoard.hasActionPoints) {
                         playBoard.actionPoints--;
@@ -772,7 +771,7 @@ class PlayBoardLogic {
 
         // click any button
         for (let button of playBoard.buttons) {
-            if (button.mouseClick(p5) && button === playBoard.infoBox.activateButton) {
+            if (button.mouseClick(p5) && (button === playBoard.infoBox.activateButton || button === playBoard.infoBox.displayButton)) {
                 return;
             }
         }

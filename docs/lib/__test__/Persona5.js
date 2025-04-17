@@ -59,8 +59,6 @@ function createMockP5() {
         ARROW: 'arrow',
         BLUR: 'blur',
 
-        // Color
-        // Color
         color: (...args) => ({
             toString: () => args.join(','),
             setAlpha: (alpha) => { } // ✅ mock out p5.color(...).setAlpha(...)

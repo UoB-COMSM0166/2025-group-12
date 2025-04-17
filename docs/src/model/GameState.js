@@ -60,7 +60,6 @@ class GameState {
     }
 
     setState(newState) {
-        console.log(`Game state changed to: ${Object.keys(stateCode).find(key => stateCode[key] === newState)}`);
         this.state = newState;
     }
 

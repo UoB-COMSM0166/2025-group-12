@@ -57,7 +57,7 @@ class InfoBoxRenderer {
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
         let fontSizes = InfoBoxRenderer.utilityClass.getFontSize();
-        p5.textSize(fontSizes.small);
+        p5.textSize(fontSizes.mini);
         // draw right bottom corner: general info + ecosystem
         // draw background box
         p5.fill(50);
@@ -111,7 +111,11 @@ class InfoBoxLogic {
         InfoBoxLogic.activatePlantSkill = bundle.activatePlantSkill;
     }
 
-
+    /**
+     *
+     * @param event
+     * @param {InfoBoxModel} infoBox
+     */
     static handleScroll(event, infoBox){
 
     }
@@ -136,6 +140,8 @@ class InfoBoxLogic {
         if (cell.plant && cell.plant.hasActive) {
             // set on activate button
             InfoBoxLogic.setActivateButton(playBoard.infoBox);
+        }else{
+            InfoBoxLogic.deleteActivateButton(playBoard.infoBox);
         }
     }
 

@@ -100,7 +100,7 @@ test('insert items to the inventory then test scroll', () => {
     expect(inventory.scrollIndex).toBe(0);
     InventoryLogic.pushItem2Inventory(p, plantTypes.BAMBOO, 1, inventory);
 
-    // scroll mouse both wihtin or out of the inventory box have no effect
+    // scroll mouse both within or out of the inventory box have no effect
     p.mouseX = 0;
     p.mouseY = 0;
     controller.scrollListener(p, {deltaY: 1});

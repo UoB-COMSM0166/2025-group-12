@@ -121,10 +121,10 @@ class InventoryLogic {
         // record when an inventory item is clicked
         for (let i = 0; i < visibleItems.length; i++) {
             let key = visibleItems[i][0];
-            let itemY = inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight;
             if (inventory.mode === "mouse") {
-                if (p5.mouseX >= inventory.itemX && p5.mouseX <= inventory.itemX + inventory.itemWidth &&
-                    p5.mouseY >= itemY && p5.mouseY <= itemY + (inventory.itemHeight - inventory.itemInter)) {
+                let [x, y] = InventoryLogic.getItemPosition(i, inventory);
+                if (p5.mouseX >= x && p5.mouseX <= x + inventory.itemWidth &&
+                    p5.mouseY >= y && p5.mouseY <= y + (inventory.itemHeight - inventory.itemInter)) {
                     inventory.selectedItem = key;
                     return;
                 }
@@ -135,6 +135,25 @@ class InventoryLogic {
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param i
+     * @param {InventoryModel} inventory
+     */
+    static getItemPosition(i, inventory){
+        return [inventory.itemX, inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight]
+    }
+
+    // helper function for tests
+    /**
+     *
+     * @param i
+     * @param {InventoryModel} inventory
+     */
+    static getItemPositionAndSize(i, inventory){
+        return [inventory.itemX, inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight, inventory.itemWidth, (inventory.itemHeight - inventory.itemInter)];
     }
 
     // invoke this function when an item from inventory is placed to playing board

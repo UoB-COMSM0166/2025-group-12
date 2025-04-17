@@ -1,5 +1,5 @@
 class Button {
-    static setup(bundle){
+    static setup(bundle) {
         Button.CanvasSize = bundle.CanvasSize;
     }
 
@@ -33,7 +33,7 @@ class Button {
         p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
         // inner text
         p5.fill(255);
-        p5.textSize(Button.CanvasSize.getFontSize().medium);
+        p5.textSize(Button.CanvasSize.getFontSize().small);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.text(this.text, this.x + this.width / 2, this.y + this.height / 2);
         p5.pop();
@@ -48,11 +48,10 @@ class Button {
     }
 
     hasMouseOver(p5) {
-        if(this.mode === "mouse") {
-            return p5.mouseX > this.x && p5.mouseX < this.x + this.width&&
+        if (this.mode === "mouse") {
+            return p5.mouseX > this.x && p5.mouseX < this.x + this.width &&
                 p5.mouseY > this.y && p5.mouseY < this.y + this.height
-        }
-        else{
+        } else {
             return this.isSelected;
         }
     }

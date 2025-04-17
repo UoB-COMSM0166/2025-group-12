@@ -1,0 +1,89 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+    <style>
+      .circle { transition: filter 0.2s, stroke 0.2s; }
+      .info-box { transition: filter 0.2s, stroke 0.2s; }
+      .hover-group:hover .circle,
+      .hover-group:hover .info-box {
+        filter: brightness(1.15);
+        stroke: #333;
+        stroke-width: 4;
+      }
+      .hover-group:hover .info-title { fill: #3e2c1c; }
+      .hover-group:hover .info-desc { fill: #000; }
+      .info-title { font-size: 20px; font-weight: bold; fill: #fff; }
+      .info-desc { font-size: 16px; }
+      .circle-label { font-size: 48px; font-weight: bold; fill: #fff; text-anchor: middle; }
+      .circle-sub { font-size: 18px; fill: #222; text-anchor: middle; }
+    </style>
+    <g>
+      <!-- Layer 4 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="290" r="250" fill="#8d6e57"/>
+        <text class="circle-sub" x="280" y="150" font-size="22" font-weight="bold">
+            <tspan x="280" dy="1.2em">Other professors</tspan>
+            <tspan x="280" dy="1.2em">from CS department</tspan>
+        </text>
+        <text class="circle-sub" x="520" y="150" font-size="22" font-weight="bold">
+            <tspan x="520" dy="1.2em">Other students</tspan>
+            <tspan x="520" dy="1.2em">from CS department</tspan>
+        </text>
+        <text class="circle-sub" x="400" y="420" font-size="22" font-weight="bold">
+        </text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="80" width="450" height="100" rx="18" fill="#8d6e57"/>
+        <text class="info-title" x="780" y="120">The Wider Environment</text>
+        <text class="info-desc" x="780" y="150">
+                potential feedback
+        </text>
+      </g>
+      <!-- Layer 3 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="370" r="160" fill="#b08e74"/>
+        <text class="circle-sub" x="400" y="260" font-size="22" font-weight="bold">
+            <tspan x="400" dy="1.2em">Course</tspan>
+            <tspan x="400" dy="1.2em">lecturers</tspan>
+        </text>
+        <text class="circle-sub" x="300" y="290" font-size="22" font-weight="bold">
+            <tspan x="300" dy="1.2em">Demo</tspan>
+            <tspan x="300" dy="1.2em">markers</tspan>
+        </text>
+        <text class="circle-sub" x="500" y="290" font-size="22" font-weight="bold">
+            <tspan x="500" dy="1.2em">Other</tspan>
+            <tspan x="500" dy="1.2em">groups</tspan>
+        </text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="210" width="450" height="100" rx="18" fill="#b08e74"/>
+        <text class="info-title" x="780" y="250">The Containing System</text>
+        <text class="info-desc" x="780" y="280">
+            direct feedback and evaluation
+        </text>
+      </g>
+      <!-- Layer 2 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="420" r="100" fill="#d1b9a3"/>
+        <text class="circle-sub" x="400" y="370" font-size="22" font-weight="bold">
+            Group 12
+        </text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="320" width="450" height="100" rx="18" fill="#d1b9a3"/>
+        <text class="info-title" x="780" y="360">The Development Team</text>
+        <text class="info-desc" x="780" y="390">
+            
+        </text>
+      </g>
+      <!-- Layer 1 -->
+      <g class="hover-group">
+        <circle class="circle" cx="400" cy="450" r="60" fill="#e8e0d5"/>
+        <text class="circle-sub" x="400" y="420" font-size="22" font-weight="bold">
+            <tspan x="400" dy="1.2em">Green</tspan>
+            <tspan x="400" dy="1.2em">Renaissance</tspan>
+        </text>
+        <!-- Info box -->
+        <rect class="info-box" x="750" y="440" width="450" height="100" rx="18" fill="#e8e0d5"/>
+        <text class="info-title" x="780" y="480" fill="#3e2c1c">The Product</text>
+        <text class="info-desc" x="780" y="510">
+        </text>
+      </g>
+    </g>
+  </svg>
+  
