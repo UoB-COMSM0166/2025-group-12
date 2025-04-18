@@ -146,6 +146,7 @@ class TsunamiLogic {
         for (let i = 0; i < tsunami.isMovingArray.length; i++) {
             if (tsunami.isMovingArray[i]) {
                 if (tsunami.movedLength[i] < tsunami.range[i]) {
+                    /** @type {CellModel} */
                     let cell;
                     if (tsunami.startCol !== -1) {
                         cell = TsunamiLogic.BoardLogic.getCell(i, tsunami.startCol + tsunami.movedLength[i] + 1, playBoard.boardObjects);
@@ -180,11 +181,11 @@ class TsunamiLogic {
                             }
                             if (cell.plant) {
                                 cell.removePlant();
-                                playBoard.fertilized[cell.x][cell.y] = true;
+                                playBoard.fertilized[cell.i][cell.j] = true;
                             }
                             if (cell.seed) {
                                 cell.removeSeed();
-                                playBoard.fertilized[cell.x][cell.y] = true;
+                                playBoard.fertilized[cell.i][cell.j] = true;
                             }
                         }
                     }

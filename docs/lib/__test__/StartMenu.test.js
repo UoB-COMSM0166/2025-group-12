@@ -27,6 +27,7 @@ beforeEach(() => {
 
 test('test new game button, entered game map then quit to menu', () => {
     let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
+    expect(newGame).toBeTruthy();
     p.mouseX = newGame.x + newGame.width / 2;
     p.mouseY = newGame.y + newGame.height / 2;
     controller.clickListener(p);
@@ -47,6 +48,7 @@ test('test load game but no save data found', () => {
     let startMenu = container.startMenu;
     expect(startMenu.floatingWindow).toBeFalsy();
     let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('load'));
+    expect(loadGame).toBeTruthy();
     p.mouseX = loadGame.x + loadGame.width / 2;
     p.mouseY = loadGame.y + loadGame.height / 2;
     controller.clickListener(p);

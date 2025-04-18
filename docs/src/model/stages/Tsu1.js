@@ -41,6 +41,9 @@ class Tsunami1PlayBoard {
         // turn counter
         playBoard.turn = 1;
         playBoard.maxTurn = 30;
+
+        playBoard.fertilized = Array.from({length: playBoard.gridSize},
+            () => Array.from({length: playBoard.gridSize}, () => false));
     }
 
     /**
