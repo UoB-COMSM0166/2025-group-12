@@ -61,7 +61,7 @@ Through in-depth discussions, the early-stage game framework is maintained until
 ### Identify stakeholders & user stories
 We identified stakeholders and visualised their roles using an onion model diagram to represent their impact on our game. Concrete end users placed in the inner rings act as active surrogates, embodying different player personas to help shape and clarify our gameplay requirements.
 
-
+![Onion Model](/documents/onion.svg?)
 
 <p align="center">
 The onion model diagram.
