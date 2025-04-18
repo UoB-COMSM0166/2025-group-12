@@ -134,32 +134,585 @@ These use cases are detailed as follows:
 - 15% ~750 words 
 - System architecture. Class diagrams, behavioural diagrams. 
 
+
+```mermaid
+---
+config:
+  theme: neo
+  layout: elk
+  look: classic
+
+---
+
+classDiagram
+direction TB
+    class Plant {
+	    + itemTypes type
+	    + reevaluateSkills() void
+	    + spreadBamboo() void
+	    + plumRange() boolean
+	    + stringify() string
+	    + parse() Plant
+    }
+    class Bamboo {
+	    + plantTypes plantType
+	    + seedTypes seedType
+	    + spreadBamboo() void
+    }
+    class Pine {
+	    + plantTypes plantType
+	    + seedTypes seedType
+	    + reevaluateSkills() void
+    }
+    class Corn {
+	    + plantTypes plantType
+	    + seedTypes seedType
+    }
+    class Orchid {
+	    + plantTypes plantType
+	    + seedTypes seedType
+	    + reevaluateSkills() void
+    }
+    class FireHerb {
+	    + plantTypes plantType
+	    + seedTypes seedType
+    }
+    class Plum {
+	    + plantTypes plantType
+	    + seedTypes seedType
+	    + plumRange() boolean
+    }
+    class Palm {
+	    + plantTypes plantType
+	    + seedTypes seedType
+    }
+    class Kiku {
+	    + plantTypes plantType
+	    + seedTypes seedType
+    }
+    class Seed {
+	    + itemTypes type
+	    + grow() Plant|Seed
+	    + stringify() string
+	    + parse() Seed
+    }
+	<<abstract>> Plant
+	<<abstract>> Seed
+    Plant <|-- Bamboo
+    Plant <|-- Pine
+    Plant <|-- Corn
+    Plant <|-- Orchid
+    Plant <|-- FireHerb
+    Plant <|-- Plum
+    Plant <|-- Palm
+    Plant <|-- Kiku
+    Seed <|-- Bamboo
+    Seed <|-- Pine
+    Seed <|-- Corn
+    Seed <|-- Orchid
+    Seed <|-- FireHerb
+    Seed <|-- Plum
+    Seed <|-- Palm
+    Seed <|-- Kiku
+```
+
+<p align="center">
+The class diagram for plants and seeds.
+</p>
+
+
+```mermaid
+---
+config:
+  theme: neo
+  layout: dagre
+  look: classic
+---
+classDiagram
+direction TB
+    class Terrain {
+	    + itemTypes type
+	    + storeSeed()
+	    + solidify()
+	    + stringify()
+	    + parse()
+    }
+    class Lava {
+	    + terrainTypes terrainType
+      + getWeight() number
+	    + storeSeed() void
+	    + solidify() void
+    }
+    class PlayerBase {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Mountain {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Steppe {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Lumbering {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Volcano {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Hill {
+	    + terrainTypes terrainType
+      + boolean canSlide
+      + getWeight() number
+      + setCanSlide() void
+    }
+    class Landslide {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Snowfield {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+    class Sea {
+	    + terrainTypes terrainType
+      + getWeight() number
+    }
+	<<abstract>> Terrain
+    Terrain <|-- Lava
+    Terrain <|-- PlayerBase
+    Terrain <|-- Mountain
+    Terrain <|-- Steppe
+    Terrain <|-- Lumbering
+    Terrain <|-- Volcano
+    Terrain <|-- Hill
+    Terrain <|-- Landslide
+    Terrain <|-- Snowfield
+    Terrain <|-- Sea
+```
+
+<p align="center">
+The class diagram for terrain.
+</p>
+
+
+```mermaid
+---
+config:
+  theme: neo
+  layout: dagre
+  look: classic
+---
+classDiagram
+direction TB
+    class Movable {
+	    + itemTypes type
+        + boolean isMoving
+        + boolean hasMoved
+        + draw() void
+        + drawDirection() void
+	    + movements() boolean
+	    + generateSlide() void
+	    + stringify() string
+	    + parse() Movable
+    }
+    class Earthquake {
+	    + movableTypes movableType
+        - boolean isShaking
+        - number shakeDuration
+        - number startFrame
+        + create() Earthquake
+	    + draw() void
+	    + movements() boolean
+        - shake() void
+        - hit() void
+    }
+    class Slide {
+	   + movableTypes movableType
+        - Cell cell
+        - Cell finalCell
+        - number accumulate
+        + create() Slide
+	    + draw() void
+	    + movements() boolean
+        + generateSlide() void
+        - move() void
+        - slide() void
+    }
+    class Tsunami {
+	    + movableTypes movableType
+        - number startCol
+        - number startRow
+        - Array range
+        - Array movedLength
+        - number blockerLimit
+        - Array blocker
+        - Array isMovingArray
+        - number accumulate
+        + create() Tsunami
+	    + draw() void
+	    + movements() boolean
+        - checkIsMoving() boolean
+        - move() void
+        - slide() void
+    }
+    class VolcanicBomb {
+	    + movableTypes movableType
+        + number countdown
+        - number moveSpeed
+        - number initPos
+        - number finalPos
+        + create() VolcanicBomb
+	    + draw() void
+	    + movements() boolean
+        - move() void
+        - hit() void
+        - reached() boolean
+        - integrate() number
+        - reparametrization() number
+    }
+    class Tornado {
+	    + movableTypes movableType
+        + number countdown
+        + number health
+        + number maxHealth
+        - Cell cell
+        - Array direction
+        - number moveSpeed
+        + create() Tornado
+	    + draw() void
+        + drawDirection() void
+	    + movements() boolean
+        - moveAndInvokeTornado() void
+    }
+    class Blizzard {
+	   + movableTypes movableType
+        + number countdown
+        - Cell cell
+        - Array direction
+        - number moveSpeed
+        - number playAnimation
+        + create() Blizzard
+	    + draw() void
+	    + movements() boolean
+        - hit() void
+    }
+    class Bandit {
+	    + movableTypes movableType
+        + number health
+        + number maxHealth
+        - Cell cell
+        - Cell targetCell
+        - Array direction
+        - number moveSpeed
+        + create() Bandit
+	    + draw() void
+	    + movements() boolean
+        - move() void
+        - setTarget() void
+        - pickLuckyPlant() Array
+        - graph() EdgeWeightedDigraph
+    }
+
+    class EdgeWeightedDigraph{
+        + number vertices
+        + number edges
+        + Array adjacency
+        + addEdge() void
+        + edges() Array
+        + setWeight() void
+    }
+
+    class DirectedEdge {
+        + number v
+        + number w
+        + number weight
+        + from() number
+        + to() number
+    }
+
+    class DijkstraSP{
+        - EdgeWeightedDigraph Graph
+        - IndexPriorityQueue pq
+        - Array distTo
+        - Array edgeTo
+        + hasPathTo() boolean 
+        + pathTo() Array 
+        + minWeightTo() Array
+        - relax() void
+    }
+
+	
+    class IndexPriorityQueue{
+        - function compareTo
+        - Map indices
+        - Array queue
+        + insert() void
+        + pollIndex() number
+        + change() void
+    }
+
+	<<abstract>> Movable
+    Movable <|-- Earthquake
+    Movable <|-- Slide
+    Movable <|-- Tsunami
+    Movable <|-- VolcanicBomb
+    Movable <|-- Tornado
+    Movable <|-- Blizzard
+    Movable <|-- Bandit
+    Bandit -- DijkstraSP
+    Bandit -- EdgeWeightedDigraph
+    DijkstraSP *-- EdgeWeightedDigraph
+    DijkstraSP *-- IndexPriorityQueue
+    EdgeWeightedDigraph *-- DirectedEdge
+```
+<p align="center">
+The class diagram for movables.
+</p>
+
+```mermaid
+---
+config:
+  theme: neo
+  layout: dagre
+  look: classic
+---
+classDiagram
+direction LR
+    class Board {
+	    + Array boardObjects
+        + draw() void
+        - drawTerrain() void
+        - drawLayer() void
+        - drawPlants() void
+        + getCell() Cell
+        + setCell() void
+        + plantCell() boolean
+        + getAllCellsWithPlant() Array
+        + getAllCellsWithSeed() Array
+        + getAllCellsWithEnemy() Array
+        + getAdjacent4Cells() Array
+        + getAdjacent8Cells() Array
+        + getNearbyCells() Array
+        + setEcosystem() void
+        - createEcosystem() Ecosystem
+        + stringify() string
+        + parse() Board
+    }
+
+    class Cell{
+        + number i
+        + number j
+        + Terrain terrain
+        + Plant plant
+        + Seed seed
+        + Movable enemy
+        + drawTerrain() void
+        + drawPlants() void
+        + isCompatible() boolean
+        + stringify() string
+        + parse() Cell
+    }
+
+    class Ecosystem{
+        + number countPlants
+        + boolean growFaster
+        + boolean rejectLava
+        + boolean strengthenOrchid
+        + boolean withstandSnow
+    }
+
+    class UnionFind{
+        - Array id
+        - Array size
+        - number count
+        + getComponent() Array
+        + find() number
+        + union() void
+    }
+
+    Board "1" *-- "*" Cell
+    Cell *-- UnionFind
+    Ecosystem "1" -- "3.." Cell
+    Board "1" *-- "0.." Ecosystem
+    Cell "1" *-- "0..1" Plant
+    Cell "1" *-- "0..1" Seed
+    Cell "1" *-- "0..1" Movable
+    Cell "1" *-- "1" Terrain
+```
+
+<p align="center">
+The class diagram for boards and cells. Refer to previous class diagrams to examine plants, seeds, terrains and movables.
+</p>
+
+
+```mermaid
+---
+config:
+  theme: neo
+  layout: dagre
+  look: classic
+---
+classDiagram
+direction TB
+    class Screen {
+        + GameState gameState
+        + Array buttons
+        + FloatingWindow floatingWindow
+        + Map allFloatingWindows
+        + drawFloatingWindow() void
+        + draw() void
+        + handleClick() void
+        + handleFloatingWindow() boolean
+        + handleScroll() void
+        + setFloatingWindow() void
+        + copyFloatingWindow() void
+        + playFadeInAnimation() void
+        + playFadeOutAnimation() void
+        + stateTransitionAtFading() void
+    }
+
+    class FloatingWindow{
+        - string text
+        - number position
+        + draw() void
+        + copyOf() FloatingWindow
+    }
+
+    class StartMenu{
+        - init() void
+        - initAllFloatingWindows() void
+    }
+
+    class PauseMenu{
+        - init() void
+        - initAllFloatingWindows() void
+    }
+
+    class GameMap{
+        - init() void
+        - initAllFloatingWindows() void
+        - createStageButton() MapButton
+        + drawStageInfo() void
+        + clickedStageButton() void
+    }
+
+    class PlayBoard{
+        + stageGroups stageGroup
+        + number stageNumbering
+        + number gridSize
+        - number cellWidth
+        - number cellHeight
+        + Array movables
+        + Board boardObjects
+        - InfoBox infoBox
+        + number turn
+        + number maxTurn
+        + number actionPoints
+        + number maxActionPoints
+        - boolean awaitCell
+        - Array undoStack
+        - concreteBoardInit() void
+        - initPlayBoard() void
+        - setStageInventory() void
+        - setStageTerrain() void
+        - initAllFloatingWindows() void
+        - setupActionListeners() void
+        + draw() void
+        - drawGrid() void
+        - drawMovables() void
+        - drawActionPoints() void
+        - setCursorStyle() void
+        + handleClick() void
+        + handleScroll() void
+        - clickedCell() void
+        - handlePlanting() void
+        - handleActiveSkills() void
+        + endTurnActivity() void
+        - stageClearSettings() void
+        - setSeedCountdown() void
+        - reevaluatePlantSkills() void
+        - activatePlantSkill() void
+        - nextTurnItems() void
+        - modifyBoard() void
+        + stringify() string
+        + saveGame() string
+        + undo() void
+        + loadGame() PlayBoard
+    }
+
+    class InfoBox{
+        + Button activateButton
+        + Button displayButton
+        + draw() void
+        + updateInfoBox() void
+        - setActivateButton() void
+        - deleteActivateButton() void
+        - setEcoDisplayButton() void
+        - deleteDisplayButton() void
+    }
+
+    class Inventory{
+        + Map items
+        + plantTypes selectedItem
+        + number scrollIndex
+        + number maxVisibleItems
+        + draw() void
+        + handleClick() void
+        + handleScroll() void
+        + itemDecrement() void
+        + createItem() Plant|Seed
+        + pushItem2Inventory() void
+        + setItemOfInventory() void
+        + saveInventory() void
+        + loadInventory() void
+        - updateInventoryHeight() void
+        + stringify() string
+        + parse() Inventory
+    }
+
+    class GameSerializer{
+        + save() void
+        + load() boolean
+        - saveGame() void
+        - loadGame() boolean
+    }
+
+    <<abstract>> Screen
+
+Screen <|-- StartMenu
+Screen <|-- GameMap
+Screen <|-- PlayBoard
+GameMap o-- PauseMenu
+PlayBoard o-- PauseMenu
+StartMenu o-- FloatingWindow
+GameMap o-- FloatingWindow
+PlayBoard o-- FloatingWindow
+PauseMenu o-- FloatingWindow
+PlayBoard o-- InfoBox
+GameMap o-- Inventory
+PlayBoard o-- Inventory
+StartMenu o-- GameSerializer
+PauseMenu o-- GameSerializer
+```
+
+
+<p align="center">
+The class diagram for game screens.
+</p>
+
+<p align="center">
+The class diagram for the game state and wiring.
+</p>
+
 ## Implementation
 
 - 15% ~750 words
 
 - Describe implementation of your game, in particular highlighting the three areas of challenge in developing your game.
-
-
-Epic:
-  Provide challenge to whom is interested in strategy games
-
-stories & criteria:
-  1. As a new player, I want to change difficulty of the game so that I can understand the game quickly.
-     Given I have no previous strategy game experience, when I play the starting several stages, then I can get use to the gameplay.
-  2. As a hard-core player, I want the game to be joyful and challengable so that I can enjoy the game.
-     Given I have cleared the story mode of the game and fully enjoyed, when I want some extra challenge, then the game provides an infinite mode and other game modes.
-  3. As a freshman in an art-related major, I want to understand how artistic concepts are projected into games so that I can expand the possibilities and scope of my artistic applications.
-  4. As an aesthetically conscious individual without an art background, I want to gain insights into specific art-related knowledge through gameplay experiences so that I can construct my own perspective on artistic systems.
-  5. As an art educator (advocate), I want to introduce the composition of various artistic style elements through multiple platforms so that my audience can concretely understand the practical applications of art.
-
-  6. As a natural plant lover, and I want to have a plant-centered game that provides in-depth and rich plant knowledge, as well as some of the actual plant functions. So I hope the game has a complete and detailed illustration function.
-     Given a extra plant illustrations, when players click each picture, 
-     then it will shows the plant prototype, family, genus, species, suitable planting environment, growth cycle, medicinal value, economic value.
-  7. As an environmental enthusiast, I want the game to simulate real-life planting experiences with diverse environments and climate systems, so that I can experience the challenges and excitement of randomness in plant cultivation.
-     Given a randomized weather system integrated into the game, when a tactical board game starts and a weather condition is randomly selected (e.g., sunny, rainy, windy, drought, frost), 
-     then the selected weather should provide corresponding buffs or debuffs that directly affect the growth attributes of plants in the current game session (e.g., growth speed, health, resilience, or yield).  
-
 
 ## Evaluation
 
