@@ -27,6 +27,7 @@ beforeEach(() => {
 
     // shift to game map menu
     let newGame = container.startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
+    expect(newGame).toBeTruthy();
     p.mouseX = newGame.x + newGame.width / 2;
     p.mouseY = newGame.y + newGame.height / 2;
     controller.clickListener(p);
@@ -37,7 +38,10 @@ beforeEach(() => {
 test('click a locked stage, then click somewhere else, then click unlocked stage, then click somewhere else', () => {
     expect(container.gameState.state).toBe(stateCode.STANDBY);
     let tornado = gameMap.buttons.find(button => button.stageGroup === GameMapModel.stageGroup.TORNADO);
+    expect(tornado).toBeTruthy();
     let volcano = gameMap.buttons.find(button => button.stageGroup === GameMapModel.stageGroup.VOLCANO);
+    expect(volcano).toBeTruthy();
+
 
     expect(gameMap.floatingWindow).toBeFalsy();
     expect(tornado.circle).toBeFalsy();
@@ -68,6 +72,7 @@ test('click a locked stage, then click somewhere else, then click unlocked stage
 test('click an unlocked stage twice to enter game', () => {
     expect(container.gameState.state).toBe(stateCode.STANDBY);
     let tornado = gameMap.buttons.find(button => button.stageGroup === GameMapModel.stageGroup.TORNADO);
+    expect(tornado).toBeTruthy();
     expect(gameMap.floatingWindow).toBeFalsy();
     expect(tornado.circle).toBeFalsy();
 

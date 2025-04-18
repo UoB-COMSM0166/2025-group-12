@@ -153,8 +153,7 @@ class PlayBoardModel {
 
         // TSUNAMI SPECIFIC:
         // record fertilized cells
-        this.fertilized = Array.from({length: this.gridSize},
-            () => Array.from({length: this.gridSize}, () => false));
+        this.fertilized = [];
 
         PlayBoardModel.concreteBoardInit(this);
 
