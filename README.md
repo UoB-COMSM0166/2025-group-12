@@ -22,9 +22,9 @@ Zhenghao Yang, kj24716@bristol.ac.uk, saquantum
 
 ## Introduction
 
-The Green Renaissance is a turn-based tactics chessboard game, emphasising the flexibility and diversity of gameplay strategies, as well as the intricacies of resource management. The elements of the game are introduced progressively, making it easy to comprehend and learn while escalating challenges as the game progresses, reflecting the interconnected nature of these elements. Thus, players are encouraged to create a thoughtful strategy that will help them succeed in the game. 
+The Green Renaissance is a turn-based tactics chessboard game, emphasising the flexibility and diversity of gameplay strategies and the intricacies of resource management. Our game gradually introduces elements with explanations, making it easy to comprehend and learn while escalating challenges as the game progresses. Players are encouraged to investigate the interconnections between the game components and devise a thoughtful strategy to win the game.
 
-The background story of our game invites you to explore a world being rebuilt after the devastation caused by natural disasters. Various plants, which develop from seeds after several turns of being cultivated, are employed as our chess soldiers in the struggle against disasters. Although these plants cannot move after cultivation, they can acquire different skills and enhance their ability when cultivated in close proximity, forming an ecosystem. After each game stage, all surviving plants are moved to the player's inventory for use in later stages. It would be challenging if a player consumes too many or grows too few resources, requiring players to think carefully before making their moves.
+The background story of our game invites you to delve into a world rebuilding after the devastation caused by natural disasters. Various plants, which develop from seeds after several turns of being cultivated, are employed as our chess soldiers in the struggle against disasters. Although these plants cannot move after cultivation, they can acquire different skills and enhance their ability when cultivated closely, forming an ecosystem. After each game stage, all surviving plants are moved to the player's inventory for use in later stages. It would be challenging if a player consumes too many or grows too few resources, requiring players to think carefully before making their moves.
 
 We are not looking for a conventional Mario-genre 2D side-scrolling platform game, but rather something innovative. Our initial game idea is inspired by a similar tactics game, <em>Into the Breach</em>, where players control a group of mecha warriors on a grid battlefield, and a tower defence game, <em>Carrot Fantasy</em>, where players cultivate plants that fire ballistae, similar to <em>Plants vs. Zombies</em>. Both games focus on planning and strategy. Evolved from these games, our game stands out for its uniqueness (as far as our knowledge) in gameplay and mechanics, making it enchanting to players .
 
@@ -545,7 +545,7 @@ direction LR
 ```
 
 <p align="center">
-The class diagram for boards and cells. Refer to previous class diagrams to examine plants, seeds, terrains and movables.
+The class diagram for boards and cells. Refer to previous class diagrams to inspect Plant, Seed, Terrain and Movable.
 </p>
 
 
@@ -704,9 +704,249 @@ PauseMenu o-- GameSerializer
 The class diagram for game screens.
 </p>
 
+```mermaid
+---
+config:
+  theme: neo
+  layout: dagre
+  look: classic
+---
+classDiagram
+direction TB
+    class Container{
+        + Map plantFactory
+        + Map terrainFactory
+        + Map movableFactory
+    }
+
+    class Inventory{
+
+    }
+
+    class GameState{
+        + stateCode state
+        + stageGroups currentStageGroup
+        + PlayBoard currentStage
+        + Inventory inventory
+        + boolean playerCanClick
+        - GameStageFactory gsf
+        + Map clearedStages
+        + setState() void
+        + getState() void
+        + setPlayerCanClick() void
+        + togglePaused() void
+        + setStageCleared() void
+        + isStageCleared() boolean
+        + isSpecificStageCleared() boolean
+    }
+
+    class StartMenu{
+
+    }
+
+    class GameMap{
+
+    }
+
+    class PlayBoard{
+
+    }
+
+    class Controller{
+        + GameState gameState
+        + Array menus
+        + Map logicFactory
+        + mainLoopEntry() void
+        + clickListener() void
+        + scrollListener() void
+        - setPlayStage() void
+        - setData() void
+        - handleMovables() void
+    }
+
+    class Renderer{
+        + render() void
+    }
+
+    class KeyboardHandler{
+
+    }
+
+    class GamepadHandler{
+        
+    }
+
+    class CanvasSize{
+        - number canvasWidth
+        - number canvasLength
+        - resolutions currentResolution
+        + setSize() void
+        + getSize() Array
+        + getFontSize() Object
+    }
+
+    class Main{
+        + Container container
+        + p5 p5
+    }
+
+    class Preloader{
+        + loadImages() Map
+        + loadSounds() Map
+    }
+
+    class UtilityClass{
+        + relative2absolute() Array
+        + absolute2Relative() Array
+        + drawHealthBar() void
+        + gameOver() void
+        + pos2CellIndex() Array
+        + cellIndex2Pos() Array
+        + commonFloatingWindows() void
+    }
+
+Main "1" *-- "1" Container
+Main "1" *-- "1" Preloader
+UtilityClass o-- CanvasSize
+Container *-- UtilityClass
+Container "1" *-- "1" Renderer
+Container "1" *-- "1" Controller
+Container "1" *-- "1" GameState
+Container "1" *-- "1" GamepadHandler
+Container "1" *-- "1" KeyboardHandler
+GameState  -- StartMenu
+GameState  -- GameMap
+GameState  -- PlayBoard
+Container "1" -- "1" StartMenu
+Container "1" -- "1" GameMap
+Container "1" -- "0.." PlayBoard
+Controller -- StartMenu
+Controller -- GameMap
+Controller -- PlayBoard
+PlayBoard o-- Inventory
+GameMap o-- Inventory
+GameState *-- Inventory
+```
+
 <p align="center">
-The class diagram for the game state and wiring.
+The class diagram for the game state and wiring. Refer to previous class diagrams to inspect StartMenu, GameMap, PlayBoard and Inventory.
 </p>
+
+
+```mermaid
+sequenceDiagram
+  participant Window as Window
+  participant Renderer as Renderer
+  participant Controller as Controller
+  participant GameState as GameState
+  participant PauseMenu as PauseMenu
+  participant StartMenu as StartMenu
+  participant GameMap as GameMap
+  participant PlayBoard as PlayBoard
+  participant Inventory as Inventory
+  participant InfoBox as InfoBox
+  participant Board as Board
+  participant Cell as Cell
+
+  loop p5.js main loop
+  opt will be skipped if player set unable to click
+    Window -) Controller: click event
+    activate Controller
+    GameState ->> Controller: getState
+    alt click with a given menu state
+      Controller ->> PauseMenu: clickListener
+      PauseMenu ->> PauseMenu: handleClick
+      opt quit button
+        PauseMenu ->> GameState: setState
+      end
+      Controller ->> StartMenu: clickListener
+      StartMenu ->> StartMenu: handleClick
+      opt new game button
+        StartMenu ->> GameState: setState
+      end
+      Controller ->> GameMap: clickListener
+      GameMap ->> GameMap: handleClick
+      opt quit button or map button
+        GameMap ->> GameState: setState
+      end
+      Controller ->> PlayBoard: clickListener
+      PlayBoard ->> PlayBoard: handleClick
+    end
+    alt click components of play board
+        PlayBoard ->> PlayBoard: handleFloatingWindow
+        PlayBoard ->> Cell: handleActiveSkills
+        opt clicked turn button
+            PlayBoard ->> GameState: setPlayerCanClick
+        end
+        PlayBoard ->> InfoBox: handleClick
+        InfoBox ->> InfoBox: handleClick
+        opt if inventory item is clicked first
+            PlayBoard ->> Board: handlePlanting
+            Board ->> Cell: plantCell
+        end
+        PlayBoard ->> Cell: clickedCell
+    end
+    opt game clear, game over or quit button
+        PlayBoard ->> GameState: setState
+    end
+    Window -) Controller: scroll event
+    GameState ->> Controller: getState
+    alt scroll with a given menu state
+      Controller ->> GameMap: scrollListener
+      GameMap ->> Inventory: handleScroll
+      Controller ->> PlayBoard: scrollListener
+      PlayBoard ->> Inventory: handleScroll
+    end
+    end
+
+    opt controller.mainLoopEntry: triggered when state transitions occur
+        opt controller.setPlayStage: initialize play board when going into PLAY phase
+            Controller ->> GameState: setPlayStage
+            Controller ->> PlayBoard: setPlayStage
+            PlayBoard ->> PlayBoard: concreteBoardInit
+            PlayBoard ->> PlayBoard: initPlayBoard
+            PlayBoard ->> Board: setStageTerrain
+        end
+        opt controller.setData: manage data transferring
+            Controller ->> GameState: setState
+            
+            Controller ->> Inventory: save/load inventory
+        end
+    end
+    critical controller.setData:  if player unable to click, set play able to click after finishing handling movables 
+        Controller ->> PlayBoard: handleMovables
+        Controller ->> GameState: setPlayerCanClick
+        PlayBoard ->> PlayBoard: endTurnActivity
+        option if current game stage is cleared
+            PlayBoard ->> Inventory: stageClearSettings
+            PlayBoard ->> GameState: setStageCleared
+            PlayBoard ->> GameState: setPlayerCanClick
+        
+    end
+    Renderer ->> PauseMenu: render
+    activate Renderer
+    PauseMenu->> PauseMenu: draw
+      Renderer ->> StartMenu: render
+      StartMenu->>StartMenu: draw
+      Renderer ->> GameMap: render
+      GameMap->>GameMap: draw
+      Renderer ->> PlayBoard: render
+      PlayBoard ->> Inventory: draw
+      PlayBoard ->> InfoBox: draw
+      PlayBoard ->> Board: drawGrid
+      Board ->> Cell: draw
+      PlayBoard->>PlayBoard:draw
+    Renderer ->> Window: render through p5.js
+    deactivate Renderer
+    GameState ->> Controller: save state
+    deactivate Controller
+  end
+```
+
+<p align="center">
+The sequence diagram.
+</p>
+
 
 ## Implementation
 
