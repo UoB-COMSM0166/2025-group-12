@@ -33,17 +33,22 @@ Zhenghao Yang, kj24716@bristol.ac.uk, saquantum
 
 ### Introduction
 
-- 5% ~250 words 
-- Describe your game, what is based on, what makes it novel?
+The Green Renaissance is a turn-based tactics chessboard game, emphasising the flexibility and diversity of gameplay strategies, as well as the intricacies of resource management. The elements of the game are introduced progressively, making it easy to comprehend and learn while escalating challenges as the game progresses, reflecting the interconnected nature of these elements. Thus, players are encouraged to create a thoughtful strategy that will help them succeed in the game. 
 
+The background story of our game invites you to explore a world being rebuilt after the devastation caused by natural disasters. Various plants, which develop from seeds after several turns of being cultivated, are employed as our chess soldiers in the struggle against disasters. Although these plants cannot move after cultivation, they can acquire different skills and enhance their ability when cultivated in close proximity, forming an ecosystem. After each game stage, all surviving plants are moved to the player's inventory for use in later stages. It would be challenging if a player consumes too many or grows too few resources, requiring players to think carefully before making their moves.
 
-  Our game is turn-based chessboard strategic, focusing on the flexibility and diversity of game strategy, along with resource management. The elements of the game is stacked up gradually, making it easy to understand and learn but hard as the game stages advance since elements are interwined with each other, so player need to raise a good strategy to clear the game. The background story of our game is about reconstructing world of wasteland destroyed by natural disasters. Various vegetation, which grown up from seeds some turns after planting, is our 'chess' to fight against disasters. As plants they are unable to move around on the chessboard, but they can acquire various skills and become stronger once they are cultivated closely to each other to form an ecosystem. When a game stage is cleared, all living plants will be transfered to player's inventory and available for later stages, so player need to carefully plan all movements.
+We are not looking for a conventional Mario-genre 2D side-scrolling platform game, but rather something innovative. Our initial game idea is inspired by a similar tactics game, <em>Into the Breach</em>, where players control a group of mecha warriors on a grid battlefield, and a tower defence game, <em>Carrot Fantasy</em>, where players cultivate plants that fire ballistae, similar to <em>Plants vs. Zombies</em>. Both games focus on planning and strategy. Evolved from these games, our game stands out for its uniqueness (as far as our knowledge) in gameplay and mechanics, making it enchanting to players .
+
 
 
 ### Requirements 
 
 - 15% ~750 words
-- Use case diagrams, user stories. Early stages design. Ideation process. How did you decide as a team what to develop? 
+- Use case diagrams, user stories. Early stages design. Ideation process. How did you decide as a team what to develop?
+
+  ![Onion Model](/documents/onion.svg)
+
+  ![Use Case Diagram](/documents/UseCaseDiagram.png)
 
 ### Design
 
