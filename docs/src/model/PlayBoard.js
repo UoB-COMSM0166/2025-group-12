@@ -132,7 +132,6 @@ class PlayBoardModel {
         this.hasActionPoints = true;
 
         // to implement plant active skills.
-        // I have a strong feeling that we need refactoring
         this.awaitCell = false;
 
         this.ecoDisplay = true;
@@ -419,6 +418,35 @@ class PlayBoardRenderer {
      * @param p5
      * @param {PlayBoardLike} playBoard
      */
+    static drawActionPoints(p5, playBoard) {
+        if (playBoard.hasActionPoints) {
+            let [x, y] = PlayBoardRenderer.utilityClass.relative2absolute(0.6, 0.01);
+            let [width, height] = PlayBoardRenderer.utilityClass.relative2absolute(0.07 * 9 / 16, 0.07);
+            p5.stroke("#DDDDDD");
+            p5.strokeWeight(2);
+            p5.fill("#DDDDDD");
+            p5.rect(x, y, width, height, 20);
+
+            p5.noStroke();
+            if (playBoard.actionPoints !== 0) {
+                p5.fill("#6699FF");
+            } else {
+                p5.fill("rgba(102,153,255,0.5)");
+            }
+            p5.rect(x, y, width, height, 20);
+
+            p5.fill(255);
+            p5.textSize(15);
+            p5.textAlign(p5.CENTER, p5.CENTER);
+            p5.text(playBoard.actionPoints + " / " + playBoard.maxActionPoints, x + width / 2, y + height / 2);
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
     static draw(p5, playBoard) {
         p5.background(180);
 
@@ -446,7 +474,7 @@ class PlayBoardRenderer {
         PlayBoardRenderer.InventoryRenderer.draw(p5, playBoard.gameState.inventory);
 
         // draw action points
-        PlayBoardRenderer.utilityClass.drawActionPoints(p5, playBoard);
+        PlayBoardRenderer.drawActionPoints(p5, playBoard);
 
         // all buttons
         // to cascade activate button above info box, place the loop after info box

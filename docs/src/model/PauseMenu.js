@@ -54,11 +54,11 @@ class PauseMenuModel {
             this.gameState.togglePaused();
         }
 
-        let escapeText = this.gameState.state === PauseMenuModel.stateCode.PLAY ? 'Quit' : 'Back';
+        let escapeText = this.gameState.getState() === PauseMenuModel.stateCode.PLAY ? 'Quit' : 'Back';
         let escapeButton = new PauseMenuModel.Button(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, escapeText);
         escapeButton.onClick = () => {
             this.gameState.togglePaused();
-            if (this.gameState.state === PauseMenuModel.stateCode.PLAY) {
+            if (this.gameState.getState() === PauseMenuModel.stateCode.PLAY) {
                 this.gameState.isFading = true;
                 this.gameState.nextState = PauseMenuModel.stateCode.STANDBY;
             } else {

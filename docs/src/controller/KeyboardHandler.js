@@ -26,7 +26,7 @@ class KeyboardHandler {
                     e.key === ' ')
                 && this.keyboradKeys.indexOf(e.key) === -1) {
                 this.keyboradKeys.push(e.key);
-            } else if (e.key === 'Escape' && this.gameState.state !== KeyboardHandler.stateCode.MENU) {
+            } else if (e.key === 'Escape' && this.gameState.getState() !== KeyboardHandler.stateCode.MENU) {
                 this.gameState.togglePaused();
             }
         });

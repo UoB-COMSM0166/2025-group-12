@@ -20,7 +20,7 @@ class GameSerializer {
      */
     static saveGame(controller) {
         let state = {
-            state: controller.gameState.state,
+            state: controller.gameState.getState(),
             currentStageGroup: controller.gameState.currentStageGroup,
             currentStage: controller.gameState.currentStage != null ? GameSerializer.PlayBoardSerializer.saveGame(controller.gameState.currentStage) : null,
             inventory: controller.gameState.currentStage != null ? null : GameSerializer.InventorySerializer.stringify(controller.gameState.inventory), // prevent double storage of inventory
@@ -45,7 +45,7 @@ class GameSerializer {
         if (data) {
             let stateObject = JSON.parse(decrypt(JSON.parse(data)));
             let gameState = controller.gameState;
-            gameState.state = stateObject.state;
+            gameState.setState(stateObject.state);
             gameState.currentStageGroup = stateObject.currentStageGroup;
             gameState.inventory = stateObject.inventory ? GameSerializer.InventorySerializer.parse(stateObject.inventory, p5, gameState.inventory) : null;
             gameState.clearedStages = new Map(JSON.parse(stateObject.clearedStages));
@@ -55,7 +55,7 @@ class GameSerializer {
             controller.saveState = stateObject.saveState;
             controller.gameState = gameState;
 
-            if (gameState.state === GameSerializer.stateCode.STANDBY) {
+            if (gameState.getState() === GameSerializer.stateCode.STANDBY) {
                 controller.menus[GameSerializer.stateCode.STANDBY].buttons.forEach(button => button.circle = null);
             }
             return true;

@@ -110,7 +110,7 @@ class Controller {
 
     // deal with 1. player-movable switching, 2. data transferring when switching menu
     setData(p5, newState) {
-        // if a game stage is cleared, we shift from PLAY to FINISH (in endTurnActivity), then go to STANDBY
+        // if a game stage is cleared, we shift from PLAY to FINISH, then go to STANDBY
         if (newState === this.stateCode.FINISH) {
             this.menus[this.stateCode.PLAY] = null;
             this.gameState.inventory.scrollIndex = 0;

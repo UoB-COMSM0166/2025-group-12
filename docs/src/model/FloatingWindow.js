@@ -10,9 +10,8 @@ class FloatingWindow {
         /** @type {String} */
         this.text = text;
         this.boxParam = boxParam;
-        let scaleFactor = FloatingWindow.CanvasSize.getScaleFactor();
-        this.fontSize = boxParam.fontSize * scaleFactor;
-        this.padding = boxParam.padding * scaleFactor;
+        this.fontSize = boxParam.fontSize;
+        this.padding = boxParam.padding;
         this.spacingRatio = boxParam.spacingRatio;
         this.fadingSpeed = boxParam.fadingSpeed;
         this.calculateBoxSize();
@@ -30,13 +29,14 @@ class FloatingWindow {
 
     // this is the only method user would invoke.
     draw() {
+        let scaleFactor = FloatingWindow.CanvasSize.getScaleFactor();
         this.p5.textAlign(this.p5.LEFT, this.p5.BASELINE);
-        this.p5.textSize(this.fontSize);
-        this.drawBackgroundBox(this.boxWidth, this.boxHeight, this.x, this.y);
+        this.p5.textSize(this.fontSize * scaleFactor);
+        this.drawBackgroundBox(this.boxWidth * scaleFactor, this.boxHeight * scaleFactor, this.x * scaleFactor, this.y * scaleFactor);
         if (this.triPos !== null) {
-            this.drawTriangle(this.x, this.y, this.boxWidth, this.boxHeight);
+            this.drawTriangle(this.x * scaleFactor, this.y * scaleFactor, this.boxWidth * scaleFactor, this.boxHeight * scaleFactor);
         }
-        this.drawFormattedText(this.text, this.x + this.padding, this.y + this.padding + this.p5.textAscent());
+        this.drawFormattedText(this.text, (this.x + this.padding) * scaleFactor, (this.y + this.padding + this.p5.textAscent()) * scaleFactor);
     }
 
     /* black boxes. */
