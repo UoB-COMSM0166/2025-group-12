@@ -1,21 +1,19 @@
 # 2025-group-12
 
-[PLAY HERE](https://uob-comsm0166.github.io/2025-group-12/)
+[PLAY Green Renaissance](https://uob-comsm0166.github.io/2025-group-12/)
 
 ![Group Photo](documents/week01-research/images/Group_photo.JPG)
 
 
-Chin Wei Liu, rq24239@bristol.ac.uk, Chin-pro, manager
+| Name          | UOB email             | github@username | Role                                   |
+| ------------- | --------------------- | --------------- | -------------------------------------- |
+| Chin Wei Liu  | rq24239@bristol.ac.uk | Chin-pro        | Scrum master, lead developer           |
+| Xiaobai Zheng | iu24160@bristol.ac.uk | wheeinside      | lead art designer, developer           |
+| Fan Meng      | xa24801@bristol.ac.uk | p1umage         | art designer, developer                |
+| Xiaoyu Wu     | ni24070@bristol.ac.uk | wendywuxiaoyu   | documentation management, art designer |
+| Rui Zhang     | xs24368@bristol.ac.uk | redial17        | developer, testing                     |
+| Zhenghao Yang | kj24716@bristol.ac.uk | saquantum       | developer, testing                     |
 
-Xiaoyu Wu, ni24070@bristol.ac.uk, wendywuxiaoyu
-
-Fan Meng, xa24801@bristol.ac.uk, p1umage
-
-Xiaobai Zheng, iu24160@bristol.ac.uk, wheeinside
-
-Rui Zhang, xs24368@bristol.ac.uk, redial17
-
-Zhenghao Yang, kj24716@bristol.ac.uk, saquantum
 
 
 # Project Report
