@@ -45,6 +45,7 @@ class GameState {
         this.inventory = inventory;
         this.playerCanClick = true; // set this to false during end turn enemy activity
         this.paused = false;
+        this.showOptions = false;
 
         this.clearedStages = new Map();
         this.clearedStages.set(stageGroup.NO_STAGE, 1);

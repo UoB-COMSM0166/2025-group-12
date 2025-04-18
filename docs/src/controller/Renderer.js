@@ -4,6 +4,7 @@ class Renderer {
         this.gameState = bundle.gameState;
         this.menus = bundle.menus;
         this.pauseMenu = bundle.pauseMenu;
+        this.optionsMenu = bundle.optionsMenu;
         this.stateCode = bundle.stateCode;
         /** @type {typeof StartMenuRenderer} */
         this.StartMenuRenderer = bundle.StartMenuRenderer;
@@ -13,6 +14,8 @@ class Renderer {
         this.PlayBoardRenderer = bundle.PlayBoardRenderer;
         /** @type {typeof PauseMenuRenderer} */
         this.PauseMenuRenderer = bundle.PauseMenuRenderer;
+        /** @type {typeof OptionsRenderer} */
+        this.OptionsRenderer = bundle.OptionsRenderer;
         this.renderFactory = new Map([
             [this.stateCode.MENU, this.StartMenuRenderer],
             [this.stateCode.STANDBY, this.GameMapRenderer],
@@ -31,6 +34,12 @@ class Renderer {
             p5.filter(p5.BLUR, 3);
             p5.pop();
             this.PauseMenuRenderer.draw(p5, this.pauseMenu);
+        }
+        if(this.gameState.showOptions) {
+            p5.push();
+            p5.filter(p5.BLUR, 3);
+            p5.pop();
+            this.OptionsRenderer.draw(p5, this.optionsMenu);
         }
     }
 }

@@ -4,6 +4,7 @@ class Controller {
         this.gameState = bundle.gameState;
         this.menus = bundle.menus;
         this.pauseMenu = bundle.pauseMenu;
+        this.optionsMenu = bundle.optionsMenu;
         this.keyboardHandler = bundle.keyboardHandler;
         this.stateCode = bundle.stateCode;
         /** @type {stateCode} */
@@ -20,6 +21,8 @@ class Controller {
         this.PlayBoardLogic = bundle.PlayBoardLogic;
         /** @type {typeof PauseMenuLogic} */
         this.PauseMenuLogic = bundle.PauseMenuLogic;
+        /** @type {typeof OptionsLogic} */
+        this.OptionsLogic = bundle.OptionsLogic;
         /** @type {typeof InventoryLogic} */
         this.InventoryLogic = bundle.InventoryLogic;
         /** @type {typeof MovableLogic} */
@@ -48,6 +51,10 @@ class Controller {
         if (this.gameState.isFading) return;
         if (this.gameState.paused) {
             this.PauseMenuLogic.handleClick(p5, this.pauseMenu);
+            return;
+        }
+        if (this.gameState.showOptions) {
+            this.OptionsLogic.handleClick(p5, this.optionsMenu);
             return;
         }
         if (this.gameState.playerCanClick === false) {

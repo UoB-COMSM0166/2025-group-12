@@ -80,6 +80,8 @@ import {PauseMenuModel, PauseMenuLogic, PauseMenuRenderer} from "../model/PauseM
 import {CellModel, CellLogic, CellRenderer, CellSerializer} from "../model/BoardCells.js";
 import {BoardModel, BoardLogic, BoardRenderer, BoardSerializer} from "../model/BoardCells.js";
 import {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer} from "../model/PlayBoard.js";
+import {OptionsLogic, OptionsModel, OptionsRenderer} from "../model/Options.js";
+import {Dropdown} from "../items/Dropdown.js";
 
 
 // to achieve loosely coupling we use lazy dependency injection
@@ -324,6 +326,7 @@ class Container {
         this.Button = Button;
         this.Button.setup({CanvasSize: this.CanvasSize});
         this.MapButton = MapButton;
+        this.Dropdown = Dropdown;
 
         // initialize serializer
         this.GameSerializer = GameSerializer;
@@ -339,6 +342,7 @@ class Container {
             MenuItem: this.MenuItem,
             Button: this.Button,
             MapButton: this.MapButton,
+            Dropdown: this.Dropdown,
             stateCode: stateCode,
             stageGroup: stageGroup,
             GameSerializer: this.GameSerializer,
@@ -384,6 +388,7 @@ class Container {
             entityObject("PlayBoard", PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer),
             entityObject("InfoBox", InfoBoxModel, InfoBoxLogic, InfoBoxRenderer, null),
             entityObject("PauseMenu", PauseMenuModel, PauseMenuLogic, PauseMenuRenderer, null),
+            entityObject("options", OptionsModel, OptionsLogic, OptionsRenderer, null),
         ]
 
         for (let menuModule of this.menuModules) {
@@ -399,6 +404,7 @@ class Container {
         this.gameMap = new GameMapModel(this.gameState);
         // helper menus
         this.pauseMenu = new PauseMenuModel(this.gameState);
+        this.optionsMenu = new OptionsModel(this.gameState);
         KeyboardHandler.setup(menuBundle);
         this.keyboardHandler = new KeyboardHandler(this.gameState);
         this.initialState = stateCode.MENU; // default
@@ -414,6 +420,7 @@ class Container {
             menus: this.menus,
             stateCode: stateCode,
             pauseMenu: this.pauseMenu,
+            optionsMenu: this.optionsMenu,
             keyboardHandler: this.keyboardHandler,
             initialState: this.initialState,
 
@@ -423,6 +430,7 @@ class Container {
             PlayBoardModel: PlayBoardModel,
             PlayBoardLogic: PlayBoardLogic,
             PauseMenuLogic: PauseMenuLogic,
+            OptionsLogic: OptionsLogic,
             InventoryLogic: InventoryLogic,
             MovableLogic: MovableLogic,
         });
@@ -436,10 +444,12 @@ class Container {
                 menus: this.menus,
                 stateCode: stateCode,
                 pauseMenu: this.pauseMenu,
+                optionsMenu: this.optionsMenu,
                 StartMenuRenderer: StartMenuRenderer,
                 GameMapRenderer: GameMapRenderer,
                 PlayBoardRenderer: PlayBoardRenderer,
                 PauseMenuRenderer: PauseMenuRenderer,
+                OptionsRenderer: OptionsRenderer,
             }
         )
 

@@ -67,20 +67,12 @@ class StartMenuModel {
 
         let optionButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Options");
         optionButton.onClick = () => {
-
+            this.gameState.showOptions = true;
         }
 
         this.buttons.push(newGameButton, loadGameButton, optionButton);
 
-        this.setupInteractive();
-
         this.initAllFloatingWindows();
-    }
-
-    setupInteractive(){
-        this.interactives[0][0] = this.buttons[0];
-        this.interactives[1][0] = this.buttons[1];
-        this.interactives[2][0] = this.buttons[2];
     }
 
     initAllFloatingWindows() {
@@ -273,24 +265,6 @@ class StartMenuLogic {
      */
     static copyFloatingWindow(p5, str, startMenu) {
         startMenu.floatingWindow = /** @type {FloatingWindow} */ StartMenuLogic.FloatingWindow.copyOf(startMenu.allFloatingWindows.get(str));
-    }
-
-    /**
-     *
-     * @param dRow
-     * @param dCol
-     * @param {StartMenuModel} startMenu
-     */
-    moveSelection(dRow, dCol, startMenu) {
-        let newRow = Math.max(0, Math.min(startMenu.row + dRow, startMenu.interactives.length - 1));
-        let newCol = Math.max(0, Math.min(startMenu.col + dCol, startMenu.interactives[newRow].length - 1));
-
-        if(startMenu.interactives[newRow][newCol]){
-            startMenu.interactives[startMenu.row][startMenu.col].isSelected = false;
-            startMenu.row = newRow;
-            startMenu.col = newCol;
-            startMenu.interactives[newRow][newCol].isSelected = true;
-        }
     }
 }
 
