@@ -224,9 +224,23 @@ class Controller {
         }
         let currentState = this.gameState.getState();
         let currentMenu = this.menus[currentState];
-        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStickPressed(axes, currentMenu)) {
-            currentMenu.handleAnalogStickPressed(axes, currentMenu);
+        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStickPressed) {
+            this.logicFactory.get(currentState).handleAnalogStickPressed(axes, currentMenu);
         }
+    }
+
+    resize() {
+        for (const [key, value] of Object.entries(this.menus)) {
+            const logic = this.logicFactory.get(Number(key));
+
+            if (value && logic?.resize) {
+                logic.resize(value);
+            }
+        }
+
+
+        this.OptionsLogic.resize(this.optionsMenu);
+        this.PauseMenuLogic.resize(this.pauseMenu);
     }
 }
 

@@ -1,13 +1,16 @@
 import {CanvasSize, resolutions} from "../CanvasSize.js";
 
 class Dropdown {
-    constructor(x, y, width, height, text) {
+    static setup(bundle) {
+        Dropdown.CanvasSize = bundle.CanvasSize;
+    }
+
+    constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.options = ["960 * 540", "1290 * 720", "1920 * 1080", "2560 * 1440"];
-        this.text = text;
         this.isOpen = false;
         this._onClick = (p5) => {
             this.isOpen = !this.isOpen;
@@ -15,7 +18,6 @@ class Dropdown {
         this.selectedOption = "1280 * 720";
         this.mode = "mouse";
         this.isSelected = false;
-       // this.funtions = [CanvasSize.setSize(resolutions.qHD), CanvasSize.setSize(resolutions.WXGA), CanvasSize.setSize(resolutions.FHD), CanvasSize.setSize(resolutions.QHD)];
     }
 
     set onClick(func) {
@@ -43,7 +45,7 @@ class Dropdown {
         p5.rect(this.x, this.y, this.width, this.height);
 
         p5.fill(0);
-        p5.textSize(14);
+        p5.textSize(Dropdown.CanvasSize.getFontSize().small);
         p5.textAlign(p5.LEFT, p5.CENTER);
         p5.text(this.selectedOption, this.x + 10, this.y + this.height / 2);
         p5.textAlign(p5.RIGHT, p5.CENTER);

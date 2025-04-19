@@ -1,4 +1,8 @@
 class MapButton {
+    static setup(bundle) {
+        MapButton.CanvasSize = bundle.CanvasSize;
+    }
+
     constructor(x, y, size, img, stageGroup) {
         this.x = x;
         this.y = y;
@@ -50,7 +54,6 @@ class MapButton {
 
     createNewCircle(p5) {
         this.circle = new CircleAnimation(p5, this.x, this.y, this.size);
-
     }
 
     hasMouseOver(p5) {

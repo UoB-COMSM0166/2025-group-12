@@ -266,6 +266,35 @@ class StartMenuLogic {
     static copyFloatingWindow(p5, str, startMenu) {
         startMenu.floatingWindow = /** @type {FloatingWindow} */ StartMenuLogic.FloatingWindow.copyOf(startMenu.allFloatingWindows.get(str));
     }
+
+    static resize(startMenu){
+        let [buttonWidth, buttonHeight] = StartMenuLogic.utilityClass.relative2absolute(0.15, 0.07);
+        let [buttonX, buttonY] = StartMenuLogic.utilityClass.relative2absolute(0.2, 0.6);
+        let buttonInter = StartMenuLogic.utilityClass.relative2absolute(0.1, 0.1)[1];
+
+        startMenu.buttons[0].x = buttonX - buttonWidth / 2;
+        startMenu.buttons[0].defaultX = buttonX - buttonWidth / 2;
+        startMenu.buttons[0].targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+        startMenu.buttons[0].y = buttonY;
+        startMenu.buttons[0].width = buttonWidth;
+        startMenu.buttons[0].height = buttonHeight;
+
+        startMenu.buttons[1].x = buttonX - buttonWidth / 2;
+        startMenu.buttons[1].defaultX = buttonX - buttonWidth / 2;
+        startMenu.buttons[1].targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+        startMenu.buttons[1].y = buttonY + buttonInter;
+        startMenu.buttons[1].width = buttonWidth;
+        startMenu.buttons[1].height = buttonHeight;
+
+
+        startMenu.buttons[2].x = buttonX - buttonWidth / 2;
+        startMenu.buttons[2].defaultX = buttonX - buttonWidth / 2;
+        startMenu.buttons[2].targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+        startMenu.buttons[2].y = buttonY + 2 * buttonInter;
+        startMenu.buttons[2].width = buttonWidth;
+        startMenu.buttons[2].height = buttonHeight;
+    }
+
 }
 
 export {StartMenuModel, StartMenuLogic, StartMenuRenderer};

@@ -127,6 +127,16 @@ class OptionsLogic {
 
     }
 
+    static resize(optionsMenu){
+        let [dropdownWidth, dropdownHeight] = OptionsModel.utilityClass.relative2absolute(0.15, 0.07);
+        let [dropdownX, dropdownY] = OptionsModel.utilityClass.relative2absolute(0.6, 0.5);
+        this.dropdown = new OptionsModel.Dropdown(dropdownX, dropdownY, dropdownWidth, dropdownHeight);
+        optionsMenu.dropdown.x = dropdownX;
+        optionsMenu.dropdown.y = dropdownY;
+        optionsMenu.dropdown.width = dropdownWidth;
+        optionsMenu.dropdown.height = dropdownHeight;
+    }
+
 }
 
 export {OptionsModel, OptionsLogic, OptionsRenderer};
