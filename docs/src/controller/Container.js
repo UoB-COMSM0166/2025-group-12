@@ -323,10 +323,13 @@ class Container {
         // --------------------------------------
 
         this.MenuItem = MenuItem;
+        this.MenuItem.setup({CanvasSize: this.CanvasSize});
         this.Button = Button;
         this.Button.setup({CanvasSize: this.CanvasSize});
         this.MapButton = MapButton;
+        this.MapButton.setup({CanvasSize: this.CanvasSize});
         this.Dropdown = Dropdown;
+        this.Dropdown.setup({CanvasSize: this.CanvasSize});
 
         // initialize serializer
         this.GameSerializer = GameSerializer;

@@ -243,6 +243,18 @@ class PauseMenuLogic {
     static copyFloatingWindow(p5, str, pauseMenu) {
         pauseMenu.floatingWindow = /** @type {FloatingWindow} */ PauseMenuLogic.FloatingWindow.copyOf(pauseMenu.allFloatingWindows.get(str));
     }
+
+    static resize(pauseMenu) {
+        let [buttonWidth, buttonHeight] = PauseMenuModel.utilityClass.relative2absolute(0.15, 0.07);
+        let [buttonX, buttonY] = PauseMenuModel.utilityClass.relative2absolute(0.5, 0.3);
+        let buttonInter = PauseMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
+        for(let i = 0; i < pauseMenu.buttons.length; i++) {
+            pauseMenu.buttons[i].x = buttonX - buttonWidth / 2;
+            pauseMenu.buttons[i].y = buttonY + i * buttonInter;
+            pauseMenu.buttons[i].width = buttonWidth;
+            pauseMenu.buttons[i].height = buttonHeight;
+        }
+    }
 }
 
 export {PauseMenuModel, PauseMenuLogic, PauseMenuRenderer};

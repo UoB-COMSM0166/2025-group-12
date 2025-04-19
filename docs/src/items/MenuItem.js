@@ -1,4 +1,9 @@
+import {CanvasSize} from "../CanvasSize.js";
+
 class MenuItem {
+    static setup(bundle) {
+        MenuItem.CanvasSize = bundle.CanvasSize;
+    }
     constructor(x, y, width, height, text) {
         this.x = x;
         this.y = y;
@@ -71,7 +76,7 @@ class MenuItem {
     }
 
     draw(p5) {
-        p5.textSize(24);
+        p5.textSize(MenuItem.CanvasSize.getFontSize().small);
         p5.textAlign(p5.LEFT, p5.CENTER);
         p5.noStroke();
         p5.fill(255, 215, 0, this.highlightAlpha);

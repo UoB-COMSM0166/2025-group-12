@@ -58,7 +58,7 @@ class GameMapModel {
     createStageButton(xRatio, yRatio, imgName, group) {
         let p5 = GameMapModel.p5;
         let [x, y] = GameMapModel.utilityClass.relative2absolute(xRatio, yRatio);
-        let [size] = GameMapModel.utilityClass.relative2absolute(0.05, 0.05);
+        let size = GameMapModel.utilityClass.relative2absolute(0.05, 0.05)[0];
         let button = new GameMapModel.MapButton(x, y, size, p5.images.get(imgName), group);
         button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
@@ -120,7 +120,7 @@ class GameMapModel {
         this.allFloatingWindows = afw;
     }
 
-    shift2Gamepad(p5){
+    shift2Gamepad(p5) {
         p5.noCursor();
         this.buttons.forEach(button => {
             button.mode = "gamepad";
@@ -176,7 +176,7 @@ class GameMapRenderer {
             GameMapRenderer.ScreenRenderer.playFadeInAnimation(p5, gameMap);
         }
 
-        if(gameMap.gameState.mode === "gamepad") {
+        if (gameMap.gameState.mode === "gamepad") {
             p5.fill('yellow');
             p5.circle(p5.gamepadX, p5.gamepadY, 10);
         }
@@ -270,7 +270,7 @@ class GameMapLogic {
      *
      * @param {GameMapModel} gameMap
      */
-    static cancel(gameMap){
+    static cancel(gameMap) {
         gameMap.selectedStageGroup = GameMapLogic.stageGroup.NO_STAGE;
         gameMap.buttons.forEach(button => {
             button.circle = null;
@@ -282,8 +282,8 @@ class GameMapLogic {
      * @param index
      * @param {GameMapModel} gameMap
      */
-    static handleGamepad(index, gameMap){
-        switch (index){
+    static handleGamepad(index, gameMap) {
+        switch (index) {
             case 1:
                 GameMapLogic.cancel(gameMap);
                 break;
@@ -395,6 +395,43 @@ class GameMapLogic {
         if (gameMap.allFloatingWindows.has("moreTutorial") && gameMap.gameState.isSpecificStageCleared(GameMapLogic.stageGroup.TORNADO, 1)) {
             gameMap.floatingWindow = gameMap.allFloatingWindows.get("moreTutorial");
             gameMap.allFloatingWindows.delete("moreTutorial");
+        }
+    }
+
+    static resize(gameMap) {
+        let size = GameMapModel.utilityClass.relative2absolute(0.05, 0.05)[0];
+        console.log(size)
+        for (let i = 0; i < gameMap.buttons.length; i++) {
+            let xRatio;
+            let yRatio;
+            switch (i) {
+                case 0:
+                    xRatio = 0.52;
+                    yRatio = 0.68;
+                    break;
+                case 1:
+                    xRatio = 0.475;
+                    yRatio = 0.475;
+                    break;
+                case 2:
+                    xRatio = 0.65;
+                    yRatio = 0.3;
+                    break;
+                case 3:
+                    xRatio = 0.18;
+                    yRatio = 0.65;
+                    break;
+                case 4:
+                    xRatio = 0.36;
+                    yRatio = 0.3;
+                    break;
+            }
+            let [x, y] = GameMapModel.utilityClass.relative2absolute(xRatio, yRatio);
+            gameMap.buttons[i].x = x;
+            gameMap.buttons[i].y = y;
+            gameMap.buttons[i].size = size;
+            gameMap.buttons[i].width = size;
+            gameMap.buttons[i].height = size;
         }
     }
 }

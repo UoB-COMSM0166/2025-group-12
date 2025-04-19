@@ -1043,6 +1043,10 @@ class PlayBoardLogic {
      */
     static setFloatingWindow(p5, playBoard) {
     }
+
+    static resize(){
+
+    }
 }
 
 class PlayBoardSerializer {

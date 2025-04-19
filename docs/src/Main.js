@@ -60,6 +60,7 @@ new p5((p) => {
 
     p.windowResized = () => {
         p.resizeCanvas(container.CanvasSize.getSize()[0], container.CanvasSize.getSize()[1]);
+        container.controller.resize();
     };
 
     p.mouseWheel = (event) => {
