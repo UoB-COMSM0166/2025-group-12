@@ -23,7 +23,7 @@ class GameSerializer {
             state: controller.gameState.getState(),
             currentStageGroup: controller.gameState.currentStageGroup,
             currentStage: controller.gameState.currentStage != null ? GameSerializer.PlayBoardSerializer.saveGame(controller.gameState.currentStage) : null,
-            inventory: controller.gameState.currentStage != null ? null : GameSerializer.InventorySerializer.stringify(controller.gameState.inventory), // prevent double storage of inventory
+            inventory: GameSerializer.InventorySerializer.stringify(controller.gameState.inventory),
             clearedStages: JSON.stringify(Array.from(controller.gameState.clearedStages.entries())),
             saveState: controller.saveState,
         }
@@ -46,8 +46,9 @@ class GameSerializer {
             let stateObject = JSON.parse(decrypt(JSON.parse(data)));
             let gameState = controller.gameState;
             gameState.setState(stateObject.state);
+            gameState.mode = "mouse";
             gameState.currentStageGroup = stateObject.currentStageGroup;
-            gameState.inventory = stateObject.inventory ? GameSerializer.InventorySerializer.parse(stateObject.inventory, p5, gameState.inventory) : null;
+            gameState.inventory = GameSerializer.InventorySerializer.parse(stateObject.inventory, p5, gameState.inventory);
             gameState.clearedStages = new Map(JSON.parse(stateObject.clearedStages));
             gameState.currentStage = stateObject.currentStage ? GameSerializer.PlayBoardSerializer.loadGame(p5, gameState, stateObject.currentStage) : null;
 

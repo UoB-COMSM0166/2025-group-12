@@ -34,7 +34,6 @@ class InteractionLogic {
         let cell = cells.find(c => c.plant === plant);
         if (cell !== null) {
             cell.removePlant();
-            InteractionLogic.BoardLogic.setEcosystem(playBoard.boardObjects);
         }
     }
 

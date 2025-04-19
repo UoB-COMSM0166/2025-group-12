@@ -212,17 +212,6 @@ class BoardLogic {
 
     /**
      *
-     * @param i
-     * @param j
-     * @param {BoardModel} board
-     */
-    static removePlant(i, j, board) {
-        BoardLogic.getCell(i, j, board).removePlant();
-        BoardLogic.setEcosystem(board);
-    }
-
-    /**
-     *
      * @param {BoardModel} board
      * @return {Array<CellModel>}
      */
@@ -337,6 +326,12 @@ class BoardLogic {
      * @param {BoardModel} board
      */
     static setEcosystem(board) {
+        for (let i = 0; i < board.boardObjects.length; i++) {
+            for (let j = 0; j < board.boardObjects[i].length; j++) {
+                board.boardObjects[i][j].removeEcosystem();
+            }
+        }
+
         let allPlants = BoardLogic.getAllCellsWithPlant(board);
         let uf = new BoardLogic.UnionFind(allPlants.length);
 
@@ -540,6 +535,10 @@ class CellModel {
 
     get ecosystem() {
         return this._ecosystem;
+    }
+
+    removeEcosystem(){
+        this._ecosystem = null;
     }
 }
 

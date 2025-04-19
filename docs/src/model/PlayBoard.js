@@ -850,7 +850,7 @@ class PlayBoardLogic {
         for (let cell of cells) {
             // a safe-lock to remove all dead plants
             if (cell.plant.status === false) {
-                PlayBoardLogic.BoardLogic.removePlant(cell.i, cell.j, playBoard.boardObjects);
+                cell.removePlant();
             }
             // reset active skill status
             if (cell.plant.hasActive) {
@@ -874,6 +874,7 @@ class PlayBoardLogic {
         PlayBoardLogic.reevaluatePlantSkills(playBoard);
 
         // also, reconstruct ecosystem
+
         PlayBoardLogic.BoardLogic.setEcosystem(playBoard.boardObjects);
 
         // set turn and counter
@@ -952,7 +953,7 @@ class PlayBoardLogic {
                     } else {
                         cwp.plant.coldCounter--;
                         if (cwp.plant.coldCounter <= 0) {
-                            PlayBoardLogic.InteractionLogic.findPlantAndDelete(playBoard, cwp.plant);
+                            cwp.removePlant();
                         }
                     }
                 }
@@ -1121,7 +1122,6 @@ class PlayBoardSerializer {
         PlayBoardSerializer.InventorySerializer.parse(status.inventory, p5, playBoard.gameState.inventory);
 
         // reset movables, need to put movable with cell to the correct cell
-
         playBoard.movables = JSON.parse(status.movables).map(json => {
             return PlayBoardSerializer.MovableSerializer.parse(json, playBoard);
         });
@@ -1140,15 +1140,16 @@ class PlayBoardSerializer {
      */
     static loadGame(p5, gameState, status) {
         let statusObject = JSON.parse(status);
-        let playBoard = new gameState.gsf.stageClasses[statusObject.stageGroup][statusObject.stageNumbering - 1](gameState);
+        let stagePackage = gameState.gsf.stageClasses[statusObject.stageGroup][statusObject.stageNumbering - 1];
+        gameState.gsf.wiringUp(stagePackage, PlayBoardModel, PlayBoardLogic);
+        let playBoard = new PlayBoardModel(p5, gameState);
         playBoard.undoStack.push(status);
         PlayBoardSerializer.undo(p5, playBoard);
         playBoard.turn = statusObject.turn;
+        playBoard.buttons.find(button => button.text.toLowerCase().includes("turn")).text = PlayBoardModel.getTurnButtonText(playBoard);
         playBoard.tmpInventoryItems = new Map(statusObject.tmpInventoryItems);
-        if (playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);
-        if (playBoard.fertilized) playBoard.fertilized = JSON.parse(statusObject.fertilized);
-        playBoard.setupActionListeners(p5);
-        playBoard.initAllFloatingWindows(p5);
+        //if (playBoard.snowfields) playBoard.snowfields = JSON.parse(statusObject.snowfields);
+        //if (playBoard.fertilized) playBoard.fertilized = JSON.parse(statusObject.fertilized);
         return playBoard;
     }
 }

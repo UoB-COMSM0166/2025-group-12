@@ -605,6 +605,22 @@ class GameStageFactory {
         let index = gameState.clearedStages.get(gameState.currentStageGroup);
         return StageClasses[index != null ? index : 0];
     }
+
+    /**
+     *
+     * @param stagePackage
+     * @param {typeof PlayBoardModel} PlayBoardModelClass
+     * @param {typeof PlayBoardLogic} PlayBoardLogicClass
+     */
+    wiringUp(stagePackage, PlayBoardModelClass, PlayBoardLogicClass){
+        PlayBoardModelClass.concreteBoardInit = stagePackage.concreteBoardInit.bind(stagePackage);
+        PlayBoardModelClass.setStageInventory = stagePackage.setStageInventory.bind(stagePackage);
+        PlayBoardModelClass.setStageTerrain = stagePackage.setStageTerrain.bind(stagePackage);
+        PlayBoardModelClass.initAllFloatingWindows = stagePackage.initAllFloatingWindows.bind(stagePackage);
+        PlayBoardLogicClass.nextTurnItems = stagePackage.nextTurnItems.bind(stagePackage);
+        PlayBoardLogicClass.modifyBoard = stagePackage.modifyBoard.bind(stagePackage);
+        PlayBoardLogicClass.setFloatingWindow = stagePackage.setFloatingWindow.bind(stagePackage);
+    }
 }
 
 export {Container};

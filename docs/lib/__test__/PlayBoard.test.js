@@ -441,6 +441,7 @@ test('test save and load', () => {
     controller.clickListener(p);
     tick(p, container, 1);
 
+    playBoard = container.gameState.currentStage;
     expect(BoardLogic.getCell(10, 10, playBoard.boardObjects).plant.plantType).toBe(plantTypes.PINE);
     expect(BoardLogic.getCell(10, 11, playBoard.boardObjects).plant.plantType).toBe(plantTypes.CORN);
     expect(BoardLogic.getCell(11, 10, playBoard.boardObjects).plant.plantType).toBe(plantTypes.ORCHID);

@@ -92,6 +92,7 @@ class Controller {
     }
 
     handleFading(p5) {
+        if(!this.menus[this.gameState.getState()]) return;
         this.ScreenLogic.stateTransitionAtFading(p5, this.menus[this.gameState.getState()]);
     }
 
@@ -99,16 +100,8 @@ class Controller {
     setPlayStage(p5) {
         if (this.gameState.getState() === this.stateCode.PLAY
             && (this.menus[this.stateCode.PLAY] === null || this.menus[this.stateCode.PLAY].stageGroup !== this.gameState.currentStageGroup)) {
-
             let stagePackage = this.gameState.gsf.newGameStage(this.gameState.currentStageGroup, this.gameState);
-            this.PlayBoardModel.concreteBoardInit = stagePackage.concreteBoardInit.bind(stagePackage);
-            this.PlayBoardModel.setStageInventory = stagePackage.setStageInventory.bind(stagePackage);
-            this.PlayBoardModel.setStageTerrain = stagePackage.setStageTerrain.bind(stagePackage);
-            this.PlayBoardModel.initAllFloatingWindows = stagePackage.initAllFloatingWindows.bind(stagePackage);
-            this.PlayBoardLogic.nextTurnItems = stagePackage.nextTurnItems.bind(stagePackage);
-            this.PlayBoardLogic.modifyBoard = stagePackage.modifyBoard.bind(stagePackage);
-            this.PlayBoardLogic.setFloatingWindow = stagePackage.setFloatingWindow.bind(stagePackage);
-
+            this.gameState.gsf.wiringUp(stagePackage, this.PlayBoardModel, this.PlayBoardLogic);
             this.menus[this.stateCode.PLAY] = new this.PlayBoardModel(p5, this.gameState);
             this.gameState.currentStage = this.menus[this.stateCode.PLAY];
             this.gameState.currentStageGroup = this.menus[this.stateCode.PLAY].stageGroup;
