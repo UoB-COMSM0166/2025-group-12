@@ -973,6 +973,11 @@ The sequence diagram.
 
 - Describe implementation of your game, in particular highlighting the three areas of challenge in developing your game.
 
+
+### Challenge 1 - interactions among entities
+
+### Challenge 2 - implementation of save & load
+
 ## Evaluation
 
 - 15% ~750 words
@@ -992,7 +997,13 @@ The sequence diagram.
 
 - 15% ~750 words
 
-- Teamwork. How did you work together, what tools did you use. Did you have team roles? Reflection on how you worked together. 
+- Teamwork. How did you work together, what tools did you use. Did you have team roles? Reflection on how you worked together.
+
+## Sustainability, ethics and accessibility
+
+- 10% ~750 words
+
+- Evidence of the impact of your game across the environment and two of the other areas: Environmental +2 of the following: Social, Economic, Technical, Individual
 
 ## Conclusion
 
