@@ -129,9 +129,21 @@ These use cases are detailed as follows:
 
 ## Design
 
-- 15% ~750 words 
-- System architecture. Class diagrams, behavioural diagrams. 
+Our game adopts RESTful and composition-over-inheritance design patterns, enhancing modularity and testability. In early versions, our game followed a conventional OOP design pattern with ES modules. Under that framework, it was impossible to use the Jest library to test our code, as everything was tangled together; even worse, Jest detected circular dependencies. We then refactored our code using a universal container to achieve dependency injection (DI) and inversion of control (IoC). 
 
+Four layers present in our game design: model, logic, render and persistence. The hierarchy of them, from top to bottom, is:
+
+- Render
+
+- Service
+
+- Model
+
+- Persistence
+
+Upper layers have access to lower layers, but not vice versa. The render layer is where `p5.js` operates, and the player interacts directly with it. By separating this, the renderer becomes a plugin to the system, allowing us to switch to another visualization library instead of `p5.js` at any time. The service layer manages general game logic. Except for action listeners, the entry point to all logic is the `mainLoopEntry()` function from the `Controller` class, which is invoked by the `p5.js` main loop's `draw()`. The model layer stores data. The persistence layer consists of serializers that execute saving and loading. In our class diagrams, we combine the four layers of one target class into a complete class, and the object-oriented perspective remains helpful and intuitive.
+
+Although stated in the class diagrams, the concrete plant and seed classes do not explicitly inherit from the abstract class `Plant` or `Seed`. With composition, we inject the "superclass" into the "subclass, " and assign all properties of the "superclass" to the "subclass, " complying with the composition-over-inheritance philosophy. A similar practice applies to terrain and movable classes.
 
 ```mermaid
 ---
@@ -471,6 +483,8 @@ direction TB
 The class diagram for movables.
 </p>
 
+Board and cells make up the actual play board. Every cell in the grid is a dependent object and is stored in a 2D array within a board object. When three or more different kinds of plants are cultivated together, the board detects this through the `setEcosystem()` method and tries to build an ecosystem; thus, the association between the ecosystem and cell is"1--3..".
+
 ```mermaid
 ---
 config:
@@ -545,6 +559,8 @@ direction LR
 <p align="center">
 The class diagram for boards and cells. Refer to previous class diagrams to inspect Plant, Seed, Terrain and Movable.
 </p>
+
+The main game menus are `StartMenu`, `GameMap`, and `PlayBoard`, which represent the three screens a player would encounter in the game, along with some helper menus. The player's inventory can be viewed from both the map menu and the play board, and it can be interacted with on the play board; however, the inventory is stored in the central `GameState` object.
 
 
 ```mermaid
@@ -702,6 +718,8 @@ PauseMenu o-- GameSerializer
 The class diagram for game screens.
 </p>
 
+`Controller` and `GameState` resemble the controller and model in the MVC design pattern, although here they only handle general logic and offer an entry point. The `GameState` keeps the current state, current play board, and cleared stages. The `Controller` gathers logic from menus and distributes the responsibility to separate menus. The container defines all dependencies and wires them up by passing a `bundle` object consisting of all required components through static `setup` methods, realising DI and IoC by handing over the right to control to the container, subsequently preventing circular dependency. The main class imports the container and defines the p5 object, which serves as the entry point to all other classes.
+
 ```mermaid
 ---
 config:
@@ -830,6 +848,9 @@ GameState *-- Inventory
 The class diagram for the game state and wiring. Refer to previous class diagrams to inspect StartMenu, GameMap, PlayBoard and Inventory.
 </p>
 
+A reminder: the class diagrams only cover key fields and methods, as well as the sequence diagram covering only the core data flow. It would be unreadable if we included everything.
+
+To understand the sequence diagram, we can split it into three parts: action listeners, data management, and rendering. A click event will first be passed into the controller and dispatched to the current working menu. Resolving the logic of the component being clicked might trigger state transitions, which will be recorded in the game state and wait until the next frame to process. If the player is unable to click (after the player clicks the "turn" button), the action listeners will be switched off. In the main loop, the controller first tries to initialise the play board if we go to the `PLAY` phase from the game map menu. Then, the controller loads or saves the items in the inventory, since when the player quits the game, we would like to restore the inventory. When the player is unable to click, the controller tries to invoke all movables from the play board and automatically sets the player able to click once all movables have moved. The last rendering part is self-documented and calls all rendering components.
 
 ```mermaid
 sequenceDiagram
@@ -911,7 +932,7 @@ sequenceDiagram
             Controller ->> Inventory: save/load inventory
         end
     end
-    critical controller.setData:  if player unable to click, set play able to click after finishing handling movables 
+    critical controller.setData:  if player unable to click, set player able to click after finishing handling movables 
         Controller ->> PlayBoard: handleMovables
         Controller ->> GameState: setPlayerCanClick
         PlayBoard ->> PlayBoard: endTurnActivity
