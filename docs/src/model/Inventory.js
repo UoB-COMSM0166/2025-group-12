@@ -18,6 +18,13 @@ class InventoryModel {
         this.itemPrototypes = InventoryModel.plantFactory; // Map<plantTypes plantType, Function create>
 
         // inventory and item parameters
+        this.updateParameters();
+
+        this.mode = "mouse";
+        this.isSelected = false;
+    }
+
+    updateParameters(){
         this.padding = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[0];
         this.itemHeight = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[1];
         this.inventoryWidth = InventoryModel.utilityClass.relative2absolute(0.1, 0.03)[0];
@@ -27,9 +34,6 @@ class InventoryModel {
         this.inventoryX = InventoryModel.utilityClass.relative2absolute(1, 1)[0] - this.inventoryWidth - this.padding;
         this.itemX = this.inventoryX + this.padding;
         this.itemWidth = this.inventoryWidth - this.padding * 4;
-
-        this.mode = "mouse";
-        this.isSelected = false;
     }
 }
 
@@ -47,6 +51,7 @@ class InventoryRenderer {
      * @param {InventoryModel} inventory
      */
     static draw(p5, inventory) {
+        inventory.updateParameters();
         p5.noStroke();
         // Inventory background
         p5.fill(100, 100, 100, 200);

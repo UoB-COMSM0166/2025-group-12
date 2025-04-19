@@ -1,5 +1,3 @@
-import {CanvasSize, resolutions} from "../CanvasSize.js";
-
 class Dropdown {
     static setup(bundle) {
         Dropdown.CanvasSize = bundle.CanvasSize;
@@ -75,7 +73,7 @@ class Dropdown {
                     if(p5.mouseY > y && p5.mouseY < y + this.height) {
                         this.selectedOption = this.options[i];
                         this.isOpen = false;
-                        CanvasSize.setSize(i);
+                        Dropdown.CanvasSize.setSize(i);
                         return true;
                     }
                 }

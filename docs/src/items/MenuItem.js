@@ -1,5 +1,3 @@
-import {CanvasSize} from "../CanvasSize.js";
-
 class MenuItem {
     static setup(bundle) {
         MenuItem.CanvasSize = bundle.CanvasSize;

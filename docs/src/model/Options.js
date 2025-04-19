@@ -1,5 +1,3 @@
-import {Dropdown} from "../items/Dropdown.js";
-
 /**
  * @implements ScreenLike
  */
