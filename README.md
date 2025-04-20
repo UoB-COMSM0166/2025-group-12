@@ -397,6 +397,7 @@ direction TB
         + drawDirection() void
 	    + movements() boolean
         - moveAndInvokeTornado() void
+	- plantAttackedByTornado() void
     }
     class Blizzard {
 	   + movableTypes movableType
