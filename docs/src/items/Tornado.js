@@ -192,7 +192,7 @@ class TornadoLogic {
             }
             if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
-                TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, luckyTree, tornado);
+                TornadoLogic.plantAttackedByTornado(playBoard, luckyTree, tornado);
                 console.log("return2")
                 return;
             }
@@ -200,9 +200,9 @@ class TornadoLogic {
             // 3. check current cell to attack plant or seed.
             if (tornado.status === true) {
                 if (cell.plant !== null && cell.plant.status === true) {
-                    TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, cell.plant, tornado);
+                    TornadoLogic.plantAttackedByTornado(playBoard, cell.plant, tornado);
                 } else if (cell.seed !== null) {
-                    TornadoLogic.InteractionLogic.plantAttackedByTornado(playBoard, cell.seed, tornado);
+                    TornadoLogic.plantAttackedByTornado(playBoard, cell.seed, tornado);
                 }
             }
 
@@ -227,6 +227,65 @@ class TornadoLogic {
             tornado.status = false;
             TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
         }
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     * @param item
+     * @param tornado
+     */
+    static plantAttackedByTornado(playBoard, item, tornado) {
+        if (!tornado.movableType || tornado.movableType !== TornadoLogic.movableTypes.TORNADO) {
+            console.error("plantAttackedByTornado has received invalid tornado.");
+            return;
+        }
+
+        if (item.type === TornadoLogic.itemTypes.SEED) {
+            /** @type {SeedLike} */
+            let seed = item;
+            seed.health = 0;
+            TornadoLogic.InteractionLogic.findSeedAndDelete(playBoard, seed);
+            tornado.health--;
+            if (tornado.health === 0) {
+                tornado.status = false;
+                TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
+            }
+        } else if (item.type === TornadoLogic.itemTypes.PLANT) {
+            /** @type {PlantLike} */
+            let plant = item;
+            // if a pine is attacked by a tornado
+            if (plant.plantType === TornadoLogic.plantTypes.PINE) {
+                for (let i = 0; i < 2 && plant.health > 0 && tornado.health > 0; i++) {
+                    plant.health--;
+                    tornado.health--;
+                }
+                if (plant.health === 0) {
+                    plant.status = false;
+                }
+                tornado.health = 0;
+                tornado.status = false;
+            } else {
+                // other plants attacked by a tornado, one of them dies first, or they die simultaneously
+                while (plant.health > 0 && tornado.health > 0) {
+                    plant.health--;
+                    tornado.health--;
+                }
+                if (plant.health === 0) {
+                    plant.status = false;
+                }
+                if (tornado.health === 0) {
+                    tornado.status = false;
+                }
+            }
+            if (plant.status === false) {
+                TornadoLogic.InteractionLogic.findPlantAndDelete(playBoard, plant);
+            }
+            if (tornado.status === false) {
+                TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
+            }
+        }
+
     }
 }
 

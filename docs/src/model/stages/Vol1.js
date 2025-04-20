@@ -68,7 +68,7 @@ class Volcano1PlayBoard {
     static setStageTerrain(p5, playBoard) {
         for (let i = 0; i < playBoard.gridSize; i++) {
             for (let j = 0; j < playBoard.gridSize; j++) {
-                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.DESERT)(), playBoard.boardObjects);
             }
         }
         this.PlayBoardLogic.BoardLogic.setCell(8, 8, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
@@ -167,7 +167,7 @@ class Volcano1PlayBoard {
                     return;
                 }
                 // it expands to normal terrain.
-                if (adCell.terrain.terrainType === this.terrainTypes.STEPPE) {
+                if (adCell.terrain.terrainType === this.terrainTypes.DESERT) {
                     this.generateLava(p5, adCell.i, adCell.j, playBoard);
                 }
             }

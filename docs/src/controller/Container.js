@@ -34,7 +34,7 @@ import {PalmSeedModel, PalmSeedLogic, PalmSeedRenderer} from "../items/Palm.js";
 import {TerrainModel, TerrainLogic, TerrainRenderer, TerrainSerializer} from "../items/Terrain.js";
 import {PlayerBaseModel, PlayerBaseLogic, PlayerBaseRenderer} from "../items/PlayerBase.js";
 import {MountainModel, MountainLogic, MountainRenderer} from "../items/Mountain.js";
-import {SteppeModel, SteppeLogic, SteppeRenderer} from "../items/Steppe.js";
+import {DesertModel, DesertLogic, DesertRenderer} from "../items/Desert.js";
 import {LumberingModel, LumberingLogic, LumberingRenderer} from "../items/Lumbering.js";
 import {VolcanoModel, VolcanoLogic, VolcanoRenderer} from "../items/Volcano.js";
 import {LavaModel, LavaLogic, LavaRenderer} from "../items/Lava.js";
@@ -211,7 +211,7 @@ class Container {
         let terrainModules = [
             entityObject("PlayerBase", PlayerBaseModel, PlayerBaseLogic, PlayerBaseRenderer, null),
             entityObject("Mountain", MountainModel, MountainLogic, MountainRenderer, null),
-            entityObject("Steppe", SteppeModel, SteppeLogic, SteppeRenderer, null),
+            entityObject("Desert", DesertModel, DesertLogic, DesertRenderer, null),
             entityObject("Lumbering", LumberingModel, LumberingLogic, LumberingRenderer, null),
             entityObject("Volcano", VolcanoModel, VolcanoLogic, VolcanoRenderer, null),
             entityObject("Lava", LavaModel, LavaLogic, LavaRenderer, null),
@@ -236,7 +236,7 @@ class Container {
         this.terrainFactory = new Map([
             [terrainTypes.BASE, () => new PlayerBaseModel(p5, TerrainModel, itemTypes, terrainTypes)],
             [terrainTypes.MOUNTAIN, () => new MountainModel(p5, TerrainModel, itemTypes, terrainTypes)],
-            [terrainTypes.STEPPE, () => new SteppeModel(p5, TerrainModel, itemTypes, terrainTypes)],
+            [terrainTypes.DESERT, () => new DesertModel(p5, TerrainModel, itemTypes, terrainTypes)],
             [terrainTypes.LUMBERING, () => new LumberingModel(p5, TerrainModel, itemTypes, terrainTypes)],
             [terrainTypes.VOLCANO, () => new VolcanoModel(p5, TerrainModel, itemTypes, terrainTypes)],
             [terrainTypes.LAVA, () => new LavaModel(p5, TerrainModel, itemTypes, terrainTypes)],

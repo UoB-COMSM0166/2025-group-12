@@ -59,7 +59,7 @@ class Tornado1PlayBoard {
     static setStageTerrain(p5, playBoard) {
         for (let i = 0; i < playBoard.gridSize; i++) {
             for (let j = 0; j < playBoard.gridSize; j++) {
-                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.DESERT)(), playBoard.boardObjects);
             }
         }
         this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);

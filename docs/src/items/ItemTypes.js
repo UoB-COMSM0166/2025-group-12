@@ -42,7 +42,7 @@ let seedTypes = {
 let terrainTypes = {
     BASE: 1,
     MOUNTAIN: 2,
-    STEPPE: 3,
+    DESERT: 3,
     LUMBERING: 4,
     VOLCANO: 5,
     LAVA: 6,

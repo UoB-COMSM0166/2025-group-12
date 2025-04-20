@@ -8,17 +8,25 @@ function loadImages(p5) {
     images.set("rightArrow", p5.loadImage(basePath + "rightArrow.png"));
     images.set("panther", p5.loadImage(basePath + "panther.png"));
 
-    images.set("Steppe", p5.loadImage(basePath + "Steppe.png"));
+    images.set("baseBlock", p5.loadImage(basePath + "baseBlock.png"));
+    images.set("Desert1", p5.loadImage(basePath + "Desert1.png"));
+    images.set("Desert2", p5.loadImage(basePath + "Desert2.png"));
+    images.set("Desert3", p5.loadImage(basePath + "Desert3.png"));
+    images.set("Desert4", p5.loadImage(basePath + "Desert4.png"));
+    images.set("Desert5", p5.loadImage(basePath + "Desert5.png"));
+    images.set("Desert6", p5.loadImage(basePath + "Desert5.png"));
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
-    images.set("MountainLayer", p5.loadImage(basePath + "MountainLayer.png"));
     images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
     images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
     images.set("VolcanoLayer", p5.loadImage(basePath + "VolcanoLayer.png"));
     images.set("Lava", p5.loadImage(basePath + "LavaTest.png"));
     images.set("LavaS", p5.loadImage(basePath + "LavaSTest.png"));
     images.set("Landslide", p5.loadImage(basePath + "Landslide.png"));
-    images.set("Hill", p5.loadImage(basePath + "Hill.png"));
+    images.set("Hill1", p5.loadImage(basePath + "Hill1.png"));
+    images.set("Hill2", p5.loadImage(basePath + "Hill2.png"));
+    images.set("Hill3", p5.loadImage(basePath + "Hill3.png"));
+    images.set("Hill4", p5.loadImage(basePath + "Hill4.png"));
     images.set("Snowfield", p5.loadImage(basePath + "Snowfield.png"));
     images.set("Sea", p5.loadImage(basePath + "Sea.png"));
 
@@ -39,7 +47,9 @@ function loadImages(p5) {
     images.set("Blizzard", p5.loadImage(basePath + "Blizzard.png"));
     images.set("TsunamiAnimation", p5.loadImage(basePath + "Tsunami.png"));
 
-    images.set("GameMapBG", p5.loadImage(basePath + "GameMapBG.png"));
+    images.set("GameMapBG1", p5.loadImage(basePath + "GameMapBG1.png"));
+    images.set("GameMapBG2", p5.loadImage(basePath + "GameMapBG2.png"));
+    images.set("GameMapBG3", p5.loadImage(basePath + "GameMapBG3.png"));
     images.set("Lock", p5.loadImage(basePath + "Lock.png"));
     images.set("TornadoIcon", p5.loadImage(basePath + "TornadoIcon.png"));
     images.set("VolcanoIcon", p5.loadImage(basePath + "VolcanoIcon.png"));
@@ -47,6 +57,7 @@ function loadImages(p5) {
     images.set("RainIcon", p5.loadImage(basePath + "RainIcon.png"));
     images.set("TsunamiIcon", p5.loadImage(basePath + "TsunamiIcon.png"));
 
+    images.set("TitleBackground", p5.loadImage(basePath + "TitleBackground.png"));
     return images;
 }
 

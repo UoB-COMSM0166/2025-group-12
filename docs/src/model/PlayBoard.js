@@ -312,9 +312,6 @@ class PlayBoardRenderer {
      * @param {PlayBoardLike} playBoard
      */
     static drawGrid(p5, playBoard) {
-        p5.stroke(0);
-        p5.strokeWeight(2);
-
         PlayBoardRenderer.BoardRenderer.draw(p5, playBoard);
 
         // if skill is activated and awaiting target, set highlight on

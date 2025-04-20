@@ -80,7 +80,7 @@ class Tsunami1PlayBoard {
         for (let i = 0; i < playBoard.gridSize; i++) {
             for (let j = 0; j < playBoard.gridSize; j++) {
                 if (j >= 8) {
-                    this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.STEPPE)(), playBoard.boardObjects);
+                    this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.DESERT)(), playBoard.boardObjects);
                 } else {
                     this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.SEA)(), playBoard.boardObjects);
                 }

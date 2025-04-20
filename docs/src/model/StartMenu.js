@@ -29,6 +29,8 @@ class StartMenuModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
+        this.backgroundImg = null;
+
         // fade in fade out render
         this.fade = 0;
         this.isFading = false;
@@ -125,14 +127,12 @@ class StartMenuRenderer {
      * @param {StartMenuModel} startMenu
      */
     static draw(p5, startMenu) {
-        p5.background(50);
+        if(!startMenu.backgroundImg){
+            startMenu.backgroundImg = p5.images.get("TitleBackground");
+        }
+        let canvasSize = StartMenuRenderer.utilityClass.relative2absolute(1, 1);
+        p5.image(startMenu.backgroundImg, 0, 0, canvasSize[0], canvasSize[1]);
         p5.fill(255);
-
-        let fontSizes = StartMenuRenderer.utilityClass.getFontSize();
-        p5.textSize(fontSizes.large)
-        p5.textAlign(p5.CENTER, p5.TOP);
-        let [textX, textY] = StartMenuRenderer.utilityClass.relative2absolute(0.5, 0.1);
-        p5.text('Start Menu', textX, textY);
 
         for (let button of startMenu.buttons) {
             if (button.update) {

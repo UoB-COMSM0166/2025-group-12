@@ -3,7 +3,8 @@ class MountainModel {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Mountain";
         this.terrainType = terrainTypes.MOUNTAIN;
-        this.img = p5.images.get(`${this.name}`);
+        this.img = p5.images.get("baseBlock");
+        this.layer = p5.images.get("Mountain");
         this.weight = 1000;
     }
 

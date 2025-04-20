@@ -62,65 +62,6 @@ class InteractionLogic {
      *
      * @param {PlayBoardLike} playBoard
      * @param item
-     * @param tornado
-     */
-    static plantAttackedByTornado(playBoard, item, tornado) {
-        if (!tornado.movableType || tornado.movableType !== InteractionLogic.movableTypes.TORNADO) {
-            console.error("plantAttackedByTornado has received invalid tornado.");
-            return;
-        }
-
-        if (item.type === InteractionLogic.itemTypes.SEED) {
-            /** @type {SeedLike} */
-            let seed = item;
-            seed.health = 0;
-            InteractionLogic.findSeedAndDelete(playBoard, seed);
-            tornado.health--;
-            if (tornado.health === 0) {
-                tornado.status = false;
-                InteractionLogic.findMovableAndDelete(playBoard, tornado);
-            }
-        } else if (item.type === InteractionLogic.itemTypes.PLANT) {
-            /** @type {PlantLike} */
-            let plant = item;
-            // if a pine is attacked by a tornado
-            if (plant.plantType === InteractionLogic.plantTypes.PINE) {
-                for (let i = 0; i < 2 && plant.health > 0 && tornado.health > 0; i++) {
-                    plant.health--;
-                    tornado.health--;
-                }
-                if (plant.health === 0) {
-                    plant.status = false;
-                }
-                tornado.health = 0;
-                tornado.status = false;
-            } else {
-                // other plants attacked by a tornado, one of them dies first, or they die simultaneously
-                while (plant.health > 0 && tornado.health > 0) {
-                    plant.health--;
-                    tornado.health--;
-                }
-                if (plant.health === 0) {
-                    plant.status = false;
-                }
-                if (tornado.health === 0) {
-                    tornado.status = false;
-                }
-            }
-            if (plant.status === false) {
-                InteractionLogic.findPlantAndDelete(playBoard, plant);
-            }
-            if (tornado.status === false) {
-                InteractionLogic.findMovableAndDelete(playBoard, tornado);
-            }
-        }
-
-    }
-
-    /**
-     *
-     * @param {PlayBoardLike} playBoard
-     * @param item
      * @param {number} lost
      */
     static plantIsAttacked(playBoard, item, lost) {

@@ -61,9 +61,12 @@ class BoardRenderer {
         }
         for (let i = 0; i < board.size; i++) {
             for (let j = 0; j < board.size; j++) {
-                if (BoardLogic.getCell(i, j, board).terrain.terrainType === BoardRenderer.terrainTypes.MOUNTAIN) {
-                    let [x, y] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
-                    p5.image(p5.images.get("MountainLayer"), x - playBoard.cellWidth / 2, y - playBoard.cellHeight + playBoard.cellHeight / 2, playBoard.cellWidth, playBoard.cellHeight);
+                let [x, y] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
+                let cell = BoardLogic.getCell(i, j, board);
+                if (cell.terrain.terrainType === BoardRenderer.terrainTypes.MOUNTAIN
+                    || cell.terrain.terrainType === BoardRenderer.terrainTypes.DESERT
+                    || cell.terrain.terrainType === BoardRenderer.terrainTypes.HILL) {
+                    p5.image(cell.terrain.layer, x - playBoard.cellWidth / 2, y - playBoard.cellHeight + playBoard.cellHeight / 2, playBoard.cellWidth, playBoard.cellHeight);
                 }
             }
         }
@@ -203,7 +206,7 @@ class BoardLogic {
         if (item.plantType === BoardLogic.plantTypes.PLUM) {
             for (let nCell of BoardLogic.getNearbyCells(cell.i, cell.j, BoardLogic.PlantLogic.plumRange, playBoard.boardObjects)) {
                 if (nCell.terrain.terrainType === BoardLogic.terrainTypes.SNOWFIELD) {
-                    nCell.terrain = BoardLogic.terrainFactory.get(BoardLogic.terrainTypes.STEPPE)();
+                    nCell.terrain = BoardLogic.terrainFactory.get(BoardLogic.terrainTypes.DESERT)();
                 }
             }
         }
@@ -537,7 +540,7 @@ class CellModel {
         return this._ecosystem;
     }
 
-    removeEcosystem(){
+    removeEcosystem() {
         this._ecosystem = null;
     }
 }
@@ -562,8 +565,6 @@ class CellRenderer {
         } else {
             p5.fill(0, 0, 0, 0);
         }
-        p5.stroke(0);
-        p5.strokeWeight(2);
         p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
@@ -630,7 +631,7 @@ class CellLogic {
 
         // bamboo
         if (item?.plantType === CellLogic.plantTypes.BAMBOO) {
-            if (cell.terrain.terrainType === CellLogic.terrainTypes.STEPPE || cell.terrain.terrainType === CellLogic.terrainTypes.HILL || cell.terrain.terrainType === CellLogic.terrainTypes.LANDSLIDE) {
+            if (cell.terrain.terrainType === CellLogic.terrainTypes.DESERT || cell.terrain.terrainType === CellLogic.terrainTypes.HILL || cell.terrain.terrainType === CellLogic.terrainTypes.LANDSLIDE) {
                 return true;
             } else {
                 playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));
@@ -640,7 +641,7 @@ class CellLogic {
 
         // plum
         if (item?.plantType === CellLogic.plantTypes.PLUM) {
-            if (cell.terrain.terrainType === CellLogic.terrainTypes.STEPPE || cell.terrain.terrainType === CellLogic.terrainTypes.HILL || cell.terrain.terrainType === CellLogic.terrainTypes.SNOWFIELD) {
+            if (cell.terrain.terrainType === CellLogic.terrainTypes.DESERT || cell.terrain.terrainType === CellLogic.terrainTypes.HILL || cell.terrain.terrainType === CellLogic.terrainTypes.SNOWFIELD) {
                 return true;
             } else {
                 playBoard.floatingWindow = CellLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("012"));

@@ -27,7 +27,9 @@ class GameMapModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
-        this.background = null;
+        this.background1 = null;
+        this.background2 = null;
+        this.background3 = null;
         this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;
 
         // fade in fade out render
@@ -40,7 +42,9 @@ class GameMapModel {
     }
 
     init() {
-        this.background = GameMapModel.p5.images.get("GameMapBG");
+        this.background1 = GameMapModel.p5.images.get("GameMapBG1");
+        this.background2 = GameMapModel.p5.images.get("GameMapBG2");
+        this.background3 = GameMapModel.p5.images.get("GameMapBG3");
 
         const buttonConfigs = [
             {x: 0.52, y: 0.68, imageName: "TornadoIcon", group: GameMapModel.stageGroup.TORNADO},
@@ -154,7 +158,14 @@ class GameMapRenderer {
      */
     static draw(p5, gameMap) {
         let canvasSize = GameMapRenderer.utilityClass.relative2absolute(1, 1);
-        p5.image(gameMap.background, 0, 0, canvasSize[0], canvasSize[1]);
+        if(gameMap.gameState.isStageCleared(GameMapRenderer.stageGroup.VOLCANO)){
+            p5.image(gameMap.background2, 0, 0, canvasSize[0], canvasSize[1]);
+        }else if(gameMap.gameState.isStageCleared(GameMapRenderer.stageGroup.BLIZZARD)){
+            p5.image(gameMap.background3, 0, 0, canvasSize[0], canvasSize[1]);
+        }else{
+            p5.image(gameMap.background1, 0, 0, canvasSize[0], canvasSize[1]);
+        }
+
 
         for (let button of gameMap.buttons) {
             button.unlock(gameMap.gameState);

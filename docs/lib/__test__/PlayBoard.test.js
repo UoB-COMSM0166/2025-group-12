@@ -431,10 +431,25 @@ test('test save and load', () => {
     controller.clickListener(p);
     tick(p, container, 1);
 
-    container.gameState.setState(stateCode.MENU);
+    simulateKeyDown('esc');
+    tick(p, container, 1);
+    let back = container.pauseMenu.buttons.find(button => button.text.toLowerCase().includes("back"));
+    expect(back).toBeTruthy();
+    p.mouseX = back.x + back.width / 2;
+    p.mouseY = back.y + back.height / 2;
+    controller.clickListener(p);
     tick(p, container, 50);
 
-    let load = container.pauseMenu.buttons.find(button => button.text.toLowerCase().includes("load"));
+    simulateKeyDown('esc');
+    tick(p, container, 1);
+    back = container.pauseMenu.buttons.find(button => button.text.toLowerCase().includes("back"));
+    expect(back).toBeTruthy();
+    p.mouseX = back.x + back.width / 2;
+    p.mouseY = back.y + back.height / 2;
+    controller.clickListener(p);
+    tick(p, container, 50);
+
+    let load = container.startMenu.buttons.find(button => button.text.toLowerCase().includes("load"));
     expect(load).toBeTruthy();
     p.mouseX = load.x + load.width / 2;
     p.mouseY = load.y + load.height / 2;
