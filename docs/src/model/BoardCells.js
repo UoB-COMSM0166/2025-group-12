@@ -43,7 +43,6 @@ class BoardRenderer {
         for (let i = 0; i < board.size; i++) {
             for (let j = 0; j < board.size; j++) {
                 CellRenderer.drawTerrain(p5, playBoard, BoardLogic.getCell(i, j, board));
-
             }
         }
     }

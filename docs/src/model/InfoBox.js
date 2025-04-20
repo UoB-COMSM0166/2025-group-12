@@ -47,6 +47,8 @@ class InfoBoxRenderer {
         let ActiveInfo = null;
         let plantImg = null;
         let cell = InfoBoxRenderer.BoardLogic.getCell(infoBox.playBoard.selectedCell[0], infoBox.playBoard.selectedCell[1], infoBox.playBoard.boardObjects);
+        let terrainLayer = null;
+        if (cell.terrain.layer) terrainLayer = cell.terrain.layer;
         let terrainImg = cell.terrain.img;
 
         let imgSize = infoBox.boxWidth / 6;
@@ -64,6 +66,7 @@ class InfoBoxRenderer {
         p5.rect(infoBox.boxRightX, infoBox.boxY, infoBox.boxWidth, infoBox.boxHeight, 10);
         // draw img
         p5.image(terrainImg, infoBox.boxRightX + infoBox.paddingX, infoBox.boxY + (infoBox.boxHeight - imgSize) / 2, imgSize, imgSize);
+        if (terrainLayer) p5.image(terrainLayer, infoBox.boxRightX + infoBox.paddingX, infoBox.boxY + (infoBox.boxHeight - imgSize) / 2 - imgSize / 2, imgSize, imgSize);
         // draw general info
         p5.fill(100);
         p5.rect(infoBox.boxRightX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + infoBox.paddingY, textBoxWidth, textBoxHeight, 10);
@@ -116,7 +119,7 @@ class InfoBoxLogic {
      * @param event
      * @param {InfoBoxModel} infoBox
      */
-    static handleScroll(event, infoBox){
+    static handleScroll(event, infoBox) {
 
     }
 
@@ -140,7 +143,7 @@ class InfoBoxLogic {
         if (cell.plant && cell.plant.hasActive) {
             // set on activate button
             InfoBoxLogic.setActivateButton(playBoard.infoBox);
-        }else{
+        } else {
             InfoBoxLogic.deleteActivateButton(playBoard.infoBox);
         }
     }

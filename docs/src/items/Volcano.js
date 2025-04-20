@@ -4,6 +4,7 @@ class VolcanoModel {
         this.name = "Volcano";
         this.terrainType = terrainTypes.VOLCANO;
         this.img = p5.images.get(`${this.name}`);
+        this.layer = p5.images.get("VolcanoLayer");
         this.weight = 20000;
     }
 
