@@ -970,17 +970,51 @@ The sequence diagram.
 
 ## Implementation
 
-- 15% ~750 words
+The implementation of our game began with a compact prototype of approximately 500 lines, and you might find it [here](https://github.com/UoB-COMSM0166/2025-group-12/tree/b96b243647b2beae682a0bd166cff66edbe65f59/docs) containing these files:
 
-- Describe implementation of your game, in particular highlighting the three areas of challenge in developing your game.
+```
+ |- / assets
+     |- images
+ |- / lib
+ |- / src
+     |- Main.js
+     |- CanvasSize.js
+     |- Preloader.js
+     |- / controller
+         |- Controller.js
+     |- model
+         |- GameState.js
+         |- Inventory.js
+         |- StartMenu.js  (named after Menu.js)
+         |- GameMap.js    (named after Standby.js)
+         |- PlayBoard.js  (named after Play.js)
+     |- items
+         |- Tree.js
+         |- Bush.js
+         |- Grass.js
+         |- Button.js
+```
+
+In this minimal prototype, the player can navigate between menus and perform basic cultivation. We incrementally released new features, including artwork, plant skills, enemy movements handling and so on, while keeping the game working through week-based sprints. Rather than designing everything up front, the architecture evolves in response to modifications to game requirements, allowing us to test and refine individual features in isolation.
+However, as the game expands, many challenges emerge, such as the interactions among multiple game items, the design of general flow control, the switching on and off of our hand-made animations, the balancing between computational optimisation and code simplicity, etc. Here we pick the two most emblematic challenges, presented below.
+
+### Challenge 1 - Decoupling complexity
+
+As the game scale increases, it becomes exponentially harder to maintain the codebase. Circular dependencies inevitably arise, and encapsulation and modularisation under the conventional OOP design pattern lose significance since everything is intertwined. At its worst, serialisation of the game state exposes deep structural flaws: The plants on the play board reside on the `Cell` objects. To parse JSON strings, the `Cell` must import all modules of the plants. Some plants, to manage interactions among items, import the `PlayBoard` module, which already depends on `Cell`, leading to a circular dependency. Despite resolving this issue, one of our philosophies is that dispatching responsibilities to lower levels and keeping the top-level entry points as clean as possible results in a self-documented codebase being violated.
+To regain maintainability, two approaches are adopted in parallel.
+
+- Enforce module boundaries.
+  
+    Logic and orchestration are separated. The `PlayBoard` class is not supposed to directly handle plant logics. Instead, it delegates to the general interface `Plant`, which invokes concrete logic components from each plant module. This separation enables us to maintain both the control flow and the logic independently, facilitating enhanced reasoning and extension.
+
+- Enforce loose coupling.
+  
+    A module does not concern itself with how other modules are implemented; all are treated as interfaces and injected by the container instead of hard-wiring import statements. This approach enhances the flexibility of the codebase, simplifies the process of refactoring or replacing a module, and aligns with the open-closed principle: open to extension, closed to modification.
 
 
-### Challenge 1 - interactions among entities
+### Challenge 2 - Implementation of serialisation
 
-
-### Challenge 2 - implementation of save & load
-
-To enhance the player experience, we introduced undo and save & load features. However, "repairing a mirror is always harder than smashing it"—restoring game state is about reversing entropy. Consider the game as a finite state machine. Each action is a nondeterministic traversal down the finite decision tree. Since we cannot predict future branches, restoring the correct game state becomes a non-trivial problem. 
+To enhance the player experience, we introduced undo and save & load features. However, "repairing a mirror is always harder than smashing it" — restoring game state is about reversing entropy. Consider the game as a finite state machine. Each action is a nondeterministic traversal down the finite decision tree. Since we cannot predict future branches, restoring the correct game state becomes a non-trivial problem. 
 Two major approaches can be applied to restore a game state:
 
 - Replay all actions taken by the player from the beginning.
@@ -991,6 +1025,8 @@ While the first approach is conceptually simpler in our context and is closer to
 Here is how we incrementally tackled this bottom-up. First, we implemented `stringify` and `parse` methods for all game items - plants, seeds, terrains and movables. Most items only contain primitive-like fields (numbers and strings), leading to a straightforward serialisation, but there are exceptions: some movables need a `cell` field, which is of a custom reference type `Cell`. To address this, we stored the x and y coordinates of the cell and restored the reference type object by accessing the correct position on the board when parsing. 
 
 After testing the first step, we then introduced the in-play `undo` feature by pushing the JSON strings into a stack. Every invocation of `undo()` pops from the stack, recreates new game items according to the JSON string. To optimise, we did not serialise and restore everything – for example, ecosystems are completely ignored when stringifying, but are recalculated by invoking the `setEcosystem` method. This is more inclined to hybridise the two major approaches of save & load we described above, to minimise the possibility of introducing subtle bugs while improving performance. Lastly, we expanded the system to the whole game state, enabling the player to save the game in-play, then quit to the start menu and load the game. 
+
+
 
 
 ## Evaluation
