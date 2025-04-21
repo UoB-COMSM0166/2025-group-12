@@ -1,6 +1,12 @@
-# 2025-group-12
+<div align="center">
+<h1>2025-group-12</h1>
+</div>
 
-[PLAY Green Renaissance](https://uob-comsm0166.github.io/2025-group-12/)
+[![Banner](documents/banner.png)](https://uob-comsm0166.github.io/2025-group-12/)
+
+<p align="center">
+Click the banner to play our game.
+</p>
 
 ![Group Photo](documents/week01-research/images/Group_photo.JPG)
 
