@@ -58,6 +58,8 @@ function loadImages(p5) {
     images.set("TsunamiIcon", p5.loadImage(basePath + "TsunamiIcon.png"));
 
     images.set("TitleBackground", p5.loadImage(basePath + "TitleBackground.png"));
+    images.set("TitleBanner", p5.loadImage(basePath + "TitleBanner.png"));
+
     return images;
 }
 

@@ -22,7 +22,6 @@ beforeEach(() => {
     container = new Container(p);
     controller = container.controller;
     startMenu = container.startMenu;
-    //startMenu.buttons.forEach(button => console.log(`x: ${button.x}, y: ${button.y}, width: ${button.width}, height: ${button.height}`));
 })
 
 test('test new game button, entered game map then quit to menu', () => {

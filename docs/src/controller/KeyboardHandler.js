@@ -50,7 +50,6 @@ class KeyboardHandler {
                 }
                 // to dev team: quick skip current stage
                 if (event.key === "c" && !playBoard.skip) {
-                    console.log();
                     playBoard.skip = true;
                     KeyboardHandler.PlayBoardLogic.stageClearSettings(p5, playBoard);
                     playBoard.gameState.isFading = true;

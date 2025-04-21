@@ -30,6 +30,7 @@ class StartMenuModel {
         this.allFloatingWindows = null;
 
         this.backgroundImg = null;
+        this.titleImg = null;
 
         // fade in fade out render
         this.fade = 0;
@@ -50,6 +51,9 @@ class StartMenuModel {
     }
 
     init() {
+        this.backgroundImg = StartMenuModel.p5.images.get("TitleBackground");
+        this.titleImg = StartMenuModel.p5.images.get("TitleBanner");
+
         let [buttonWidth, buttonHeight] = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07);
         let [buttonX, buttonY] = StartMenuModel.utilityClass.relative2absolute(0.2, 0.6);
         let buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
@@ -85,7 +89,7 @@ class StartMenuModel {
         this.allFloatingWindows = afw;
     }
 
-    shift2Gamepad(p5){
+    shift2Gamepad(p5) {
         p5.noCursor();
         this.buttons.forEach(button => {
             button.mode = "gamepad";
@@ -127,11 +131,13 @@ class StartMenuRenderer {
      * @param {StartMenuModel} startMenu
      */
     static draw(p5, startMenu) {
-        if(!startMenu.backgroundImg){
-            startMenu.backgroundImg = p5.images.get("TitleBackground");
-        }
         let canvasSize = StartMenuRenderer.utilityClass.relative2absolute(1, 1);
         p5.image(startMenu.backgroundImg, 0, 0, canvasSize[0], canvasSize[1]);
+        let ratio = startMenu.titleImg.height / startMenu.titleImg.width;
+        let titlePos = StartMenuRenderer.utilityClass.relative2absolute(0.2, 0.1);
+        let targetWidth = StartMenuRenderer.utilityClass.relative2absolute(0.6, 0.2)[0];
+        let targetHeight = ratio * targetWidth;
+        p5.image(startMenu.titleImg, titlePos[0], titlePos[1], targetWidth, targetHeight);
         p5.fill(255);
 
         for (let button of startMenu.buttons) {
@@ -162,24 +168,25 @@ class StartMenuLogic {
         StartMenuLogic.ScreenLogic = bundle.ScreenLogic;
     }
 
-    static cancel(){}
+    static cancel() {
+    }
 
     /**
      *
      * @param index
      * @param {StartMenuModel} startMenu
      */
-    static handleGamepad(index, startMenu){
+    static handleGamepad(index, startMenu) {
         switch (index) {
             case 12:
                 startMenu.buttons[startMenu.index].isSelected = false;
-                if (startMenu.index === 0) startMenu.index =startMenu.buttons.length-1;
+                if (startMenu.index === 0) startMenu.index = startMenu.buttons.length - 1;
                 else startMenu.index--;
                 startMenu.buttons[startMenu.index].isSelected = true;
                 break;
             case 13:
                 startMenu.buttons[startMenu.index].isSelected = false;
-                if (startMenu.index === startMenu.buttons.length-1) startMenu.index = 0;
+                if (startMenu.index === startMenu.buttons.length - 1) startMenu.index = 0;
                 else startMenu.index++;
                 startMenu.buttons[startMenu.index].isSelected = true;
                 break;
@@ -197,15 +204,14 @@ class StartMenuLogic {
      * @param startMenu
      */
     static handleAnalogStickPressed(axes, startMenu) {
-        if(axes[1] < 0){
+        if (axes[1] < 0) {
             startMenu.buttons[startMenu.index].isSelected = false;
-            if (startMenu.index === 0) startMenu.index = startMenu.buttons.length-1;
+            if (startMenu.index === 0) startMenu.index = startMenu.buttons.length - 1;
             else startMenu.index--;
             startMenu.buttons[startMenu.index].isSelected = true;
-        }
-        else{
+        } else {
             startMenu.buttons[startMenu.index].isSelected = false;
-            if (startMenu.index === startMenu.buttons.length-1) startMenu.index = 0;
+            if (startMenu.index === startMenu.buttons.length - 1) startMenu.index = 0;
             else startMenu.index++;
             startMenu.buttons[startMenu.index].isSelected = true;
         }
@@ -267,7 +273,7 @@ class StartMenuLogic {
         startMenu.floatingWindow = /** @type {FloatingWindow} */ StartMenuLogic.FloatingWindow.copyOf(startMenu.allFloatingWindows.get(str));
     }
 
-    static resize(startMenu){
+    static resize(startMenu) {
         let [buttonWidth, buttonHeight] = StartMenuLogic.utilityClass.relative2absolute(0.15, 0.07);
         let [buttonX, buttonY] = StartMenuLogic.utilityClass.relative2absolute(0.2, 0.6);
         let buttonInter = StartMenuLogic.utilityClass.relative2absolute(0.1, 0.1)[1];

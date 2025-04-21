@@ -176,7 +176,6 @@ class TornadoLogic {
             if (cell.terrain.terrainType === TornadoLogic.terrainTypes.MOUNTAIN) {
                 tornado.status = false;
                 TornadoLogic.InteractionLogic.findMovableAndDelete(playBoard, tornado);
-                console.log("return1")
                 return;
             }
 
@@ -193,7 +192,6 @@ class TornadoLogic {
             if (trees.length > 0) {
                 let luckyTree = trees[Math.floor(Math.random() * trees.length)];
                 TornadoLogic.plantAttackedByTornado(playBoard, luckyTree, tornado);
-                console.log("return2")
                 return;
             }
 
