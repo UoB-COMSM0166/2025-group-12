@@ -580,7 +580,7 @@ class CellRenderer {
             let img = null;
             let [avgX, avgY] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CENTER);
             let imgSize = CellRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
-            if (cell.plant.imgs.length > 0) {
+            if (cell.plant.imgs && cell.plant.imgs.length > 0) {
                 cell.plant.pointer = (cell.plant.pointer + 1) % cell.plant.imgs.length;
                 img = cell.plant.imgs[cell.plant.pointer];
             }else{
