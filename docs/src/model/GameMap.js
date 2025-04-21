@@ -411,7 +411,6 @@ class GameMapLogic {
 
     static resize(gameMap) {
         let size = GameMapModel.utilityClass.relative2absolute(0.05, 0.05)[0];
-        console.log(size)
         for (let i = 0; i < gameMap.buttons.length; i++) {
             let xRatio;
             let yRatio;
