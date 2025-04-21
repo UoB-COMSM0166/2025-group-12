@@ -7,8 +7,12 @@ class PlumModel {
         this.name = "Plum";
         this.color = "rgb(222,111,161)";
         this.plantType = plantTypes.PLUM;
-        this.img = p5.images.get(`${this.name}`);
-
+        this.img = p5.images.get("Plum1");
+        this.imgs = [];
+        this.pointer = 0;
+        for (let i = 1; i <= 12; i++) {
+            this.imgs.push(p5.images.get("Plum" + i.toString()));
+        }
         this.seed = PlumSeedModel;
 
         this.health = 2;

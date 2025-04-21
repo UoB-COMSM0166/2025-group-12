@@ -576,11 +576,17 @@ class CellRenderer {
             p5.fill(0, 0, 0, 0);
         }
         p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
-
         if (cell.plant !== null) {
+            let img = null;
             let [avgX, avgY] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CENTER);
             let imgSize = CellRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
-            p5.image(cell.plant.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
+            if (cell.plant.imgs.length > 0) {
+                cell.plant.pointer = (cell.plant.pointer + 1) % cell.plant.imgs.length;
+                img = cell.plant.imgs[cell.plant.pointer];
+            }else{
+                img = cell.plant.img;
+            }
+            p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
             CellRenderer.utilityClass.drawHealthBar(p5, cell.plant, avgX - 21, avgY - 42, 40, 5);
         }
         if (cell.seed !== null) {
