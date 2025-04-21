@@ -4,7 +4,7 @@ class DesertModel {
         this.name = "Desert";
         this.terrainType = terrainTypes.DESERT;
         this.img = p5.images.get("baseBlock");
-        this.layer = p5.images.get("Desert" + Math.ceil(Math.random() * 6).toString());
+        this.layer = p5.images.get("Desert" + Math.ceil(Math.random() * 2).toString());
         this.weight = 0;
     }
 

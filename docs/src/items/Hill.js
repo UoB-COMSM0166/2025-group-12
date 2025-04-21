@@ -4,7 +4,7 @@ class HillModel {
         this.name = "Hill";
         this.terrainType = terrainTypes.HILL;
         this.img = p5.images.get("baseBlock");
-        this.layer = p5.images.get("Hill" + Math.ceil(Math.random() * 4).toString());
+        this.layer = p5.images.get("Hill" + Math.ceil(Math.random() * 3).toString());
         this.canSlide = false;
 
         this.weight = 20;

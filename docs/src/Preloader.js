@@ -11,10 +11,6 @@ function loadImages(p5) {
     images.set("baseBlock", p5.loadImage(basePath + "baseBlock.png"));
     images.set("Desert1", p5.loadImage(basePath + "Desert1.png"));
     images.set("Desert2", p5.loadImage(basePath + "Desert2.png"));
-    images.set("Desert3", p5.loadImage(basePath + "Desert3.png"));
-    images.set("Desert4", p5.loadImage(basePath + "Desert4.png"));
-    images.set("Desert5", p5.loadImage(basePath + "Desert5.png"));
-    images.set("Desert6", p5.loadImage(basePath + "Desert5.png"));
     images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
     images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
     images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
@@ -26,7 +22,6 @@ function loadImages(p5) {
     images.set("Hill1", p5.loadImage(basePath + "Hill1.png"));
     images.set("Hill2", p5.loadImage(basePath + "Hill2.png"));
     images.set("Hill3", p5.loadImage(basePath + "Hill3.png"));
-    images.set("Hill4", p5.loadImage(basePath + "Hill4.png"));
     images.set("Snowfield", p5.loadImage(basePath + "Snowfield.png"));
     images.set("Sea", p5.loadImage(basePath + "Sea.png"));
 
