@@ -8,6 +8,8 @@
  */
 export function tick(p5, container, frames) {
     for (let i = 0; i < frames; i++) {
+        p5.frameCount++;
+
         container.controller.mainLoopEntry(p5);
 
         container.renderer.render(p5);

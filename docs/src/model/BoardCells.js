@@ -345,7 +345,7 @@ class BoardLogic {
             for (let j = i + 1; j < allPlants.length; j++) {
                 let cell1 = allPlants[i];
                 let cell2 = allPlants[j];
-                if (Math.abs(cell1.i - cell2.j) <= 1 && Math.abs(cell1.i - cell2.j) <= 1) {
+                if (Math.abs(cell1.i - cell2.i) <= 1 && Math.abs(cell1.j - cell2.j) <= 1) {
                     uf.union(i, j);
                 }
             }
@@ -409,8 +409,8 @@ class BoardLogic {
 
         // Assign special abilities
         for (let cell of component) {
-            if (cell.plant.plantType === BoardLogic.plantTypes.FIRE_HERB && component.length >= 10) {
-                ecosystem.rejectLava = true;
+            if (cell.plant.plantType === BoardLogic.plantTypes.FIRE_HERB) {
+                if (component.length >= 10) ecosystem.rejectLava = true;
                 ecosystem.withstandSnow = true;
             }
         }
@@ -556,15 +556,9 @@ class CellRenderer {
      * @param {CellModel} cell
      */
     static drawTerrain(p5, playBoard, cell) {
+        p5.noStroke();
         let [x1, y1, x2, y2, x3, y3, x4, y4] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CORNERS);
         p5.image(cell.terrain.img, x1 - playBoard.cellWidth / 2, y1, playBoard.cellWidth, playBoard.cellHeight);
-
-        if (cell.ecosystem !== null && playBoard.ecoDisplay) {
-            p5.fill('rgba(0%, 0%, 100%, 0.5)');
-        } else {
-            p5.fill(0, 0, 0, 0);
-        }
-        p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
     /**
@@ -574,6 +568,15 @@ class CellRenderer {
      * @param {CellModel} cell
      */
     static drawPlants(p5, playBoard, cell) {
+        p5.noStroke();
+        let [x1, y1, x2, y2, x3, y3, x4, y4] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CORNERS);
+        if (cell.ecosystem !== null && playBoard.ecoDisplay) {
+            p5.fill('rgba(0%, 0%, 100%, 0.5)');
+        } else {
+            p5.fill(0, 0, 0, 0);
+        }
+        p5.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+
         if (cell.plant !== null) {
             let [avgX, avgY] = CellRenderer.utilityClass.cellIndex2Pos(p5, playBoard, cell.i, cell.j, p5.CENTER);
             let imgSize = CellRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
@@ -760,7 +763,17 @@ class Ecosystem {
     }
 }
 
-export {BoardModel, BoardRenderer, BoardLogic, BoardSerializer, CellModel, CellLogic, CellRenderer, CellSerializer};
+export {
+    BoardModel,
+    BoardRenderer,
+    BoardLogic,
+    BoardSerializer,
+    CellModel,
+    CellLogic,
+    CellRenderer,
+    CellSerializer,
+    Ecosystem
+};
 
 if (typeof module !== 'undefined') {
     module.exports = {
@@ -771,6 +784,7 @@ if (typeof module !== 'undefined') {
         CellModel,
         CellLogic,
         CellRenderer,
-        CellSerializer
+        CellSerializer,
+        Ecosystem
     };
 }

@@ -89,8 +89,8 @@ class EarthquakeLogic {
      */
     static shake(p5, earthquake) {
         let shakeAmount = 10;
-        let shakeX = p5.random(-shakeAmount, shakeAmount);
-        let shakeY = p5.random(-shakeAmount, shakeAmount);
+        let shakeX = Math.random() * (2 * shakeAmount) - shakeAmount;
+        let shakeY = Math.random() * (2 * shakeAmount) - shakeAmount;
         p5.translate(shakeX, shakeY);
 
         // Stop shaking after a duration

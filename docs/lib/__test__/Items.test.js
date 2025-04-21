@@ -22,13 +22,13 @@ let controller;
 /** @type {PlayBoardModel} */
 let playBoard;
 
-beforeEach(()=>{
+beforeEach(() => {
     container = new Container(p);
     controller = container.controller;
     container.gameState.state = stateCode.PLAY;
     container.gameState.currentStageGroup = stageGroup.TSUNAMI;
 
-    let stagePackage ={
+    let stagePackage = {
         concreteBoardInit: (playBoard) => {
             playBoard.stageGroup = stageGroup.TSUNAMI;
             playBoard.stageNumbering = 1;
@@ -80,10 +80,13 @@ beforeEach(()=>{
             BoardLogic.setCell(7, 8, container.terrainFactory.get(terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
             BoardLogic.setCell(7, 9, container.terrainFactory.get(terrainTypes.BASE)(), playBoard.boardObjects);
         },
-        nextTurnItems: (p5, playBoard) =>{},
-        modifyBoard: (p5, playBoard, code) => {},
-        setFloatingWindow: (p5, playBoard) =>{},
-        initAllFloatingWindows: (p5, playBoard)=>{
+        nextTurnItems: (p5, playBoard) => {
+        },
+        modifyBoard: (p5, playBoard, code) => {
+        },
+        setFloatingWindow: (p5, playBoard) => {
+        },
+        initAllFloatingWindows: (p5, playBoard) => {
             let afw = new Map();
             container.utilityClass.commonFloatingWindows(p5, afw);
             playBoard.allFloatingWindows = afw;
@@ -95,8 +98,73 @@ beforeEach(()=>{
     controller.menus[stateCode.PLAY] = mockPlayBoard;
 
     tick(p, container, 10);
+    playBoard = /** @type {PlayBoardModel} */ container.gameState.currentStage;
 })
 
-test('test', () => {
+test('test blizzard movement', () => {
+    container.movableFactory.get(movableTypes.BLIZZARD)(playBoard, 7, 9, 1);
+    BoardLogic.getCell(8, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+    BoardLogic.getCell(7, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.CORN)();
+    BoardLogic.getCell(8, 9, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.ORCHID)();
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).plant.health).toBe(3);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant.health).toBe(1);
+    expect(playBoard.movables[0].countdown).toBe(1);
 
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+    tick(p, container, 100);
+
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).plant.health).toBe(3);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant.health).toBe(1);
+    expect(playBoard.movables[0].countdown).toBe(0);
+
+    controller.clickListener(p);
+    tick(p, container, 100);
+
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(1);
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant).toBeFalsy();
+    expect(playBoard.movables.length).toBe(0);
+
+    container.movableFactory.get(movableTypes.BLIZZARD)(playBoard, 7, 9, 0);
+    BoardLogic.plantCell(p, playBoard, 8, 9, container.plantFactory.get(plantTypes.FIRE_HERB)());
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).ecosystem.withstandSnow).toBe(true);
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).ecosystem.withstandSnow).toBe(true);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).ecosystem.withstandSnow).toBe(true);
+    controller.clickListener(p);
+    tick(p, container, 100);
+
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(1);
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant.health).toBe(1);
+})
+
+test('test earthquake movement', () => {
+    container.movableFactory.get(movableTypes.EARTHQUAKE)(playBoard);
+    BoardLogic.getCell(8, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+    BoardLogic.getCell(7, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.CORN)();
+    BoardLogic.getCell(8, 9, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.ORCHID)();
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).plant.health).toBe(3);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant.health).toBe(1);
+
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+
+    tick(p, container, 500);
+
+    expect(BoardLogic.getCell(8, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant.health).toBe(1);
+    expect(playBoard.movables.length).toBe(0);
 })

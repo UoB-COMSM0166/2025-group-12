@@ -77,7 +77,7 @@ import {StartMenuModel, StartMenuLogic, StartMenuRenderer} from "../model/StartM
 import {GameMapModel, GameMapLogic, GameMapRenderer} from "../model/GameMap.js";
 import {InfoBoxModel, InfoBoxLogic, InfoBoxRenderer} from "../model/InfoBox.js";
 import {PauseMenuModel, PauseMenuLogic, PauseMenuRenderer} from "../model/PauseMenu.js";
-import {CellModel, CellLogic, CellRenderer, CellSerializer} from "../model/BoardCells.js";
+import {CellModel, CellLogic, CellRenderer, CellSerializer, Ecosystem} from "../model/BoardCells.js";
 import {BoardModel, BoardLogic, BoardRenderer, BoardSerializer} from "../model/BoardCells.js";
 import {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer} from "../model/PlayBoard.js";
 import {OptionsLogic, OptionsModel, OptionsRenderer} from "../model/Options.js";
@@ -508,6 +508,8 @@ class Container {
             InventoryRenderer: InventoryRenderer,
             InventorySerializer: InventorySerializer,
         }
+
+        Ecosystem.setup({stageGroup: stageGroup});
 
         // cell
         CellModel.setup(playBundle);

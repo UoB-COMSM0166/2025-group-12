@@ -343,7 +343,7 @@ class PlayBoardRenderer {
                 }
             }
         }
-        p5.strokeWeight(0);
+        p5.noStroke();
     }
 
     /**
@@ -452,7 +452,7 @@ class PlayBoardRenderer {
 
         let fontSizes = PlayBoardRenderer.utilityClass.getFontSize();
         p5.textSize(fontSizes.small);
-        
+
         p5.fill('red');
         p5.noStroke();
         p5.textAlign(p5.LEFT, p5.TOP);
@@ -871,7 +871,6 @@ class PlayBoardLogic {
         PlayBoardLogic.reevaluatePlantSkills(playBoard);
 
         // also, reconstruct ecosystem
-
         PlayBoardLogic.BoardLogic.setEcosystem(playBoard.boardObjects);
 
         // set turn and counter
@@ -1042,7 +1041,7 @@ class PlayBoardLogic {
     static setFloatingWindow(p5, playBoard) {
     }
 
-    static resize(){
+    static resize() {
 
     }
 }
