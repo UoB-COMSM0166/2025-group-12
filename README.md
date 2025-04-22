@@ -1058,9 +1058,65 @@ After testing the first step, we then introduced the in-play `undo` feature by p
 
 ## Sustainability, ethics and accessibility
 
-- 10% ~750 words
+### Environmental
 
-- Evidence of the impact of your game across the environment and two of the other areas: Environmental +2 of the following: Social, Economic, Technical, Individual
+- Material & Resources
+
+- Soil, Atmospheric & Water Pollution
+
+- Energy
+
+- Biodiversity & Land Use
+
+- Logistics & Transportation
+
+### Social
+
+- Sense of Community
+
+- Trust
+
+- Inclusiveness & Diversity
+
+- Equality
+
+- Participation & Communication
+
+### Economic
+
+- Value
+
+- Customer Relationship Management
+
+- Supply chain
+
+- Governance & Processes
+
+- Innovation & R&D
+
+### Technical
+
+- Maintainability
+
+- Usability
+
+- Extensibility & Adaptability
+
+- Security
+
+- Scalability
+
+### Individual
+
+- Health
+
+- Lifelong Learning
+
+- Privacy
+
+- Safety
+
+- Agency
 
 ## Conclusion
 
