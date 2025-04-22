@@ -61,7 +61,7 @@ function createMockP5() {
 
         color: (...args) => ({
             toString: () => args.join(','),
-            setAlpha: (alpha) => { } // ✅ mock out p5.color(...).setAlpha(...)
+            setAlpha: (alpha) => { }
         }),
 
         strokeColor: null,
@@ -82,7 +82,10 @@ function createMockP5() {
         mouseSpeed: 20,
 
         // Custom
-        images: new Map([['Alert', {}]]),
+        images: new Map([
+            ["TitleBackground", {height: 100, width: 100}],
+            ["TitleBanner", {height: 100, width: 100}],
+        ]),
         loadImage: fn,
         loadSound: fn,
         frameCount: 0,

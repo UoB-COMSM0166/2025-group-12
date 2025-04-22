@@ -29,8 +29,8 @@ class StartMenuModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
-        this.backgroundImg = null;
-        this.titleImg = null;
+        this.backgroundImg = StartMenuModel.p5.images.get("TitleBackground");
+        this.titleImg = StartMenuModel.p5.images.get("TitleBanner");
 
         // fade in fade out render
         this.fade = 0;
@@ -51,8 +51,6 @@ class StartMenuModel {
     }
 
     init() {
-        this.backgroundImg = StartMenuModel.p5.images.get("TitleBackground");
-        this.titleImg = StartMenuModel.p5.images.get("TitleBanner");
 
         let [buttonWidth, buttonHeight] = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07);
         let [buttonX, buttonY] = StartMenuModel.utilityClass.relative2absolute(0.2, 0.6);

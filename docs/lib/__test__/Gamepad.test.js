@@ -1,5 +1,7 @@
+import {createMockP5, simulateKeyDown, simulateKeyPress, simulateKeyUp} from "./Persona5.js";
 import {tick} from "./Tick.js";
 import {Container} from "../../src/controller/Container.js";
+// --------------------------------------
 import {stateCode} from "../../src/model/GameState.js";
 
 let p;
