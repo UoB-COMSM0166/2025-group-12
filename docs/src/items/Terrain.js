@@ -56,8 +56,9 @@ class TerrainSerializer {
     }
 
     static stringify(terrainInstance) {
+        let object = {};
         if (terrainInstance.terrainType === TerrainSerializer.terrainTypes.LAVA) {
-            let object = {
+            object = {
                 terrainType: terrainInstance.terrainType,
                 name: terrainInstance.name,
                 countdown: terrainInstance.countdown,
@@ -70,14 +71,14 @@ class TerrainSerializer {
                     countdown: terrainInstance.seed.countdown
                 } : null
             }
-            return JSON.stringify(object);
         } else {
-            let object = {
+            object = {
                 name: terrainInstance.name,
                 terrainType: terrainInstance.terrainType,
             }
-            return JSON.stringify(object);
         }
+        if (terrainInstance.layerName) object.layerName = terrainInstance.layerName;
+        return JSON.stringify(object);
     }
 
     static parse(json) {
@@ -100,6 +101,10 @@ class TerrainSerializer {
                     console.warn(`Seed class ${object.seed.name} not found in factory`);
                 }
             }
+        }
+        if (object.layerName) {
+            newTerrainInstance.layerName = object.layerName;
+            newTerrainInstance.layer = TerrainSerializer.p5.images.get(newTerrainInstance.layerName);
         }
         return newTerrainInstance;
     }
