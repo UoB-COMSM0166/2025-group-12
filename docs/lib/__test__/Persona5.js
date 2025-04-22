@@ -1,3 +1,5 @@
+import {_setTestGamepad, pollGamepad} from "../../src/controller/GamepadHandler.js";
+
 function createMockP5() {
     const fn = () => { };
 
@@ -6,6 +8,7 @@ function createMockP5() {
         stroke: fn,
         strokeWeight: fn,
         noStroke: fn,
+        noCursor: fn,
         fill: fn,
         noFill: fn,
         rect: fn,
@@ -26,6 +29,7 @@ function createMockP5() {
         beginShape: fn,
         endShape: fn,
         vertex: fn,
+        circle: fn,
 
         // Text
         text: fn,
@@ -107,8 +111,21 @@ function simulateKeyPress(key) {
     simulateKeyUp(key);
 }
 
-export { createMockP5, simulateKeyDown, simulateKeyUp, simulateKeyPress };
+function simulateGamepad(buttonIndex = 0, pressed = true, axes = [0, 0, 0, 0]) {
+    const gamepad = {
+        axes: axes,
+        buttons: Array.from({ length: 16 }, (_, i) => ({
+            pressed: i === buttonIndex ? pressed : false
+        })),
+        connected: true,
+        index: 0
+    };
+    _setTestGamepad(gamepad);
+    pollGamepad();
+}
+
+export { createMockP5, simulateKeyDown, simulateKeyUp, simulateKeyPress, simulateGamepad };
 
 if (typeof module !== 'undefined') {
-    module.exports = { createMockP5, simulateKeyDown, simulateKeyUp, simulateKeyPress };
+    module.exports = { createMockP5, simulateKeyDown, simulateKeyUp, simulateKeyPress, simulateGamepad };
 }

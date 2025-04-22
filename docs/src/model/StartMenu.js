@@ -89,6 +89,7 @@ class StartMenuModel {
 
     shift2Gamepad(p5) {
         p5.noCursor();
+        this.index = 0;
         this.buttons.forEach(button => {
             button.mode = "gamepad";
             button.isSelected = false;
@@ -98,9 +99,9 @@ class StartMenuModel {
 
     shift2Mouse(p5) {
         p5.cursor();
-        this.buttons[this.index].isSelected = false;
         this.buttons.forEach(button => {
             button.mode = "mouse";
+            button.isSelected = false;
         });
     }
 
