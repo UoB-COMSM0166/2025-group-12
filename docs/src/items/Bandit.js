@@ -105,6 +105,7 @@ class BanditLogic {
         // before movement
         if (bandit.isMoving === false && bandit.targetCell === null) {
             BanditLogic.setTarget(playBoard, bandit);
+            console.log(bandit)
             // if setting target fails, the bandit holds.
             if (bandit.targetCell === null) {
                 bandit.hasMoved = true;
@@ -245,6 +246,7 @@ class BanditLogic {
         for (let i = 0; i < allTargets.length; i++) {
             let vertex = allTargets[i].i + allTargets[i].j * playBoard.gridSize;
             if (dijkstraSP.minWeightTo(vertex) < minWeight) {
+                minWeight = dijkstraSP.minWeightTo(vertex);
                 index = i;
             }
         }

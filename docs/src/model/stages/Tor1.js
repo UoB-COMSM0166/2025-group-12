@@ -258,7 +258,7 @@ class Tornado1PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("201", new this.PlayBoardLogic.FloatingWindow(p5, "ru", "{white:You've been rewarded a}{red:Pine}\\{white:since you made through last assault.}\\{white:Now click the}{red:Tree}{white:.}", {
+        afw.set("201", new this.PlayBoardLogic.FloatingWindow(p5, "ru", "{white:You've been rewarded a}{red:Pine}\\{white:since you made through last assault.}\\{white:Now click the}{red:Pine}{white:.}", {
             x: this.PlayBoardLogic.utilityClass.relative2absolute(0.76, 0.11)[0],
             y: this.PlayBoardLogic.utilityClass.relative2absolute(0.76, 0.11)[1],
             fontSize: 16,
@@ -281,16 +281,6 @@ class Tornado1PlayBoard {
         afw.set("300", new this.PlayBoardLogic.FloatingWindow(p5, "lu", "{white:You can click a cell to check relevant}\\{white:information from left bottom box.}", {
             x: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.58)[0],
             y: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.58)[1],
-            fontSize: 16,
-            padding: 10,
-            spacingRatio: 0.3,
-            fadingSpeed: 1,
-            playerCanClick: true
-        }));
-
-        afw.set("301", new this.PlayBoardLogic.FloatingWindow(p5, "dc", "{white:Click arrows or press }{red:A, D, }\\{red:<- or ->}{white: keys to turn pages.}", {
-            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.1, 0.6)[0],
-            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.1, 0.6)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,

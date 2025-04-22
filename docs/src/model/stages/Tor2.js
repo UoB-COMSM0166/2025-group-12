@@ -241,7 +241,7 @@ class Tornado2PlayBoard {
             playerCanClick: false
         }));
 
-        afw.set("103", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white:Try transplant a pine first, then}\\ {white:a corn and an orchid next to the tree.}", {
+        afw.set("103", new this.PlayBoardLogic.FloatingWindow(p5, null, "{white:Try transplant a pine first, then}\\ {white:a corn and an orchid next to the pine.}", {
             x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[0],
             y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 0.15)[1],
             fontSize: 16,
@@ -252,8 +252,8 @@ class Tornado2PlayBoard {
         }));
 
         afw.set("104", new this.PlayBoardLogic.FloatingWindow(p5, "ur", "{white:This is your action points. It means you can}\\ {white:transplant or sow up to 3 times every turn.}", {
-            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.85, 0.45)[0],
-            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.85, 0.45)[1],
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.55, 0.16)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.55, 0.16)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,

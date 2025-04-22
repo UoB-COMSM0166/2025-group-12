@@ -363,7 +363,6 @@ class BoardLogic {
         let ecosystemQualification = new Map();
 
         for (let [root, component] of connectedComponents.entries()) {
-
             // 1. loop through all plants
             for (let /** @type {CellModel} */ cell of component) {
                 let plantTypesSet = new Set();
@@ -371,11 +370,15 @@ class BoardLogic {
                 // 2. loop through 4 adjacent cells
                 for (let adCell of BoardLogic.getAdjacent4Cells(cell.i, cell.j, board)) {
                     if (adCell.plant === null) continue;
-                    plantTypesSet.add(BoardLogic.baseType(adCell.plant));
+                    let BaseType = BoardLogic.baseType(adCell.plant);
+                    if(plantTypesSet.has(BaseType)) continue;
+                    plantTypesSet.add(BaseType);
                     // 3. further loop through 4 adjacent cells
                     for (let adAdCell of BoardLogic.getAdjacent4Cells(adCell.i, adCell.j, board)) {
                         if (adAdCell.plant === null) continue;
-                        plantTypesSet.add(BoardLogic.baseType(adAdCell.plant));
+                        BaseType = BoardLogic.baseType(adAdCell.plant);
+                        if(plantTypesSet.has(BaseType)) continue;
+                        plantTypesSet.add(BaseType);
                     }
                 }
                 // If 3 different plant types exist, mark as ecosystem
