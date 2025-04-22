@@ -163,7 +163,7 @@ class Volcano1PlayBoard {
                 if (adCell.ecosystem !== null && adCell.ecosystem.rejectLava) continue;
                 // if expands to player base, game over.
                 if (adCell.terrain.terrainType === this.terrainTypes.BASE) {
-                    this.PlayBoardLogic.utilityClass.gameOver(this);
+                    this.PlayBoardLogic.utilityClass.gameOver(playBoard);
                     return;
                 }
                 // it expands to normal terrain.
