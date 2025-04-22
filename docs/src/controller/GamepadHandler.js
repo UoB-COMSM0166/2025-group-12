@@ -8,6 +8,7 @@ let analogButtonListener = null;
 
 let leftStick = false;
 let rightStick = false;
+let gamepad;
 
 
 window.addEventListener("gamepadconnected", (e) => {
@@ -40,11 +41,8 @@ function analogStickPressed(callback) {
 }
 
 function pollGamepad(p5, currentMenu, saveState) {
-    if (gamepadIndex === null) return;
-
-    const gamepad = navigator.getGamepads()[gamepadIndex];
+    if (gamepadIndex !== null) gamepad = navigator.getGamepads()[gamepadIndex];
     if (!gamepad) return;
-
     const currentAxes = gamepad.axes.slice(0, 4);
 
     if (analogStickListener) {
@@ -68,18 +66,22 @@ function pollGamepad(p5, currentMenu, saveState) {
         buttonStates[index] = isPressed;
     });
 
-    if ((Math.abs(currentAxes[0]) > 0.2 || Math.abs(currentAxes[1]) > 0.2) && !leftStick) {
+    if ((Math.abs(currentAxes[0]) > 0.5 || Math.abs(currentAxes[1]) > 0.5) && !leftStick) {
         analogButtonListener(currentAxes);
         leftStick = true;
     }
 
-    if (Math.abs(currentAxes[0]) < 0.2 && Math.abs(currentAxes[1]) < 0.2) {
+    if (Math.abs(currentAxes[0]) < 0.5 && Math.abs(currentAxes[1]) < 0.5) {
         leftStick = false;
     }
 }
 
-export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad};
+function _setTestGamepad(mockGamepad) {
+    gamepad = mockGamepad;
+}
+
+export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad};
 
 if (typeof module !== 'undefined') {
-    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad};
+    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad};
 }
