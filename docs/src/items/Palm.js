@@ -10,7 +10,7 @@ class PalmModel {
         this.img = p5.images.get("Palm1");
         this.imgs = [];
         this.pointer = 0;
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 24; i++) {
             this.imgs.push(p5.images.get("Palm" + i.toString()));
         }
 
