@@ -105,7 +105,6 @@ class BanditLogic {
         // before movement
         if (bandit.isMoving === false && bandit.targetCell === null) {
             BanditLogic.setTarget(playBoard, bandit);
-            console.log(bandit)
             // if setting target fails, the bandit holds.
             if (bandit.targetCell === null) {
                 bandit.hasMoved = true;

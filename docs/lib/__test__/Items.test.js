@@ -1,12 +1,14 @@
- import {createMockP5, simulateKeyDown, simulateKeyPress, simulateKeyUp} from "./Persona5.js";
+import {createMockP5, simulateKeyDown, simulateKeyPress, simulateKeyUp} from "./Persona5.js";
 import {tick} from "./Tick.js";
 import {Container} from "../../src/controller/Container.js";
 // --------------------------------------
 import {stageGroup, stateCode} from "../../src/model/GameState.js";
 import {PlayBoardLogic, PlayBoardModel} from "../../src/model/PlayBoard.js";
 import {InventoryLogic} from "../../src/model/Inventory.js";
-import {plantTypes, movableTypes, seedTypes, terrainTypes} from "../../src/items/ItemTypes.js";
+import {movableTypes, plantTypes, seedTypes, terrainTypes} from "../../src/items/ItemTypes.js";
 import {BoardLogic, BoardModel} from "../../src/model/BoardCells.js";
+import {SlideLogic} from "../../src/items/SlideAnimation.js";
+import {MovableModel} from "../../src/items/Movable.js";
 
 let p;
 beforeAll(() => {
@@ -167,4 +169,61 @@ test('test earthquake movement', () => {
     expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(2);
     expect(BoardLogic.getCell(8, 9, playBoard.boardObjects).plant.health).toBe(1);
     expect(playBoard.movables.length).toBe(0);
+})
+
+test('test landslide movement', () => {
+    BoardLogic.getCell(10, 10, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.HILL)();
+    BoardLogic.getCell(10, 10, playBoard.boardObjects).terrain.canSlide = true;
+
+    BoardLogic.getCell(10, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(10, 11, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.PINE)();
+    BoardLogic.getCell(10, 12, playBoard.boardObjects).enemy = container.movableFactory.get(movableTypes.BANDIT)(playBoard, 10, 12);
+    BoardLogic.getCell(10, 13, playBoard.boardObjects).enemy = container.movableFactory.get(movableTypes.TORNADO)(playBoard, 10, 13, 'r', 3);
+
+    expect(BoardLogic.getCell(10, 10, playBoard.boardObjects).plant.plantType).toBe(plantTypes.BAMBOO);
+    expect(BoardLogic.getCell(10, 11, playBoard.boardObjects).seed.seedType).toBe(seedTypes.PINE);
+    expect(BoardLogic.getCell(10, 12, playBoard.boardObjects).enemy.movableType).toBe(movableTypes.BANDIT);
+    expect(BoardLogic.getCell(10, 13, playBoard.boardObjects).enemy.movableType).toBe(movableTypes.TORNADO);
+    expect(BoardLogic.getCell(10, 14, playBoard.boardObjects).terrain.terrainType).toBe(terrainTypes.DESERT);
+    expect(BoardLogic.getCell(10, 15, playBoard.boardObjects).terrain.terrainType).toBe(terrainTypes.DESERT);
+    expect(playBoard.movables.length).toBe(2);
+
+    SlideLogic.generateSlide(p, playBoard, MovableModel, 10, 14);
+
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+
+    tick(p, container, 500);
+
+    expect(BoardLogic.getCell(10, 10, playBoard.boardObjects).plant).toBeFalsy();
+    expect(BoardLogic.getCell(10, 11, playBoard.boardObjects).seed).toBeFalsy();
+    expect(BoardLogic.getCell(10, 12, playBoard.boardObjects).enemy).toBeFalsy();
+    expect(BoardLogic.getCell(10, 13, playBoard.boardObjects).enemy.movableType).toBe(movableTypes.TORNADO);
+    expect(BoardLogic.getCell(10, 14, playBoard.boardObjects).terrain.terrainType).toBe(terrainTypes.LANDSLIDE);
+    expect(BoardLogic.getCell(10, 15, playBoard.boardObjects).terrain.terrainType).toBe(terrainTypes.DESERT);
+    expect(playBoard.movables.length).toBe(1);
+})
+
+test('test tsunami movement', () => {
+    BoardLogic.getCell(0, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(1, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(2, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(3, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(4, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+})
+
+test('test bomb movement', () => {
+
+})
+
+test('test tornado movement', () => {
+
+})
+
+test('test bandit movement', () => {
+
 })

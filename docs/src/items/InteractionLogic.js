@@ -47,6 +47,7 @@ class InteractionLogic {
         if (index === -1) {
             return;
         }
+        if(movable.cell) movable.cell.enemy = null;
         playBoard.movables.splice(index, 1);
         playBoard.movables.sort((a, b) => {
             if (a.movableType != null && b.movableType != null) {
