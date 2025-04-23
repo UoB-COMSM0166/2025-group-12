@@ -70,7 +70,7 @@ test("anyGamepadButtonPressed game mode should change", () => {
 
 });
 
-test("gamepad conform button pressed is equal to a mouse click", () => {
+test("gamepad confirm button pressed is equal to a mouse click", () => {
     let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
     expect(newGame).toBeTruthy();
     simulateGamepad(0, true);
@@ -220,5 +220,3 @@ test("gamepad analog stick in game map", () => {
     simulateGamepad(0, false, [0, 0, 0, 0]);
     expect(p.gamepadX).toBe( container.utilityClass.CanvasSize.getSize()[0]);
 });
-
-

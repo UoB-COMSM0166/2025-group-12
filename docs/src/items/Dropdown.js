@@ -8,7 +8,7 @@ class Dropdown {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.options = ["960 * 540", "1290 * 720", "1920 * 1080", "2560 * 1440"];
+        this.options = ["960 * 540", "1280 * 720", "1920 * 1080", "2560 * 1440"];
         this.isOpen = false;
         this._onClick = (p5) => {
             this.isOpen = !this.isOpen;
