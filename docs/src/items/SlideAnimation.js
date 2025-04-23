@@ -136,14 +136,17 @@ class SlideLogic {
      */
     static slide(p5, playBoard, landslide) {
         // some terrain can block landslide
-        if (landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.MOUNTAIN) {
+        if (landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.MOUNTAIN
+            || landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.VOLCANO) {
             landslide.isMoving = false;
         }
 
         // kill plants and bandit on this cell:
         if (landslide.cell.plant !== null) landslide.cell.removePlant();
-        else if (landslide.cell.seed !== null) landslide.cell.removeSeed();
-        else if (landslide.cell.enemy?.movableType === SlideLogic.movableTypes.BANDIT) landslide.cell.enemy = null;
+        if (landslide.cell.seed !== null) landslide.cell.removeSeed();
+        if (landslide.cell.enemy && landslide.cell.enemy.movableType === SlideLogic.movableTypes.BANDIT) {
+            SlideLogic.InteractionLogic.findMovableAndDelete(playBoard, landslide.cell.enemy);
+        }
 
         // if cell is player base, game over.
         if (landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.BASE) {
@@ -166,6 +169,7 @@ class SlideLogic {
         if (direction[0] !== 0 && direction[1] !== 0) {
             direction[Math.floor(Math.random() * 2)] = 0;
         }
+
         landslide.cell = SlideLogic.BoardLogic.getCell(landslide.cell.i + direction[0], landslide.cell.j + direction[1], playBoard.boardObjects);
     }
 }
