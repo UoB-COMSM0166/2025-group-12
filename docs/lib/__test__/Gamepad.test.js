@@ -38,7 +38,6 @@ beforeEach(() => {
                 value.shift2Gamepad(p);
             }
             container.controller.pauseMenu.shift2Gamepad(p);
-            console.log("Input mode changed to gamepad");
             return;
         }
         if (index === 0) container.controller.clickListener(p);
@@ -57,7 +56,6 @@ beforeEach(() => {
                 value.shift2Gamepad(p);
             }
             container.controller.pauseMenu.shift2Gamepad(p);
-            console.log("Input mode changed to gamepad");
             return;
         }
         container.controller.analogStickPressedListener(axes);
@@ -73,6 +71,8 @@ test("anyGamepadButtonPressed game mode should change", () => {
 });
 
 test("gamepad conform button pressed is equal to a mouse click", () => {
+    let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
+    expect(newGame).toBeTruthy();
     simulateGamepad(0, true);
     simulateGamepad(0, false);
     simulateGamepad(0, true);
