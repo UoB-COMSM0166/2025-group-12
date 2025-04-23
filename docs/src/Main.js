@@ -32,7 +32,6 @@ new p5((p) => {
                     value.shift2Gamepad(p);
                 }
                 container.controller.pauseMenu.shift2Gamepad(p);
-                console.log("Input mode changed to gamepad");
                 return;
             }
             if (index === 0) container.controller.clickListener(p);
@@ -51,7 +50,6 @@ new p5((p) => {
                     value.shift2Gamepad(p);
                 }
                 container.controller.pauseMenu.shift2Gamepad(p);
-                console.log("Input mode changed to gamepad");
                 return;
             }
             container.controller.analogStickPressedListener(axes);
