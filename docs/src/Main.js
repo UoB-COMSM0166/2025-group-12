@@ -15,6 +15,7 @@ new p5((p) => {
     };
 
     p.setup = () => {
+        document.querySelector(".loader").style.display = "none";
         container = new Container(p);
 
         let canvasSize = container.CanvasSize.getSize();
@@ -57,6 +58,7 @@ new p5((p) => {
     };
 
     p.windowResized = () => {
+        if (!container || !container.controller) return;
         p.resizeCanvas(container.CanvasSize.getSize()[0], container.CanvasSize.getSize()[1]);
         container.controller.resize();
     };

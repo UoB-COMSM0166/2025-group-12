@@ -1,4 +1,4 @@
-import {createMockP5} from "./Persona5.js";
+import {createMockP5, simulateKeyDown, simulateKeyPress, simulateKeyUp} from "./Persona5.js";
 import {tick} from "./Tick.js";
 import {Container} from "../../src/controller/Container.js";
 // --------------------------------------
