@@ -181,7 +181,6 @@ class BanditLogic {
                 return;
             }
             // if no way out, the bandit dies of forest insects and animal attacks.
-            // they may deserve a better ending? refactor
             bandit.status = false;
             BanditLogic.InteractionLogic.findMovableAndDelete(playBoard, bandit);
             return;
