@@ -562,8 +562,10 @@ class PlayBoardLogic {
                 playBoard.shadowPlant = null;
                 return;
             }
-            playBoard.gameState.inventory.index = -1;
-            playBoard.gameState.inventory.isSelected = false;
+            else if(playBoard.gameState.inventory.isSelected){
+                playBoard.gameState.inventory.index = -1;
+                playBoard.gameState.inventory.isSelected = false;
+            }
         }
     }
 
@@ -581,6 +583,12 @@ class PlayBoardLogic {
             case 1:
                 PlayBoardLogic.cancel(playBoard);
                 break;
+            case 2:
+                if(!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                    let display = playBoard.buttons.find(button => button.text.toLowerCase().includes('display'));
+                    if(display) display.onClick();
+                }
+                break;
             case 3:
                 if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
                     playBoard.buttons[0].onClick();
@@ -589,6 +597,12 @@ class PlayBoardLogic {
             case 6:
                 if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
                     playBoard.buttons[1].onClick();
+                }
+                break;
+            case 7:
+                if(!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                    let activate = playBoard.buttons.find(button => button.text.toLowerCase().includes('activate'));
+                    if(activate) activate.onClick();
                 }
                 break;
             case 9:
@@ -766,6 +780,8 @@ class PlayBoardLogic {
             } else {
                 if (playBoard.hasActionPoints && playBoard.actionPoints === 0) {
                     playBoard.floatingWindow = /** @type {FloatingWindow} */ PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("002"));
+                    playBoard.shadowPlant = null;
+                    playBoard.gameState.inventory.selectedItem = null;
                     return;
                 }
             }
