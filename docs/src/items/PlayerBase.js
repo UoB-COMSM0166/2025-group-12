@@ -3,7 +3,8 @@ class PlayerBaseModel {
         Object.assign(this, new superModel(itemTypes));
         this.name = "PlayerBase";
         this.terrainType = terrainTypes.BASE;
-        this.img = p5.images.get(`${this.name}`);
+        this.img = p5.images.get("baseBlock");
+        this.layer = p5.images.get(`${this.name}`);
 
         this.health = 1;
         this.maxHealth = 1;

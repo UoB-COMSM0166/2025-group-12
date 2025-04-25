@@ -60,10 +60,10 @@ class Earthquake1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static setStageTerrain(p5, playBoard) {
-        for (let i = 0; i < playBoard.gridSize; i++) {
-            for (let j = 0; j < playBoard.gridSize; j++) {
-                if (j <= 1) {
-                    if (j === 0) {
+        for (let j = 0; j < playBoard.gridSize; j++) {
+            for (let i = 0; i < playBoard.gridSize; i++) {
+                if (i <= 1) {
+                    if (i === 0) {
                         let hill = this.terrainFactory.get(this.terrainTypes.HILL)();
                         hill.setCanSlide(true);
                         this.PlayBoardLogic.BoardLogic.setCell(i, j, hill, playBoard.boardObjects);

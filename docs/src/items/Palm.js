@@ -7,12 +7,7 @@ class PalmModel {
         this.name = "Palm";
         this.color = "rgb(126,255,97)";
         this.plantType = plantTypes.PALM;
-        this.img = p5.images.get("Palm1");
-        this.imgs = [];
-        this.pointer = 0;
-        for (let i = 1; i <= 24; i++) {
-            this.imgs.push(p5.images.get("Palm" + i.toString()));
-        }
+        this.img = p5.images.get(`${this.name}`);
 
         this.seed = PalmSeedModel;
 

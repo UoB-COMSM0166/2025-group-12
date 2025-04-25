@@ -4,7 +4,7 @@ class MountainModel {
         this.name = "Mountain";
         this.terrainType = terrainTypes.MOUNTAIN;
         this.img = p5.images.get("baseBlock");
-        this.layer = p5.images.get("Mountain");
+        this.layer = p5.images.get(`${this.name}`);
         this.weight = 1000;
     }
 

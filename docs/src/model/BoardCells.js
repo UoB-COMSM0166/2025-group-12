@@ -62,9 +62,7 @@ class BoardRenderer {
             for (let j = 0; j < board.size; j++) {
                 let [x, y] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
                 let cell = BoardLogic.getCell(i, j, board);
-                if (cell.terrain.terrainType === BoardRenderer.terrainTypes.MOUNTAIN
-                    || cell.terrain.terrainType === BoardRenderer.terrainTypes.DESERT
-                    || cell.terrain.terrainType === BoardRenderer.terrainTypes.HILL) {
+                if(cell.terrain.terrainType !== BoardRenderer.terrainTypes.VOLCANO && cell.terrain.layer) {
                     p5.image(cell.terrain.layer, x - playBoard.cellWidth / 2, y - playBoard.cellHeight + playBoard.cellHeight / 2, playBoard.cellWidth, playBoard.cellHeight);
                 }
             }

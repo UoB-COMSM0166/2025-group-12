@@ -4,8 +4,6 @@ function loadImages(p5) {
     let images = new Map();
 
     images.set("Alert", p5.loadImage(basePath + "Alert.png"));
-    images.set("leftArrow", p5.loadImage(basePath + "leftArrow.png"));
-    images.set("rightArrow", p5.loadImage(basePath + "rightArrow.png"));
     images.set("panther", p5.loadImage(basePath + "panther.png"));
 
     images.set("baseBlock", p5.loadImage(basePath + "baseBlock.png"));
@@ -16,31 +14,33 @@ function loadImages(p5) {
     images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
     images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
     images.set("VolcanoLayer", p5.loadImage(basePath + "VolcanoLayer.png"));
-    images.set("Lava", p5.loadImage(basePath + "LavaTest.png"));
-    images.set("LavaS", p5.loadImage(basePath + "LavaSTest.png"));
-    images.set("Landslide", p5.loadImage(basePath + "Landslide.png"));
+    images.set("Lava", p5.loadImage(basePath + "Lava.png"));
+    images.set("LavaS", p5.loadImage(basePath + "LavaS.png"));
+    for (let i = 0; i <= 5; i++) {
+        for (let j = 0; j <= 2; j++) {
+            images.set("Landslide" + i.toString() + j.toString(), p5.loadImage(basePath + "LandslidePieces/" + i.toString() + j.toString() + ".png"));
+        }
+    }
     images.set("Hill1", p5.loadImage(basePath + "Hill1.png"));
     images.set("Hill2", p5.loadImage(basePath + "Hill2.png"));
     images.set("Hill3", p5.loadImage(basePath + "Hill3.png"));
     images.set("Snowfield", p5.loadImage(basePath + "Snowfield.png"));
     images.set("Sea", p5.loadImage(basePath + "Sea.png"));
 
+    images.set("Seed", p5.loadImage(basePath + "Seed.png"));
     images.set("Pine", p5.loadImage(basePath + "Pine.png"));
     images.set("Corn", p5.loadImage(basePath + "Corn.png"));
-    for (let i = 1; i <= 80; i++) {
-        images.set("Orchid" + i.toString(), p5.loadImage(basePath + "Orchid/" + "Orchid" + i.toString() + ".png"));
-    }
-    images.set("Seed", p5.loadImage(basePath + "Seed.png"));
-    for (let i = 1; i <= 80; i++) {
-        images.set("FireHerb" + i.toString(), p5.loadImage(basePath + "FireHerb/" + "FireHerb" + i.toString() + ".png"));
-    }
-    images.set("Bamboo", p5.loadImage(basePath + "Bamboo.png"));
-    for (let i = 1; i <= 24; i++) {
-        images.set("Plum" + i.toString(), p5.loadImage(basePath + "Plum/" + "Plum" + i.toString() + ".png"));
-    }
+    images.set("Orchid", p5.loadImage(basePath + "Orchid.png"));
     images.set("Kiku", p5.loadImage(basePath + "Kiku.png"));
-    for (let i = 1; i <= 24; i++) {
-        images.set("Palm" + i.toString(), p5.loadImage(basePath+ "Palm/" + "Palm" + i.toString() + ".png"));
+    images.set("Palm", p5.loadImage(basePath + "Palm.png"));
+    for (let i = 1; i <= 2; i++) {
+        images.set("FireHerb" + i.toString(), p5.loadImage(basePath + "FireHerb" + i.toString() + ".png"));
+    }
+    for (let i = 1; i <= 2; i++) {
+        images.set("Bamboo" + i.toString(), p5.loadImage(basePath + "Bamboo" + i.toString() + ".png"));
+    }
+    for (let i = 1; i <= 2; i++) {
+        images.set("Plum" + i.toString(), p5.loadImage(basePath + "Plum" + i.toString() + ".png"));
     }
 
     images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));

@@ -160,7 +160,7 @@ class TsunamiLogic {
                     // interact with plant
                     if (cell.plant || cell.seed) {
                         // decrease max range according to plant health
-                        // if the plant is palm, invoke its passive skill (placeholder)
+                        // if the plant is palm, invoke its passive skill
                         if (cell.plant && cell.plant.plantType === TsunamiLogic.plantTypes.PALM) {
                             cell.plant.health--;
                             if (cell.plant.health === 0) {

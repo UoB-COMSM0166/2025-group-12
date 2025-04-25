@@ -3,7 +3,9 @@ class LandslideModel {
         Object.assign(this, new superModel(itemTypes));
         this.name = "Landslide";
         this.terrainType = terrainTypes.LANDSLIDE;
-        this.img = p5.images.get(`${this.name}`);
+        this.img = p5.images.get("baseBlock");
+        this.layerName = `${this.name}` + "00"; // default, needs refine
+        this.layer = p5.images.get(this.layerName);
         this.weight = 0;
     }
 

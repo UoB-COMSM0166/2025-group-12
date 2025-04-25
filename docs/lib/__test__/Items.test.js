@@ -9,6 +9,7 @@ import {movableTypes, plantTypes, seedTypes, terrainTypes} from "../../src/items
 import {BoardLogic, BoardModel} from "../../src/model/BoardCells.js";
 import {SlideLogic} from "../../src/items/SlideAnimation.js";
 import {MovableModel} from "../../src/items/Movable.js";
+import {Volcano1PlayBoard} from "../../src/model/stages/Vol1.js";
 
 let p;
 beforeAll(() => {
@@ -177,8 +178,8 @@ test('test landslide movement', () => {
 
     BoardLogic.getCell(10, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
     BoardLogic.getCell(10, 11, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.PINE)();
-    BoardLogic.getCell(10, 12, playBoard.boardObjects).enemy = container.movableFactory.get(movableTypes.BANDIT)(playBoard, 10, 12);
-    BoardLogic.getCell(10, 13, playBoard.boardObjects).enemy = container.movableFactory.get(movableTypes.TORNADO)(playBoard, 10, 13, 'r', 3);
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 10, 12);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 10, 13, 'r', 3);
 
     expect(BoardLogic.getCell(10, 10, playBoard.boardObjects).plant.plantType).toBe(plantTypes.BAMBOO);
     expect(BoardLogic.getCell(10, 11, playBoard.boardObjects).seed.seedType).toBe(seedTypes.PINE);
@@ -209,19 +210,171 @@ test('test landslide movement', () => {
 })
 
 test('test tsunami movement', () => {
-    BoardLogic.getCell(0, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    // reset terrain
+    for (let i = 0; i < playBoard.gridSize; i++) {
+        for (let j = 0; j < playBoard.gridSize; j++) {
+            if (j >= 8) {
+                BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.DESERT)(), playBoard.boardObjects);
+            } else {
+                BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.SEA)(), playBoard.boardObjects);
+            }
+        }
+    }
+
+    BoardLogic.getCell(0, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PALM)();
+    BoardLogic.getCell(0, 9, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PALM)();
+    BoardLogic.getCell(0, 10, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
     BoardLogic.getCell(1, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
-    BoardLogic.getCell(2, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
-    BoardLogic.getCell(3, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
-    BoardLogic.getCell(4, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(1, 9, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.ORCHID)();
+    BoardLogic.getCell(1, 10, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.ORCHID)();
+    BoardLogic.getCell(1, 11, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 2, 8);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 2, 9, 'r', 3);
+
+    BoardLogic.getCell(3, 8, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.MOUNTAIN)();
+    BoardLogic.getCell(3, 9, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    BoardLogic.getCell(4, 8, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.VOLCANO)();
+    BoardLogic.getCell(4, 9, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    BoardLogic.getCell(5, 8, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.LUMBERING)();
+    BoardLogic.getCell(5, 9, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.LUMBERING)();
+    BoardLogic.getCell(5, 11, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    container.movableFactory.get(movableTypes.TSUNAMI)(playBoard, 1, -1, 5);
+
+    expect(playBoard.movables.length).toBe(3);
+
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+
+    tick(p, container, 500);
+
+    // palm does not die
+    expect(BoardLogic.getCell(0, 8, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(0, 9, playBoard.boardObjects).plant.health).toBe(2);
+    // plant health offsets
+    expect(BoardLogic.getCell(1, 8, playBoard.boardObjects).plant).toBeFalsy();
+    expect(BoardLogic.getCell(1, 9, playBoard.boardObjects).plant).toBeFalsy();
+    expect(BoardLogic.getCell(1, 10, playBoard.boardObjects).seed).toBeFalsy();
+    // bandit dies
+    expect(BoardLogic.getCell(2, 8, playBoard.boardObjects).enemy).toBeFalsy();
+    expect(BoardLogic.getCell(2, 9, playBoard.boardObjects).enemy.movableType).toBe(movableTypes.TORNADO);
+    // block by mountain or volcano
+
+    // offset by lumbering
+
+    expect(playBoard.movables.length).toBe(1);
+
+    expect(playBoard.isGameOver).toBe(false);
 })
 
 test('test bomb movement', () => {
+    BoardLogic.getCell(7, 10, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
 
+    BoardLogic.getCell(0, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PALM)();
+    BoardLogic.getCell(0, 9, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.PALM)();
+
+    BoardLogic.getCell(3, 9, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+
+    Volcano1PlayBoard.generateVolBomb(p, 7, 9, playBoard);
+    Volcano1PlayBoard.generateVolBomb(p, 0, 9, playBoard);
+    Volcano1PlayBoard.generateVolBomb(p, 3, 9, playBoard);
+    Volcano1PlayBoard.generateVolBomb(p, 5, 9, playBoard);
+
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    tick(p, container, 500);
+    expect(playBoard.turn).toBe(2);
+
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 5, 9);
+    expect(playBoard.movables.length).toBe(5);
+
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+
+    tick(p, container, 500);
+
+    expect(playBoard.isGameOver).toBe(false);
+    expect(playBoard.movables.length).toBe(1);
+    expect(playBoard.movables.find(e => e.movableType === movableTypes.BANDIT).health).toBe(2);
+    expect(BoardLogic.getCell(7, 10, playBoard.boardObjects).plant.health).toBe(3);
+    expect(BoardLogic.getCell(0, 8, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(0, 9, playBoard.boardObjects).seed.health).toBe(1);
+    expect(BoardLogic.getCell(3, 9, playBoard.boardObjects).plant.health).toBe(2);
 })
 
 test('test tornado movement', () => {
+    // reset terrain
+    for (let i = 0; i < playBoard.gridSize; i++) {
+        for (let j = 0; j < playBoard.gridSize; j++) {
+            if (j >= 8) {
+                BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.DESERT)(), playBoard.boardObjects);
+            } else {
+                BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.SEA)(), playBoard.boardObjects);
+            }
+        }
+    }
 
+    BoardLogic.getCell(0, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+    BoardLogic.getCell(0, 9, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    BoardLogic.getCell(3, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+    BoardLogic.getCell(3, 7, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.CORN)();
+    BoardLogic.getCell(2, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.KIKU)();
+    BoardLogic.getCell(3, 9, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    BoardLogic.getCell(5, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(5, 9, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    BoardLogic.getCell(6, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.CORN)();
+    BoardLogic.getCell(6, 9, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.CORN)();
+    BoardLogic.getCell(6, 10, playBoard.boardObjects).terrain = container.terrainFactory.get(terrainTypes.BASE)();
+
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 8, 8);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 0, 0, 'r', 0);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 3, 0, 'r', 0);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 5, 0, 'r', 0);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 6, 0, 'r', 0);
+    container.movableFactory.get(movableTypes.TORNADO)(playBoard, 8, 0, 'r', 0);
+
+    PlayBoardLogic.reevaluatePlantSkills(playBoard);
+
+    expect(playBoard.movables.length).toBe(6);
+
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+    tick(p, container, 1000);
+
+    expect(playBoard.movables.length).toBe(0);
+    expect(playBoard.isGameOver).toBe(false);
+
+    // hit PINE without extension
+    expect(BoardLogic.getCell(0, 8, playBoard.boardObjects).plant.health).toBe(1);
+
+    // hit PINE with extension
+    expect(BoardLogic.getCell(3, 8, playBoard.boardObjects).plant.health).toBe(1);
+    expect(BoardLogic.getCell(3, 7, playBoard.boardObjects).plant.health).toBe(2);
+    expect(BoardLogic.getCell(2, 8, playBoard.boardObjects).plant.health).toBe(1);
+
+    // hit other plants
+    expect(BoardLogic.getCell(5, 8, playBoard.boardObjects).plant.health).toBe(1);
+    expect(BoardLogic.getCell(6, 8, playBoard.boardObjects).plant).toBeFalsy();
+    expect(BoardLogic.getCell(6, 9, playBoard.boardObjects).plant).toBeFalsy();
+    // hit bandit
 })
 
 test('test bandit movement', () => {

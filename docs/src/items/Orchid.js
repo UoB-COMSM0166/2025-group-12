@@ -7,12 +7,7 @@ class OrchidModel {
         this.name = "Orchid";
         this.color = "rgb(250,240,180)";
         this.plantType = plantTypes.ORCHID;
-        this.img = p5.images.get("Orchid1");
-        this.imgs = [];
-        this.pointer = 0;
-        for (let i = 1; i <= 80; i++) {
-            this.imgs.push(p5.images.get("Orchid" + i.toString()));
-        }
+        this.img = p5.images.get(`${this.name}`);
 
         this.seed = OrchidSeedModel;
 

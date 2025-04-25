@@ -129,7 +129,7 @@ class MovableLogic {
      * @param dest_i
      * @param dest_j
      */
-    static generateSlide(p5, playBoard, dest_i = null, dest_j = 5) {
+    static generateSlide(p5, playBoard, dest_i = 5, dest_j = null) {
         MovableLogic.SlideLogic.generateSlide(p5, playBoard, MovableModel, dest_i, dest_j);
     }
 }

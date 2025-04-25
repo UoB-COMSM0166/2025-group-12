@@ -7,12 +7,7 @@ class FireHerbModel {
         this.name = "FireHerb";
         this.color = "red";
         this.plantType = plantTypes.FIRE_HERB;
-        this.img = p5.images.get("FireHerb1");
-        this.imgs = [];
-        this.pointer = 0;
-        for (let i = 1; i <= 80; i++) {
-            this.imgs.push(p5.images.get("FireHerb" + i.toString()));
-        }
+        this.img = p5.images.get(`${this.name}` + Math.ceil(Math.random() * 2).toString());
 
         this.seed = FireHerbSeedModel;
 

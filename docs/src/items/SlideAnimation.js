@@ -155,6 +155,8 @@ class SlideLogic {
         }
 
         landslide.cell.terrain = SlideLogic.terrainFactory.get(SlideLogic.terrainTypes.LANDSLIDE)();
+        landslide.cell.terrain.layerName = "Landslide" + `${landslide.cell.i % 6}` + `${landslide.cell.j % 3}`;
+        landslide.cell.terrain.layer = p5.images.get(landslide.cell.terrain.layerName);
         // place exit condition here to ensure final cell is included
         if (landslide.cell === landslide.finalCell) landslide.isMoving = false;
 

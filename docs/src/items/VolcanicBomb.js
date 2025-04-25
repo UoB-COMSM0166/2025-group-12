@@ -148,6 +148,13 @@ class VolcanicBombLogic {
     static hit(p5, playBoard, bomb) {
         let cell = VolcanicBombLogic.BoardLogic.getCell(bomb.i2, bomb.j2, playBoard.boardObjects);
 
+        // 0: hit bandit
+        if(cell.enemy && cell.enemy.movableType === VolcanicBombLogic.movableTypes.BANDIT){
+            cell.enemy.health-=1;
+            if(cell.enemy.health === 0) VolcanicBombLogic.InteractionLogic.findMovableAndDelete(playBoard, cell.enemy);
+            return;
+        }
+
         // 1.1. hit a cell with a tree, hit it.
         if (cell.plant !== null && VolcanicBombLogic.baseType(cell.plant) === VolcanicBombLogic.plantTypes.TREE) {
             VolcanicBombLogic.InteractionLogic.plantIsAttacked(playBoard, cell.plant, 1);
