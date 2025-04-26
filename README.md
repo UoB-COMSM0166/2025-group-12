@@ -53,15 +53,27 @@ To decide what to develop, we first raised our initial requirements for the game
 
  Our scrum master then collects all the requirements, guiding us to a consensus. Team members are then assigned tasks to explore relevant game ideas. We kept a backlog and a short version on the kanban to remind ourselves. This process was repeated over several meetings, focusing on the game mechanism. During week 3’s workshop, we made two paper prototypes, which were later denied due to dissatisfaction with our requirements. However, they played important roles in integrating the final idea of the game mechanism by evaluating the pros and cons of the two prototypes. 
 
-[insert video – paper prototype]
+<video width="600" controls>
+  <source src="documents/paperprototype.mp4" type="video/mp4">
+</video>
+<p align="center">
+The paper prototype demonstration.
+</p>
 
 The paper prototype introduces the fundamental concept of our gameplay: cultivate different plants on the grid play board to form an ecosystem and strengthen the plants to defend against natural disasters.
 
 Through in-depth discussions, the early-stage game framework is maintained until the final version. We utilised pair programming to develop a working prototype in the first sprint, and all team members tested it and contributed ideas for later refinement.
 
-[insert video – early-stage working prototype]
+<video width="600" controls>
+  <source src="documents/prototypedemo.mkv" type="video/mkv">
+</video>
+
+<p align="center">
+The early stage prototype demonstration.
+</p>
 
 ### Identify stakeholders & user stories
+
 We identified stakeholders and visualised their roles using an onion model diagram to represent their impact on our game. Concrete end users placed in the inner rings act as active surrogates, embodying different player personas to help shape and clarify our gameplay requirements.
 
 ![Onion Model](/documents/onion.svg?)
