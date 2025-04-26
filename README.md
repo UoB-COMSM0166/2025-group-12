@@ -65,8 +65,9 @@ The paper prototype introduces the fundamental concept of our gameplay: cultivat
 Through in-depth discussions, the early-stage game framework is maintained until the final version. We utilised pair programming to develop a working prototype in the first sprint, and all team members tested it and contributed ideas for later refinement.
 
 <video width="600" controls>
-  <source src="documents/prototypedemo.mkv" type="video/mkv">
+  <source src="documents/prototypedemo.mp4" type="video/mp4">
 </video>
+
 
 <p align="center">
 The early stage prototype demonstration.
