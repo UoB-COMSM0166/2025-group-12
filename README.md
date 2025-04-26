@@ -155,11 +155,13 @@ Although stated in the class diagrams, the concrete plant and seed classes do no
 <p align="center">
 The class diagram for plants and seeds.
 </p>
+
 ![sd](documents/cd2.svg)
 
 <p align="center">
 The class diagram for terrain.
 </p>
+
 ![sd](documents/cd3.svg)
 
 <p align="center">
