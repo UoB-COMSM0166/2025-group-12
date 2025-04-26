@@ -1,7 +1,6 @@
 <div align="center">
 <h1>2025-group-12</h1>
 </div>
-
 [![Banner](documents/banner.png)](https://uob-comsm0166.github.io/2025-group-12/)
 
 <p align="center">
@@ -11,7 +10,7 @@ Click the banner to play our game.
 ![Group Photo](documents/week01-research/images/Group_photo.JPG)
 
 
-| Name          | UOB email             | github@username | Role                                   |
+| Name          | UOB@email             | github@username | Role                                   |
 | ------------- | --------------------- | --------------- | -------------------------------------- |
 | Chin Wei Liu  | rq24239@bristol.ac.uk | Chin-pro        | Scrum master, lead developer           |
 | Xiaobai Zheng | iu24160@bristol.ac.uk | wheeinside      | lead art designer, developer           |
@@ -95,7 +94,7 @@ The requirements and acceptance criteria raised by our team as user stories are 
 Requirements-driven engineering defines clear boundaries for the final product and specifies one direction for development. One of the user stories states that the game should be easy to learn. It is then broken down into manageable tasks for us to accomplish, including adding floating windows for hints, designing the game board and enemies carefully, introducing the undo feature to improve tolerance for mistakes, designing user-friendly UI, etc. By pre-defining all tasks on the kanban, we establish a clear path and priority for implementing these features, greatly enhancing our efficiency.
 
 Epics and user stories vaguely outline boundaries for the product on different scales, while acceptance criteria shape them to become more precise. “Adding floating windows” is indeed helpful, but what kind of floating windows? In the acceptance criterion for it, we must define clear constraints on all the elements: positioning, sizing, font size, colour, text wrapping, text wording… Once the criterion is met, we can confidently tick the task off the kanban.
- 
+
 Requirements themselves alter during agile engineering. When coding our game, the five game stages (Tornado, Volcano, Earthquake, Blizzard, Tsunami) did not suddenly appear out of nowhere. Initially, we only decided the first stage would focus on tornadoes since all core game features are involved, and it is not too hard to realise. After implementing and testing the functionalities thoroughly, we then moved on to discussions on designing later stages, where new requirements arise, and even potential modifications to existing requirements. Our game iterates and evolves from a mere working prototype into a complete game through filling in and refining the requirements.
 
 ### Use case diagram & Use case specification
@@ -151,417 +150,25 @@ Upper layers have access to lower layers, but not vice versa. The render layer i
 
 Although stated in the class diagrams, the concrete plant and seed classes do not explicitly inherit from the abstract class `Plant` or `Seed`. With composition, we inject the "superclass" into the "subclass, " and assign all properties of the "superclass" to the "subclass, " complying with the composition-over-inheritance philosophy. A similar practice applies to terrain and movable classes.
 
-```mermaid
----
-config:
-  theme: neo
-  layout: elk
-  look: classic
-
----
-
-classDiagram
-direction TB
-    class Plant {
-	    + itemTypes type
-	    + reevaluateSkills() void
-	    + spreadBamboo() void
-	    + plumRange() boolean
-	    + stringify() string
-	    + parse() Plant
-    }
-    class Bamboo {
-	    + plantTypes plantType
-	    + seedTypes seedType
-	    + spreadBamboo() void
-    }
-    class Pine {
-	    + plantTypes plantType
-	    + seedTypes seedType
-	    + reevaluateSkills() void
-    }
-    class Corn {
-	    + plantTypes plantType
-	    + seedTypes seedType
-    }
-    class Orchid {
-	    + plantTypes plantType
-	    + seedTypes seedType
-	    + reevaluateSkills() void
-    }
-    class FireHerb {
-	    + plantTypes plantType
-	    + seedTypes seedType
-    }
-    class Plum {
-	    + plantTypes plantType
-	    + seedTypes seedType
-	    + plumRange() boolean
-    }
-    class Palm {
-	    + plantTypes plantType
-	    + seedTypes seedType
-    }
-    class Kiku {
-	    + plantTypes plantType
-	    + seedTypes seedType
-    }
-    class Seed {
-	    + itemTypes type
-	    + grow() Plant|Seed
-	    + stringify() string
-	    + parse() Seed
-    }
-	<<abstract>> Plant
-	<<abstract>> Seed
-    Plant <|-- Bamboo
-    Plant <|-- Pine
-    Plant <|-- Corn
-    Plant <|-- Orchid
-    Plant <|-- FireHerb
-    Plant <|-- Plum
-    Plant <|-- Palm
-    Plant <|-- Kiku
-    Seed <|-- Bamboo
-    Seed <|-- Pine
-    Seed <|-- Corn
-    Seed <|-- Orchid
-    Seed <|-- FireHerb
-    Seed <|-- Plum
-    Seed <|-- Palm
-    Seed <|-- Kiku
-```
+![sd](documents/cd1.svg)
 
 <p align="center">
 The class diagram for plants and seeds.
 </p>
-
-
-```mermaid
----
-config:
-  theme: neo
-  layout: dagre
-  look: classic
----
-classDiagram
-direction TB
-    class Terrain {
-	    + itemTypes type
-	    + storeSeed()
-	    + solidify()
-	    + stringify()
-	    + parse()
-    }
-    class Lava {
-	    + terrainTypes terrainType
-      + getWeight() number
-	    + storeSeed() void
-	    + solidify() void
-    }
-    class PlayerBase {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Mountain {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Steppe {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Lumbering {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Volcano {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Hill {
-	    + terrainTypes terrainType
-      + boolean canSlide
-      + getWeight() number
-      + setCanSlide() void
-    }
-    class Landslide {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Snowfield {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-    class Sea {
-	    + terrainTypes terrainType
-      + getWeight() number
-    }
-	<<abstract>> Terrain
-    Terrain <|-- Lava
-    Terrain <|-- PlayerBase
-    Terrain <|-- Mountain
-    Terrain <|-- Steppe
-    Terrain <|-- Lumbering
-    Terrain <|-- Volcano
-    Terrain <|-- Hill
-    Terrain <|-- Landslide
-    Terrain <|-- Snowfield
-    Terrain <|-- Sea
-```
+![sd](documents/cd2.svg)
 
 <p align="center">
 The class diagram for terrain.
 </p>
+![sd](documents/cd3.svg)
 
-
-```mermaid
----
-config:
-  theme: neo
-  layout: dagre
-  look: classic
----
-classDiagram
-direction TB
-    class Movable {
-	    + itemTypes type
-        + boolean isMoving
-        + boolean hasMoved
-        + draw() void
-        + drawDirection() void
-	    + movements() boolean
-	    + generateSlide() void
-	    + stringify() string
-	    + parse() Movable
-    }
-    class Earthquake {
-	    + movableTypes movableType
-        - boolean isShaking
-        - number shakeDuration
-        - number startFrame
-        + create() Earthquake
-	    + draw() void
-	    + movements() boolean
-        - shake() void
-        - hit() void
-    }
-    class Slide {
-	   + movableTypes movableType
-        - Cell cell
-        - Cell finalCell
-        - number accumulate
-        + create() Slide
-	    + draw() void
-	    + movements() boolean
-        + generateSlide() void
-        - move() void
-        - slide() void
-    }
-    class Tsunami {
-	    + movableTypes movableType
-        - number startCol
-        - number startRow
-        - Array range
-        - Array movedLength
-        - number blockerLimit
-        - Array blocker
-        - Array isMovingArray
-        - number accumulate
-        + create() Tsunami
-	    + draw() void
-	    + movements() boolean
-        - checkIsMoving() boolean
-        - move() void
-        - slide() void
-    }
-    class VolcanicBomb {
-	    + movableTypes movableType
-        + number countdown
-        - number moveSpeed
-        - number initPos
-        - number finalPos
-        + create() VolcanicBomb
-	    + draw() void
-	    + movements() boolean
-        - move() void
-        - hit() void
-        - reached() boolean
-        - integrate() number
-        - reparametrization() number
-    }
-    class Tornado {
-	    + movableTypes movableType
-        + number countdown
-        + number health
-        + number maxHealth
-        - Cell cell
-        - Array direction
-        - number moveSpeed
-        + create() Tornado
-	    + draw() void
-        + drawDirection() void
-	    + movements() boolean
-        - moveAndInvokeTornado() void
-	- plantAttackedByTornado() void
-    }
-    class Blizzard {
-	   + movableTypes movableType
-        + number countdown
-        - Cell cell
-        - Array direction
-        - number moveSpeed
-        - number playAnimation
-        + create() Blizzard
-	    + draw() void
-	    + movements() boolean
-        - hit() void
-    }
-    class Bandit {
-	    + movableTypes movableType
-        + number health
-        + number maxHealth
-        - Cell cell
-        - Cell targetCell
-        - Array direction
-        - number moveSpeed
-        + create() Bandit
-	    + draw() void
-	    + movements() boolean
-        - move() void
-        - setTarget() void
-        - pickLuckyPlant() Array
-        - graph() EdgeWeightedDigraph
-    }
-
-    class EdgeWeightedDigraph{
-        + number vertices
-        + number edges
-        + Array adjacency
-        + addEdge() void
-        + edges() Array
-        + setWeight() void
-    }
-
-    class DirectedEdge {
-        + number v
-        + number w
-        + number weight
-        + from() number
-        + to() number
-    }
-
-    class DijkstraSP{
-        - EdgeWeightedDigraph Graph
-        - IndexPriorityQueue pq
-        - Array distTo
-        - Array edgeTo
-        + hasPathTo() boolean 
-        + pathTo() Array 
-        + minWeightTo() Array
-        - relax() void
-    }
-
-	
-    class IndexPriorityQueue{
-        - function compareTo
-        - Map indices
-        - Array queue
-        + insert() void
-        + pollIndex() number
-        + change() void
-    }
-
-	<<abstract>> Movable
-    Movable <|-- Earthquake
-    Movable <|-- Slide
-    Movable <|-- Tsunami
-    Movable <|-- VolcanicBomb
-    Movable <|-- Tornado
-    Movable <|-- Blizzard
-    Movable <|-- Bandit
-    Bandit -- DijkstraSP
-    Bandit -- EdgeWeightedDigraph
-    DijkstraSP *-- EdgeWeightedDigraph
-    DijkstraSP *-- IndexPriorityQueue
-    EdgeWeightedDigraph *-- DirectedEdge
-```
 <p align="center">
 The class diagram for movables.
 </p>
 
 Board and cells make up the actual play board. Every cell in the grid is a dependent object and is stored in a 2D array within a board object. When three or more different kinds of plants are cultivated together, the board detects this through the `setEcosystem()` method and tries to build an ecosystem; thus, the association between the ecosystem and cell is"1--3..".
 
-```mermaid
----
-config:
-  theme: neo
-  layout: dagre
-  look: classic
----
-classDiagram
-direction LR
-    class Board {
-	    + Array boardObjects
-        + draw() void
-        - drawTerrain() void
-        - drawLayer() void
-        - drawPlants() void
-        + getCell() Cell
-        + setCell() void
-        + plantCell() boolean
-        + getAllCellsWithPlant() Array
-        + getAllCellsWithSeed() Array
-        + getAllCellsWithEnemy() Array
-        + getAdjacent4Cells() Array
-        + getAdjacent8Cells() Array
-        + getNearbyCells() Array
-        + setEcosystem() void
-        - createEcosystem() Ecosystem
-        + stringify() string
-        + parse() Board
-    }
-
-    class Cell{
-        + number i
-        + number j
-        + Terrain terrain
-        + Plant plant
-        + Seed seed
-        + Movable enemy
-        + drawTerrain() void
-        + drawPlants() void
-        + isCompatible() boolean
-        + stringify() string
-        + parse() Cell
-    }
-
-    class Ecosystem{
-        + number countPlants
-        + boolean growFaster
-        + boolean rejectLava
-        + boolean strengthenOrchid
-        + boolean withstandSnow
-    }
-
-    class UnionFind{
-        - Array id
-        - Array size
-        - number count
-        + getComponent() Array
-        + find() number
-        + union() void
-    }
-
-    Board "1" *-- "*" Cell
-    Cell *-- UnionFind
-    Ecosystem "1" -- "3.." Cell
-    Board "1" *-- "0.." Ecosystem
-    Cell "1" *-- "0..1" Plant
-    Cell "1" *-- "0..1" Seed
-    Cell "1" *-- "0..1" Movable
-    Cell "1" *-- "1" Terrain
-```
+![sd](documents/cd4.svg)
 
 <p align="center">
 The class diagram for boards and cells. Refer to previous class diagrams to inspect Plant, Seed, Terrain and Movable.
@@ -569,287 +176,15 @@ The class diagram for boards and cells. Refer to previous class diagrams to insp
 
 The main game menus are `StartMenu`, `GameMap`, and `PlayBoard`, which represent the three screens a player would encounter in the game, along with some helper menus. The player's inventory can be viewed from both the map menu and the play board, and it can be interacted with on the play board; however, the inventory is stored in the central `GameState` object.
 
-
-```mermaid
----
-config:
-  theme: neo
-  layout: dagre
-  look: classic
----
-classDiagram
-direction TB
-    class Screen {
-        + GameState gameState
-        + Array buttons
-        + FloatingWindow floatingWindow
-        + Map allFloatingWindows
-        + drawFloatingWindow() void
-        + draw() void
-        + handleClick() void
-        + handleFloatingWindow() boolean
-        + handleScroll() void
-        + setFloatingWindow() void
-        + copyFloatingWindow() void
-        + playFadeInAnimation() void
-        + playFadeOutAnimation() void
-        + stateTransitionAtFading() void
-    }
-
-    class FloatingWindow{
-        - string text
-        - number position
-        + draw() void
-        + copyOf() FloatingWindow
-    }
-
-    class StartMenu{
-        - init() void
-        - initAllFloatingWindows() void
-    }
-
-    class PauseMenu{
-        - init() void
-        - initAllFloatingWindows() void
-    }
-
-    class GameMap{
-        - init() void
-        - initAllFloatingWindows() void
-        - createStageButton() MapButton
-        + drawStageInfo() void
-        + clickedStageButton() void
-    }
-
-    class PlayBoard{
-        + stageGroups stageGroup
-        + number stageNumbering
-        + number gridSize
-        - number cellWidth
-        - number cellHeight
-        + Array movables
-        + Board boardObjects
-        - InfoBox infoBox
-        + number turn
-        + number maxTurn
-        + number actionPoints
-        + number maxActionPoints
-        - boolean awaitCell
-        - Array undoStack
-        - concreteBoardInit() void
-        - initPlayBoard() void
-        - setStageInventory() void
-        - setStageTerrain() void
-        - initAllFloatingWindows() void
-        - setupActionListeners() void
-        + draw() void
-        - drawGrid() void
-        - drawMovables() void
-        - drawActionPoints() void
-        - setCursorStyle() void
-        + handleClick() void
-        + handleScroll() void
-        - clickedCell() void
-        - handlePlanting() void
-        - handleActiveSkills() void
-        + endTurnActivity() void
-        - stageClearSettings() void
-        - setSeedCountdown() void
-        - reevaluatePlantSkills() void
-        - activatePlantSkill() void
-        - nextTurnItems() void
-        - modifyBoard() void
-        + stringify() string
-        + saveGame() string
-        + undo() void
-        + loadGame() PlayBoard
-    }
-
-    class InfoBox{
-        + Button activateButton
-        + Button displayButton
-        + draw() void
-        + updateInfoBox() void
-        - setActivateButton() void
-        - deleteActivateButton() void
-        - setEcoDisplayButton() void
-        - deleteDisplayButton() void
-    }
-
-    class Inventory{
-        + Map items
-        + plantTypes selectedItem
-        + number scrollIndex
-        + number maxVisibleItems
-        + draw() void
-        + handleClick() void
-        + handleScroll() void
-        + itemDecrement() void
-        + createItem() Plant|Seed
-        + pushItem2Inventory() void
-        + setItemOfInventory() void
-        + saveInventory() void
-        + loadInventory() void
-        - updateInventoryHeight() void
-        + stringify() string
-        + parse() Inventory
-    }
-
-    class GameSerializer{
-        + save() void
-        + load() boolean
-        - saveGame() void
-        - loadGame() boolean
-    }
-
-    <<abstract>> Screen
-
-Screen <|-- StartMenu
-Screen <|-- GameMap
-Screen <|-- PlayBoard
-GameMap o-- PauseMenu
-PlayBoard o-- PauseMenu
-StartMenu o-- FloatingWindow
-GameMap o-- FloatingWindow
-PlayBoard o-- FloatingWindow
-PauseMenu o-- FloatingWindow
-PlayBoard o-- InfoBox
-GameMap o-- Inventory
-PlayBoard o-- Inventory
-StartMenu o-- GameSerializer
-PauseMenu o-- GameSerializer
-```
+![sd](documents/cd5.svg)
 
 
 <p align="center">
 The class diagram for game screens.
 </p>
-
 `Controller` and `GameState` resemble the controller and model in the MVC design pattern, although here they only handle general logic and offer an entry point. The `GameState` keeps the current state, current play board, and cleared stages. The `Controller` gathers logic from menus and distributes the responsibility to separate menus. The container defines all dependencies and wires them up by passing a `bundle` object consisting of all required components through static `setup` methods, realising DI and IoC by handing over the right to control to the container, subsequently preventing circular dependency. The main class imports the container and defines the p5 object, which serves as the entry point to all other classes.
 
-```mermaid
----
-config:
-  theme: neo
-  layout: dagre
-  look: classic
----
-classDiagram
-direction TB
-    class Container{
-        + Map plantFactory
-        + Map terrainFactory
-        + Map movableFactory
-    }
-
-    class Inventory{
-
-    }
-
-    class GameState{
-        + stateCode state
-        + stageGroups currentStageGroup
-        + PlayBoard currentStage
-        + Inventory inventory
-        + boolean playerCanClick
-        - GameStageFactory gsf
-        + Map clearedStages
-        + setState() void
-        + getState() void
-        + setPlayerCanClick() void
-        + togglePaused() void
-        + setStageCleared() void
-        + isStageCleared() boolean
-        + isSpecificStageCleared() boolean
-    }
-
-    class StartMenu{
-
-    }
-
-    class GameMap{
-
-    }
-
-    class PlayBoard{
-
-    }
-
-    class Controller{
-        + GameState gameState
-        + Array menus
-        + Map logicFactory
-        + mainLoopEntry() void
-        + clickListener() void
-        + scrollListener() void
-        - setPlayStage() void
-        - setData() void
-        - handleMovables() void
-    }
-
-    class Renderer{
-        + render() void
-    }
-
-    class KeyboardHandler{
-
-    }
-
-    class GamepadHandler{
-        
-    }
-
-    class CanvasSize{
-        - number canvasWidth
-        - number canvasLength
-        - resolutions currentResolution
-        + setSize() void
-        + getSize() Array
-        + getFontSize() Object
-    }
-
-    class Main{
-        + Container container
-        + p5 p5
-    }
-
-    class Preloader{
-        + loadImages() Map
-        + loadSounds() Map
-    }
-
-    class UtilityClass{
-        + relative2absolute() Array
-        + absolute2Relative() Array
-        + drawHealthBar() void
-        + gameOver() void
-        + pos2CellIndex() Array
-        + cellIndex2Pos() Array
-        + commonFloatingWindows() void
-    }
-
-Main "1" *-- "1" Container
-Main "1" *-- "1" Preloader
-UtilityClass o-- CanvasSize
-Container *-- UtilityClass
-Container "1" *-- "1" Renderer
-Container "1" *-- "1" Controller
-Container "1" *-- "1" GameState
-Container "1" *-- "1" GamepadHandler
-Container "1" *-- "1" KeyboardHandler
-GameState  -- StartMenu
-GameState  -- GameMap
-GameState  -- PlayBoard
-Container "1" -- "1" StartMenu
-Container "1" -- "1" GameMap
-Container "1" -- "0.." PlayBoard
-Controller -- StartMenu
-Controller -- GameMap
-Controller -- PlayBoard
-PlayBoard o-- Inventory
-GameMap o-- Inventory
-GameState *-- Inventory
-```
+![sd](documents/cd6.svg)
 
 <p align="center">
 The class diagram for the game state and wiring. Refer to previous class diagrams to inspect StartMenu, GameMap, PlayBoard and Inventory.
@@ -859,115 +194,7 @@ A reminder: the class diagrams only cover key fields and methods, as well as the
 
 To understand the sequence diagram, we can split it into three parts: action listeners, data management, and rendering. A click event will first be passed into the controller and dispatched to the current working menu. Resolving the logic of the component being clicked might trigger state transitions, which will be recorded in the game state and wait until the next frame to process. If the player is unable to click (after the player clicks the "turn" button), the action listeners will be switched off. In the main loop, the controller first tries to initialise the play board if we go to the `PLAY` phase from the game map menu. Then, the controller loads or saves the items in the inventory, since when the player quits the game, we would like to restore the inventory. When the player is unable to click, the controller tries to invoke all movables from the play board and automatically sets the player able to click once all movables have moved. The last rendering part is self-documented and calls all rendering components.
 
-```mermaid
-sequenceDiagram
-  participant Window as Window
-  participant Renderer as Renderer
-  participant Controller as Controller
-  participant GameState as GameState
-  participant PauseMenu as PauseMenu
-  participant StartMenu as StartMenu
-  participant GameMap as GameMap
-  participant PlayBoard as PlayBoard
-  participant Inventory as Inventory
-  participant InfoBox as InfoBox
-  participant Board as Board
-  participant Cell as Cell
-
-  loop p5.js main loop
-  opt will be skipped if player set unable to click
-    Window -) Controller: click event
-    activate Controller
-    GameState ->> Controller: getState
-    alt click with a given menu state
-      Controller ->> PauseMenu: clickListener
-      PauseMenu ->> PauseMenu: handleClick
-      opt quit button
-        PauseMenu ->> GameState: setState
-      end
-      Controller ->> StartMenu: clickListener
-      StartMenu ->> StartMenu: handleClick
-      opt new game button
-        StartMenu ->> GameState: setState
-      end
-      Controller ->> GameMap: clickListener
-      GameMap ->> GameMap: handleClick
-      opt quit button or map button
-        GameMap ->> GameState: setState
-      end
-      Controller ->> PlayBoard: clickListener
-      PlayBoard ->> PlayBoard: handleClick
-    end
-    alt click components of play board
-        PlayBoard ->> PlayBoard: handleFloatingWindow
-        PlayBoard ->> Cell: handleActiveSkills
-        opt clicked turn button
-            PlayBoard ->> GameState: setPlayerCanClick
-        end
-        PlayBoard ->> InfoBox: handleClick
-        InfoBox ->> InfoBox: handleClick
-        opt if inventory item is clicked first
-            PlayBoard ->> Board: handlePlanting
-            Board ->> Cell: plantCell
-        end
-        PlayBoard ->> Cell: clickedCell
-    end
-    opt game clear, game over or quit button
-        PlayBoard ->> GameState: setState
-    end
-    Window -) Controller: scroll event
-    GameState ->> Controller: getState
-    alt scroll with a given menu state
-      Controller ->> GameMap: scrollListener
-      GameMap ->> Inventory: handleScroll
-      Controller ->> PlayBoard: scrollListener
-      PlayBoard ->> Inventory: handleScroll
-    end
-    end
-
-    opt controller.mainLoopEntry: triggered when state transitions occur
-        opt controller.setPlayStage: initialize play board when going into PLAY phase
-            Controller ->> GameState: setPlayStage
-            Controller ->> PlayBoard: setPlayStage
-            PlayBoard ->> PlayBoard: concreteBoardInit
-            PlayBoard ->> PlayBoard: initPlayBoard
-            PlayBoard ->> Board: setStageTerrain
-        end
-        opt controller.setData: manage data transferring
-            Controller ->> GameState: setState
-            
-            Controller ->> Inventory: save/load inventory
-        end
-    end
-    critical controller.setData:  if player unable to click, set player able to click after finishing handling movables 
-        Controller ->> PlayBoard: handleMovables
-        Controller ->> GameState: setPlayerCanClick
-        PlayBoard ->> PlayBoard: endTurnActivity
-        option if current game stage is cleared
-            PlayBoard ->> Inventory: stageClearSettings
-            PlayBoard ->> GameState: setStageCleared
-            PlayBoard ->> GameState: setPlayerCanClick
-        
-    end
-    Renderer ->> PauseMenu: render
-    activate Renderer
-    PauseMenu->> PauseMenu: draw
-      Renderer ->> StartMenu: render
-      StartMenu->>StartMenu: draw
-      Renderer ->> GameMap: render
-      GameMap->>GameMap: draw
-      Renderer ->> PlayBoard: render
-      PlayBoard ->> Inventory: draw
-      PlayBoard ->> InfoBox: draw
-      PlayBoard ->> Board: drawGrid
-      Board ->> Cell: draw
-      PlayBoard->>PlayBoard:draw
-    Renderer ->> Window: render through p5.js
-    deactivate Renderer
-    GameState ->> Controller: save state
-    deactivate Controller
-  end
-```
+![sd](documents/sd.svg)
 
 <p align="center">
 The sequence diagram.
@@ -1052,9 +279,35 @@ After testing the first step, we then introduced the in-play `undo` feature by p
 
 ## Process 
 
-- 15% ~750 words
+Our team utilised the Scrum methodology and sprint feedback loops to manage the collaborative development of our game project.  Given the uncertainties around game design and the highly iterative nature of development, we found that flexible but structured collaboration practices were key to maintaining both momentum and quality.
 
-- Teamwork. How did you work together, what tools did you use. Did you have team roles? Reflection on how you worked together.
+#### Sprint & Scrum
+
+We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 AM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
+
+Since our game concept was brand new and largely undefined at the start, the entire team, acting as the product owner, discussed new game features to implement and documented them in the product backlog. These features were later added to the Kanban by the scrum master. Additionally, a draft of the class diagrams for new game elements was produced during this process, ensuring that everyone had a clear design model to follow, and detailed tasks were then assigned to each team member.
+
+We abandoned Planning Poker while initially considering using it to estimate task complexity. The reason was the structured nature of our gameplay design, where the core data flow was already established during the reading week, leaving us to focus on implementing five distinct game stages—exactly one per sprint.
+
+#### Direct communication over Kanban
+
+Since our coding team is relatively small and the residential areas of our team members are quite distant from the university and separate, we relied heavily on online instant messaging through WeChat, similar to WhatsApp, for day-to-day communication. While GitHub was used for version control, we preferred to announce and discuss updates directly through WeChat rather than set up formal pull requests, allowing us to maintain fast communication and reduce delays caused by individual work schedules. 
+
+The Kanban board was used as a visual aid to track sprint tasks and remind the team of pending work. The team member who delivered code, graphics work, or documentation to the GitHub repo directly would inform everyone else in the WeChat group. After validation and verification, the scrum master would tick that term off the Kanban.
+
+Nonetheless, the Kanban board proved to be essential for visibility over task progress, keeping all team members updated on sprint priorities, and quickly incorporating new ideas from the team. Proposed ideas were initially recorded on the Kanban board, then discussed and validated during sprint retrospectives before being added to future sprint tasks.
+
+#### Pair programming 
+
+Pair programming played a crucial role in the early stages of our game development, particularly in creating the initial working prototype and establishing the basic game components. At that time, the framework and structure of the game were still evolving, and many uncertainties remained to be addressed. Working in pairs allowed us to combine our individual strengths, share ideas more effectively, and quickly evaluate the pros and cons of different frameworks through active discussion. This collaborative approach led to a more consistent, adaptable, and durable codebase that could grow and improve as the project matured.
+
+Beyond the above, pair programming also proved especially valuable during debugging sessions. Locating the source of bugs can often be a time-consuming and frustrating task when working alone, especially with complex game mechanics and interactions. However, collaborating allowed us to analyse the bug from different perspectives, which sped up the process.
+
+#### Code review & Peer feedback
+
+We used an informal but effective peer feedback system to ensure code quality without introducing significant overhead. After pushing code to the GitHub repository, developers would immediately notify the rest of the team through our group chat. Other members were encouraged to pull the latest changes to test the new features locally and provide feedback or suggestions immediately. This asynchronous review process allowed us to maintain a rapid development pace while still identifying bugs, optimising designs, and ensuring coding standards across different parts of the project. 
+
+
 
 ## Sustainability, ethics and accessibility
 
@@ -1126,16 +379,11 @@ After testing the first step, we then introduced the in-play `undo` feature by p
 
 ## Contribution Statement
 
-- Provide a table of everyone's contribution, which may be used to weight individual grades. We expect that the contribution will be split evenly across team-members in most cases. Let us know as soon as possible if there are any issues with teamwork as soon as they are apparent. 
-
-## Additional Marks
-
-You can delete this section in your own repo, it's just here for information. in addition to the marks above, we will be marking you on the following two points:
-
-- **Quality** of report writing, presentation, use of figures and visual material (5%) 
-  - Please write in a clear concise manner suitable for an interested layperson. Write as if this repo was publicly available.
-
-- **Documentation** of code (5%)
-
-  - Is your repo clearly organised? 
-  - Is code well commented throughout?
+| name          | contribution factor |
+| ------------- | ------------------- |
+| Chin Wei Liu  | 1                   |
+| Xiaobai Zheng | 1                   |
+| Fan Meng      | 1                   |
+| Xiaoyu Wu     | 1                   |
+| Rui Zhang     | 1                   |
+| Zhenghao Yang | 1                   |
