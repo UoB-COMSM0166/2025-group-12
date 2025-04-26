@@ -1,6 +1,7 @@
 <div align="center">
 <h1>2025-group-12</h1>
 </div>
+
 [![Banner](documents/banner.png)](https://uob-comsm0166.github.io/2025-group-12/)
 
 <p align="center">
@@ -168,11 +169,13 @@ Although stated in the class diagrams, the concrete plant and seed classes do no
 <p align="center">
 The class diagram for plants and seeds.
 </p>
+
 ![sd](documents/cd2.svg)
 
 <p align="center">
 The class diagram for terrain.
 </p>
+
 ![sd](documents/cd3.svg)
 
 <p align="center">
