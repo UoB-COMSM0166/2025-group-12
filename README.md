@@ -1,6 +1,7 @@
 <div align="center">
 <h1>2025-group-12</h1>
 </div>
+
 [![Banner](documents/banner.png)](https://uob-comsm0166.github.io/2025-group-12/)
 
 <p align="center">
