@@ -164,19 +164,19 @@ Upper layers have access to lower layers, but not vice versa. The render layer i
 
 Although stated in the class diagrams, the concrete plant and seed classes do not explicitly inherit from the abstract class `Plant` or `Seed`. With composition, we inject the "superclass" into the "subclass, " and assign all properties of the "superclass" to the "subclass, " complying with the composition-over-inheritance philosophy. A similar practice applies to terrain and movable classes.
 
-![sd](documents/cd1.svg)
+![sd](documents/cd1.png)
 
 <p align="center">
 The class diagram for plants and seeds.
 </p>
 
-![sd](documents/cd2.svg)
+![sd](documents/cd2.png)
 
 <p align="center">
 The class diagram for terrain.
 </p>
 
-![sd](documents/cd3.svg)
+![sd](documents/cd3.png)
 
 <p align="center">
 The class diagram for movables.
@@ -184,7 +184,7 @@ The class diagram for movables.
 
 Board and cells make up the actual play board. Every cell in the grid is a dependent object and is stored in a 2D array within a board object. When three or more different kinds of plants are cultivated together, the board detects this through the `setEcosystem()` method and tries to build an ecosystem; thus, the association between the ecosystem and cell is"1--3..".
 
-![sd](documents/cd4.svg)
+![sd](documents/cd4.png)
 
 <p align="center">
 The class diagram for boards and cells. Refer to previous class diagrams to inspect Plant, Seed, Terrain and Movable.
@@ -192,7 +192,7 @@ The class diagram for boards and cells. Refer to previous class diagrams to insp
 
 The main game menus are `StartMenu`, `GameMap`, and `PlayBoard`, which represent the three screens a player would encounter in the game, along with some helper menus. The player's inventory can be viewed from both the map menu and the play board, and it can be interacted with on the play board; however, the inventory is stored in the central `GameState` object.
 
-![sd](documents/cd5.svg)
+![sd](documents/cd5.png)
 
 
 <p align="center">
@@ -200,7 +200,7 @@ The class diagram for game screens.
 </p>
 `Controller` and `GameState` resemble the controller and model in the MVC design pattern, although here they only handle general logic and offer an entry point. The `GameState` keeps the current state, current play board, and cleared stages. The `Controller` gathers logic from menus and distributes the responsibility to separate menus. The container defines all dependencies and wires them up by passing a `bundle` object consisting of all required components through static `setup` methods, realising DI and IoC by handing over the right to control to the container, subsequently preventing circular dependency. The main class imports the container and defines the p5 object, which serves as the entry point to all other classes.
 
-![sd](documents/cd6.svg)
+![sd](documents/cd6.png)
 
 <p align="center">
 The class diagram for the game state and wiring. Refer to previous class diagrams to inspect StartMenu, GameMap, PlayBoard and Inventory.
@@ -210,7 +210,7 @@ A reminder: the class diagrams only cover key fields and methods, as well as the
 
 To understand the sequence diagram, we can split it into three parts: action listeners, data management, and rendering. A click event will first be passed into the controller and dispatched to the current working menu. Resolving the logic of the component being clicked might trigger state transitions, which will be recorded in the game state and wait until the next frame to process. If the player is unable to click (after the player clicks the "turn" button), the action listeners will be switched off. In the main loop, the controller first tries to initialise the play board if we go to the `PLAY` phase from the game map menu. Then, the controller loads or saves the items in the inventory, since when the player quits the game, we would like to restore the inventory. When the player is unable to click, the controller tries to invoke all movables from the play board and automatically sets the player able to click once all movables have moved. The last rendering part is self-documented and calls all rendering components.
 
-![sd](documents/sd.svg)
+![sd](documents/sd.png)
 
 <p align="center">
 The sequence diagram.
