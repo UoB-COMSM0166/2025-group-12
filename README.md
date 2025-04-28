@@ -30,7 +30,7 @@ The Green Renaissance is a turn-based tactics chessboard game, emphasising the f
 
 The background story of our game invites you to delve into a world rebuilding after the devastation caused by natural disasters. Various plants, which develop from seeds after several turns of being cultivated, are employed as our chess soldiers in the struggle against disasters. Although these plants cannot move after cultivation, they can acquire different skills and enhance their ability when cultivated closely, forming an ecosystem. After each game stage, all surviving plants are moved to the player's inventory for use in later stages. It would be challenging if a player consumes too many or grows too few resources, requiring players to think carefully before making their moves.
 
-We are not looking for a conventional Mario-genre 2D side-scrolling platform game, but rather something innovative. Our initial game idea is inspired by a similar tactics game, <em>Into the Breach</em>, where players control a group of mecha warriors on a grid battlefield, and a tower defence game, <em>Carrot Fantasy</em>, where players cultivate plants that fire ballistae, similar to <em>Plants vs. Zombies</em>. Both games focus on planning and strategy. Evolved from these games, our game stands out for its uniqueness (as far as our knowledge) in gameplay and mechanics, making it enchanting to players .
+We are not looking for a conventional Mario-genre 2D side-scrolling platform game, but rather something innovative. Our initial game idea is inspired by a similar tactics game, <em>Into the Breach</em>, where players control a group of mecha warriors on a grid battlefield, and a tower defence game, <em>Carrot Fantasy</em>, where players cultivate plants that fire ballistae, similar to <em>Bloons TD</em>. Both games focus on planning and strategy. Evolved from these games, our game stands out for its uniqueness (as far as our knowledge) in gameplay and mechanics, making it enchanting to players .
 
 
 
@@ -148,7 +148,7 @@ These use cases are detailed as follows:
 
 ## Design
 
-Our game adopts RESTful and composition-over-inheritance design patterns, enhancing modularity and testability. In early versions, our game followed a conventional OOP design pattern with ES modules. Under that framework, it was impossible to use the Jest library to test our code, as everything was tangled together; even worse, Jest detected circular dependencies. We then refactored our code using a universal container to achieve dependency injection (DI) and inversion of control (IoC). 
+Our game adopts RESTful and composition-over-inheritance design patterns, enhancing modularity and testability. In early versions, our game followed the conventional OOP design pattern using ES modules. Under that framework, it was impossible to use the Jest library to test our code, as everything was tangled together; even worse, Jest detected circular dependencies. We then refactored our code using a universal container to achieve dependency injection (DI) and inversion of control (IoC). 
 
 Four layers present in our game design: model, logic, render and persistence. The hierarchy of them, from top to bottom, is:
 
@@ -162,7 +162,7 @@ Four layers present in our game design: model, logic, render and persistence. Th
 
 Upper layers have access to lower layers, but not vice versa. The render layer is where `p5.js` operates, and the player interacts directly with it. By separating this, the renderer becomes a plugin to the system, allowing us to switch to another visualization library instead of `p5.js` at any time. The service layer manages general game logic. Except for action listeners, the entry point to all logic is the `mainLoopEntry()` function from the `Controller` class, which is invoked by the `p5.js` main loop's `draw()`. The model layer stores data. The persistence layer consists of serializers that execute saving and loading. In our class diagrams, we combine the four layers of one target class into a complete class, and the object-oriented perspective remains helpful and intuitive.
 
-Although stated in the class diagrams, the concrete plant and seed classes do not explicitly inherit from the abstract class `Plant` or `Seed`. With composition, we inject the "superclass" into the "subclass, " and assign all properties of the "superclass" to the "subclass, " complying with the composition-over-inheritance philosophy. A similar practice applies to terrain and movable classes.
+Although stated in the class diagrams, the concrete plant and seed classes do not explicitly inherit from the abstract class `Plant` or `Seed`. With composition, we inject the "superclass" into the "subclass", and assign all properties of the "superclass" to the "subclass", complying with the composition-over-inheritance philosophy. A similar practice applies to terrain and movable classes.
 
 ![sd](documents/cd1.png)
 
@@ -260,6 +260,7 @@ To regain maintainability, two approaches are adopted in parallel.
   
     A module does not concern itself with how other modules are implemented; all are treated as interfaces and injected by the container instead of hard-wiring import statements. This approach enhances the flexibility of the codebase, simplifies the process of refactoring or replacing a module, and aligns with the open-closed principle: open to extension, closed to modification.
 
+[insert container + bundle screenshot]
 
 ### Challenge 2 - Implementation of serialisation
 
@@ -275,23 +276,70 @@ Here is how we incrementally tackled this bottom-up. First, we implemented `stri
 
 After testing the first step, we then introduced the in-play `undo` feature by pushing the JSON strings into a stack. Every invocation of `undo()` pops from the stack, recreates new game items according to the JSON string. To optimise, we did not serialise and restore everything – for example, ecosystems are completely ignored when stringifying, but are recalculated by invoking the `setEcosystem` method. This is more inclined to hybridise the two major approaches of save & load we described above, to minimise the possibility of introducing subtle bugs while improving performance. Lastly, we expanded the system to the whole game state, enabling the player to save the game in-play, then quit to the start menu and load the game. 
 
-
-
+[insert serializer screenshot]
 
 ## Evaluation
 
-- 15% ~750 words
+#### Qualitative evaluation: Heuristics
 
-- One qualitative evaluation (your choice) 
+#### Quantitative evaluation: NASA TLX
 
-  The heuristic evaluation of the game project identified several critical issues affecting usability, gameplay intuitiveness, and strategic clarity. The most severe issues (Severity ≥ 3.67) include **unclear core mechanics**, where players struggle to grasp fundamental gameplay concepts, requiring improved tutorials and visual guidance. Additionally, **the stamina bar only becomes visible in the second level’s second round**, which can disrupt strategic planning; this should be addressed by introducing it earlier. Another major concern is **unclear disaster and enemy movement logic**, which hinders strategic decision-making and could be resolved through better visual indicators. Furthermore, **resource values lack explicit meaning (Magic Number issue)**, requiring clearer numerical representations. Lastly, **the steep difficulty gap between the tutorial and the first level** makes it difficult for new players to transition smoothly.  
+Our heuristic evaluation of the turn-based ecology strategy prototype used Nielsen’s ten heuristics. Twenty-four issues were discovered and most of them are related to the games’s UI/UX and gameplay interface. Each issue was rated 0-4 for frequency, impact, and persistence. Furthermore, the average of these ratings formed a severity score guiding priority. To triangulate the purely expert-driven findings with players perception, we administered the System Usability Scale (SUS) and the NASA Task Load Index (NASA-TLX) to twelve participants who completed both “easy” and a “hard” scenario. In our tests, we identified the most severe issues affecting users’ experiences, analyzed the potential root causes and propose targeted interventions to address these issues.
 
-  For medium-priority issues (Severity 3.00 - 3.33), improvements should be made in **diversifying victory conditions**, separating **hints from annotations for better readability**, and allowing **players to change plant selections** after clicking. Additionally, **bugs causing automatic turn skips** and the **lack of an undo function** significantly impact gameplay flow and should be resolved. Implementing these changes will enhance game accessibility, improve strategic depth, and create a smoother onboarding experience for new players.
+1. Opaque core loop
+    - Problem Description: New players struggle to intuit the game’s objectives and flow.
+    - Root Cause: The prototype presumes familiarity with board-style, turn-based mechanics common to veteran players, leaving novices with insufficient context for key actions, such as planting, resource management and defences.
+    - Proposed Solution: Extend the tutorial into a multi-step guided sequence that visually links each mechanic. Use contextual, step-by-step hints—such as animated arrows or highlighted UI elements—that explicitly demonstrate how planting consumes resources to build defences and how these defences mitigate incoming threats.
+2. Hidden stamina bar
+    - Problem Description: The stamina does not appear until Level 2, disrupting early strategic planning.
+    - Root Cause: The tutorial skips the introduction to stamina mechanics, therefore, players lack awareness of this fundamental constraint during their decision-making procedure.
+    - Proposed Solution: Integrate a dedicated stamina segment into the tutorial and increase the brief explanation of how the stamina mechanism work, including how each actions depletes stamina and resets between turns.
+3. Unpredictable disasters and attacks
+    - Problem Description: Natural disasters and enemy materialized without warning, reducing perceived player agency.
+    - Root Cause:  Under the design in the prototype, disaster and enemy spawn are randomized each turn with no telegraphed indicators, forcing players into reactive rather than strategic play.
+    - Proposed Solution: Implement a one-turn advance warning system. For example display directional icons or a brief animation on affected grid cells at the end of the preceding turn, allowing players to rearrange defences or adjust planting accordingly.
+4. Magic numbers in resources
+    - Problem Description: Resource values are presented as bare integers, requiring players to memorize abstract “magic numbers” with no descriptive context.
+    - Root Cause: The prototype’s resource display lacks affordances—such as icons, units, or color cues—that communicate meaning.
+    - Proposed Solution: Augment the resource panel with self-describing labels, color-coded gauges to help player notify the meaning of the number, and incorporate a concise demo in the tutorial.
+5. Difficulty spike after tutorial
+    - Problem Description: The transition from tutorial to Level 1 is abrupt, causing novice players to feel overwhelmed.
+    - Root Cause: Difficulty tuning has prioritized experienced fans of turn-based tactics, neglecting skill acquisition for the players with few experiences.
+    - Proposed Solution: Redesign the early progression as a graduated ramp. Spilt the tutorial into multiple mini-challenges of increasing complexity, ensuring each new mechanics is introduced in isolation before laying additional challenges.
+6. Round-skip bug and missing undo
+    - Problem Description: Player cannot revert a mistaken action, eroding confidence in turn control.
+    - Root Cause: Undo mechanism were not yet implemented in the prototype iteration.
+    - Proposed Solution: Develop and place an “Undo” button in the obvious area. Ensure the turn logic remains integral to avoid inconsistency between states.
 
-- One quantitative evaluation (of your choice) 
+In the latest version of the game, we have solved or mitigated the problems collected from the test, including enhanced tutorials, clearer feedback loops, and improved control mechanisms. We believed, the improvement can strike a better balance between learning curve and robust strategic depth. 
 
+##### NASA-TLX Results: Cognitive & Physical Load
 
-- Description of how code was tested. 
+| Sub-scale (0–20) | Easy mean | Hard mean |
+| --- | --- | --- |
+| Mental Demand | 8.17 | 13.17 |
+| Physical Demand | 3.83 | 5.58 |
+| Temporal Demand | 3.75 | 4.92 |
+| Performance | 5.50 | 9.25 |
+| Effort | 6.67 | 12.83 |
+| Frustration | 6.58 | 9.33 |
+| **Raw TLX** | **5.75** | **9.18** |
+
+Nevertheless, the turn-based strategic game endow a relative high threshold to entry and the players we aimed to attract might not the new players with few experiences, therefore, the game still cause a relative high burdens on player according to the test result from NASA Task Load Index. Mental demand, effort and frustration nearly double from easy to hard mode, reflecting the difficulty spike and lack of anticipatory feedback. Even in the easy mode, mental demand and effort received relative high score in the test, indicating that novices struggle with core concepts early on. To address the learning burden, we introduced multiple self-descriptive icons to ensure players understand each next step and to reduce their frustration.
+
+#### Testing
+
+We test our app with two approaches:
+
+- Direct interactions with the app through a browser
+  
+- Using Node.js testing libraries to implement code-aware tests
+  
+The first approach is easy but, more importantly, necessary to conduct, as there is no simple way to test the rendering outcome of the p5.js library. Focusing primarily on non-functional requirements, we test graphics and apparent logical bugs by playing through the game, following the game process and treating it as a complete black box.
+
+The second approach is more robust and reliable, but much harder to execute completely. We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~15000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
+
+[insert test cases screenshot]
 
 ## Process 
 
@@ -300,6 +348,8 @@ Our team utilised the Scrum methodology and sprint feedback loops to manage the 
 #### Sprint & Scrum
 
 We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 AM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
+
+[insert meeting minutes screenshot]
 
 Since our game concept was brand new and largely undefined at the start, the entire team, acting as the product owner, discussed new game features to implement and documented them in the product backlog. These features were later added to the Kanban by the scrum master. Additionally, a draft of the class diagrams for new game elements was produced during this process, ensuring that everyone had a clear design model to follow, and detailed tasks were then assigned to each team member.
 
@@ -310,6 +360,8 @@ We abandoned Planning Poker while initially considering using it to estimate tas
 Since our coding team is relatively small and the residential areas of our team members are quite distant from the university and separate, we relied heavily on online instant messaging through WeChat, similar to WhatsApp, for day-to-day communication. While GitHub was used for version control, we preferred to announce and discuss updates directly through WeChat rather than set up formal pull requests, allowing us to maintain fast communication and reduce delays caused by individual work schedules. 
 
 The Kanban board was used as a visual aid to track sprint tasks and remind the team of pending work. The team member who delivered code, graphics work, or documentation to the GitHub repo directly would inform everyone else in the WeChat group. After validation and verification, the scrum master would tick that term off the Kanban.
+
+[insert kanban screenshot]
 
 Nonetheless, the Kanban board proved to be essential for visibility over task progress, keeping all team members updated on sprint priorities, and quickly incorporating new ideas from the team. Proposed ideas were initially recorded on the Kanban board, then discussed and validated during sprint retrospectives before being added to future sprint tasks.
 
