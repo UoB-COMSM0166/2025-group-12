@@ -8,6 +8,8 @@
 Click the banner to play our game.
 </p>
 
+---
+
 ![Group Photo](documents/week01-research/images/Group_photo.JPG)
 
 
@@ -54,40 +56,34 @@ To decide what to develop, we first raised our initial requirements for the game
 
  Our scrum master then collects all the requirements, guiding us to a consensus. Team members are then assigned tasks to explore relevant game ideas. We kept a backlog and a short version on the kanban to remind ourselves. This process was repeated over several meetings, focusing on the game mechanism. During week 3’s workshop, we made two paper prototypes, which were later denied due to dissatisfaction with our requirements. However, they played important roles in integrating the final idea of the game mechanism by evaluating the pros and cons of the two prototypes. 
 
-
-
-![paperprototypegif](documents/paperprototype.gif)
-
-
+<p align="center">
+    <img src="documents/paperprototype.gif">
+</p>
 
 <p align="center">
 The paper prototype demonstration. <a href="documents/paperprototype.mp4">Video</a>
 </p>
 
-
-
 The paper prototype introduces the fundamental concept of our gameplay: cultivate different plants on the grid play board to form an ecosystem and strengthen the plants to defend against natural disasters.
 
 Through in-depth discussions, the early-stage game framework is maintained until the final version. We utilised pair programming to develop a working prototype in the first sprint, and all team members tested it and contributed ideas for later refinement.
 
-
-
-![paperprototypegif](documents/prototypedemo.gif)
-
-
+<p align="center">
+    <img src="documents/prototypedemo.gif">
+</p>
 
 <p align="center">
 The early stage prototype demonstration. <a href="documents/prototypedemo.mp4">Video</a>
 </p>
 
 
-
-
 ### Identify stakeholders & user stories
 
 We identified stakeholders and visualised their roles using an onion model diagram to represent their impact on our game. Concrete end users placed in the inner rings act as active surrogates, embodying different player personas to help shape and clarify our gameplay requirements.
 
-![Onion Model](/documents/onion.svg?)
+<p align="center">
+    <img src="documents/onion.svg">
+</p>
 
 <p align="center">
 The onion model diagram.
@@ -123,7 +119,9 @@ Requirements themselves alter during agile engineering. When coding our game, th
 ### Use case diagram & Use case specification
 To illustrate the flow of player actions to guide us in programming and visualise the game process, we have drawn the following use case diagram.
 
-![Use Case Diagram](/documents/UseCaseDiagram.png)
+<p align="center">
+    <img src="documents/UseCaseDiagram.png">
+</p>
 
 <p align="center">
 The use case diagram.
@@ -173,19 +171,25 @@ Upper layers have access to lower layers, but not vice versa. The render layer i
 
 Although stated in the class diagrams, the concrete plant and seed classes do not explicitly inherit from the abstract class `Plant` or `Seed`. With composition, we inject the "superclass" into the "subclass", and assign all properties of the "superclass" to the "subclass", complying with the composition-over-inheritance philosophy. A similar practice applies to terrain and movable classes.
 
-![sd](documents/cd1.png)
+<p align="center">
+    <img src="documents/cd1.png">
+</p>
 
 <p align="center">
 The class diagram for plants and seeds.
 </p>
 
-![sd](documents/cd2.png)
+<p align="center">
+    <img src="documents/cd2.png">
+</p>
 
 <p align="center">
 The class diagram for terrain.
 </p>
 
-![sd](documents/cd3.png)
+<p align="center">
+    <img src="documents/cd3.png">
+</p>
 
 <p align="center">
 The class diagram for movables.
@@ -193,7 +197,9 @@ The class diagram for movables.
 
 Board and cells make up the actual play board. Every cell in the grid is a dependent object and is stored in a 2D array within a board object. When three or more different kinds of plants are cultivated together, the board detects this through the `setEcosystem()` method and tries to build an ecosystem; thus, the association between the ecosystem and cell is"1--3..".
 
-![sd](documents/cd4.png)
+<p align="center">
+    <img src="documents/cd4.png">
+</p>
 
 <p align="center">
 The class diagram for boards and cells. Refer to previous class diagrams to inspect Plant, Seed, Terrain and Movable.
@@ -201,15 +207,18 @@ The class diagram for boards and cells. Refer to previous class diagrams to insp
 
 The main game menus are `StartMenu`, `GameMap`, and `PlayBoard`, which represent the three screens a player would encounter in the game, along with some helper menus. The player's inventory can be viewed from both the map menu and the play board, and it can be interacted with on the play board; however, the inventory is stored in the central `GameState` object.
 
-![sd](documents/cd5.png)
-
+<p align="center">
+    <img src="documents/cd5.png">
+</p>
 
 <p align="center">
 The class diagram for game screens.
 </p>
 `Controller` and `GameState` resemble the controller and model in the MVC design pattern, although here they only handle general logic and offer an entry point. The `GameState` keeps the current state, current play board, and cleared stages. The `Controller` gathers logic from menus and distributes the responsibility to separate menus. The container defines all dependencies and wires them up by passing a `bundle` object consisting of all required components through static `setup` methods, realising DI and IoC by handing over the right to control to the container, subsequently preventing circular dependency. The main class imports the container and defines the p5 object, which serves as the entry point to all other classes.
 
-![sd](documents/cd6.png)
+<p align="center">
+    <img src="documents/cd6.png">
+</p>
 
 <p align="center">
 The class diagram for the game state and wiring. Refer to previous class diagrams to inspect StartMenu, GameMap, PlayBoard and Inventory.
@@ -219,7 +228,9 @@ A reminder: the class diagrams only cover key fields and methods, as well as the
 
 To understand the sequence diagram, we can split it into three parts: action listeners, data management, and rendering. A click event will first be passed into the controller and dispatched to the current working menu. Resolving the logic of the component being clicked might trigger state transitions, which will be recorded in the game state and wait until the next frame to process. If the player is unable to click (after the player clicks the "turn" button), the action listeners will be switched off. In the main loop, the controller first tries to initialise the play board if we go to the `PLAY` phase from the game map menu. Then, the controller loads or saves the items in the inventory, since when the player quits the game, we would like to restore the inventory. When the player is unable to click, the controller tries to invoke all movables from the play board and automatically sets the player able to click once all movables have moved. The last rendering part is self-documented and calls all rendering components.
 
-![sd](documents/sd.png)
+<p align="center">
+    <img src="documents/sd.png">
+</p>
 
 <p align="center">
 The sequence diagram.
@@ -274,11 +285,9 @@ To regain maintainability, two approaches are adopted in parallel.
     </p>
 
 
-
 <p align="center">
 The demonstration code chunks for implementing dependency injection.
 </p>
-
 
 
 ### Challenge 2 - Implementation of serialisation
@@ -295,18 +304,13 @@ Here is how we incrementally tackled this bottom-up. First, we implemented `stri
 
 After testing the first step, we then introduced the in-play `undo` feature by pushing the JSON strings into a stack. Every invocation of `undo()` pops from the stack, recreates new game items according to the JSON string. To optimise, we did not serialise and restore everything – for example, ecosystems are completely ignored when stringifying, but are recalculated by invoking the `setEcosystem` method. This is more inclined to hybridise the two major approaches of save & load we described above, to minimise the possibility of introducing subtle bugs while improving performance. Lastly, we expanded the system to the whole game state, enabling the player to save the game in-play, then quit to the start menu and load the game. 
 
-
-
 <p align="center">
   <img src="documents/sukusho_serialiser.png" width="75%" />
 </p>
 
-
-
 <p align="center">
 The demonstration code chunks for implementing serialisers. Upper level serialisers recursively calls lower level serialisers.
 </p>
-
 
 
 ## Evaluation
@@ -371,17 +375,13 @@ The first approach is easy but, more importantly, necessary to conduct, as there
 
 The second approach is more robust and reliable, but much harder to execute completely. We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~15000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
 
-
-
 <p align="center">
   <img src="documents/sukusho_tests.png" width="75%" />
 </p>
 
-
 <p align="center">
 The demonstration code chunks for test cases.
 </p>
-
 
 
 ## Process 
@@ -392,17 +392,13 @@ Our team utilised the Scrum methodology and sprint feedback loops to manage the 
 
 We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 AM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
 
-
-
-![meeting](E:\Users\Desktop\2025-group-12\documents\meeting.gif)
-
-
+<p align="center">
+    <img src="documents/meeting.gif">
+</p>
 
 <p align="center">
     Our meeting agendas and minutes.
 </p>
-
-
 
 Since our game concept was brand new and largely undefined at the start, the entire team, acting as the product owner, discussed new game features to implement and documented them in the product backlog. These features were later added to the Kanban by the scrum master. Additionally, a draft of the class diagrams for new game elements was produced during this process, ensuring that everyone had a clear design model to follow, and detailed tasks were then assigned to each team member.
 
@@ -414,17 +410,13 @@ Since our coding team is relatively small and the residential areas of our team 
 
 The Kanban board was used as a visual aid to track sprint tasks and remind the team of pending work. The team member who delivered code, graphics work, or documentation to the GitHub repo directly would inform everyone else in the WeChat group. After validation and verification, the scrum master would tick that term off the Kanban.
 
-
-
-![kanban](E:\Users\Desktop\2025-group-12\documents\kanban.png)
-
-
+<p align="center">
+    <img src="documents/kanban.png">
+</p>
 
 <p align="center">
     Our Kanban.
 </p>
-
-
 
 Nonetheless, the Kanban board proved to be essential for visibility over task progress, keeping all team members updated on sprint priorities, and quickly incorporating new ideas from the team. Proposed ideas were initially recorded on the Kanban board, then discussed and validated during sprint retrospectives before being added to future sprint tasks.
 
