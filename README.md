@@ -10,7 +10,7 @@ Click the banner to play our game.
 
 ---
 
-![Group Photo](documents/week01-research/images/Group_photo.JPG)
+![Group Photo](documents/New_Group_Photo.JPG)
 
 
 | Name          | UOB@email             | github@username | Role                                   |
