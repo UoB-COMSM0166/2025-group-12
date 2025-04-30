@@ -54,25 +54,34 @@ To decide what to develop, we first raised our initial requirements for the game
 
  Our scrum master then collects all the requirements, guiding us to a consensus. Team members are then assigned tasks to explore relevant game ideas. We kept a backlog and a short version on the kanban to remind ourselves. This process was repeated over several meetings, focusing on the game mechanism. During week 3’s workshop, we made two paper prototypes, which were later denied due to dissatisfaction with our requirements. However, they played important roles in integrating the final idea of the game mechanism by evaluating the pros and cons of the two prototypes. 
 
-<video width="600" controls>
-  <source src="documents/paperprototype.mp4" type="video/mp4">
-</video>
+
+
+![paperprototypegif](documents/paperprototype.gif)
+
+
+
 <p align="center">
-The paper prototype demonstration.
+The paper prototype demonstration. <a href="documents/paperprototype.mp4">Video</a>
 </p>
+
+
 
 The paper prototype introduces the fundamental concept of our gameplay: cultivate different plants on the grid play board to form an ecosystem and strengthen the plants to defend against natural disasters.
 
 Through in-depth discussions, the early-stage game framework is maintained until the final version. We utilised pair programming to develop a working prototype in the first sprint, and all team members tested it and contributed ideas for later refinement.
 
-<video width="600" controls>
-  <source src="documents/prototypedemo.mp4" type="video/mp4">
-</video>
+
+
+![paperprototypegif](documents/prototypedemo.gif)
+
 
 
 <p align="center">
-The early stage prototype demonstration.
+The early stage prototype demonstration. <a href="documents/prototypedemo.mp4">Video</a>
 </p>
+
+
+
 
 ### Identify stakeholders & user stories
 
@@ -259,8 +268,18 @@ To regain maintainability, two approaches are adopted in parallel.
 - Enforce loose coupling.
   
     A module does not concern itself with how other modules are implemented; all are treated as interfaces and injected by the container instead of hard-wiring import statements. This approach enhances the flexibility of the codebase, simplifies the process of refactoring or replacing a module, and aligns with the open-closed principle: open to extension, closed to modification.
+    
+    <p align="center">
+      <img src="documents/sukusho_container.png" width="75%" />
+    </p>
 
-[insert container + bundle screenshot]
+
+
+<p align="center">
+The demonstration code chunks for implementing dependency injection.
+</p>
+
+
 
 ### Challenge 2 - Implementation of serialisation
 
@@ -276,7 +295,19 @@ Here is how we incrementally tackled this bottom-up. First, we implemented `stri
 
 After testing the first step, we then introduced the in-play `undo` feature by pushing the JSON strings into a stack. Every invocation of `undo()` pops from the stack, recreates new game items according to the JSON string. To optimise, we did not serialise and restore everything – for example, ecosystems are completely ignored when stringifying, but are recalculated by invoking the `setEcosystem` method. This is more inclined to hybridise the two major approaches of save & load we described above, to minimise the possibility of introducing subtle bugs while improving performance. Lastly, we expanded the system to the whole game state, enabling the player to save the game in-play, then quit to the start menu and load the game. 
 
-[insert serializer screenshot]
+
+
+<p align="center">
+  <img src="documents/sukusho_serialiser.png" width="75%" />
+</p>
+
+
+
+<p align="center">
+The demonstration code chunks for implementing serialisers. Upper level serialisers recursively calls lower level serialisers.
+</p>
+
+
 
 ## Evaluation
 
@@ -335,11 +366,23 @@ We test our app with two approaches:
   
 - Using Node.js testing libraries to implement code-aware tests
   
+
 The first approach is easy but, more importantly, necessary to conduct, as there is no simple way to test the rendering outcome of the p5.js library. Focusing primarily on non-functional requirements, we test graphics and apparent logical bugs by playing through the game, following the game process and treating it as a complete black box.
 
 The second approach is more robust and reliable, but much harder to execute completely. We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~15000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
 
-[insert test cases screenshot]
+
+
+<p align="center">
+  <img src="documents/sukusho_tests.png" width="75%" />
+</p>
+
+
+<p align="center">
+The demonstration code chunks for test cases.
+</p>
+
+
 
 ## Process 
 
@@ -349,7 +392,17 @@ Our team utilised the Scrum methodology and sprint feedback loops to manage the 
 
 We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 AM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
 
-[insert meeting minutes screenshot]
+
+
+![meeting](E:\Users\Desktop\2025-group-12\documents\meeting.gif)
+
+
+
+<p align="center">
+    Our meeting agendas and minutes.
+</p>
+
+
 
 Since our game concept was brand new and largely undefined at the start, the entire team, acting as the product owner, discussed new game features to implement and documented them in the product backlog. These features were later added to the Kanban by the scrum master. Additionally, a draft of the class diagrams for new game elements was produced during this process, ensuring that everyone had a clear design model to follow, and detailed tasks were then assigned to each team member.
 
@@ -361,7 +414,17 @@ Since our coding team is relatively small and the residential areas of our team 
 
 The Kanban board was used as a visual aid to track sprint tasks and remind the team of pending work. The team member who delivered code, graphics work, or documentation to the GitHub repo directly would inform everyone else in the WeChat group. After validation and verification, the scrum master would tick that term off the Kanban.
 
-[insert kanban screenshot]
+
+
+![kanban](E:\Users\Desktop\2025-group-12\documents\kanban.png)
+
+
+
+<p align="center">
+    Our Kanban.
+</p>
+
+
 
 Nonetheless, the Kanban board proved to be essential for visibility over task progress, keeping all team members updated on sprint priorities, and quickly incorporating new ideas from the team. Proposed ideas were initially recorded on the Kanban board, then discussed and validated during sprint retrospectives before being added to future sprint tasks.
 
