@@ -161,7 +161,7 @@ class InfoBoxLogic {
         let buttonY = infoBox.boxY - infoBox.paddingY - buttonHeight;
         let activate = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, "activate", "xbox_RT");
         activate.textSize = InfoBoxLogic.Button.CanvasSize.getFontSize().mini;
-        display.mode = InfoBoxLogic.gameState.mode;
+        activate.mode = InfoBoxLogic.gameState.mode;
         activate.onClick = () => {
             InfoBoxLogic.activatePlantSkill(infoBox.playBoard);
         };
