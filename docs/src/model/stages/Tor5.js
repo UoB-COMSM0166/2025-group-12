@@ -33,7 +33,7 @@ class Tornado5PlayBoard {
         playBoard.stageNumbering = 5;
         // grid parameters
         playBoard.gridSize = 10;
-        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(3 / 32, 3 / 18);
 
         // board objects array
         playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);

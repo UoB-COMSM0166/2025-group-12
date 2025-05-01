@@ -33,7 +33,7 @@ class Tsunami1PlayBoard {
         playBoard.stageNumbering = 1;
         // grid parameters
         playBoard.gridSize = 16;
-        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 20, 4 / 45);
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
 
         // board objects array
         playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);

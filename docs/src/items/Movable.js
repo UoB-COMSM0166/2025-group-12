@@ -62,13 +62,13 @@ class MovableRenderer {
         } else if (movable.movableType === MovableRenderer.movableTypes.TSUNAMI) {
             MovableRenderer.TsunamiRenderer.draw(p5, playBoard, /** @type {TsunamiModel} */ movable);
         } else if (movable.movableType === MovableRenderer.movableTypes.BOMB) {
-            MovableRenderer.VolcanicBombRenderer.draw(p5, /** @type {VolcanicBombModel} */ movable);
+            MovableRenderer.VolcanicBombRenderer.draw(p5, playBoard, /** @type {VolcanicBombModel} */ movable);
         } else if (movable.movableType === MovableRenderer.movableTypes.BLIZZARD) {
             MovableRenderer.BlizzardRenderer.draw(p5, playBoard, /** @type {BlizzardModel} */ movable);
         } else if (movable.movableType === MovableRenderer.movableTypes.TORNADO) {
-            MovableRenderer.TornadoRenderer.draw(p5, /** @type {TornadoModel} */ movable);
+            MovableRenderer.TornadoRenderer.draw(p5, playBoard, /** @type {TornadoModel} */ movable);
         } else if (movable.movableType === MovableRenderer.movableTypes.BANDIT) {
-            MovableRenderer.BanditRenderer.draw(p5, /** @type {BanditModel} */ movable);
+            MovableRenderer.BanditRenderer.draw(p5, playBoard, /** @type {BanditModel} */ movable);
         } else {
             console.warn("Unknown type of movable, skipped rendering!");
         }

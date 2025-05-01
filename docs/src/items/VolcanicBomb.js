@@ -54,9 +54,10 @@ class VolcanicBombRenderer {
     /**
      *
      * @param p5
+     * @param {PlayBoardLike} playBoard
      * @param {VolcanicBombModel} bomb
      */
-    static draw(p5, bomb) {
+    static draw(p5, playBoard, bomb) {
         // parabola
         /*
         p5.stroke(2);
@@ -76,11 +77,10 @@ class VolcanicBombRenderer {
         p5.ellipse(this.x2, this.y2, 10, 10);
         p5.text("F", this.x2 + 5, this.y2);
         */
+        let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
         if (bomb.isMoving) {
-            let imgSize = VolcanicBombRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
             p5.image(bomb.img, bomb.x - imgSize / 2, bomb.y - imgSize, imgSize, imgSize);
         } else {
-            let imgSize = VolcanicBombRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
             p5.image(bomb.alertImg, bomb.x2 - imgSize / 2, bomb.y2 - imgSize / 2, imgSize, imgSize);
         }
     }

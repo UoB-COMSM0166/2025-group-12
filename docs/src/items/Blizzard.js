@@ -46,7 +46,7 @@ class BlizzardRenderer {
      * @param {BlizzardModel} blizzard
      */
     static draw(p5, playBoard, blizzard) {
-        let imgSize = BlizzardRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+        let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
         // draw 9 images
         let cells = BlizzardRenderer.BoardLogic.getAdjacent8Cells(blizzard.cell.i, blizzard.cell.j, playBoard.boardObjects);
         cells.push(blizzard.cell);

@@ -63,6 +63,27 @@ function loadImages(p5) {
     images.set("TitleBackground", p5.loadImage(basePath + "TitleBackground.png"));
     images.set("TitleBanner", p5.loadImage(basePath + "TitleBanner.png"));
 
+    images.set("TornadoBG", p5.loadImage(basePath + "TornadoBG.png"));
+    images.set("VolcanoBG", p5.loadImage(basePath + "VolcanoBG.png"));
+    images.set("EarthquakeBG", p5.loadImage(basePath + "EarthquakeBG.png"));
+    images.set("BlizzardBG", p5.loadImage(basePath + "BlizzardBG.png"));
+    images.set("TsunamiBG", p5.loadImage(basePath + "TsunamiBG.png"));
+
+    images.set("xbox_A", p5.loadImage(basePath + "xbox/" + "Xbox_A.png"));
+    images.set("xbox_B", p5.loadImage(basePath + "xbox/" + "Xbox_B.png"));
+    images.set("xbox_X", p5.loadImage(basePath + "xbox/" + "Xbox_X.png"));
+    images.set("xbox_Y", p5.loadImage(basePath + "xbox/" + "Xbox_Y.png"));
+    images.set("xbox_up", p5.loadImage(basePath + "xbox/" + "Xbox_up.png"));
+    images.set("xbox_down", p5.loadImage(basePath + "xbox/" + "Xbox_down.png"));
+    images.set("xbox_left", p5.loadImage(basePath + "xbox/" + "Xbox_left.png"));
+    images.set("xbox_right", p5.loadImage(basePath + "xbox/" + "Xbox_right.png"));
+    images.set("xbox_menu", p5.loadImage(basePath + "xbox/" + "Xbox_menu.png"));
+    images.set("xbox_view", p5.loadImage(basePath + "xbox/" + "Xbox_view.png"));
+    images.set("xbox_LB", p5.loadImage(basePath + "xbox/" + "Xbox_LB.png"));
+    images.set("xbox_LT", p5.loadImage(basePath + "xbox/" + "Xbox_LT.png"));
+    images.set("xbox_RB", p5.loadImage(basePath + "xbox/" + "Xbox_RB.png"));
+    images.set("xbox_RT", p5.loadImage(basePath + "xbox/" + "Xbox_RT.png"));
+
     return images;
 }
 

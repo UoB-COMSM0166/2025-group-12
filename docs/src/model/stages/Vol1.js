@@ -33,7 +33,7 @@ class Volcano1PlayBoard {
         playBoard.stageNumbering = 1;
         // grid parameters
         playBoard.gridSize = 10;
-        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(14 / 160, 14 / 90);
 
         // board objects array
         playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);

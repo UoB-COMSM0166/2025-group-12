@@ -287,6 +287,7 @@ class PlayBoardModel {
 class PlayBoardRenderer {
     static setup(bundle) {
         PlayBoardRenderer.itemTypes = bundle.itemTypes;
+        PlayBoardRenderer.stageGroup = bundle.stageGroup;
         PlayBoardRenderer.movableTypes = bundle.movableTypes;
         /** @type {typeof ScreenRenderer} */
         PlayBoardRenderer.ScreenRenderer = bundle.ScreenRenderer;
@@ -445,7 +446,25 @@ class PlayBoardRenderer {
      * @param {PlayBoardLike} playBoard
      */
     static draw(p5, playBoard) {
-        p5.background(180);
+        // draw background
+        let bg;
+        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.TORNADO){
+            bg = p5.images.get("TornadoBG");
+        }
+        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.VOLCANO){
+            bg = p5.images.get("VolcanoBG");
+        }
+        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.EARTHQUAKE){
+            bg = p5.images.get("EarthquakeBG");
+        }
+        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.BLIZZARD){
+            bg = p5.images.get("BlizzardBG");
+        }
+        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.TSUNAMI){
+            bg = p5.images.get("TsunamiBG");
+        }
+        p5.image(bg, 0, 0, PlayBoardRenderer.utilityClass.relative2absolute(1, 1)[0], PlayBoardRenderer.utilityClass.relative2absolute(1, 1)[1]);
+
 
         // stage number text
         let [stageNumberingX, stageNumberingY] = PlayBoardRenderer.utilityClass.relative2absolute(0.38, 0.04);

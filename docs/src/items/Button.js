@@ -3,7 +3,7 @@ class Button {
         Button.CanvasSize = bundle.CanvasSize;
     }
 
-    constructor(x, y, width, height, text) {
+    constructor(x, y, width, height, text, gamepadButton = 'xbox_X') {
         // location and size properties
         this.x = x;
         this.y = y;
@@ -17,12 +17,13 @@ class Button {
         };
         this.isSelected = false;
         this.mode = "mouse";
+        this.gamepadButton = gamepadButton;
     }
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
-        let baseColor = "rgb(100, 150, 255)";
-        let hoverColor = "rgb(150, 200, 255)";
+        let baseColor = "rgb(0, 102, 0)";
+        let hoverColor = "rgb(0, 204, 0)";
         let buttonColor = this.isHovered ? hoverColor : baseColor;
         p5.push();
         p5.drawingContext.shadowBlur = this.isHovered ? 15 : 5;
@@ -31,6 +32,9 @@ class Button {
         p5.noStroke();
         p5.fill(buttonColor);
         p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
+        // draw gamepad button
+        let gbSize = this.height / 2;
+        p5.image(p5.images.get(this.gamepadButton), this.x + this.width - gbSize - this.height / 8, this.y + this.height - gbSize - this.height / 8, gbSize, gbSize);
         // inner text
         p5.fill(255);
         p5.textSize(Button.CanvasSize.getFontSize().small);

@@ -93,10 +93,11 @@ class TornadoRenderer {
     /**
      *
      * @param p5
+     * @param {PlayBoardLike} playBoard
      * @param {TornadoModel} tornado
      */
-    static draw(p5, tornado) {
-        let imgSize = TornadoRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+    static draw(p5, playBoard, tornado) {
+        let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
         p5.image(tornado.img, tornado.x - imgSize / 2, tornado.y - imgSize, imgSize, imgSize);
     }
 }

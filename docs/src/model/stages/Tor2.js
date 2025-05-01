@@ -33,7 +33,7 @@ class Tornado2PlayBoard {
         playBoard.stageNumbering = 2;
         // grid parameters
         playBoard.gridSize = 6;
-        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(1 / 16, 1 / 9);
+        [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(3 / 32, 3 / 18);
 
         // board objects array
         playBoard.boardObjects = new this.PlayBoardModel.BoardModel(playBoard.gridSize);
@@ -149,7 +149,7 @@ class Tornado2PlayBoard {
                         break;
                     }
                 }
-                if (!cell.plant.hasActive) return;
+                if (!cell || !cell.plant.hasActive) return;
                 playBoard.floatingWindow = playBoard.allFloatingWindows.get("200");
                 playBoard.allFloatingWindows.delete("200");
                 return;
@@ -167,7 +167,7 @@ class Tornado2PlayBoard {
                         break;
                     }
                 }
-                if (!cell.plant.hasActive || cell.plant.useLeft === cell.plant.maxUse) return;
+                if (!cell || !cell.plant.hasActive || cell.plant.useLeft === cell.plant.maxUse) return;
                 playBoard.floatingWindow = playBoard.allFloatingWindows.get("202");
                 playBoard.allFloatingWindows.delete("202");
                 return;

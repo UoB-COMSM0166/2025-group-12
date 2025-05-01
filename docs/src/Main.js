@@ -79,8 +79,6 @@ new p5((p) => {
     }
 
     p.draw = () => {
-        p.background(100);
-
         pollGamepad(p, container.controller.menus[container.controller.gameState.getState()], container.controller.saveState);
 
         container.controller.mainLoopEntry(p);

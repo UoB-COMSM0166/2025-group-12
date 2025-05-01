@@ -52,7 +52,7 @@ class TsunamiRenderer {
      * @param {TsunamiModel} tsunami
      */
     static draw(p5, playBoard, tsunami) {
-        let imgSize = TsunamiRenderer.utilityClass.relative2absolute(1 / 40, 0)[0];
+        let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
         if (tsunami.startCol !== -1) {
             for (let i = 0; i < tsunami.gridSize; i++) {
                 for (let j = 0; j <= tsunami.movedLength[i]; j++) {

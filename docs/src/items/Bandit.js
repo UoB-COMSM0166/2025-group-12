@@ -49,10 +49,11 @@ class BanditRenderer {
     /**
      *
      * @param p5
+     * @param {PlayBoardLike} playBoard
      * @param {BanditModel} bandit
      */
-    static draw(p5, bandit) {
-        let imgSize = BanditRenderer.utilityClass.relative2absolute(1 / 32, 0)[0];
+    static draw(p5, playBoard, bandit) {
+        let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
         p5.image(bandit.img, bandit.x - imgSize / 2, bandit.y - imgSize, imgSize, imgSize);
     }
 }
