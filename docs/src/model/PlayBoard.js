@@ -491,7 +491,7 @@ class PlayBoardRenderer {
 
         // draw inventory
         PlayBoardRenderer.InventoryRenderer.draw(p5, playBoard.gameState.inventory);
-        if(playBoard.gameState.getState() === this.stateCode.MENU) PlayBoardRenderer.InventoryRenderer.drawGamepadInstruction(p5, playBoard.gameState.inventory);
+        PlayBoardRenderer.InventoryRenderer.drawGamepadInstruction(p5, playBoard.gameState.inventory);
 
         // draw action points
         PlayBoardRenderer.drawActionPoints(p5, playBoard);

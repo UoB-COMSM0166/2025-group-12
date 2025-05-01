@@ -89,7 +89,6 @@ class InventoryRenderer {
             p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             index++;
         }
-        InventoryRenderer.drawGamepadInstruction(p5, inventory);
     }
 
     static drawGamepadInstruction(p5, inventory){
