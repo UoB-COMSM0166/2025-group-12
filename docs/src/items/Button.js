@@ -3,7 +3,7 @@ class Button {
         Button.CanvasSize = bundle.CanvasSize;
     }
 
-    constructor(x, y, width, height, text, gamepadButton) {
+    constructor(x, y, width, height, text, gamepadButton = null) {
         // location and size properties
         this.x = x;
         this.y = y;
@@ -33,7 +33,8 @@ class Button {
         p5.noStroke();
         p5.fill(buttonColor);
         p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
-        if(this.mode === "gamepad" && this.gamepadButton){        // draw gamepad button
+        // draw gamepad button
+        if(this.mode === "gamepad" && this.gamepadButton){
             let gbSize = this.height / 2;
             p5.image(p5.images.get(this.gamepadButton), this.x + this.width - gbSize - this.height / 8, this.y + this.height - gbSize - this.height / 8, gbSize, gbSize);
         }
