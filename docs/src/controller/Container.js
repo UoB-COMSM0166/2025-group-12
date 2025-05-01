@@ -341,6 +341,7 @@ class Container {
 
         let menuBundle = {
             p5: p5,
+            gameState: this.gameState,
             utilityClass: this.utilityClass,
             MenuItem: this.MenuItem,
             Button: this.Button,
