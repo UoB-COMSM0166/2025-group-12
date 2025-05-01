@@ -3,7 +3,7 @@ class Button {
         Button.CanvasSize = bundle.CanvasSize;
     }
 
-    constructor(x, y, width, height, text, gamepadButton = 'xbox_X') {
+    constructor(x, y, width, height, text, gamepadButton) {
         // location and size properties
         this.x = x;
         this.y = y;
@@ -18,6 +18,7 @@ class Button {
         this.isSelected = false;
         this.mode = "mouse";
         this.gamepadButton = gamepadButton;
+        this.textSize = Button.CanvasSize.getFontSize().small;
     }
 
     draw(p5) {
@@ -32,12 +33,13 @@ class Button {
         p5.noStroke();
         p5.fill(buttonColor);
         p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
-        // draw gamepad button
-        let gbSize = this.height / 2;
-        p5.image(p5.images.get(this.gamepadButton), this.x + this.width - gbSize - this.height / 8, this.y + this.height - gbSize - this.height / 8, gbSize, gbSize);
+        if(this.mode === "gamepad" && this.gamepadButton){        // draw gamepad button
+            let gbSize = this.height / 2;
+            p5.image(p5.images.get(this.gamepadButton), this.x + this.width - gbSize - this.height / 8, this.y + this.height - gbSize - this.height / 8, gbSize, gbSize);
+        }
         // inner text
         p5.fill(255);
-        p5.textSize(Button.CanvasSize.getFontSize().small);
+        p5.textSize(this.textSize);
         p5.textAlign(p5.CENTER, p5.CENTER);
         p5.text(this.text, this.x + this.width / 2, this.y + this.height / 2);
         p5.pop();

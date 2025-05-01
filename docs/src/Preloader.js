@@ -69,20 +69,21 @@ function loadImages(p5) {
     images.set("BlizzardBG", p5.loadImage(basePath + "BlizzardBG.png"));
     images.set("TsunamiBG", p5.loadImage(basePath + "TsunamiBG.png"));
 
-    images.set("xbox_A", p5.loadImage(basePath + "xbox/" + "Xbox_A.png"));
-    images.set("xbox_B", p5.loadImage(basePath + "xbox/" + "Xbox_B.png"));
-    images.set("xbox_X", p5.loadImage(basePath + "xbox/" + "Xbox_X.png"));
-    images.set("xbox_Y", p5.loadImage(basePath + "xbox/" + "Xbox_Y.png"));
-    images.set("xbox_up", p5.loadImage(basePath + "xbox/" + "Xbox_up.png"));
-    images.set("xbox_down", p5.loadImage(basePath + "xbox/" + "Xbox_down.png"));
-    images.set("xbox_left", p5.loadImage(basePath + "xbox/" + "Xbox_left.png"));
-    images.set("xbox_right", p5.loadImage(basePath + "xbox/" + "Xbox_right.png"));
-    images.set("xbox_menu", p5.loadImage(basePath + "xbox/" + "Xbox_menu.png"));
-    images.set("xbox_view", p5.loadImage(basePath + "xbox/" + "Xbox_view.png"));
-    images.set("xbox_LB", p5.loadImage(basePath + "xbox/" + "Xbox_LB.png"));
-    images.set("xbox_LT", p5.loadImage(basePath + "xbox/" + "Xbox_LT.png"));
-    images.set("xbox_RB", p5.loadImage(basePath + "xbox/" + "Xbox_RB.png"));
-    images.set("xbox_RT", p5.loadImage(basePath + "xbox/" + "Xbox_RT.png"));
+    images.set("xbox_A", p5.loadImage(basePath + "xbox/" + "xbox_A.png"));
+    images.set("xbox_B", p5.loadImage(basePath + "xbox/" + "xbox_B.png"));
+    images.set("xbox_X", p5.loadImage(basePath + "xbox/" + "xbox_X.png"));
+    images.set("xbox_Y", p5.loadImage(basePath + "xbox/" + "xbox_Y.png"));
+    images.set("xbox_up", p5.loadImage(basePath + "xbox/" + "xbox_up.png"));
+    images.set("xbox_down", p5.loadImage(basePath + "xbox/" + "xbox_down.png"));
+    images.set("xbox_left", p5.loadImage(basePath + "xbox/" + "xbox_left.png"));
+    images.set("xbox_right", p5.loadImage(basePath + "xbox/" + "xbox_right.png"));
+    images.set("xbox_menu", p5.loadImage(basePath + "xbox/" + "xbox_menu.png"));
+    images.set("xbox_view", p5.loadImage(basePath + "xbox/" + "xbox_view.png"));
+    images.set("xbox_LB", p5.loadImage(basePath + "xbox/" + "xbox_LB.png"));
+    images.set("xbox_LT", p5.loadImage(basePath + "xbox/" + "xbox_LT.png"));
+    images.set("xbox_RB", p5.loadImage(basePath + "xbox/" + "xbox_RB.png"));
+    images.set("xbox_RT", p5.loadImage(basePath + "xbox/" + "xbox_RT.png"));
+    images.set("xbox_cross", p5.loadImage(basePath + "xbox/" + "xbox_cross.png"));
 
     return images;
 }

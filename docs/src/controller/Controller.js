@@ -114,6 +114,8 @@ class Controller {
         if (newState === this.stateCode.FINISH) {
             this.menus[this.stateCode.PLAY] = null;
             this.gameState.inventory.scrollIndex = 0;
+            this.gameState.inventory.isSelected = false;
+            this.gameState.inventory.index = -1;
             this.gameState.setState(this.stateCode.STANDBY);
             this.gameState.setPlayerCanClick(true);
             return;

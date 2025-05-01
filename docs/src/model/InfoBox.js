@@ -112,6 +112,7 @@ class InfoBoxLogic {
         InfoBoxLogic.BoardLogic = bundle.BoardLogic;
         /** @type {Function} */
         InfoBoxLogic.activatePlantSkill = bundle.activatePlantSkill;
+        InfoBoxLogic.gameState = bundle.gameState;
     }
 
     /**
@@ -158,7 +159,9 @@ class InfoBoxLogic {
         let [buttonWidth, buttonHeight] = InfoBoxLogic.utilityClass.relative2absolute(5 / 64, 0.04);
         let buttonX = infoBox.boxLeftX + infoBox.boxWidth / 2 - buttonWidth / 2;
         let buttonY = infoBox.boxY - infoBox.paddingY - buttonHeight;
-        let activate = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, "activate");
+        let activate = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, "activate", "xbox_RT");
+        activate.textSize = InfoBoxLogic.Button.CanvasSize.getFontSize().mini;
+        display.mode = InfoBoxLogic.gameState.mode;
         activate.onClick = () => {
             InfoBoxLogic.activatePlantSkill(infoBox.playBoard);
         };
@@ -193,7 +196,9 @@ class InfoBoxLogic {
 
         let text = infoBox.playBoard.ecoDisplay ? "display off" : "display on";
 
-        let display = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, text);
+        let display = new InfoBoxLogic.Button(buttonX, buttonY, buttonWidth, buttonHeight, text, "xbox_X");
+        display.textSize = InfoBoxLogic.Button.CanvasSize.getFontSize().mini;
+        display.mode = InfoBoxLogic.gameState.mode;
         display.onClick = () => {
             infoBox.playBoard.ecoDisplay = !infoBox.playBoard.ecoDisplay;
             InfoBoxLogic.toggleEcoDisplayButtonText(infoBox);

@@ -89,6 +89,15 @@ class InventoryRenderer {
             p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             index++;
         }
+        InventoryRenderer.drawGamepadInstruction(p5, inventory);
+    }
+
+    static drawGamepadInstruction(p5, inventory){
+        if(inventory.mode === "gamepad"){
+            let gbSize = inventory.itemInter * 3;
+            p5.image(p5.images.get("xbox_cross"), inventory.inventoryX, inventory.inventoryY+ inventory.inventoryHeight, gbSize, gbSize);
+            p5.text("Cycle Plants", inventory.inventoryX + inventory.inventoryWidth / 2 + gbSize*0.5, inventory.inventoryY+ inventory.inventoryHeight + gbSize* 0.5);
+        }
     }
 }
 

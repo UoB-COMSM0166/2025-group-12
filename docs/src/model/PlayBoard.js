@@ -226,7 +226,8 @@ class PlayBoardModel {
         // undo
         let [undoX, undoY] = PlayBoardModel.utilityClass.relative2absolute(0.02, 0.01);
         let [undoWidth, undoHeight] = PlayBoardModel.utilityClass.relative2absolute(0.09, 0.07);
-        let undoButton = new PlayBoardModel.Button(undoX, undoY, undoWidth, undoHeight, "Undo");
+        let undoButton = new PlayBoardModel.Button(undoX, undoY, undoWidth, undoHeight, "Undo", "xbox_LT");
+        undoButton.mode = playBoard.gameState.mode;
         undoButton.onClick = () => {
             PlayBoardSerializer.undo(p5, playBoard);
         }
@@ -234,7 +235,8 @@ class PlayBoardModel {
         // turn button
         let [turnWidth, turnHeight] = PlayBoardModel.utilityClass.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = PlayBoardModel.utilityClass.relative2absolute(0.5, 0.01);
-        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, PlayBoardModel.getTurnButtonText(playBoard));
+        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, PlayBoardModel.getTurnButtonText(playBoard), "xbox_Y");
+        turnButton.mode = playBoard.gameState.mode;
         turnButton.onClick = () => {
             playBoard.movables.sort((a, b) => {
                 if (a.movableType !== undefined && b.movableType !== undefined) {
@@ -288,6 +290,7 @@ class PlayBoardRenderer {
     static setup(bundle) {
         PlayBoardRenderer.itemTypes = bundle.itemTypes;
         PlayBoardRenderer.stageGroup = bundle.stageGroup;
+        PlayBoardRenderer.stateCode = bundle.stateCode;
         PlayBoardRenderer.movableTypes = bundle.movableTypes;
         /** @type {typeof ScreenRenderer} */
         PlayBoardRenderer.ScreenRenderer = bundle.ScreenRenderer;
@@ -488,6 +491,7 @@ class PlayBoardRenderer {
 
         // draw inventory
         PlayBoardRenderer.InventoryRenderer.draw(p5, playBoard.gameState.inventory);
+        if(playBoard.gameState.getState() === this.stateCode.MENU) PlayBoardRenderer.InventoryRenderer.drawGamepadInstruction(p5, playBoard.gameState.inventory);
 
         // draw action points
         PlayBoardRenderer.drawActionPoints(p5, playBoard);
@@ -793,7 +797,6 @@ class PlayBoardLogic {
                         playBoard.maxActionPoints++;
                         playBoard.actionPoints++;
                     }
-
                     return;
                 }
             } else {
