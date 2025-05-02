@@ -110,7 +110,7 @@ The requirements and acceptance criteria raised by our team as user stories are 
 
 ### Reflection on epics, user stories and acceptance criteria
 
-Requirements-driven engineering defines clear boundaries for the final product and specifies one direction for development. One of the user stories states that the game should be easy to learn. It is then broken down into manageable tasks for us to accomplish, including adding floating windows for hints, designing the game board and enemies carefully, introducing the undo feature to improve tolerance for mistakes, designing user-friendly UI, etc. By pre-defining all tasks on the kanban, we establish a clear path and priority for implementing these features, greatly enhancing our efficiency.
+Requirements-driven engineering defines clear boundaries for the final product and specifies one direction for development. One of the epics states that the game should be easy to learn. It is then broken down into user stories for us to accomplish, including adding floating windows for hints, designing the game board and enemies carefully, introducing the undo feature to improve tolerance for mistakes, designing user-friendly UI, etc. By pre-defining all tasks on the kanban, we establish a clear path and priority for implementing these features, greatly enhancing our efficiency.
 
 Epics and user stories vaguely outline boundaries for the product on different scales, while acceptance criteria shape them to become more precise. “Adding floating windows” is indeed helpful, but what kind of floating windows? In the acceptance criterion for it, we must define clear constraints on all the elements: positioning, sizing, font size, colour, text wrapping, text wording… Once the criterion is met, we can confidently tick the task off the kanban.
 
@@ -315,54 +315,80 @@ The demonstration code chunks for implementing serialisers. Upper level serialis
 
 ## Evaluation
 
-#### Qualitative evaluation: Heuristics
+We conducted qualitative and quantitative evaluations to find potential issues that affect user experiences. 
 
-#### Quantitative evaluation: NASA TLX
+### Qualitative evaluation: Heuristics
 
-Our heuristic evaluation of the turn-based ecology strategy prototype used Nielsen’s ten heuristics. Twenty-four issues were discovered and most of them are related to the games’s UI/UX and gameplay interface. Each issue was rated 0-4 for frequency, impact, and persistence. Furthermore, the average of these ratings formed a severity score guiding priority. To triangulate the purely expert-driven findings with players perception, we administered the System Usability Scale (SUS) and the NASA Task Load Index (NASA-TLX) to twelve participants who completed both “easy” and a “hard” scenario. In our tests, we identified the most severe issues affecting users’ experiences, analyzed the potential root causes and propose targeted interventions to address these issues.
+Among the two major approaches, the think-aloud and Nielsen’s heuristic, we selected the analytical heuristic method to enhance coverage. Twenty-four issues were discovered, most of which are related to the game’s UI/UX and gameplay interface. Beyond identifying the issues and broken heuristics, we also allowed users to rate the frequency, impact, and persistence level, ranging from 0 to 4, providing insight into the severity of the issues. The raw data can be found [here](https://github.com/UoB-COMSM0166/2025-group-12/blob/main/documents/Heuristic%20Evaluation.md). Some of the issues are identified due to maloperation or skipping some tutorials. Let’s review the filtered issues according to the heuristics evaluators found violated, ordered by severity.
 
-1. Opaque core loop
-    - Problem Description: New players struggle to intuit the game’s objectives and flow.
-    - Root Cause: The prototype presumes familiarity with board-style, turn-based mechanics common to veteran players, leaving novices with insufficient context for key actions, such as planting, resource management and defences.
-    - Proposed Solution: Extend the tutorial into a multi-step guided sequence that visually links each mechanic. Use contextual, step-by-step hints—such as animated arrows or highlighted UI elements—that explicitly demonstrate how planting consumes resources to build defences and how these defences mitigate incoming threats.
-2. Hidden stamina bar
-    - Problem Description: The stamina does not appear until Level 2, disrupting early strategic planning.
-    - Root Cause: The tutorial skips the introduction to stamina mechanics, therefore, players lack awareness of this fundamental constraint during their decision-making procedure.
-    - Proposed Solution: Integrate a dedicated stamina segment into the tutorial and increase the brief explanation of how the stamina mechanism work, including how each actions depletes stamina and resets between turns.
-3. Unpredictable disasters and attacks
-    - Problem Description: Natural disasters and enemy materialized without warning, reducing perceived player agency.
-    - Root Cause:  Under the design in the prototype, disaster and enemy spawn are randomized each turn with no telegraphed indicators, forcing players into reactive rather than strategic play.
-    - Proposed Solution: Implement a one-turn advance warning system. For example display directional icons or a brief animation on affected grid cells at the end of the preceding turn, allowing players to rearrange defences or adjust planting accordingly.
-4. Magic numbers in resources
-    - Problem Description: Resource values are presented as bare integers, requiring players to memorize abstract “magic numbers” with no descriptive context.
-    - Root Cause: The prototype’s resource display lacks affordances—such as icons, units, or color cues—that communicate meaning.
-    - Proposed Solution: Augment the resource panel with self-describing labels, color-coded gauges to help player notify the meaning of the number, and incorporate a concise demo in the tutorial.
-5. Difficulty spike after tutorial
-    - Problem Description: The transition from tutorial to Level 1 is abrupt, causing novice players to feel overwhelmed.
-    - Root Cause: Difficulty tuning has prioritized experienced fans of turn-based tactics, neglecting skill acquisition for the players with few experiences.
-    - Proposed Solution: Redesign the early progression as a graduated ramp. Spilt the tutorial into multiple mini-challenges of increasing complexity, ensuring each new mechanics is introduced in isolation before laying additional challenges.
-6. Round-skip bug and missing undo
-    - Problem Description: Player cannot revert a mistaken action, eroding confidence in turn control.
-    - Root Cause: Undo mechanism were not yet implemented in the prototype iteration.
-    - Proposed Solution: Develop and place an “Undo” button in the obvious area. Ensure the turn logic remains integral to avoid inconsistency between states.
+#### Help & documentation
 
-In the latest version of the game, we have solved or mitigated the problems collected from the test, including enhanced tutorials, clearer feedback loops, and improved control mechanisms. We believed, the improvement can strike a better balance between learning curve and robust strategic depth. 
+- “Players with turn-based tactics experience adapt quickly, while new players struggle with a steep learning curve”
 
-##### NASA-TLX Results: Cognitive & Physical Load
+- “Lack of ecosystem hints, affecting strategy formulation”
 
-| Sub-scale (0–20) | Easy mean | Hard mean |
-| --- | --- | --- |
-| Mental Demand | 8.17 | 13.17 |
-| Physical Demand | 3.83 | 5.58 |
-| Temporal Demand | 3.75 | 4.92 |
-| Performance | 5.50 | 9.25 |
-| Effort | 6.67 | 12.83 |
-| Frustration | 6.58 | 9.33 |
-| **Raw TLX** | **5.75** | **9.18** |
+- “Missing Help Button, making it difficult for players to get quick assistance”
 
-Nevertheless, the turn-based strategic game endow a relative high threshold to entry and the players we aimed to attract might not the new players with few experiences, therefore, the game still cause a relative high burdens on player according to the test result from NASA Task Load Index. Mental demand, effort and frustration nearly double from easy to hard mode, reflecting the difficulty spike and lack of anticipatory feedback. Even in the easy mode, mental demand and effort received relative high score in the test, indicating that novices struggle with core concepts early on. To address the learning burden, we introduced multiple self-descriptive icons to ensure players understand each next step and to reduce their frustration.
+- “Gameplay is not intuitive, and core mechanics are unclear”
 
-#### Testing
+- “The logic of natural disasters and enemy directions is unclear, affecting strategic planning”
+
+- “Significant difficulty gap between the tutorial and the first level, impacting new player experience”
+
+Players without experience in tactics games tend to give feedback concerning the “confusing” game process. We have introduced helpful floating windows and redesigned the tutorial game stages to alleviate these usability concerns. However, we encourage players to engage and dive deeply into the game mechanics and explore them, instead of us explaining everything explicitly.
+
+#### User control & freedom
+
+- “Players should be able to withdraw a recently planted plant to increase strategic flexibility”
+
+We have already addressed this issue by introducing the undo and save & load features, which are elaborated on in previous chapters.
+
+#### Recognition Rather Than Recall
+
+- “Hovering or clicking should display corresponding hints”
+
+We didn’t know how to provide information on game entities previously. Thanks to this insightful advice, we have introduced a hovering floating window to explain the details of a game entity.
+
+### Quantitative evaluation: NASA TLX
+
+To triangulate the purely expert-driven findings with players' perception, we administered the System Usability Scale (SUS) and the NASA Task Load Index (NASA-TLX) to twelve participants who completed both the tutorial (easy) and a genuine game stage (hard). We present here the results of the NASA TLX evaluation.
+
+| Tester/Questions | Question 1 | Question 2 | Question 3 | Question 4 | Question 5 | Question 6 |  |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Questions | 1. How mentally demanding was the task? | 2. How physically demanding was the task? | 3. How hurried or rushed was the pace of the task? | 4. How successful were you in accomplishing what you were asked to do? | 5. How hard did you have to work to accomplish your level of performance? | 6. How insecure, discouraged, irritated, stressed, and annoyed were you? | Total Score | Raw NASA-Task Load Index |
+| Person 1 (Easy level) | 15 | 3 | 2 | 9 | 11 | 12 | 52 | 8.67 |
+| Person 1 (Hard level) | 14 | 4 | 3 | 12 | 11 | 5 | 49 | 8.17 |
+| Person 2 (Easy level) | 16 | 2 | 1 | 16 | 15 | 16 | 66 | 11 |
+| Person 2 (Hard level) | 11 | 7 | 5 | 9 | 14 | 11 | 57 | 9.5 |
+| Person 3 (Easy level) | 10 | 10 | 1 | 1 | 4 | 7 | 33 | 5.5 |
+| Person 3 (Hard level) | 15 | 4 | 4 | 10 | 11 | 12 | 56 | 9.33 |
+| Person 4 (Easy level) | 7 | 1 | 2 | 1 | 1 | 7 | 19 | 3.17 |
+| Person 4 (Hard level) | 8 | 8 | 1 | 5 | 16 | 13 | 51 | 8.5 |
+| Person 5 (Easy level) | 5 | 5 | 4 | 1 | 1 | 1 | 17 | 2.83 |
+| Person 5 (Hard level) | 16 | 8 | 3 | 14 | 15 | 17 | 73 | 12.17 |
+| Person 6 (Easy level) | 3 | 3 | 3 | 2 | 3 | 3 | 17 | 2.83 |
+| Person 6 (Hard level) | 6 | 5 | 5 | 2 | 3 | 5 | 26 | 4.33 |
+| Person 7 (Easy level) | 12 | 1 | 1 | 7 | 11 | 10 | 42 | 7 |
+| Person 7 (Hard level) | 17 | 3 | 4 | 12 | 12 | 11 | 59 | 9.83 |
+| Person 8 (Easy level) | 8 | 3 | 13 | 0 | 5 | 5 | 34 | 5.67 |
+| Person 8 (Hard level) | 17 | 3 | 10 | 3 | 13 | 5 | 51 | 8.5 |
+| Person 9 (Easy level) | 7 | 4 | 3 | 3 | 7 | 4 | 28 | 4.67 |
+| Person 9 (Hard level) | 6 | 6 | 4 | 8 | 8 | 3 | 35 | 5.83 |
+| Person 10 (Easy level) | 2 | 2 | 2 | 18 | 3 | 3 | 30 | 5 |
+| Person 10 (Hard level) | 17 | 4 | 3 | 14 | 17 | 5 | 60 | 10 |
+| Person 11 (Easy level) | 5 | 4 | 5 | 7 | 14 | 7 | 42 | 7 |
+| Person 11 (Hard level) | 17 | 7 | 11 | 15 | 16 | 14 | 80 | 13.33 |
+| Person 12 (Easy level) | 8 | 8 | 8 | 1 | 5 | 4 | 34 | 5.67 |
+| Person 12 (Hard level) | 14 | 8 | 6 | 7 | 18 | 11 | 64 | 10.67 |
+| Average (Easy) | 8.17 | 3.83 | 3.75 | 5.50 | 6.67 | 6.58 | 34.50 | 5.75 |
+| Average (Hard) | 13.17 | 5.58 | 4.92 | 9.25 | 12.83 | 9.33 | 55.08 | 9.18 |
+| Average (Easy + Hard) | 10.67 | 4.71 | 4.33 | 7.38 | 9.75 | 7.96 | 44.79 | 7.47 |
+
+Notice from the table that some users found the tutorials even more demanding than later game stages. These users with extensive game experience suggested through interviews that the tutorials are verbose and easy to understand. From the table, we clearly see that physical or temporal demands are significantly lower than those of others, yet there are commonly high mental demands, which aligns with our game design. The performance, effort and frustration indicators vary intensely among different users, depending on their interest or previous experience in our game's genre.
+
+The result of the Wilcoxon signed rank test shows a `W=4.5`, which is less than the critical value at the 99.5% significance level (which is 5 for `N=12`), indicating a difficulty gap between tutorial stages and genuine no-hint game stages.
+
+### Testing
 
 We test our app with two approaches:
 
@@ -373,7 +399,7 @@ We test our app with two approaches:
 
 The first approach is easy but, more importantly, necessary to conduct, as there is no simple way to test the rendering outcome of the p5.js library. Focusing primarily on non-functional requirements, we test graphics and apparent logical bugs by playing through the game, following the game process and treating it as a complete black box.
 
-The second approach is more robust and reliable, but much harder to execute completely. We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~15000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
+The second approach is more robust and reliable, but much harder to execute completely. The test codebase can be found [here](https://github.com/UoB-COMSM0166/2025-group-12/tree/main/docs/lib/__test__). We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~15000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
 
 <p align="center">
   <img src="documents/sukusho_tests.png" width="75%" />
