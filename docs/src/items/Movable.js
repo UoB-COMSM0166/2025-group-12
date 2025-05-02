@@ -94,6 +94,27 @@ class MovableLogic {
         MovableLogic.BanditLogic = bundle.BanditLogic;
     }
 
+    static idleInfo(movableType){
+        switch (movable.movableType) {
+            case MovableSerializer.movableTypes.BANDIT:
+                return "Bandit will find a nearest plant and attack it.";
+            case MovableSerializer.movableTypes.TORNADO:
+                return "Tornado will destroy a line along the direction.";
+            case MovableSerializer.movableTypes.BOMB:
+                return "Bomb will be thrown to the cell.";
+            case MovableSerializer.movableTypes.SLIDE:
+                return "Landslide will change terrain of a line to landslide and destroy everything.";
+            case MovableSerializer.movableTypes.EARTHQUAKE:
+                return "Earthquake will deal damage to trees.";
+            case MovableSerializer.movableTypes.BLIZZARD:
+                return "Blizzard will deal damage to plants within the area.";
+            case MovableSerializer.movableTypes.TSUNAMI:
+                return "Tsunami will destroy everything!";
+            default:
+                return null;
+        }
+    }
+
     /**
      *
      * @param p5

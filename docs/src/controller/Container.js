@@ -8,6 +8,7 @@ import {myUtil} from "../../lib/myUtil.js";
 import {Controller} from "./Controller.js";
 import {Renderer} from "./Renderer.js";
 import {KeyboardHandler} from "./KeyboardHandler.js";
+import {MouseIdleDetector} from "./MouseIdleDetector.js";
 
 import {CanvasSize, resolutions} from "../CanvasSize.js";
 import {FloatingWindow} from "../model/FloatingWindow.js";
@@ -382,6 +383,7 @@ class Container {
         this.inventory = new InventoryModel();
 
         this.gameState = new GameState(p5, this.gameStageFactory, this.inventory);
+        this.gameState.mouseIdleDetector = new MouseIdleDetector(p5);
 
         menuBundle.gameState = this.gameState;
 

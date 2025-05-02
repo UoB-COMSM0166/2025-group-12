@@ -42,6 +42,7 @@
  * @property {Array} undoStack
  * @property {Array} snowfields
  * @property {Array} fertilized
+ * @property {FloatingWindow} infoFloatingWindow
  * @property {Function} setupActionListeners
  * @property {Function} setStageTerrain
  * @property {Function} initAllFloatingWindows
@@ -51,6 +52,8 @@
 // ---------------------------------
 // Remember to maintain above JSDoc.
 // ---------------------------------
+
+import {FloatingWindow} from "./FloatingWindow.js";
 
 /**
  * @implements ScreenLike
@@ -159,6 +162,8 @@ class PlayBoardModel {
         // gamepad
         this.selectInv = false;
         this.mode = "mouse";
+
+        this.infoFloatingWindow = null;
 
         // initialization
         PlayBoardModel.initPlayBoard(p5, /** @type {PlayBoardLike} */ this);
@@ -305,6 +310,8 @@ class PlayBoardRenderer {
 
         /** @type {typeof myUtil} */
         PlayBoardRenderer.utilityClass = bundle.utilityClass;
+        /** @type {typeof FloatingWindow} */
+        PlayBoardRenderer.FloatingWindow = bundle.FloatingWindow;
 
         /** @type {typeof InteractionLogic} */
         PlayBoardRenderer.InteractionLogic = bundle.InteractionLogic;
@@ -448,22 +455,88 @@ class PlayBoardRenderer {
      * @param p5
      * @param {PlayBoardLike} playBoard
      */
+    static drawIdleInfo(p5, playBoard) {
+        if (playBoard.gameState.mouseIdleDetector.isIdle() && (!playBoard.floatingWindow || playBoard.floatingWindow.playerCanClick)) {
+            if (!playBoard.infoFloatingWindow) {
+                let text = null;
+                let index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+                // mouse is on a cell
+                if (index[0] !== -1) {
+                    let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
+                    if (cell.plant) {
+                        text = PlayBoardLogic.PlantLogic.idleInfo(cell.plant.plantType);
+                    }
+                    if (cell.enemy) {
+                        text = PlayBoardLogic.MovableLogic.idleInfo(cell.enemy.movableType);
+                    }
+                }
+                // mouse is on an inventory item
+                else {
+                    let inventory = playBoard.gameState.inventory;
+                    let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
+                    for (let i = 0; i < visibleItems.length; i++) {
+                        let key = visibleItems[i][0];
+                        if (inventory.mode === "mouse") {
+                            let [x, y] = PlayBoardLogic.InventoryLogic.getItemPosition(i, inventory);
+                            if (p5.mouseX >= x && p5.mouseX <= x + inventory.itemWidth &&
+                                p5.mouseY >= y && p5.mouseY <= y + (inventory.itemHeight - inventory.itemInter)) {
+                                if (key % 2 === 1) key--;
+                                text = PlayBoardLogic.PlantLogic.idleInfo(key);
+                            }
+                        }
+                    }
+                }
+                if (text !== null) {
+                    let xPos = p5.mouseX;
+                    let yPos = p5.mouseY;
+                    playBoard.infoFloatingWindow = new PlayBoardRenderer.FloatingWindow(p5, null, text, {
+                        x: xPos,
+                        y: yPos,
+                        fontSize: 14,
+                        padding: 4,
+                        spacingRatio: 0.2,
+                        fadingSpeed: 1,
+                        playerCanClick: true
+                    });
+                    playBoard.infoFloatingWindow.x -= playBoard.infoFloatingWindow.boxWidth / 2;
+                    playBoard.infoFloatingWindow.y -= playBoard.infoFloatingWindow.boxHeight / 2;
+                    if (playBoard.infoFloatingWindow.x - playBoard.infoFloatingWindow.boxWidth < 0) {
+                        playBoard.infoFloatingWindow.x += playBoard.infoFloatingWindow.boxWidth;
+                    }
+                    if (playBoard.infoFloatingWindow.y - playBoard.infoFloatingWindow.boxHeight < 0) {
+                        playBoard.infoFloatingWindow.y += playBoard.infoFloatingWindow.boxHeight;
+                    }
+                }
+            } else {
+                playBoard.infoFloatingWindow.draw();
+            }
+        }
+        if (!playBoard.gameState.mouseIdleDetector.isIdle()) {
+            playBoard.infoFloatingWindow = null;
+        }
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
     static draw(p5, playBoard) {
         // draw background
         let bg;
-        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.TORNADO){
+        if (playBoard.stageGroup === PlayBoardRenderer.stageGroup.TORNADO) {
             bg = p5.images.get("TornadoBG");
         }
-        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.VOLCANO){
+        if (playBoard.stageGroup === PlayBoardRenderer.stageGroup.VOLCANO) {
             bg = p5.images.get("VolcanoBG");
         }
-        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.EARTHQUAKE){
+        if (playBoard.stageGroup === PlayBoardRenderer.stageGroup.EARTHQUAKE) {
             bg = p5.images.get("EarthquakeBG");
         }
-        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.BLIZZARD){
+        if (playBoard.stageGroup === PlayBoardRenderer.stageGroup.BLIZZARD) {
             bg = p5.images.get("BlizzardBG");
         }
-        if(playBoard.stageGroup === PlayBoardRenderer.stageGroup.TSUNAMI){
+        if (playBoard.stageGroup === PlayBoardRenderer.stageGroup.TSUNAMI) {
             bg = p5.images.get("TsunamiBG");
         }
         p5.image(bg, 0, 0, PlayBoardRenderer.utilityClass.relative2absolute(1, 1)[0], PlayBoardRenderer.utilityClass.relative2absolute(1, 1)[1]);
@@ -527,7 +600,10 @@ class PlayBoardRenderer {
             p5.circle(p5.gamepadX, p5.gamepadY, 10);
         }
 
+        // new feature: if mouse is idle, draw floating window to print information on game entities.
+        PlayBoardRenderer.drawIdleInfo(p5, playBoard);
     }
+
 }
 
 class PlayBoardLogic {
@@ -584,8 +660,7 @@ class PlayBoardLogic {
                 playBoard.gameState.inventory.selectedItem = null;
                 playBoard.shadowPlant = null;
                 return;
-            }
-            else if(playBoard.gameState.inventory.isSelected){
+            } else if (playBoard.gameState.inventory.isSelected) {
                 playBoard.gameState.inventory.index = -1;
                 playBoard.gameState.inventory.isSelected = false;
             }
@@ -607,9 +682,9 @@ class PlayBoardLogic {
                 PlayBoardLogic.cancel(playBoard);
                 break;
             case 2:
-                if(!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
                     let display = playBoard.buttons.find(button => button.text.toLowerCase().includes('display'));
-                    if(display) display.onClick();
+                    if (display) display.onClick();
                 }
                 break;
             case 3:
@@ -623,9 +698,9 @@ class PlayBoardLogic {
                 }
                 break;
             case 7:
-                if(!playBoard.isGameOver && playBoard.floatingWindow == null) {
+                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
                     let activate = playBoard.buttons.find(button => button.text.toLowerCase().includes('activate'));
-                    if(activate) activate.onClick();
+                    if (activate) activate.onClick();
                 }
                 break;
             case 9:

@@ -45,6 +45,7 @@ class Controller {
             this.pauseMenu.shift2Mouse(p5);
             console.log("Input mode changed to mouse");
         }
+        this.gameState.mouseIdleDetector.detectMouseIdleness();
     }
 
     clickListener(p5) {

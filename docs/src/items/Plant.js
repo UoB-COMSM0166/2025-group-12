@@ -44,6 +44,34 @@ class PlantLogic {
         PlantLogic.PlumLogic = bundle.PlumLogic;
     }
 
+    static idleInfo(plantType) {
+        if (plantType === PlantLogic.plantTypes.PALM) {
+            return "{white:Tree. No active or ecosystem skills.}"
+        }
+        if (plantType === PlantLogic.plantTypes.PINE) {
+            return "{white:Tree. Will gain passive skill once a bush is next to it.}\\{white:Will gain active skill once a bush and a grass is next to it.}"
+        }
+        if (plantType === PlantLogic.plantTypes.BAMBOO) {
+            return "{white:Tree. Will expand to all landslides}\\{white:if planted on landslide.}"
+        }
+        if (plantType === PlantLogic.plantTypes.KIKU) {
+            return "{white:Grass. Automatically adds 1 to the total action points.}"
+        }
+        if (plantType === PlantLogic.plantTypes.CORN) {
+            return "{white:Bush. No active or ecosystem skills.}"
+        }
+        if (plantType === PlantLogic.plantTypes.PLUM) {
+            return "{white:Bush. Breaks nearby snowfields.}"
+        }
+        if (plantType === PlantLogic.plantTypes.FIRE_HERB) {
+            return "{white:Grass. Ecosystem with 10 more plants and at least a fire herb resists lava.}\\{white: Ecosystem with fire herb withstands blizzard.}"
+        }
+        if (plantType === PlantLogic.plantTypes.ORCHID) {
+            return "{white:Grass. Will gain active skill once a tree is next to it.}"
+        }
+        return null;
+    }
+
     /**
      *
      * @param {PlayBoardLike} playBoard
@@ -65,7 +93,7 @@ class PlantLogic {
      * @param {PlayBoardLike} playBoard
      * @param {CellModel} cell
      */
-    static spreadBamboo(p5, playBoard, cell){
+    static spreadBamboo(p5, playBoard, cell) {
         PlantLogic.BambooLogic.spreadBamboo(p5, playBoard, cell);
     }
 

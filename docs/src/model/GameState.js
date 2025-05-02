@@ -58,6 +58,9 @@ class GameState {
 
         // gamepad
         this.mode = "mouse";
+
+        /** @type {MouseIdleDetector} */
+        this.mouseIdleDetector = null;
     }
 
     setState(newState) {
