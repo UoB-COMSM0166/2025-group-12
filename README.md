@@ -57,7 +57,7 @@ To decide what to develop, we first raised our initial requirements for the game
  Our scrum master then collects all the requirements, guiding us to a consensus. Team members are then assigned tasks to explore relevant game ideas. We kept a backlog and a short version on the kanban to remind ourselves. This process was repeated over several meetings, focusing on the game mechanism. During week 3’s workshop, we made two paper prototypes, which were later denied due to dissatisfaction with our requirements. However, they played important roles in integrating the final idea of the game mechanism by evaluating the pros and cons of the two prototypes. 
 
 <p align="center">
-    <img src="documents/paperprototype.gif" width="70%">
+    <img src="documents/paperprototype.gif" width="70%"  alt="animated">
 </p>
 
 <p align="center">
