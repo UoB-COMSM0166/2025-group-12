@@ -95,7 +95,7 @@ class MovableLogic {
     }
 
     static idleInfo(movableType){
-        switch (movable.movableType) {
+        switch (movableType) {
             case MovableSerializer.movableTypes.BANDIT:
                 return "Bandit will find a nearest plant and attack it.";
             case MovableSerializer.movableTypes.TORNADO:

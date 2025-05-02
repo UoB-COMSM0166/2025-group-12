@@ -61,6 +61,7 @@ class GameState {
 
         /** @type {MouseIdleDetector} */
         this.mouseIdleDetector = null;
+        this.isIdle = false;
     }
 
     setState(newState) {

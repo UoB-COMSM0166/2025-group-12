@@ -225,6 +225,14 @@ class Controller {
         }
     }
 
+    analogStickIdleListener(axes) {
+        let currentState = this.gameState.getState();
+        let currentMenu = this.menus[currentState];
+        if (currentMenu && this.logicFactory.get(currentState).handleAnalogStickIdle) {
+            this.logicFactory.get(currentState).handleAnalogStickIdle(axes, currentMenu);
+        }
+    }
+
     resize() {
         for (const [key, value] of Object.entries(this.menus)) {
             const logic = this.logicFactory.get(Number(key));
