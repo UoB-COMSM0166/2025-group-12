@@ -1,6 +1,7 @@
 import {Container} from "./controller/Container.js";
 import {loadImages} from "./Preloader.js";
 import {
+    analogStickIdle,
     analogStickMoved, analogStickPressed,
     anyGamepadButtonPressed,
     pollGamepad
@@ -54,6 +55,10 @@ new p5((p) => {
                 return;
             }
             container.controller.analogStickPressedListener(axes);
+        });
+
+        analogStickIdle( (axes) => {
+            container.controller.analogStickIdleListener(axes);
         });
     };
 

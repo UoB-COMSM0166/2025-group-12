@@ -5,11 +5,14 @@ let globalButtonListener = null;
 let lastAxes = [0, 0, 0, 0];
 let analogStickListener = null;
 let analogButtonListener = null;
+let analogStickIdleListener = null;
 
 let leftStick = false;
 let rightStick = false;
 let gamepad;
-
+const threshold = 50
+let currentTime = 0;
+let lastTime = 0;
 
 window.addEventListener("gamepadconnected", (e) => {
     gamepadIndex = e.gamepad.index;
@@ -40,6 +43,10 @@ function analogStickPressed(callback) {
     analogButtonListener = callback;
 }
 
+function analogStickIdle(callback) {
+    analogStickIdleListener = callback;
+}
+
 function pollGamepad(p5, currentMenu, saveState) {
     if (gamepadIndex !== null) gamepad = navigator.getGamepads()[gamepadIndex];
     if (!gamepad) return;
@@ -48,8 +55,12 @@ function pollGamepad(p5, currentMenu, saveState) {
     if (analogStickListener) {
         analogStickListener(currentAxes);
     }
+    //analog stick moved
+    if(Math.abs(currentAxes[0] - lastAxes[0])> 0.02) lastTime = currentTime;
+    if(currentTime - lastTime > threshold) {
+        analogStickIdleListener(currentAxes);
+    }
     lastAxes = currentAxes;
-
 
     gamepad.buttons.forEach((btn, index) => {
         const wasPressed = buttonStates[index] || false;
@@ -74,14 +85,15 @@ function pollGamepad(p5, currentMenu, saveState) {
     if (Math.abs(currentAxes[0]) < 0.5 && Math.abs(currentAxes[1]) < 0.5) {
         leftStick = false;
     }
+    currentTime++;
 }
 
 function _setTestGamepad(mockGamepad) {
     gamepad = mockGamepad;
 }
 
-export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad};
+export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad, analogStickIdle};
 
 if (typeof module !== 'undefined') {
-    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad};
+    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad, analogStickIdle};
 }

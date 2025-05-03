@@ -57,7 +57,7 @@ To decide what to develop, we first raised our initial requirements for the game
  Our scrum master then collects all the requirements, guiding us to a consensus. Team members are then assigned tasks to explore relevant game ideas. We kept a backlog and a short version on the kanban to remind ourselves. This process was repeated over several meetings, focusing on the game mechanism. During week 3’s workshop, we made two paper prototypes, which were later denied due to dissatisfaction with our requirements. However, they played important roles in integrating the final idea of the game mechanism by evaluating the pros and cons of the two prototypes. 
 
 <p align="center">
-    <img src="documents/paperprototype.gif">
+    <img src="documents/paperprototype.gif" width="70%"  alt="animated">
 </p>
 
 <p align="center">
@@ -69,7 +69,7 @@ The paper prototype introduces the fundamental concept of our gameplay: cultivat
 Through in-depth discussions, the early-stage game framework is maintained until the final version. We utilised pair programming to develop a working prototype in the first sprint, and all team members tested it and contributed ideas for later refinement.
 
 <p align="center">
-    <img src="documents/prototypedemo.gif">
+    <img src="documents/prototypedemo.gif" width="70%">
 </p>
 
 <p align="center">
@@ -419,7 +419,7 @@ Our team utilised the Scrum methodology and sprint feedback loops to manage the 
 We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 AM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
 
 <p align="center">
-    <img src="documents/meeting.gif">
+    <img src="documents/meeting.gif" width="40%">
 </p>
 
 <p align="center">

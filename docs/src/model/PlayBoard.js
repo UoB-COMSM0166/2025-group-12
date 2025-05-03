@@ -456,10 +456,12 @@ class PlayBoardRenderer {
      * @param {PlayBoardLike} playBoard
      */
     static drawIdleInfo(p5, playBoard) {
-        if (playBoard.gameState.mouseIdleDetector.isIdle() && (!playBoard.floatingWindow || playBoard.floatingWindow.playerCanClick)) {
+        if ((playBoard.gameState.mouseIdleDetector.isIdle() || playBoard.gameState.isIdle )&& (!playBoard.floatingWindow || playBoard.floatingWindow.playerCanClick)) {
             if (!playBoard.infoFloatingWindow) {
                 let text = null;
-                let index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+                let index;
+                if(playBoard.gameState.mode === "mouse") index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+                else index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.gamepadX, p5.gamepadY);
                 // mouse is on a cell
                 if (index[0] !== -1) {
                     let cell = PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects);
@@ -487,8 +489,8 @@ class PlayBoardRenderer {
                     }
                 }
                 if (text !== null) {
-                    let xPos = p5.mouseX;
-                    let yPos = p5.mouseY;
+                    let xPos = playBoard.gameState.mode === "mouse"? p5.mouseX : p5.gamepadX;
+                    let yPos = playBoard.gameState.mode === "mouse"? p5.mouseY : p5.gamepadY;
                     playBoard.infoFloatingWindow = new PlayBoardRenderer.FloatingWindow(p5, null, text, {
                         x: xPos,
                         y: yPos,
@@ -511,7 +513,10 @@ class PlayBoardRenderer {
                 playBoard.infoFloatingWindow.draw();
             }
         }
-        if (!playBoard.gameState.mouseIdleDetector.isIdle()) {
+        if (!playBoard.gameState.mouseIdleDetector.isIdle() && playBoard.gameState.mode === "mouse") {
+            playBoard.infoFloatingWindow = null;
+        }
+        if (!playBoard.gameState.isIdle && playBoard.gameState.mode === "gamepad") {
             playBoard.infoFloatingWindow = null;
         }
     }
@@ -671,6 +676,10 @@ class PlayBoardLogic {
 
     }
 
+    static handleAnalogStickIdle(axes, playBoard) {
+        playBoard.gameState.isIdle = true;
+    }
+
     /**
      *
      * @param index
@@ -736,6 +745,7 @@ class PlayBoardLogic {
      */
     static handleAnalogStick(p5, axes, playBoard) {
         if (playBoard.gameState.paused) return;
+        playBoard.gameState.isIdle = false;
         if (Math.abs(axes[0]) > 0.2 || Math.abs(axes[1]) > 0.2) {
             // edges of the grid under old grid-centered coordinates
             let leftEdge = -(playBoard.gridSize * playBoard.cellWidth) / 2;
