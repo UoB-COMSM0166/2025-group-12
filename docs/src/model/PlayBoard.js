@@ -865,7 +865,7 @@ class PlayBoardLogic {
                     PlayBoardLogic.InventoryLogic.itemDecrement(playBoard.gameState.inventory);
 
                     // set countdown for seed
-                    PlayBoardLogic.setSeedCountdown(index[0], index[1], playBoard);
+                    PlayBoardLogic.setSeedCountdown(p5, index[0], index[1], playBoard);
 
                     // if kiku is planted, increase upper limit of action points immediately
                     if (PlayBoardLogic.BoardLogic.getCell(index[0], index[1], playBoard.boardObjects)?.plant?.plantType === PlayBoardLogic.plantTypes.KIKU) {
@@ -929,19 +929,21 @@ class PlayBoardLogic {
         PlayBoardLogic.ScreenLogic.handleScroll(event, playBoard);
     }
 
-    // abstract, used in stage 5
     /**
      *
+     * @param p5
      * @param x
      * @param y
      * @param {PlayBoardLike} playBoard
      */
-    static setSeedCountdown(x, y, playBoard) {
+    static setSeedCountdown(p5, x, y, playBoard) {
+        let cell = PlayBoardLogic.BoardLogic.getCell(x, y, playBoard.boardObjects);
+        if (!cell.seed) return;
+        if (cell.terrain.terrainType !== PlayBoardLogic.terrainTypes.DESERT) {
+            cell.seed.img = p5.images.get("Seed1");
+        }
         if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.TSUNAMI) {
-            let cell = PlayBoardLogic.BoardLogic.getCell(x, y, playBoard.boardObjects);
-            if (cell.seed && playBoard.fertilized[x][y]) {
-                cell.seed.countdown = 1;
-            }
+            if (playBoard.fertilized[x][y]) cell.seed.countdown = 1;
         }
     }
 

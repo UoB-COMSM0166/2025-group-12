@@ -28,6 +28,7 @@ function loadImages(p5) {
     images.set("Sea", p5.loadImage(basePath + "Sea.png"));
 
     images.set("Seed", p5.loadImage(basePath + "Seed.png"));
+    images.set("Seed1", p5.loadImage(basePath + "Seed1.png"));
     images.set("Pine", p5.loadImage(basePath + "Pine.png"));
     images.set("Corn", p5.loadImage(basePath + "Corn.png"));
     images.set("Orchid", p5.loadImage(basePath + "Orchid.png"));
