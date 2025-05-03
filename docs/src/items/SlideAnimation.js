@@ -73,10 +73,13 @@ class SlideLogic {
             for (let j = 0; j < playBoard.gridSize; j++) {
                 let cell = SlideLogic.BoardLogic.getCell(i, j, playBoard.boardObjects);
                 if (cell.terrain.terrainType === SlideLogic.terrainTypes.HILL && cell.terrain.canSlide) {
-                    hills.push(cell);
+                    if (!cell.ecosystem || (cell.ecosystem && !cell.ecosystem.stabilizeSoil)) {
+                        hills.push(cell);
+                    }
                 }
             }
         }
+        if (hills.length === 0) return;
         let cell = hills[Math.floor(Math.random() * hills.length)];
         for (let adCell of SlideLogic.BoardLogic.getAdjacent8Cells(cell.i, cell.j, playBoard.boardObjects)) {
             if (adCell.plant !== null && SlideLogic.baseType(adCell.plant) === SlideLogic.plantTypes.TREE && adCell.ecosystem !== null) {

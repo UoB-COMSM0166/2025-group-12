@@ -123,6 +123,7 @@ class Container {
             terrainTypes: terrainTypes,
             movableTypes: movableTypes,
             baseType: baseType,
+            PlantModel: PlantModel,
             InteractionLogic: InteractionLogic,
             BoardLogic: BoardLogic,
         };
@@ -616,7 +617,7 @@ class GameStageFactory {
      * @param {typeof PlayBoardModel} PlayBoardModelClass
      * @param {typeof PlayBoardLogic} PlayBoardLogicClass
      */
-    wiringUp(stagePackage, PlayBoardModelClass, PlayBoardLogicClass){
+    wiringUp(stagePackage, PlayBoardModelClass, PlayBoardLogicClass) {
         PlayBoardModelClass.concreteBoardInit = stagePackage.concreteBoardInit.bind(stagePackage);
         PlayBoardModelClass.setStageInventory = stagePackage.setStageInventory.bind(stagePackage);
         PlayBoardModelClass.setStageTerrain = stagePackage.setStageTerrain.bind(stagePackage);

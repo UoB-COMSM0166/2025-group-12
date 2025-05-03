@@ -62,7 +62,7 @@ class BoardRenderer {
             for (let j = 0; j < board.size; j++) {
                 let [x, y] = BoardRenderer.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CORNERS);
                 let cell = BoardLogic.getCell(i, j, board);
-                if(cell.terrain.terrainType !== BoardRenderer.terrainTypes.VOLCANO && cell.terrain.layer) {
+                if (cell.terrain.terrainType !== BoardRenderer.terrainTypes.VOLCANO && cell.terrain.layer) {
                     p5.image(cell.terrain.layer, x - playBoard.cellWidth / 2, y - playBoard.cellHeight + playBoard.cellHeight / 2, playBoard.cellWidth, playBoard.cellHeight);
                 }
             }
@@ -369,13 +369,13 @@ class BoardLogic {
                 for (let adCell of BoardLogic.getAdjacent4Cells(cell.i, cell.j, board)) {
                     if (adCell.plant === null) continue;
                     let BaseType = BoardLogic.baseType(adCell.plant);
-                    if(plantTypesSet.has(BaseType)) continue;
+                    if (plantTypesSet.has(BaseType)) continue;
                     plantTypesSet.add(BaseType);
                     // 3. further loop through 4 adjacent cells
                     for (let adAdCell of BoardLogic.getAdjacent4Cells(adCell.i, adCell.j, board)) {
                         if (adAdCell.plant === null) continue;
                         BaseType = BoardLogic.baseType(adAdCell.plant);
-                        if(plantTypesSet.has(BaseType)) continue;
+                        if (plantTypesSet.has(BaseType)) continue;
                         plantTypesSet.add(BaseType);
                     }
                 }
@@ -588,7 +588,7 @@ class CellRenderer {
                 img = cell.plant.imgs[cell.plant.pointer];
             }
             // no animation
-            else{
+            else {
                 img = cell.plant.img;
             }
             p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
@@ -749,6 +749,7 @@ class Ecosystem {
         this.countPlants = countPlants;
         this.growFaster = true;
         this.rejectLava = false;
+        this.stabilizeSoil = true;
         this.strengthenOrchid = false;
         this.withstandSnow = false;
     }
@@ -762,10 +763,13 @@ class Ecosystem {
         if (this.rejectLava && (playBoardStageGroup === Ecosystem.stageGroup.VOLCANO || playBoardStageGroup === Ecosystem.stageGroup.TSUNAMI)) {
             str += "Lava expanded here will stop. "
         }
+        if (this.stabilizeSoil && playBoardStageGroup >= Ecosystem.stageGroup.EARTHQUAKE) {
+            str += "Stabilize soil and prevent landslide. "
+        }
         if (this.strengthenOrchid) {
             str += "Orchid deals more damage to bandits. "
         }
-        if (this.withstandSnow && (playBoardStageGroup === Ecosystem.stageGroup.VOLCANO || playBoardStageGroup === Ecosystem.stageGroup.TSUNAMI)) {
+        if (this.withstandSnow && playBoardStageGroup >= Ecosystem.stageGroup.BLIZZARD) {
             str += "Withstand blizzard. "
         }
         return str;
