@@ -464,63 +464,32 @@ We used an informal but effective peer feedback system to ensure code quality wi
 
 ### Environmental
 
-- Material & Resources
+Our game, the Green Renaissance, is closely tied to the environment. This natural disaster-inspired strategy game is designed to encourage players to pay attention to the natural environment. The core mechanism of the game is based on real natural disaster phenomena, such as sandstorms and earthquakes, and restores different ecological communities through frequent disasters like deserts, volcanoes, and seashores, presented in a pixel style. During the player's experience, the design team used real-named natural tree species and incorporated the process of seedlings growing into mature plants into the game design and art, allowing players to experience biodiversity and succession in natural systems more intuitively.
 
-- Soil, Atmospheric & Water Pollution
+The game also features a special mechanism inspired by the principle of ecosystem diversity: when players plant three plants of different types, a unique “Ecosystem” is formed, which has stronger resistance and growth advantages than monoculture. This mechanism also conveys ecological knowledge to players, allowing them to understand the importance of diversity in their strategic experience. As the game progresses, players will be consistently inspired to build awareness of protecting the natural environment and restoring damaged ecosystems, and to realise the concept of sustainable development through education and fun.
 
-- Energy
-
-- Biodiversity & Land Use
-
-- Logistics & Transportation
-
-### Social
-
-- Sense of Community
-
-- Trust
-
-- Inclusiveness & Diversity
-
-- Equality
-
-- Participation & Communication
-
-### Economic
-
-- Value
-
-- Customer Relationship Management
-
-- Supply chain
-
-- Governance & Processes
-
-- Innovation & R&D
-
-### Technical
-
-- Maintainability
-
-- Usability
-
-- Extensibility & Adaptability
-
-- Security
-
-- Scalability
+Our games are distributed virtually, avoiding the environmental costs of physical production, such as CD-ROM production, packaging, and shipping. All game content is accessible online, which has significantly reduced our environmental impact. Furthermore, we continue to optimise the codebase and strive to make the game more energy-efficient, truly reflecting the concept of environmental protection in our game development practices.
 
 ### Individual
 
-- Health
+At the individual level, our game is not just a strategy game, but one that supports sustainability. The design team provides easy-to-difficult map levels, coupled with progressively unlocked challenging play stages and plant species, allowing players to experience the rhythm of learning and mastery during the game. This design also fosters the ability of players to adapt to new things and lifelong learning.
 
-- Lifelong Learning
+In addition, the game is optimised for physical and mental health. Firstly, there is no time constraint, and it does not introduce anxiety like timed or competitive games. Through the asynchronous mechanism, players can pause, save, and resume at any time, which effectively avoids the invasion of personal time by compulsive play mode and helps players balance their play, study, and life. Meanwhile, the implementation of the undo functionality reduces the potential frustration caused by maloperation, avoiding repetitive and boring processes, allowing players to feel at ease to try and make errors and encouraging limitless exploration. Through this mechanism, players not only gain a sense of achievement after successfully completing the game but also naturally generate motivation to meet new challenges, promoting personal mental health and a positive experience.
 
-- Privacy
+In terms of personal privacy and data security, the game does not require registration and will not actively collect the player's personal information. All progress and preference data are stored only in the player's local browser and do not involve external server uploads, data collection, or user tracking. This design ensures the player's privacy, in line with the principles of digital privacy and sustainable use.
 
-- Safety
+### Social
 
-- Agency
+From a social perspective, the Green Renaissance's core theme of “Protecting the environment” naturally appeals to groups of players with similar values, such as plant lovers, environmentalists, and individuals interested in ecology. These shared values facilitate players in forming groups to exchange environmental knowledge and gaming strategies, thereby strengthening the bond between players and fostering a positive and sustainable sense of community.
+
+Trust is built into every aspect of The Green Renaissance. First, the game explicitly does not collect personal data, which effectively increases players' trust in the platform and the development team. Secondly, our game prompts people to be aware of the need to protect the natural environment, and this valued gaming experience enhances players’ trust in the game.
+
+In terms of inclusiveness and diversity, the development team considered the usability needs of players of different ages, genders, and cultural backgrounds from the early stages to ensure that the game design resonates broadly. Individuals do not need an avatar to play the game, implicitly diminishing cultural borders. Meanwhile, the Green Renaissance is a strategy game without physical constraints, requiring only simple mouse clicks, so players of all ages, including those with physical disabilities, can easily experience it. Additionally, the game supports gamepad operations, further embodying the community's tolerance and respect among players. Furthermore, all players receive the same resources at the beginning of the game, providing equal opportunities for all players to succeed, thus reflecting equality in strategy and enhancing fairness.
+
+### Technical
+
+We refactored our game from conventional OOP design patterns to the RESTful layered pattern, which further enhanced maintainability and modularity. Moreover, it also improved the extensibility and adaptability of the game since the layers can be plugged in and out. The game does not collect or share any personal information, creating a secure playing environment. We integrated user feedback into our game, reducing the cost of learning as much as we could.
+
 
 ## Conclusion
 
