@@ -524,14 +524,17 @@ We used an informal but effective peer feedback system to ensure code quality wi
 
 ## Conclusion
 
-- 10% ~500 words
-
-- Reflect on project as a whole. Lessons learned. Reflect on challenges. Future work.
-
 We gained valuable experience developing our game, The Green Renaissance, as the first step towards engineering beyond mere coding. Complying with the Agile principles and applying the agile approaches, we learned how to collaborate as a team as well as manage and maintain our work. Among all Agile practices, we have made every effort to leverage the Scrum methodology in particular by utilising weekly sprints and retrospective meetings. The continuous integration and incremental deliveries as small successes have greatly bolstered our confidence during the whole development process. 
+
 A significant lesson we learned was the power of requirements-driven development. By pre-defining requirements and product backlog, we have clear ideas of how the system will act and react, reducing potential unnecessary work. Well-defined requirements also make testing and validation handy by directly referring to the acceptance criteria. It is also rewarding to list all the requirements so we are able to order them by priority based on balancing value against effort.
+
 Challenges exist alongside development. The major challenge we encountered from the early to the late stages is the maintenance, which we believe every team struggles with. We managed to resolve it by applying the RESTful layered modularisation, which greatly decoupled components through dependency injection. Also, the separation of concerns, namely, to dispatch responsibility to lower-level components as much as possible, proved to be extremely beneficial to building a reusable and self-documented codebase. Keeping a maintainable codebase is critical not only to testing and easier debugging, but also to long-term engineering. It would be much simpler to introduce new functionalities without breaking the existing system.
+
 In addition to technical challenges, we also lost our way while designing the game elements. As the elements piled up, our initial brilliant ideas became exhausted, leaving us struggling. Eventually, we succeeded in designing through team discussions where members shared their thoughts, which were distilled to capture the essence and combined together.
+
+We cherish user feedback since it validates our design and system functionalities. User feedback is vital to Agile development, and continuous feedback helps improve each iteration. By attending the CSS Testathon in addition to course workshops, we gathered feedback from various groups of people, uncovering usability issues which shaped other designs to be much more user-friendly.
+
+There are also regrets that we could have done better. The most immediate enhancement is the full integration of gamepad support to offer a more accessible player experience, especially to those who are keen on controllers, or with disabilities, who find it difficult to use keyboard and mouse. We have partially fulfilled the key gamepad functionalities. Audio and ambient soundscapes are essential to an immersive game experience, but we have no time to integrate them. These possible future works would not only refine the existing gameplay but also broaden the game’s appeal to different types of players.
 
 
 ## Contribution Statement
