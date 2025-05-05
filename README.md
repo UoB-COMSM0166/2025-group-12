@@ -214,7 +214,8 @@ The main game menus are `StartMenu`, `GameMap`, and `PlayBoard`, which represent
 <p align="center">
 The class diagram for game screens.
 </p>
-`Controller` and `GameState` resemble the controller and model in the MVC design pattern, although here they only handle general logic and offer an entry point. The `GameState` keeps the current state, current play board, and cleared stages. The `Controller` gathers logic from menus and distributes the responsibility to separate menus. The container defines all dependencies and wires them up by passing a `bundle` object consisting of all required components through static `setup` methods, realising DI and IoC by handing over the right to control to the container, subsequently preventing circular dependency. The main class imports the container and defines the p5 object, which serves as the entry point to all other classes.
+
+The `Controller` and `GameState` resemble the controller and model in the MVC design pattern, although here they only handle general logic and offer an entry point. The `GameState` keeps the current state, current play board, and cleared stages. The `Controller` gathers logic from menus and distributes the responsibility to separate menus. The container defines all dependencies and wires them up by passing a `bundle` object consisting of all required components through static `setup` methods, realising DI and IoC by handing over the right to control to the container, subsequently preventing circular dependency. The main class imports the container and defines the p5 object, which serves as the entry point to all other classes.
 
 <p align="center">
     <img src="documents/cd6.png">
@@ -269,7 +270,8 @@ However, as the game expands, many challenges emerge, such as the interactions a
 
 ### Challenge 1 - Decoupling complexity
 
-As the game scale increases, it becomes exponentially harder to maintain the codebase. Circular dependencies inevitably arise, and encapsulation and modularisation under the conventional OOP design pattern lose significance since everything is intertwined. At its worst, serialisation of the game state exposes deep structural flaws: The plants on the play board reside on the `Cell` objects. To parse JSON strings, the `Cell` must import all modules of the plants. Some plants, to manage interactions among items, import the `PlayBoard` module, which already depends on `Cell`, leading to a circular dependency. Despite resolving this issue, one of our philosophies is that dispatching responsibilities to lower levels and keeping the top-level entry points as clean as possible results in a self-documented codebase being violated.
+As the game scale increases, it becomes exponentially harder to maintain the codebase. Circular dependencies inevitably arise, and encapsulation and modularisation under the conventional OOP design pattern lose significance since everything is intertwined. At its worst, serialisation of the game state exposes deep structural flaws: The plants on the play board reside on the `Cell` objects. To parse JSON strings, the `Cell` must import all modules of the plants. Some plants, to manage interactions among items, import the `PlayBoard` module, which already depends on `Cell`, leading to a circular dependency. Despite resolving this issue, one of our philosophies, that dispatching responsibilities to lower levels and keeping the top-level entry points as clean as possible results in a self-documented codebase, is violated.
+
 To regain maintainability, two approaches are adopted in parallel.
 
 - Enforce module boundaries.
@@ -399,7 +401,7 @@ We test our app with two approaches:
 
 The first approach is easy but, more importantly, necessary to conduct, as there is no simple way to test the rendering outcome of the p5.js library. Focusing primarily on non-functional requirements, we test graphics and apparent logical bugs by playing through the game, following the game process and treating it as a complete black box.
 
-The second approach is more robust and reliable, but much harder to execute completely. The test codebase can be found [here](https://github.com/UoB-COMSM0166/2025-group-12/tree/main/docs/lib/__test__). We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~12000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
+The second approach is more robust and reliable, but much harder to fully execute. The test codebase can be found [here](https://github.com/UoB-COMSM0166/2025-group-12/tree/main/docs/lib/__test__). We skipped the white box testing for functions since there are too many of them (refer to our class diagrams) that we can’t go through all the statements and branches within the term schedule. We ensure the overall correctness of the system by using black box testing and equivalent partitioning. Each individual menu is treated as a functional unit, and we use mock play boards, game entities, mouse inputs and keyboard inputs to the system to test reactions. A rule of thumb raised by our team that “the test code should be larger than the production code” is also violated due to our large codebase (~12000 lines) and term dates. However, we still ensure that the tests cover as many parameter categories as possible – as the game scales, the complexity grows exponentially, and we can only ensure the system is close to a bug-free status by iterating test suites.
 
 <p align="center">
   <img src="documents/sukusho_tests.png" width="75%" />
@@ -462,69 +464,47 @@ We used an informal but effective peer feedback system to ensure code quality wi
 
 ### Environmental
 
-- Material & Resources
+Our game, the Green Renaissance, is closely tied to the environment. This natural disaster-inspired strategy game is designed to encourage players to pay attention to the natural environment. The core mechanism of the game is based on real natural disaster phenomena, such as sandstorms and earthquakes, and restores different ecological communities through frequent disasters like deserts, volcanoes, and seashores, presented in a pixel style. During the player's experience, the design team used real-named natural tree species and incorporated the process of seedlings growing into mature plants into the game design and art, allowing players to experience biodiversity and succession in natural systems more intuitively.
 
-- Soil, Atmospheric & Water Pollution
+The game also features a special mechanism inspired by the principle of ecosystem diversity: when players plant three plants of different types, a unique “Ecosystem” is formed, which has stronger resistance and growth advantages than monoculture. This mechanism also conveys ecological knowledge to players, allowing them to understand the importance of diversity in their strategic experience. As the game progresses, players will be consistently inspired to build awareness of protecting the natural environment and restoring damaged ecosystems, and to realise the concept of sustainable development through education and fun.
 
-- Energy
-
-- Biodiversity & Land Use
-
-- Logistics & Transportation
-
-### Social
-
-- Sense of Community
-
-- Trust
-
-- Inclusiveness & Diversity
-
-- Equality
-
-- Participation & Communication
-
-### Economic
-
-- Value
-
-- Customer Relationship Management
-
-- Supply chain
-
-- Governance & Processes
-
-- Innovation & R&D
-
-### Technical
-
-- Maintainability
-
-- Usability
-
-- Extensibility & Adaptability
-
-- Security
-
-- Scalability
+Our games are distributed virtually, avoiding the environmental costs of physical production, such as CD-ROM production, packaging, and shipping. All game content is accessible online, which has significantly reduced our environmental impact. Furthermore, we continue to optimise the codebase and strive to make the game more energy-efficient, truly reflecting the concept of environmental protection in our game development practices.
 
 ### Individual
 
-- Health
+At the individual level, our game is not just a strategy game, but one that supports sustainability. The design team provides easy-to-difficult map levels, coupled with progressively unlocked challenging play stages and plant species, allowing players to experience the rhythm of learning and mastery during the game. This design also fosters the ability of players to adapt to new things and lifelong learning.
 
-- Lifelong Learning
+In addition, the game is optimised for physical and mental health. Firstly, there is no time constraint, and it does not introduce anxiety like timed or competitive games. Through the asynchronous mechanism, players can pause, save, and resume at any time, which effectively avoids the invasion of personal time by compulsive play mode and helps players balance their play, study, and life. Meanwhile, the implementation of the undo functionality reduces the potential frustration caused by maloperation, avoiding repetitive and boring processes, allowing players to feel at ease to try and make errors and encouraging limitless exploration. Through this mechanism, players not only gain a sense of achievement after successfully completing the game but also naturally generate motivation to meet new challenges, promoting personal mental health and a positive experience.
 
-- Privacy
+In terms of personal privacy and data security, the game does not require registration and will not actively collect the player's personal information. All progress and preference data are stored only in the player's local browser and do not involve external server uploads, data collection, or user tracking. This design ensures the player's privacy, in line with the principles of digital privacy and sustainable use.
 
-- Safety
+### Social
 
-- Agency
+From a social perspective, the Green Renaissance's core theme of “Protecting the environment” naturally appeals to groups of players with similar values, such as plant lovers, environmentalists, and individuals interested in ecology. These shared values facilitate players in forming groups to exchange environmental knowledge and gaming strategies, thereby strengthening the bond between players and fostering a positive and sustainable sense of community.
+
+Trust is built into every aspect of The Green Renaissance. First, the game explicitly does not collect personal data, which effectively increases players' trust in the platform and the development team. Secondly, our game prompts people to be aware of the need to protect the natural environment, and this valued gaming experience enhances players’ trust in the game.
+
+In terms of inclusiveness and diversity, the development team considered the usability needs of players of different ages, genders, and cultural backgrounds from the early stages to ensure that the game design resonates broadly. Individuals do not need an avatar to play the game, implicitly diminishing cultural borders. Meanwhile, the Green Renaissance is a strategy game without physical constraints, requiring only simple mouse clicks, so players of all ages, including those with physical disabilities, can easily experience it. Additionally, the game supports gamepad operations, further embodying the community's tolerance and respect among players. Furthermore, all players receive the same resources at the beginning of the game, providing equal opportunities for all players to succeed, thus reflecting equality in strategy and enhancing fairness.
+
+### Technical
+
+We refactored our game from conventional OOP design patterns to the RESTful layered pattern, which further enhanced maintainability and modularity. Moreover, it also improved the extensibility and adaptability of the game since the layers can be plugged in and out. The game does not collect or share any personal information, creating a secure playing environment. We integrated user feedback into our game, reducing the cost of learning as much as we could.
+
 
 ## Conclusion
 
-- 10% ~500 words
+We gained valuable experience developing our game, The Green Renaissance, as the first step towards engineering beyond mere coding. Complying with the Agile principles and applying the agile approaches, we learned how to collaborate as a team as well as manage and maintain our work. Among all Agile practices, we have made every effort to leverage the Scrum methodology in particular by utilising weekly sprints and retrospective meetings. The continuous integration and incremental deliveries as small successes have greatly bolstered our confidence during the whole development process. 
 
-- Reflect on project as a whole. Lessons learned. Reflect on challenges. Future work. 
+A significant lesson we learned was the power of requirements-driven development. By pre-defining requirements and product backlog, we have clear ideas of how the system will act and react, reducing potential unnecessary work. Well-defined requirements also make testing and validation handy by directly referring to the acceptance criteria. It is also rewarding to list all the requirements so we are able to order them by priority based on balancing value against effort.
+
+Challenges exist alongside development. The major challenge we encountered from the early to the late stages is the maintenance, which we believe every team struggles with. We managed to resolve it by applying the RESTful layered modularisation, which greatly decoupled components through dependency injection. Also, the separation of concerns, namely, to dispatch responsibility to lower-level components as much as possible, proved to be extremely beneficial to building a reusable and self-documented codebase. Keeping a maintainable codebase is critical not only to testing and easier debugging, but also to long-term engineering. It would be much simpler to introduce new functionalities without breaking the existing system.
+
+In addition to technical challenges, we also lost our way while designing the game elements. As the elements piled up, our initial brilliant ideas became exhausted, leaving us struggling. Eventually, we succeeded in designing through team discussions where members shared their thoughts, which were distilled to capture the essence and combined together.
+
+We cherish user feedback since it validates our design and system functionalities. User feedback is vital to Agile development, and continuous feedback helps improve each iteration. By attending the CSS Testathon in addition to course workshops, we gathered feedback from various groups of people, uncovering usability issues which shaped other designs to be much more user-friendly.
+
+There are also regrets that we could have done better. The most immediate enhancement is the full integration of gamepad support to offer a more accessible player experience, especially to those who are keen on controllers, or with disabilities, who find it difficult to use keyboard and mouse. We have partially fulfilled the key gamepad functionalities. Audio and ambient soundscapes are essential to an immersive game experience, but we have no time to integrate them. These possible future works would not only refine the existing gameplay but also broaden the game’s appeal to different types of players.
+
 
 ## Contribution Statement
 
