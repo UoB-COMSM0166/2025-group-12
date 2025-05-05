@@ -60,10 +60,12 @@ import {Tornado1PlayBoard} from "../model/stages/Tor1.js";
 import {Tornado2PlayBoard} from "../model/stages/Tor2.js";
 import {Tornado3PlayBoard} from "../model/stages/Tor3.js";
 import {Tornado4PlayBoard} from "../model/stages/Tor4.js";
-import {Tornado5PlayBoard} from "../model/stages/Tor5.js";
 import {Volcano1PlayBoard} from "../model/stages/Vol1.js";
 import {Earthquake1PlayBoard} from "../model/stages/Ear1.js";
+import {Earthquake2PlayBoard} from "../model/stages/Ear2.js";
+import {Earthquake3PlayBoard} from "../model/stages/Ear3.js";
 import {Blizzard1PlayBoard} from "../model/stages/Bli1.js";
+import {Blizzard2PlayBoard} from "../model/stages/Bli2.js";
 import {Tsunami1PlayBoard} from "../model/stages/Tsu1.js";
 
 import {GameSerializer} from "../model/GameSerializer.js";
@@ -109,6 +111,8 @@ class Container {
 
         this.EdgeWeightedDigraph = EdgeWeightedDigraph;
         this.DirectedEdge = DirectedEdge;
+
+        this.stateCode = stateCode;
 
         // -----------------------------------
         /* importing game entities - plants */
@@ -588,13 +592,15 @@ class GameStageFactory {
         this.stageClasses[stageGroup.TORNADO].push(Tornado2PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado3PlayBoard);
         this.stageClasses[stageGroup.TORNADO].push(Tornado4PlayBoard);
-        this.stageClasses[stageGroup.TORNADO].push(Tornado5PlayBoard);
 
         this.stageClasses[stageGroup.VOLCANO].push(Volcano1PlayBoard);
 
         this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake1PlayBoard);
+        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake2PlayBoard);
+        this.stageClasses[stageGroup.EARTHQUAKE].push(Earthquake3PlayBoard);
 
         this.stageClasses[stageGroup.BLIZZARD].push(Blizzard1PlayBoard);
+        this.stageClasses[stageGroup.BLIZZARD].push(Blizzard2PlayBoard);
 
         this.stageClasses[stageGroup.TSUNAMI].push(Tsunami1PlayBoard);
     }

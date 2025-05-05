@@ -466,7 +466,7 @@ We used an informal but effective peer feedback system to ensure code quality wi
 
 Our game, the Green Renaissance, is closely tied to the environment. This natural disaster-inspired strategy game is designed to encourage players to pay attention to the natural environment. The core mechanism of the game is based on real natural disaster phenomena, such as sandstorms and earthquakes, and restores different ecological communities through frequent disasters like deserts, volcanoes, and seashores, presented in a pixel style. During the player's experience, the design team used real-named natural tree species and incorporated the process of seedlings growing into mature plants into the game design and art, allowing players to experience biodiversity and succession in natural systems more intuitively.
 
-The game also features a special mechanism inspired by the principle of ecosystem diversity: when players plant three plants of different types, a unique “Ecosystem” is formed, which has stronger resistance and growth advantages than monoculture. This mechanism also conveys ecological knowledge to players, allowing them to understand the importance of diversity in their strategic experience. As the game progresses, players will be consistently inspired to build awareness of protecting the natural environment and restoring damaged ecosystems, and to realise the concept of sustainable development through education and fun.
+The game also features a special mechanism inspired by the principle of ecosystem diversity: when players cultivate three plants of different types, a unique “Ecosystem” is formed, which has stronger resistance and growth advantages than monoculture. This mechanism also conveys ecological knowledge to players, allowing them to understand the importance of diversity in their strategic experience. As the game progresses, players will be consistently inspired to build awareness of protecting the natural environment and restoring damaged ecosystems, and to realise the concept of sustainable development through education and fun.
 
 Our games are distributed virtually, avoiding the environmental costs of physical production, such as CD-ROM production, packaging, and shipping. All game content is accessible online, which has significantly reduced our environmental impact. Furthermore, we continue to optimise the codebase and strive to make the game more energy-efficient, truly reflecting the concept of environmental protection in our game development practices.
 
@@ -489,6 +489,20 @@ In terms of inclusiveness and diversity, the development team considered the usa
 ### Technical
 
 We refactored our game from conventional OOP design patterns to the RESTful layered pattern, which further enhanced maintainability and modularity. Moreover, it also improved the extensibility and adaptability of the game since the layers can be plugged in and out. The game does not collect or share any personal information, creating a secure playing environment. We integrated user feedback into our game, reducing the cost of learning as much as we could.
+
+
+
+<p align="center">
+    <img src="documents/susad.png" width="50%">
+</p>
+
+
+
+<p align="center">
+The sustainability awareness diagram.
+</p>
+
+
 
 
 ## Conclusion

@@ -166,7 +166,6 @@ class GameMapRenderer {
             p5.image(gameMap.background1, 0, 0, canvasSize[0], canvasSize[1]);
         }
 
-
         for (let button of gameMap.buttons) {
             button.unlock(gameMap.gameState);
             button.draw(p5);

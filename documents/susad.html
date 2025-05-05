@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Pentagons</title>
+</head>
+
+<body>
+    <svg id="svgCanvas" width="800" height="800"></svg>
+
+    <script>
+        function createPentagonPoints(cx, cy, radius) {
+            const points = [];
+            for (let i = 0; i < 5; i++) {
+                const angle = (2 * Math.PI * i / 5) - Math.PI / 2;
+                const x = cx + radius * Math.cos(angle);
+                const y = cy + radius * Math.sin(angle);
+                points.push(`${x},${y}`);
+            }
+            return points.join(" ");
+        }
+
+        const svg = document.getElementById("svgCanvas");
+
+        const layers = [
+            { radius: 400, fill: "#C1C1C1" },
+            { radius: 280, fill: "#D1D1D1" },
+            { radius: 150, fill: "#E1E1E1" },
+        ];
+
+        for (const layer of layers) {
+            const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            polygon.setAttribute("points", createPentagonPoints(400, 400, layer.radius));
+            polygon.setAttribute("fill", layer.fill);
+            polygon.setAttribute("stroke", "#222");
+            polygon.setAttribute("stroke-width", 0);
+            svg.appendChild(polygon);
+        }
+
+        for (let i = 0; i < 5; i++) {
+            const angle = (2 * Math.PI * i / 5) - Math.PI / 2;
+            const x = 400 + 400 * Math.cos(angle);
+            const y = 400 + 400 * Math.sin(angle);
+            drawDashedArrowLine(svg, 400, 400, x, y);
+        }
+
+        const centralCircle = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+        centralCircle.setAttribute("cx", 400);
+        centralCircle.setAttribute("cy", 400);
+        centralCircle.setAttribute("rx", 30);
+        centralCircle.setAttribute("ry", 20);
+        centralCircle.setAttribute("fill", "#E1E1E1");
+        centralCircle.setAttribute("stroke", "#AAAAAA");
+        centralCircle.setAttribute("stroke-width", 2);
+        svg.appendChild(centralCircle);
+
+        const centralText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        centralText.setAttribute("x", 400);
+        centralText.setAttribute("y", 400);
+        centralText.setAttribute("fill", "#000");
+        centralText.setAttribute("font-size", "24");
+        centralText.setAttribute("text-anchor", "middle");
+        centralText.setAttribute("dominant-baseline", "middle");
+        centralText.textContent = `GR`;
+        svg.appendChild(centralText);
+
+        textWithAngle(160, 160, 20, 324, "Social");
+        textWithAngle(640, 160, 20, 36, "Individual");
+        textWithAngle(710, 520, 20, 108, "Technical");
+        textWithAngle(400, 740, 20, 0, "Economic");
+        textWithAngle(90, 520, 20, 252, "Environmental");
+
+        textWithAngle(480, 365, 18, 342, "immediate");
+        textWithAngle(590, 330, 18, 342, "enabling");
+        textWithAngle(710, 290, 18, 342, "structural");
+
+        textArrayWithAngle(330, 410, 12, 0, ["Encourage", "Environmental", "Protection"]);
+        textArrayWithAngle(450, 340, 12, 0, ["Easy to", "control"]);
+
+        textArrayWithAngle(470, 410, 12, 0, ["Modularity"]);
+        textArrayWithAngle(580, 370, 12, 0, ["Testability,", "extensibility", "and adaptability"]);
+        textArrayWithAngle(710, 340, 12, 0, ["Long term", "maintainance"]);
+
+        drawCurvedArrow(svg, 505, 410, 520, 430, 570, 400);
+        drawCurvedArrow(svg, 630, 400, 660, 430, 690, 360);
+
+        textArrayWithAngle(550, 290, 12, 0, ["Better user", "experience"]);
+        textArrayWithAngle(650, 240, 12, 0, ["Environmental", "life-long", "learning"]);
+
+        drawCurvedArrow(svg, 470, 350, 520, 350, 550, 310);
+        drawCurvedArrow(svg, 570, 280, 620, 250, 620, 250);
+        drawCurvedArrow(svg, 680, 340, 630, 290, 580, 300);
+
+        textArrayWithAngle(450, 200, 12, 0, ["Environmental", "awareness"]);
+        textArrayWithAngle(300, 250, 12, 0, ["Players'", "community"]);
+        textArrayWithAngle(140, 490, 12, 0, ["Actual", "Environmental", "Protection"]);
+
+        drawCurvedArrow(svg, 650, 230, 630, 160, 460, 190);
+        drawCurvedArrow(svg, 430, 190, 180, 80, 140, 480);
+        drawCurvedArrow(svg, 320, 400, 330, 300, 300, 270);
+        drawCurvedArrow(svg, 335, 260, 390, 290, 450, 220);
+
+        downloadSVGAsPNG(svg, "my-diagram.png");
+
+        function textArrayWithAngle(x, y, fontSize, angle, array) {
+            for (let i = 0; i < array.length; i++) {
+                let text = array[i];
+                textWithAngle(x, y + fontSize * i, fontSize, angle, text);
+            }
+        }
+
+        function textWithAngle(x, y, fontSize, angle, text) {
+            const centralText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            centralText.setAttribute("x", x);
+            centralText.setAttribute("y", y);
+            centralText.setAttribute("fill", "#000");
+            centralText.setAttribute("font-size", `${fontSize}`);
+            centralText.setAttribute("text-anchor", "middle");
+            centralText.setAttribute("dominant-baseline", "middle");
+            centralText.textContent = text;
+            svg.appendChild(centralText);
+            centralText.setAttribute("transform", `rotate(${angle} ${x} ${y})`);
+        }
+
+        function drawDashedArrowLine(svg, x1, y1, x2, y2) {
+            // 确保 <defs> 和 <marker> 只创建一次
+            let existingMarker = svg.querySelector("#arrowhead");
+            if (!existingMarker) {
+                const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+                const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+                marker.setAttribute("id", "arrowhead");
+                marker.setAttribute("markerWidth", "10");
+                marker.setAttribute("markerHeight", "7");
+                marker.setAttribute("refX", "10");
+                marker.setAttribute("refY", "3.5");
+                marker.setAttribute("orient", "auto");
+                marker.setAttribute("markerUnits", "strokeWidth");
+
+                const arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                arrow.setAttribute("points", "0 0, 10 3.5, 0 7");
+                arrow.setAttribute("fill", "#888888");
+
+                marker.appendChild(arrow);
+                defs.appendChild(marker);
+                svg.appendChild(defs);
+            }
+
+            // 创建虚线直线
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", y1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", y2);
+            line.setAttribute("stroke", "#888888");
+            line.setAttribute("stroke-width", "2");
+            line.setAttribute("stroke-dasharray", "10,5");
+            line.setAttribute("marker-end", "url(#arrowhead)");
+
+            svg.appendChild(line);
+        }
+
+        function drawCurvedArrow(svg, x1, y1, cx, cy, x2, y2, color = "#5bf0f0", lineColor = "#5bf0f0") {
+            let defs = svg.querySelector("defs");
+            if (!defs) {
+                defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+                svg.appendChild(defs);
+            }
+
+            // 用颜色动态创建唯一箭头 ID，避免冲突
+            const markerId = `arrowhead-${color.replace("#", "")}`;
+            if (!svg.querySelector(`#${markerId}`)) {
+                const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+                marker.setAttribute("id", markerId);
+                marker.setAttribute("markerWidth", "10");
+                marker.setAttribute("markerHeight", "7");
+                marker.setAttribute("refX", "10");
+                marker.setAttribute("refY", "3.5");
+                marker.setAttribute("orient", "auto");
+                marker.setAttribute("markerUnits", "strokeWidth");
+
+                const arrow = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                arrow.setAttribute("points", "0 0, 10 3.5, 0 7");
+                arrow.setAttribute("fill", color); // 这里控制箭头颜色
+
+                marker.appendChild(arrow);
+                defs.appendChild(marker);
+            }
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`);
+            path.setAttribute("fill", "none");
+            path.setAttribute("stroke", lineColor); // 控制线颜色
+            path.setAttribute("stroke-width", "2");
+            path.setAttribute("marker-end", `url(#${markerId})`);
+
+            svg.appendChild(path);
+        }
+
+        function downloadSVGAsPNG(svgElement, filename = "image.png") {
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svgElement);
+
+            const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+            const url = URL.createObjectURL(svgBlob);
+
+            const img = new Image();
+            img.onload = function () {
+                const canvas = document.createElement("canvas");
+                canvas.width = svgElement.clientWidth;
+                canvas.height = svgElement.clientHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+
+                URL.revokeObjectURL(url);
+
+                const pngLink = document.createElement("a");
+                pngLink.download = filename;
+                pngLink.href = canvas.toDataURL("image/png");
+                pngLink.click();
+            };
+
+            img.src = url;
+        }
+
+    </script>
+</body>
+
+</html>

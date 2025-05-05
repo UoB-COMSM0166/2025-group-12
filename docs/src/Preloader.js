@@ -1,93 +1,112 @@
-function loadImages(p5) {
+function replacePromise(p5, images, path, key, promise) {
+    return promise.then(() =>
+        new Promise((resolve) => {
+            p5.loadImage(path, (img) => {
+                images.set(key, img);
+                resolve();
+            });
+        })
+    );
+}
+
+function loadEssentialImages(p5) {
     const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
+    p5.images = new Map();
+    let images = p5.images;
 
-    let images = new Map();
-
-    images.set("Alert", p5.loadImage(basePath + "Alert.png"));
-    images.set("panther", p5.loadImage(basePath + "panther.png"));
-
-    images.set("baseBlock", p5.loadImage(basePath + "baseBlock.png"));
-    images.set("Desert1", p5.loadImage(basePath + "Desert1.png"));
-    images.set("Desert2", p5.loadImage(basePath + "Desert2.png"));
-    images.set("PlayerBase", p5.loadImage(basePath + "PlayerBase.png"));
-    images.set("Mountain", p5.loadImage(basePath + "Mountain.png"));
-    images.set("Lumbering", p5.loadImage(basePath + "Lumbering.png"));
-    images.set("Volcano", p5.loadImage(basePath + "Volcano.png"));
-    images.set("VolcanoLayer", p5.loadImage(basePath + "VolcanoLayer.png"));
-    images.set("Lava", p5.loadImage(basePath + "Lava.png"));
-    images.set("LavaS", p5.loadImage(basePath + "LavaS.png"));
-    for (let i = 0; i <= 5; i++) {
-        for (let j = 0; j <= 2; j++) {
-            images.set("Landslide" + i.toString() + j.toString(), p5.loadImage(basePath + "LandslidePieces/" + i.toString() + j.toString() + ".png"));
-        }
-    }
-    images.set("Hill1", p5.loadImage(basePath + "Hill1.png"));
-    images.set("Hill2", p5.loadImage(basePath + "Hill2.png"));
-    images.set("Hill3", p5.loadImage(basePath + "Hill3.png"));
-    images.set("Snowfield", p5.loadImage(basePath + "Snowfield.png"));
-    images.set("Sea", p5.loadImage(basePath + "Sea.png"));
-
-    images.set("Seed", p5.loadImage(basePath + "Seed.png"));
-    images.set("Seed1", p5.loadImage(basePath + "Seed1.png"));
-    images.set("Pine", p5.loadImage(basePath + "Pine.png"));
-    images.set("Corn", p5.loadImage(basePath + "Corn.png"));
-    images.set("Orchid", p5.loadImage(basePath + "Orchid.png"));
-    images.set("Kiku", p5.loadImage(basePath + "Kiku.png"));
-    images.set("Palm", p5.loadImage(basePath + "Palm.png"));
-    for (let i = 1; i <= 2; i++) {
-        images.set("FireHerb" + i.toString(), p5.loadImage(basePath + "FireHerb" + i.toString() + ".png"));
-    }
-    for (let i = 1; i <= 2; i++) {
-        images.set("Bamboo" + i.toString(), p5.loadImage(basePath + "Bamboo" + i.toString() + ".png"));
-    }
-    for (let i = 1; i <= 2; i++) {
-        images.set("Plum" + i.toString(), p5.loadImage(basePath + "Plum" + i.toString() + ".png"));
-    }
-
-    images.set("Tornado", p5.loadImage(basePath + "Tornado.png"));
-    images.set("alertArrow", p5.loadImage(basePath + "alertArrow.png"));
-    images.set("Bandit", p5.loadImage(basePath + "Bandit.png"));
-    images.set("VolcanicBomb", p5.loadImage(basePath + "Bomb.png"));
-    images.set("Blizzard", p5.loadImage(basePath + "Blizzard.png"));
-    images.set("TsunamiAnimation", p5.loadImage(basePath + "Tsunami.png"));
-
+    images.set("TitleBackground", p5.loadImage(basePath + "TitleBackground.png"));
+    images.set("TitleBanner", p5.loadImage(basePath + "TitleBanner.png"));
     images.set("GameMapBG1", p5.loadImage(basePath + "GameMapBG1.png"));
-    images.set("GameMapBG2", p5.loadImage(basePath + "GameMapBG2.png"));
-    images.set("GameMapBG3", p5.loadImage(basePath + "GameMapBG3.png"));
     images.set("Lock", p5.loadImage(basePath + "Lock.png"));
     images.set("TornadoIcon", p5.loadImage(basePath + "TornadoIcon.png"));
     images.set("VolcanoIcon", p5.loadImage(basePath + "VolcanoIcon.png"));
     images.set("EarthquakeIcon", p5.loadImage(basePath + "EarthquakeIcon.png"));
     images.set("RainIcon", p5.loadImage(basePath + "RainIcon.png"));
     images.set("TsunamiIcon", p5.loadImage(basePath + "TsunamiIcon.png"));
-
-    images.set("TitleBackground", p5.loadImage(basePath + "TitleBackground.png"));
-    images.set("TitleBanner", p5.loadImage(basePath + "TitleBanner.png"));
-
-    images.set("TornadoBG", p5.loadImage(basePath + "TornadoBG.png"));
-    images.set("VolcanoBG", p5.loadImage(basePath + "VolcanoBG.png"));
-    images.set("EarthquakeBG", p5.loadImage(basePath + "EarthquakeBG.png"));
-    images.set("BlizzardBG", p5.loadImage(basePath + "BlizzardBG.png"));
-    images.set("TsunamiBG", p5.loadImage(basePath + "TsunamiBG.png"));
-
-    images.set("xbox_A", p5.loadImage(basePath + "xbox/" + "xbox_A.png"));
-    images.set("xbox_B", p5.loadImage(basePath + "xbox/" + "xbox_B.png"));
-    images.set("xbox_X", p5.loadImage(basePath + "xbox/" + "xbox_X.png"));
-    images.set("xbox_Y", p5.loadImage(basePath + "xbox/" + "xbox_Y.png"));
-    images.set("xbox_up", p5.loadImage(basePath + "xbox/" + "xbox_up.png"));
-    images.set("xbox_down", p5.loadImage(basePath + "xbox/" + "xbox_down.png"));
-    images.set("xbox_left", p5.loadImage(basePath + "xbox/" + "xbox_left.png"));
-    images.set("xbox_right", p5.loadImage(basePath + "xbox/" + "xbox_right.png"));
-    images.set("xbox_menu", p5.loadImage(basePath + "xbox/" + "xbox_menu.png"));
-    images.set("xbox_view", p5.loadImage(basePath + "xbox/" + "xbox_view.png"));
-    images.set("xbox_LB", p5.loadImage(basePath + "xbox/" + "xbox_LB.png"));
-    images.set("xbox_LT", p5.loadImage(basePath + "xbox/" + "xbox_LT.png"));
-    images.set("xbox_RB", p5.loadImage(basePath + "xbox/" + "xbox_RB.png"));
-    images.set("xbox_RT", p5.loadImage(basePath + "xbox/" + "xbox_RT.png"));
-    images.set("xbox_cross", p5.loadImage(basePath + "xbox/" + "xbox_cross.png"));
-
-    return images;
 }
+
+async function loadImages(p5) {
+    const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
+    let images = p5.images;
+    let promise = Promise.resolve();
+
+    const entries = [
+        ["Alert", "Alert.png"],
+        ["baseBlock", "baseBlock.png"],
+        ["Desert1", "Desert1.png"],
+        ["Desert2", "Desert2.png"],
+        ["PlayerBase", "PlayerBase.png"],
+        ["Mountain", "Mountain.png"],
+        ["Lumbering", "Lumbering.png"],
+        ["Volcano", "Volcano.png"],
+        ["VolcanoLayer", "VolcanoLayer.png"],
+        ["Lava", "Lava.png"],
+        ["LavaS", "LavaS.png"],
+        ["Hill1", "Hill1.png"],
+        ["Hill2", "Hill2.png"],
+        ["Hill3", "Hill3.png"],
+        ["Snowfield", "Snowfield.png"],
+        ["Sea", "Sea.png"],
+        ["Seed", "Seed.png"],
+        ["Seed1", "Seed1.png"],
+        ["Pine", "Pine.png"],
+        ["Corn", "Corn.png"],
+        ["Orchid", "Orchid.png"],
+        ["Kiku", "Kiku.png"],
+        ["Palm", "Palm.png"],
+        ["Tornado", "Tornado.png"],
+        ["alertArrow", "alertArrow.png"],
+        ["Bandit", "Bandit.png"],
+        ["VolcanicBomb", "Bomb.png"],
+        ["Blizzard", "Blizzard.png"],
+        ["TsunamiAnimation", "Tsunami.png"],
+        ["GameMapBG2", "GameMapBG2.png"],
+        ["GameMapBG3", "GameMapBG3.png"],
+        ["TornadoBG", "TornadoBG.png"],
+        ["VolcanoBG", "VolcanoBG.png"],
+        ["EarthquakeBG", "EarthquakeBG.png"],
+        ["BlizzardBG", "BlizzardBG.png"],
+        ["TsunamiBG", "TsunamiBG.png"],
+        ["xbox_A", "xbox/xbox_A.png"],
+        ["xbox_B", "xbox/xbox_B.png"],
+        ["xbox_X", "xbox/xbox_X.png"],
+        ["xbox_Y", "xbox/xbox_Y.png"],
+        ["xbox_up", "xbox/xbox_up.png"],
+        ["xbox_down", "xbox/xbox_down.png"],
+        ["xbox_left", "xbox/xbox_left.png"],
+        ["xbox_right", "xbox/xbox_right.png"],
+        ["xbox_menu", "xbox/xbox_menu.png"],
+        ["xbox_view", "xbox/xbox_view.png"],
+        ["xbox_LB", "xbox/xbox_LB.png"],
+        ["xbox_LT", "xbox/xbox_LT.png"],
+        ["xbox_RB", "xbox/xbox_RB.png"],
+        ["xbox_RT", "xbox/xbox_RT.png"],
+        ["xbox_cross", "xbox/xbox_cross.png"]
+    ];
+
+    for (const [key, file] of entries) {
+        promise = replacePromise(p5, images, basePath + file, key, promise);
+    }
+
+    // LandslidePieces
+    for (let i = 0; i <= 5; i++) {
+        for (let j = 0; j <= 2; j++) {
+            const key = `Landslide${i}${j}`;
+            const path = basePath + `LandslidePieces/${i}${j}.png`;
+            promise = replacePromise(p5, images, path, key, promise);
+        }
+    }
+
+    // FireHerb, Bamboo, Plum
+    for (let i = 1; i <= 2; i++) {
+        promise = replacePromise(p5, images, basePath + `FireHerb${i}.png`, `FireHerb${i}`, promise);
+        promise = replacePromise(p5, images, basePath + `Bamboo${i}.png`, `Bamboo${i}`, promise);
+        promise = replacePromise(p5, images, basePath + `Plum${i}.png`, `Plum${i}`, promise);
+    }
+
+    return promise;
+}
+
 
 function loadSounds(p5) {
     const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/sounds/" : "./assets/sounds/";
@@ -98,8 +117,8 @@ function loadSounds(p5) {
     return sounds;
 }
 
-export {loadImages, loadSounds};
+export {loadEssentialImages, loadImages, loadSounds};
 
 if (typeof module !== 'undefined') {
-    module.exports = {loadImages, loadSounds};
+    module.exports = {loadEssentialImages, loadImages, loadSounds};
 }

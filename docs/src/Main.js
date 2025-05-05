@@ -1,5 +1,5 @@
 import {Container} from "./controller/Container.js";
-import {loadImages} from "./Preloader.js";
+import {loadEssentialImages, loadImages} from "./Preloader.js";
 import {
     analogStickIdle,
     analogStickMoved, analogStickPressed,
@@ -12,10 +12,12 @@ let container;
 
 new p5((p) => {
     p.preload = () => {
-        p.images = loadImages(p);
+        loadEssentialImages(p);
     };
 
     p.setup = () => {
+        loadImages(p).then(() => p.loadedAll = true);
+
         document.querySelector(".loader").style.display = "none";
         container = new Container(p);
 
@@ -45,6 +47,7 @@ new p5((p) => {
         });
 
         analogStickPressed((axes) => {
+            if(!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
             if (container.controller && container.controller.gameState.mode !== "gamepad") {
                 container.controller.gameState.mode = "gamepad";
                 for (const [key, value] of Object.entries(container.controller.menus)) {
@@ -57,7 +60,7 @@ new p5((p) => {
             container.controller.analogStickPressedListener(axes);
         });
 
-        analogStickIdle( (axes) => {
+        analogStickIdle((axes) => {
             container.controller.analogStickIdleListener(axes);
         });
     };
@@ -75,6 +78,7 @@ new p5((p) => {
 
     p.mouseClicked = () => {
         if (!container || !container.controller) return;
+        if(!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
         container.controller.clickListener(p);
     }
 
