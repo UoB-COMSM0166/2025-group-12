@@ -12,7 +12,7 @@ let container;
 
 new p5((p) => {
     p.preload = () => {
-        loadEssentialImages(p);
+        p.images = loadEssentialImages(p);
     };
 
     p.setup = () => {

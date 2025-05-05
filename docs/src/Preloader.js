@@ -11,8 +11,7 @@ function replacePromise(p5, images, path, key, promise) {
 
 function loadEssentialImages(p5) {
     const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
-    p5.images = new Map();
-    let images = p5.images;
+    let images = new Map();
 
     images.set("TitleBackground", p5.loadImage(basePath + "TitleBackground.png"));
     images.set("TitleBanner", p5.loadImage(basePath + "TitleBanner.png"));
@@ -23,6 +22,8 @@ function loadEssentialImages(p5) {
     images.set("EarthquakeIcon", p5.loadImage(basePath + "EarthquakeIcon.png"));
     images.set("RainIcon", p5.loadImage(basePath + "RainIcon.png"));
     images.set("TsunamiIcon", p5.loadImage(basePath + "TsunamiIcon.png"));
+
+    return images;
 }
 
 async function loadImages(p5) {
