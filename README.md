@@ -2,7 +2,11 @@
 <h1>2025-group-12</h1>
 </div>
 
-[![Banner](documents/banner.png)](https://uob-comsm0166.github.io/2025-group-12/)
+<p align="center">
+    <a href="https://uob-comsm0166.github.io/2025-group-12/" target="_blank">
+        <img src="documents/banner.png">
+    </a>
+</p>
 
 <p align="center">
 Click the banner to play our game.
@@ -10,7 +14,9 @@ Click the banner to play our game.
 
 ---
 
-![Group Photo](documents/New_Group_Photo.JPG)
+<p align="center">
+    <img src="documents/New_Group_Photo.JPG">
+</p>
 
 
 | Name          | UOB@email             | github@username | Role                                   |
@@ -414,11 +420,13 @@ The demonstration code chunks for test cases.
 
 ## Process 
 
-Our team utilised the Scrum methodology and sprint feedback loops to manage the collaborative development of our game project.  Given the uncertainties around game design and the highly iterative nature of development, we found that flexible but structured collaboration practices were key to maintaining both momentum and quality.
+Amongst all Agile approaches, our team in particular utilised the Scrum methodology in particular and sprint feedback loops to manage the collaborative development of our game project. Given the uncertainties around game design and the highly iterative nature of development, we found that flexible but structured collaboration practices were key to maintaining both efficiency and quality.
+
+The development process, however, was not always smooth, especially for a self-organising team requiring discipline. When a team member become lazy or complacent, the overall progress is delayed due to unfinished key components, placing a greater burden on others. Meanwhile, the significant time commitment for daily stand-ups and sprint retrospectives feels excessive and often ends without a conclusion.
 
 #### Sprint & Scrum
 
-We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 AM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
+We set the length of one sprint cycle to one week, based on the term schedule and our development team’s working efficiency. Keeping sprints short and even a bit cramped forced us to prioritise tasks carefully, focusing only on items that offered the most value relative to the required effort. After each sprint cycle, we scheduled a 45-minute sprint retrospective meeting at 1 PM on Tuesday in the Merchant Venturers Building. These retrospectives provided an important opportunity for all team members to reflect on the sprint, share their individual progress, and discuss any technical challenges they encountered.
 
 <p align="center">
     <img src="documents/meeting.gif" width="40%">
@@ -430,13 +438,13 @@ We set the length of one sprint cycle to one week, based on the term schedule an
 
 Since our game concept was brand new and largely undefined at the start, the entire team, acting as the product owner, discussed new game features to implement and documented them in the product backlog. These features were later added to the Kanban by the scrum master. Additionally, a draft of the class diagrams for new game elements was produced during this process, ensuring that everyone had a clear design model to follow, and detailed tasks were then assigned to each team member.
 
-We abandoned Planning Poker while initially considering using it to estimate task complexity. The reason was the structured nature of our gameplay design, where the core data flow was already established during the reading week, leaving us to focus on implementing five distinct game stages—exactly one per sprint.
+We abandoned Planning Poker while initially considering using it to estimate task complexity. The reason was the structured nature of our gameplay design, where the core data flow was already established during the reading week, leaving us to focus on implementing five distinct game stages—exactly one per sprint. (It turns out that our 'structured gameplay' was a glorified to-do list.)
 
 #### Direct communication over Kanban
 
 Since our coding team is relatively small and the residential areas of our team members are quite distant from the university and separate, we relied heavily on online instant messaging through WeChat, similar to WhatsApp, for day-to-day communication. While GitHub was used for version control, we preferred to announce and discuss updates directly through WeChat rather than set up formal pull requests, allowing us to maintain fast communication and reduce delays caused by individual work schedules. 
 
-The Kanban board was used as a visual aid to track sprint tasks and remind the team of pending work. The team member who delivered code, graphics work, or documentation to the GitHub repo directly would inform everyone else in the WeChat group. After validation and verification, the scrum master would tick that term off the Kanban.
+The Kanban board was used as a visual aid to track sprint tasks and remind the team of pending work, a reliable helper in the process of our teamwork. A team member who delivered code, graphics work, or documentation to the GitHub repo would directly inform everyone else in the WeChat group. After validation and verification, the scrum master would tick that term off the Kanban.
 
 <p align="center">
     <img src="documents/kanban.png">
@@ -452,13 +460,11 @@ Nonetheless, the Kanban board proved to be essential for visibility over task pr
 
 Pair programming played a crucial role in the early stages of our game development, particularly in creating the initial working prototype and establishing the basic game components. At that time, the framework and structure of the game were still evolving, and many uncertainties remained to be addressed. Working in pairs allowed us to combine our individual strengths, share ideas more effectively, and quickly evaluate the pros and cons of different frameworks through active discussion. This collaborative approach led to a more consistent, adaptable, and durable codebase that could grow and improve as the project matured.
 
-Beyond the above, pair programming also proved especially valuable during debugging sessions. Locating the source of bugs can often be a time-consuming and frustrating task when working alone, especially with complex game mechanics and interactions. However, collaborating allowed us to analyse the bug from different perspectives, which sped up the process.
+Moreover, pair programming also proved especially valuable during debugging sessions. Locating the source of bugs can often be a time-consuming and frustrating task when working alone, especially with complex game mechanics and interactions. However, collaborating allowed us to analyse the bug from different perspectives, which sped up the process.
 
 #### Code review & Peer feedback
 
 We used an informal but effective peer feedback system to ensure code quality without introducing significant overhead. After pushing code to the GitHub repository, developers would immediately notify the rest of the team through our group chat. Other members were encouraged to pull the latest changes to test the new features locally and provide feedback or suggestions immediately. This asynchronous review process allowed us to maintain a rapid development pace while still identifying bugs, optimising designs, and ensuring coding standards across different parts of the project. 
-
-
 
 ## Sustainability, ethics and accessibility
 
@@ -490,20 +496,13 @@ In terms of inclusiveness and diversity, the development team considered the usa
 
 We refactored our game from conventional OOP design patterns to the RESTful layered pattern, which further enhanced maintainability and modularity. Moreover, it also improved the extensibility and adaptability of the game since the layers can be plugged in and out. The game does not collect or share any personal information, creating a secure playing environment. We integrated user feedback into our game, reducing the cost of learning as much as we could.
 
-
-
 <p align="center">
     <img src="documents/susad.png" width="50%">
 </p>
 
-
-
 <p align="center">
 The sustainability awareness diagram.
 </p>
-
-
-
 
 ## Conclusion
 
