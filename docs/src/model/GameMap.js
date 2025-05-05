@@ -27,9 +27,6 @@ class GameMapModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
-        this.background1 = null;
-        this.background2 = null;
-        this.background3 = null;
         this.selectedStageGroup = GameMapModel.stageGroup.NO_STAGE;
 
         // fade in fade out render
@@ -42,10 +39,6 @@ class GameMapModel {
     }
 
     init() {
-        this.background1 = GameMapModel.p5.images.get("GameMapBG1");
-        this.background2 = GameMapModel.p5.images.get("GameMapBG2");
-        this.background3 = GameMapModel.p5.images.get("GameMapBG3");
-
         const buttonConfigs = [
             {x: 0.52, y: 0.68, imageName: "TornadoIcon", group: GameMapModel.stageGroup.TORNADO},
             {x: 0.475, y: 0.475, imageName: "VolcanoIcon", group: GameMapModel.stageGroup.VOLCANO},
@@ -63,7 +56,7 @@ class GameMapModel {
         let p5 = GameMapModel.p5;
         let [x, y] = GameMapModel.utilityClass.relative2absolute(xRatio, yRatio);
         let size = GameMapModel.utilityClass.relative2absolute(0.05, 0.05)[0];
-        let button = new GameMapModel.MapButton(x, y, size, p5.images.get(imgName), group);
+        let button = new GameMapModel.MapButton(x, y, size, imgName, group);
         button.onClick = () => {
             if (!p5.keyIsPressed || p5.key !== 'v') {
                 if (button.isLocked) {
@@ -159,11 +152,11 @@ class GameMapRenderer {
     static draw(p5, gameMap) {
         let canvasSize = GameMapRenderer.utilityClass.relative2absolute(1, 1);
         if(gameMap.gameState.isStageCleared(GameMapRenderer.stageGroup.VOLCANO)){
-            p5.image(gameMap.background2, 0, 0, canvasSize[0], canvasSize[1]);
+            p5.image(GameMapModel.p5.images.get("GameMapBG2"), 0, 0, canvasSize[0], canvasSize[1]);
         }else if(gameMap.gameState.isStageCleared(GameMapRenderer.stageGroup.BLIZZARD)){
-            p5.image(gameMap.background3, 0, 0, canvasSize[0], canvasSize[1]);
+            p5.image(GameMapModel.p5.images.get("GameMapBG3"), 0, 0, canvasSize[0], canvasSize[1]);
         }else{
-            p5.image(gameMap.background1, 0, 0, canvasSize[0], canvasSize[1]);
+            p5.image(p5.images.get("GameMapBG1"), 0, 0, canvasSize[0], canvasSize[1]);
         }
 
         for (let button of gameMap.buttons) {

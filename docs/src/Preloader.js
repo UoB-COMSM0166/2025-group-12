@@ -28,7 +28,7 @@ function loadEssentialImages(p5) {
 
 async function loadImages(p5) {
     const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/images/" : "./assets/images/";
-    let images = p5.images;
+    let images = new Map();
     let promise = Promise.resolve();
 
     const entries = [
@@ -105,7 +105,7 @@ async function loadImages(p5) {
         promise = replacePromise(p5, images, basePath + `Plum${i}.png`, `Plum${i}`, promise);
     }
 
-    return promise;
+    return promise.then(() => images);
 }
 
 

@@ -24,6 +24,12 @@ Click the banner to play our game.
 
 
 
+<p align="center">
+    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" rel="noopener">Click here to watch the introductory video.</a>
+</p>
+
+
+
 # Project Report
 
 ## Introduction

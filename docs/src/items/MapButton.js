@@ -3,7 +3,7 @@ class MapButton {
         MapButton.CanvasSize = bundle.CanvasSize;
     }
 
-    constructor(x, y, size, img, stageGroup) {
+    constructor(x, y, size, imgName, stageGroup) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -11,7 +11,7 @@ class MapButton {
         this.height = size;
         this.isLocked = true;
         this.isCleared = false;
-        this.img = img;
+        this.imgName = imgName;
         this.isHovered = false;
         this._onClick = (p5) => {
             console.error("map button's onClick function is not overridden");
@@ -23,8 +23,11 @@ class MapButton {
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
-        if ((this.isHovered || this.circle !== null) && !this.isLocked) p5.image(this.img, this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
-        else p5.image(this.img, this.x, this.y, this.width, this.height);
+        if ((this.isHovered || this.circle !== null) && !this.isLocked) {
+            p5.image(p5.images.get(this.imgName), this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
+        } else {
+            p5.image(p5.images.get(this.imgName), this.x, this.y, this.width, this.height);
+        }
         if (this.isLocked === true) {
             p5.noStroke();
             p5.fill(100, 100, 100, 100);

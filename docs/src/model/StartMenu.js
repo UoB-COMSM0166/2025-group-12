@@ -29,9 +29,6 @@ class StartMenuModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
-        this.backgroundImg = StartMenuModel.p5.images.get("TitleBackground");
-        this.titleImg = StartMenuModel.p5.images.get("TitleBanner");
-
         // fade in fade out render
         this.fade = 0;
         this.isFading = false;
@@ -131,12 +128,13 @@ class StartMenuRenderer {
      */
     static draw(p5, startMenu) {
         let canvasSize = StartMenuRenderer.utilityClass.relative2absolute(1, 1);
-        p5.image(startMenu.backgroundImg, 0, 0, canvasSize[0], canvasSize[1]);
-        let ratio = startMenu.titleImg.height / startMenu.titleImg.width;
+        let titleImg = p5.images.get("TitleBackground");
+        p5.image(p5.images.get("TitleBackground"), 0, 0, canvasSize[0], canvasSize[1]);
+        let ratio = titleImg.height / titleImg.width;
         let titlePos = StartMenuRenderer.utilityClass.relative2absolute(0.2, 0.1);
         let targetWidth = StartMenuRenderer.utilityClass.relative2absolute(0.6, 0.2)[0];
         let targetHeight = ratio * targetWidth;
-        p5.image(startMenu.titleImg, titlePos[0], titlePos[1], targetWidth, targetHeight);
+        p5.image(p5.images.get("TitleBanner"), titlePos[0], titlePos[1], targetWidth, targetHeight);
         p5.fill(255);
 
         for (let button of startMenu.buttons) {

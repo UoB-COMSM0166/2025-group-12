@@ -16,7 +16,10 @@ new p5((p) => {
     };
 
     p.setup = () => {
-        loadImages(p).then(() => p.loadedAll = true);
+        loadImages(p).then(images => {
+            images.forEach((value, key) => {p.images.set(key, value);})
+            p.loadedAll = true;
+        });
 
         document.querySelector(".loader").style.display = "none";
         container = new Container(p);
@@ -47,7 +50,7 @@ new p5((p) => {
         });
 
         analogStickPressed((axes) => {
-            if(!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
+            if (!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
             if (container.controller && container.controller.gameState.mode !== "gamepad") {
                 container.controller.gameState.mode = "gamepad";
                 for (const [key, value] of Object.entries(container.controller.menus)) {
@@ -78,7 +81,7 @@ new p5((p) => {
 
     p.mouseClicked = () => {
         if (!container || !container.controller) return;
-        if(!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
+        if (!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
         container.controller.clickListener(p);
     }
 
