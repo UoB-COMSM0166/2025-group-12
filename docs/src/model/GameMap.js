@@ -395,7 +395,7 @@ class GameMapLogic {
      * @param {GameMapModel} gameMap
      */
     static setFloatingWindow(p5, gameMap) {
-        if (gameMap.allFloatingWindows.has("moreTutorial") && gameMap.gameState.isSpecificStageCleared(GameMapLogic.stageGroup.TORNADO, 1)) {
+        if (gameMap.allFloatingWindows.has("moreTutorial") && gameMap.gameState.clearedStages.get(GameMapLogic.stageGroup.TORNADO) === 1) {
             gameMap.floatingWindow = gameMap.allFloatingWindows.get("moreTutorial");
             gameMap.allFloatingWindows.delete("moreTutorial");
         }

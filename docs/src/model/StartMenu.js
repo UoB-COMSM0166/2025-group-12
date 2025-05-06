@@ -61,6 +61,7 @@ class StartMenuModel {
 
         let loadGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
+            if(!StartMenuModel.p5.loadedAll) return;
             if (!StartMenuModel.GameSerializer.load()) {
                 StartMenuLogic.copyFloatingWindow(StartMenuModel.p5, "NoSaveData", this);
             }

@@ -138,6 +138,8 @@ class Controller {
 
         // if we quit PLAY to STANDBY, reset inventory and board
         if (this.saveState === this.stateCode.PLAY && newState === this.stateCode.STANDBY) {
+            // update game progress
+            this.gameState.setStagesBeforeCleared(this.gameState.currentStage);
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;

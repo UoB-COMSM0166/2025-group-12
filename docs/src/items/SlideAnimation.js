@@ -142,6 +142,7 @@ class SlideLogic {
         if (landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.MOUNTAIN
             || landslide.cell.terrain.terrainType === SlideLogic.terrainTypes.VOLCANO) {
             landslide.isMoving = false;
+            return;
         }
 
         // kill plants and bandit on this cell:

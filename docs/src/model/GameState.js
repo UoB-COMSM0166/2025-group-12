@@ -90,6 +90,31 @@ class GameState {
         } else {
             this.clearedStages.set(boardStageGroup, 1);
         }
+        // after loading game, clear all previous stages
+        for(let i = 1; i < boardStageGroup; i++) {
+            if (!this.clearedStages.get(boardStageGroup - i)
+                || this.clearedStages.get(boardStageGroup - i) < this.gsf.stageClasses[boardStageGroup - i].length) {
+                this.clearedStages.set(boardStageGroup - i, this.gsf.stageClasses[boardStageGroup - i].length);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param {PlayBoardLike} playBoard
+     */
+    setStagesBeforeCleared(playBoard) {
+        let boardStageGroup = playBoard.stageGroup;
+        let numbering = playBoard.stageNumbering;
+        if (this.clearedStages.has(boardStageGroup)) {
+            this.clearedStages.set(boardStageGroup, numbering);
+        }
+        for(let i = 1; i < boardStageGroup; i++) {
+            if (!this.clearedStages.get(boardStageGroup - i)
+                || this.clearedStages.get(boardStageGroup - i) < this.gsf.stageClasses[boardStageGroup - i].length) {
+                this.clearedStages.set(boardStageGroup - i, this.gsf.stageClasses[boardStageGroup - i].length);
+            }
+        }
     }
 
     isStageCleared(stageGroup) {

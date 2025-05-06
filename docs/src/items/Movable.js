@@ -275,7 +275,7 @@ class MovableSerializer {
                 }
                 return bandit;
             case MovableSerializer.movableTypes.TORNADO:
-                let tornado = MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.TORNADO)(playBoard, MovableModel, movable.cellX, movable.cellY, movable.direction, movable.countdown)
+                let tornado = MovableSerializer.movableFactory.get(MovableSerializer.movableTypes.TORNADO)(playBoard, movable.cellX, movable.cellY, movable.direction, movable.countdown)
                 tornado.health = movable.health;
                 return tornado;
             case MovableSerializer.movableTypes.BOMB:

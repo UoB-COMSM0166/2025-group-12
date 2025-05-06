@@ -115,6 +115,12 @@ class Volcano1PlayBoard {
                 this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 6, 'd', 1);
                 this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 6, 0, 'r', 1);
                 break;
+            case 9:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 9, 'd', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 9, 0, 'r', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 6, 'd', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 6, 0, 'r', 1);
+                break;
         }
         if(playBoard.turn !== 2) this.expandLava(p5, playBoard);
     }

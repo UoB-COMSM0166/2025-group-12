@@ -50,8 +50,11 @@ class Earthquake2PlayBoard {
      */
     static setStageInventory(p5, playBoard) {
         this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 2, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 1, playBoard.gameState.inventory);
         this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 4, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 1, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 3, playBoard.gameState.inventory);
     }
 
     /**
@@ -79,6 +82,12 @@ class Earthquake2PlayBoard {
         this.PlayBoardLogic.BoardLogic.setCell(4, 3, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
         this.PlayBoardLogic.BoardLogic.setCell(3, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
         this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 3, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 4, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 6, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 1, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 2, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 5, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
     }
 
     /**
@@ -93,6 +102,43 @@ class Earthquake2PlayBoard {
 
         if (playBoard.turn === 3 || playBoard.turn === 5 || playBoard.turn === 7 || playBoard.turn === 9 || playBoard.turn === 11) {
             this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard);
+        }
+
+        switch (playBoard.turn) {
+            case 4:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 0, 'r', 1);
+                break;
+            case 5:
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 6, 2);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 6, 5);
+                break;
+            case 7:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 1, 0, 'r', 1);
+                break;
+            case 9:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 2, 0, 'r', 1);
+                break;
+            case 10:
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 6, 2);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 6, 5);
+                break;
+            case 11:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 3, 0, 'r', 1);
+                break;
+            case 13:
+                if (this.PlayBoardLogic.BoardLogic.getCell(0, 6, playBoard.boardObjects).terrain.terrainType !== this.terrainTypes.LANDSLIDE) {
+                    this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard, 4, 6);
+                }
+                if (this.PlayBoardLogic.BoardLogic.getCell(0, 7, playBoard.boardObjects).terrain.terrainType !== this.terrainTypes.LANDSLIDE) {
+                    this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard, 4, 7);
+                }
+                break;
+            case 14:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 7, 'l', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 1, 7, 'l', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 2, 7, 'l', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 3, 7, 'l', 1);
+                break;
         }
 
         // spread bamboo after generating slide
