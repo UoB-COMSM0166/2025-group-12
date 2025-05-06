@@ -43,6 +43,7 @@ class Controller {
                 value.shift2Mouse(p5);
             }
             this.pauseMenu.shift2Mouse(p5);
+            this.optionsMenu.shift2Mouse(p5);
             console.log("Input mode changed to mouse");
         }
         this.gameState.mouseIdleDetector.detectMouseIdleness();
@@ -185,6 +186,9 @@ class Controller {
             this.PauseMenuLogic.handleGamepad(index, this.pauseMenu);
             return;
         }
+        if (this.gameState.showOptions) {
+            this.OptionsLogic.handleGamepad(index, this.optionsMenu);
+        }
         if (this.gameState.playerCanClick === false) {
             return;
         }
@@ -216,6 +220,9 @@ class Controller {
         if (this.gameState.paused) {
             this.PauseMenuLogic.handleAnalogStickPressed(axes, this.pauseMenu);
             return;
+        }
+        if(this.gameState.showOptions) {
+            this.OptionsLogic.handleAnalogStickPressed(axes, this.optionsMenu);
         }
         if (this.gameState.playerCanClick === false) {
             return;

@@ -43,7 +43,7 @@ let CanvasSize = {
         } else if (CanvasSize.currentResolution === resolutions.FHD) {
             return {mini: 18, letter: 22, small: 24, medium: 26, large: 28, huge: 32};
         } else if (CanvasSize.currentResolution === resolutions.QHD) {
-            return {mini: 22, letter: 16, small: 28, medium: 30, large: 32, huge: 36};
+            return {mini: 22, letter: 26, small: 28, medium: 30, large: 32, huge: 36};
         }
         return {mini: 14, letter: 18, small: 20, medium: 22, large: 24, huge: 28};
     },

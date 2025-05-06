@@ -101,6 +101,7 @@ class MenuItem {
     }
 
     mouseClick(p5) {
+        console.log("should not invoke")
         if (this.isHovered(p5)) {
             this._onClick(p5);
             return true;
