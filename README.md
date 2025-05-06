@@ -15,6 +15,14 @@ Click the banner to play our game.
 ---
 
 <p align="center">
+    <br>
+    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" rel="noopener">Click here to watch the introductory VIDEO.</a>
+    <br>
+</p>
+
+---
+
+<p align="center">
     <img src="documents/New_Group_Photo.JPG">
 </p>
 
@@ -27,13 +35,6 @@ Click the banner to play our game.
 | Xiaoyu Wu     | ni24070@bristol.ac.uk | wendywuxiaoyu   | documentation management, art designer |
 | Rui Zhang     | xs24368@bristol.ac.uk | redial17        | developer, testing                     |
 | Zhenghao Yang | kj24716@bristol.ac.uk | saquantum       | developer, testing                     |
-
-
-
-<p align="center">
-    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" rel="noopener">Click here to watch the introductory video.</a>
-</p>
-
 
 
 # Project Report
