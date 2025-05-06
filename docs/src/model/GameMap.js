@@ -181,6 +181,7 @@ class GameMapRenderer {
 
         if (gameMap.gameState.mode === "gamepad") {
             p5.fill('yellow');
+            p5.stroke(0);
             p5.circle(p5.gamepadX, p5.gamepadY, 10);
         }
     }

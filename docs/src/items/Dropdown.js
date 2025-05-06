@@ -93,7 +93,6 @@ class Dropdown {
             }
         }
         else{
-            console.log(this.isSelected);
             if(this.isSelected) {
                 if (!this.isOpen) {
                     this.isOpen = true;

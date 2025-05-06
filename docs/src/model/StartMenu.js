@@ -206,7 +206,6 @@ class StartMenuLogic {
      * @param startMenu
      */
     static handleAnalogStickPressed(axes, startMenu) {
-        if(startMenu.gameState.showOptions) return;
         if (axes[1] < 0) {
             startMenu.buttons[startMenu.index].isSelected = false;
             if (startMenu.index === 0) startMenu.index = startMenu.buttons.length - 1;
