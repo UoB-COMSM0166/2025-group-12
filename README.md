@@ -338,10 +338,21 @@ Among the two major approaches, the think-aloud and Nielsen’s heuristic, we se
 
 <table>
   <tr>
-    <td><img src="documents/Heuristic%20Qualitative.svg" alt="Heuristic Qualitative" /></td>
-    <td><img src="documents/Heuristic%20Qualitative-Percentage.svg" alt="Heuristic Qualitative-Percentage" /></td>
+    <td>
+      <figure>
+        <img src="documents/Heuristic%20Qualitative.svg" alt="Heuristic Qualitative" />
+        <figcaption>Statistics of usability issues across all participants</figcaption>
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="documents/Heuristic%20Qualitative-Percentage.svg" alt="Heuristic Qualitative-Percentage" />
+        <figcaption>Percentage distribution across Nielsen’s ten heuristics</figcaption>
+      </figure>
+    </td>
   </tr>
 </table>
+
 
 #### Help & documentation
 
@@ -376,7 +387,10 @@ We didn’t know how to provide information on game entities previously. Thanks 
 To triangulate the purely expert-driven findings with players' perception, we administered the System Usability Scale (SUS) and the NASA Task Load Index (NASA-TLX) to twelve participants who completed both the tutorial (easy) and a genuine game stage (hard). We present here the results of the NASA TLX evaluation.
 
 <p align="center">
-    <img src="documents/NASA TLX Score.svg" width="75%" />
+    <figure>
+        <img src="documents/NASA TLX Score.svg" width="75%" />
+        <figcaption>NASA TLX workload score across all participants</figcaption>
+    </figure>
 </p>
 
 
