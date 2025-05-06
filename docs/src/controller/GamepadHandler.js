@@ -92,8 +92,25 @@ function _setTestGamepad(mockGamepad) {
     gamepad = mockGamepad;
 }
 
-export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad, analogStickIdle};
+function vibrate(duration = 300, strong = 1.0, weak = 0.5) {
+    if (gamepadIndex === null) return;
+
+    const updatedGamepad = navigator.getGamepads()[gamepadIndex];
+    if (updatedGamepad?.vibrationActuator) {
+        updatedGamepad.vibrationActuator.playEffect("dual-rumble", {
+            startDelay: 0,
+            duration,
+            strongMagnitude: strong,
+            weakMagnitude: weak
+        }).catch(err => {
+            console.warn("fail to vibrate:", err);
+        });
+    }
+}
+
+
+export {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad, analogStickIdle, vibrate};
 
 if (typeof module !== 'undefined') {
-    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad, analogStickIdle};
+    module.exports = {Gamepad, anyGamepadButtonPressed, analogStickMoved, analogStickPressed, pollGamepad, _setTestGamepad, analogStickIdle, vibrate};
 }

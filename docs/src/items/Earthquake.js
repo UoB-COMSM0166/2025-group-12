@@ -48,6 +48,7 @@ class EarthquakeLogic {
         EarthquakeLogic.BoardLogic = bundle.BoardLogic;
         /** @type {typeof InteractionLogic} */
         EarthquakeLogic.InteractionLogic = bundle.InteractionLogic;
+        EarthquakeLogic.vibrate = bundle.vibrate;
     }
 
     /**
@@ -92,6 +93,7 @@ class EarthquakeLogic {
         let shakeX = Math.random() * (2 * shakeAmount) - shakeAmount;
         let shakeY = Math.random() * (2 * shakeAmount) - shakeAmount;
         p5.translate(shakeX, shakeY);
+        EarthquakeLogic.vibrate(60);
 
         // Stop shaking after a duration
         if (p5.frameCount > earthquake.startFrame + earthquake.shakeDuration) {

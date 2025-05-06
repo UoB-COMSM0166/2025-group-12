@@ -917,7 +917,6 @@ class PlayBoardLogic {
         if (PlayBoardLogic.handleFloatingWindow(playBoard)) {
             return;
         }
-        console.log("?????")
         PlayBoardLogic.handleActiveSkills(p5, playBoard);
 
         // click any button
