@@ -107,7 +107,7 @@ class GameState {
         let boardStageGroup = playBoard.stageGroup;
         let numbering = playBoard.stageNumbering;
         if (this.clearedStages.has(boardStageGroup)) {
-            this.clearedStages.set(boardStageGroup, numbering);
+            this.clearedStages.set(boardStageGroup, numbering - 1);
         }
         for(let i = 1; i < boardStageGroup; i++) {
             if (!this.clearedStages.get(boardStageGroup - i)
