@@ -58,25 +58,6 @@ class VolcanicBombRenderer {
      * @param {VolcanicBombModel} bomb
      */
     static draw(p5, playBoard, bomb) {
-        // parabola
-        /*
-        p5.stroke(2);
-        p5.noFill();
-        p5.beginShape();
-        for (let x = 0; x < 2000; x++) {
-            let y = this.getY(x);
-            p5.vertex(x, y);
-        }
-        p5.endShape();
-
-        // Draw points
-        p5.fill(0);
-        p5.ellipse(this.x1, this.y1, 10, 10);
-        p5.text("S", this.x1 - 15, this.y1);
-
-        p5.ellipse(this.x2, this.y2, 10, 10);
-        p5.text("F", this.x2 + 5, this.y2);
-        */
         let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
         if (bomb.isMoving) {
             p5.image(bomb.img, bomb.x - imgSize / 2, bomb.y - imgSize, imgSize, imgSize);

@@ -40,7 +40,7 @@ class Volcano1PlayBoard {
 
         // turn counter
         playBoard.turn = 1;
-        playBoard.maxTurn = 15;
+        playBoard.maxTurn = 12;
     }
 
     /**
@@ -52,12 +52,10 @@ class Volcano1PlayBoard {
         this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 2, playBoard.gameState.inventory);
         this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 2, playBoard.gameState.inventory);
         this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 2, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 5, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 5, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 5, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.FIRE_HERB, 5, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.FIRE_HERB, 5, playBoard.gameState.inventory);
-
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 4, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 4, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.FIRE_HERB, 1, playBoard.gameState.inventory);
     }
 
     /**
@@ -72,9 +70,11 @@ class Volcano1PlayBoard {
             }
         }
         this.PlayBoardLogic.BoardLogic.setCell(8, 8, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
-
-        this.PlayBoardLogic.BoardLogic.setCell(4, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
-        this.PlayBoardLogic.BoardLogic.setCell(5, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 7, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(5, 8, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(8, 5, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
 
         this.PlayBoardLogic.BoardLogic.setCell(0, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
         this.PlayBoardLogic.BoardLogic.setCell(1, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
@@ -93,20 +93,30 @@ class Volcano1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static nextTurnItems(p5, playBoard) {
-        //this.generateRandomVolBomb(p5, playBoard);
-        this.generateVolBomb(p5, 4, 4, playBoard);
+        this.generateVolBomb(p5, 8, 8, playBoard);
 
-        if (playBoard.turn === 2) {
-            this.generateLava(p5, 3, 3, playBoard);
-            this.generateLava(p5, 3, 2, playBoard);
-            this.generateLava(p5, 3, 1, playBoard);
-            this.generateLava(p5, 3, 0, playBoard);
-            this.generateLava(p5, 2, 3, playBoard);
-            this.generateLava(p5, 1, 3, playBoard);
-            this.generateLava(p5, 0, 3, playBoard);
-        } else {
-            this.expandLava(p5, playBoard);
+        switch (playBoard.turn) {
+            case 2:
+                this.generateLava(p5, 3, 3, playBoard);
+                this.generateLava(p5, 3, 2, playBoard);
+                this.generateLava(p5, 3, 1, playBoard);
+                this.generateLava(p5, 3, 0, playBoard);
+                this.generateLava(p5, 2, 3, playBoard);
+                this.generateLava(p5, 1, 3, playBoard);
+                this.generateLava(p5, 0, 3, playBoard);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 5, 4);
+                this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 4, 5);
+                break;
+            case 4:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 9, 'd', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 9, 0, 'r', 1);
+                break;
+            case 7:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 6, 'd', 1);
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 6, 0, 'r', 1);
+                break;
         }
+        if(playBoard.turn !== 2) this.expandLava(p5, playBoard);
     }
 
     /**

@@ -77,7 +77,7 @@ class MovableRenderer {
 
 class MovableLogic {
     static setup(bundle) {
-        MovableSerializer.movableTypes = bundle.movableTypes;
+        MovableLogic.movableTypes = bundle.movableTypes;
         /** @type {typeof EarthquakeLogic} */
         MovableLogic.EarthquakeLogic = bundle.EarthquakeLogic;
         /** @type {typeof SlideLogic} */
@@ -96,20 +96,20 @@ class MovableLogic {
 
     static idleInfo(movableType){
         switch (movableType) {
-            case MovableSerializer.movableTypes.BANDIT:
-                return "Bandit will find a nearest plant and attack it.";
-            case MovableSerializer.movableTypes.TORNADO:
-                return "Tornado will destroy a line along the direction.";
-            case MovableSerializer.movableTypes.BOMB:
-                return "Bomb will be thrown to the cell.";
-            case MovableSerializer.movableTypes.SLIDE:
-                return "Landslide will change terrain of a line to landslide and destroy everything.";
-            case MovableSerializer.movableTypes.EARTHQUAKE:
-                return "Earthquake will deal damage to trees.";
-            case MovableSerializer.movableTypes.BLIZZARD:
-                return "Blizzard will deal damage to plants within the area.";
-            case MovableSerializer.movableTypes.TSUNAMI:
-                return "Tsunami will destroy everything!";
+            case MovableLogic.movableTypes.BANDIT:
+                return "{white:Bandit will find a nearest plant and attack it.}";
+            case MovableLogic.movableTypes.TORNADO:
+                return "{white:Tornado will destroy a line along the direction.}";
+            case MovableLogic.movableTypes.BOMB:
+                return "{white:Bomb will be thrown to the cell.}";
+            case MovableLogic.movableTypes.SLIDE:
+                return "{white:Landslide will change terrain of a line to landslide and destroy everything.}";
+            case MovableLogic.movableTypes.EARTHQUAKE:
+                return "{white:Earthquake will deal damage to trees.}";
+            case MovableLogic.movableTypes.BLIZZARD:
+                return "{white:Blizzard will deal damage to plants within the area.}";
+            case MovableLogic.movableTypes.TSUNAMI:
+                return "{white:Tsunami will destroy everything!}";
             default:
                 return null;
         }

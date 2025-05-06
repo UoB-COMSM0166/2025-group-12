@@ -437,9 +437,9 @@ class PlayBoardRenderer {
 
             p5.noStroke();
             if (playBoard.actionPoints !== 0) {
-                p5.fill("#6699FF");
+                p5.fill("rgba(0, 204, 0, 0.8)");
             } else {
-                p5.fill("rgba(102,153,255,0.5)");
+                p5.fill("rgba(0, 100, 0, 0.3)");
             }
             p5.rect(x, y, width, height, 20);
 
