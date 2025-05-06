@@ -336,6 +336,13 @@ We conducted qualitative and quantitative evaluations to find potential issues t
 
 Among the two major approaches, the think-aloud and Nielsen’s heuristic, we selected the analytical heuristic method to enhance coverage. Twenty-four issues were discovered, most of which are related to the game’s UI/UX and gameplay interface. Beyond identifying the issues and broken heuristics, we also allowed users to rate the frequency, impact, and persistence level, ranging from 0 to 4, providing insight into the severity of the issues. The raw data can be found [here](https://github.com/UoB-COMSM0166/2025-group-12/blob/main/documents/Heuristic%20Evaluation.md). Some of the issues are identified due to maloperation or skipping some tutorials. Let’s review the filtered issues according to the heuristics evaluators found violated, ordered by severity.
 
+<table>
+  <tr>
+    <td><img src="documents/Heuristic%20Qualitative.svg" alt="Heuristic Qualitative" /></td>
+    <td><img src="documents/Heuristic%20Qualitative-Percentage.svg" alt="Heuristic Qualitative-Percentage" /></td>
+  </tr>
+</table>
+
 #### Help & documentation
 
 - “Players with turn-based tactics experience adapt quickly, while new players struggle with a steep learning curve”
@@ -368,36 +375,10 @@ We didn’t know how to provide information on game entities previously. Thanks 
 
 To triangulate the purely expert-driven findings with players' perception, we administered the System Usability Scale (SUS) and the NASA Task Load Index (NASA-TLX) to twelve participants who completed both the tutorial (easy) and a genuine game stage (hard). We present here the results of the NASA TLX evaluation.
 
-| Tester/Questions | Question 1 | Question 2 | Question 3 | Question 4 | Question 5 | Question 6 |  |  |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Questions | 1. How mentally demanding was the task? | 2. How physically demanding was the task? | 3. How hurried or rushed was the pace of the task? | 4. How successful were you in accomplishing what you were asked to do? | 5. How hard did you have to work to accomplish your level of performance? | 6. How insecure, discouraged, irritated, stressed, and annoyed were you? | Total Score | Raw NASA-Task Load Index |
-| Person 1 (Easy level) | 15 | 3 | 2 | 9 | 11 | 12 | 52 | 8.67 |
-| Person 1 (Hard level) | 14 | 4 | 3 | 12 | 11 | 5 | 49 | 8.17 |
-| Person 2 (Easy level) | 16 | 2 | 1 | 16 | 15 | 16 | 66 | 11 |
-| Person 2 (Hard level) | 11 | 7 | 5 | 9 | 14 | 11 | 57 | 9.5 |
-| Person 3 (Easy level) | 10 | 10 | 1 | 1 | 4 | 7 | 33 | 5.5 |
-| Person 3 (Hard level) | 15 | 4 | 4 | 10 | 11 | 12 | 56 | 9.33 |
-| Person 4 (Easy level) | 7 | 1 | 2 | 1 | 1 | 7 | 19 | 3.17 |
-| Person 4 (Hard level) | 8 | 8 | 1 | 5 | 16 | 13 | 51 | 8.5 |
-| Person 5 (Easy level) | 5 | 5 | 4 | 1 | 1 | 1 | 17 | 2.83 |
-| Person 5 (Hard level) | 16 | 8 | 3 | 14 | 15 | 17 | 73 | 12.17 |
-| Person 6 (Easy level) | 3 | 3 | 3 | 2 | 3 | 3 | 17 | 2.83 |
-| Person 6 (Hard level) | 6 | 5 | 5 | 2 | 3 | 5 | 26 | 4.33 |
-| Person 7 (Easy level) | 12 | 1 | 1 | 7 | 11 | 10 | 42 | 7 |
-| Person 7 (Hard level) | 17 | 3 | 4 | 12 | 12 | 11 | 59 | 9.83 |
-| Person 8 (Easy level) | 8 | 3 | 13 | 0 | 5 | 5 | 34 | 5.67 |
-| Person 8 (Hard level) | 17 | 3 | 10 | 3 | 13 | 5 | 51 | 8.5 |
-| Person 9 (Easy level) | 7 | 4 | 3 | 3 | 7 | 4 | 28 | 4.67 |
-| Person 9 (Hard level) | 6 | 6 | 4 | 8 | 8 | 3 | 35 | 5.83 |
-| Person 10 (Easy level) | 2 | 2 | 2 | 18 | 3 | 3 | 30 | 5 |
-| Person 10 (Hard level) | 17 | 4 | 3 | 14 | 17 | 5 | 60 | 10 |
-| Person 11 (Easy level) | 5 | 4 | 5 | 7 | 14 | 7 | 42 | 7 |
-| Person 11 (Hard level) | 17 | 7 | 11 | 15 | 16 | 14 | 80 | 13.33 |
-| Person 12 (Easy level) | 8 | 8 | 8 | 1 | 5 | 4 | 34 | 5.67 |
-| Person 12 (Hard level) | 14 | 8 | 6 | 7 | 18 | 11 | 64 | 10.67 |
-| Average (Easy) | 8.17 | 3.83 | 3.75 | 5.50 | 6.67 | 6.58 | 34.50 | 5.75 |
-| Average (Hard) | 13.17 | 5.58 | 4.92 | 9.25 | 12.83 | 9.33 | 55.08 | 9.18 |
-| Average (Easy + Hard) | 10.67 | 4.71 | 4.33 | 7.38 | 9.75 | 7.96 | 44.79 | 7.47 |
+<p align="center">
+    <img src="documents/NASA TLX Score.svg" width="75%" />
+</p>
+
 
 Notice from the table that some users found the tutorials even more demanding than later game stages. These users with extensive game experience suggested through interviews that the tutorials are verbose and easy to understand. From the table, we clearly see that physical or temporal demands are significantly lower than those of others, yet there are commonly high mental demands, which aligns with our game design. The performance, effort and frustration indicators vary intensely among different users, depending on their interest or previous experience in our game's genre.
 
