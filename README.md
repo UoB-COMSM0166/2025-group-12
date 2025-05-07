@@ -15,36 +15,71 @@ Click the banner to play our game.
 ---
 
 <div align="center">
-    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" title="Watch the Game Demonstration">
-        <img src="documents/Image With Play button.svg" alt="Heuristic Qualitative" width="75%">
+    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" title="Watch the Game Demonstration">
+        <img src="documents/Image With Play button.svg" width="75%">
     </a>
     <p>
-        Find a game demonstration of the <strong>Green Renaissance</strong> game above, providing a brief overview of the gameplay mechanics and the development process. This video will give you a sneak peek into the exciting challenges!
+        Click the above video to watch game demonstration.
     </p>
 
 </div>
 
-<p align="center">
-    <br>
-    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" rel="noopener">Click here to watch the introductory VIDEO.</a>
-    <br>
-</p>
-
 ---
 
 <p align="center">
-    <img src="documents/New_Group_Photo.JPG">
+    <img src="documents/New_Group_Photo.JPG" width="75%">
 </p>
 
-
-| Name          | UOB@email             | github@username | Role                                   |
-| ------------- | --------------------- | --------------- | -------------------------------------- |
-| Chin Wei Liu  | rq24239@bristol.ac.uk | Chin-pro        | Scrum master, lead developer           |
-| Xiaobai Zheng | iu24160@bristol.ac.uk | wheeinside      | lead art designer, developer           |
-| Fan Meng      | xa24801@bristol.ac.uk | p1umage         | art designer, developer                |
-| Xiaoyu Wu     | ni24070@bristol.ac.uk | wendywuxiaoyu   | documentation management, art designer |
-| Rui Zhang     | xs24368@bristol.ac.uk | redial17        | developer, testing                     |
-| Zhenghao Yang | kj24716@bristol.ac.uk | saquantum       | developer, testing                     |
+<div align="center">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>UOB@email</th>
+      <th>github@username</th>
+      <th>Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chin Wei Liu</td>
+      <td>rq24239@bristol.ac.uk</td>
+      <td>Chin-pro</td>
+      <td>Scrum master, lead developer</td>
+    </tr>
+    <tr>
+      <td>Xiaobai Zheng</td>
+      <td>iu24160@bristol.ac.uk</td>
+      <td>wheeinside</td>
+      <td>lead art designer, developer</td>
+    </tr>
+    <tr>
+      <td>Fan Meng</td>
+      <td>xa24801@bristol.ac.uk</td>
+      <td>p1umage</td>
+      <td>art designer, developer</td>
+    </tr>
+    <tr>
+      <td>Xiaoyu Wu</td>
+      <td>ni24070@bristol.ac.uk</td>
+      <td>wendywuxiaoyu</td>
+      <td>documentation management, art designer</td>
+    </tr>
+    <tr>
+      <td>Rui Zhang</td>
+      <td>xs24368@bristol.ac.uk</td>
+      <td>redial17</td>
+      <td>developer, testing</td>
+    </tr>
+    <tr>
+      <td>Zhenghao Yang</td>
+      <td>kj24716@bristol.ac.uk</td>
+      <td>saquantum</td>
+      <td>developer, testing</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 ---
 
@@ -58,6 +93,7 @@ Click the banner to play our game.
 - [7. Sustainability, Ethics and Accessibility](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#sustainability-ethics-and-accessibility)
 - [8. Conclusion](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#conclusion)
 
+---
 
 # Project Report
 
