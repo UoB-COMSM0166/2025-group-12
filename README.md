@@ -387,11 +387,10 @@ We didn’t know how to provide information on game entities previously. Thanks 
 To triangulate the purely expert-driven findings with players' perception, we administered the System Usability Scale (SUS) and the NASA Task Load Index (NASA-TLX) to twelve participants who completed both the tutorial (easy) and a genuine game stage (hard). We present here the results of the NASA TLX evaluation.
 
 <p align="center">
-    <figure>
         <img src="documents/NASA TLX Score.svg" width="75%" />
-        <figcaption>NASA TLX workload score across all participants</figcaption>
-    </figure>
 </p>
+
+<p align="center">The NASA TLX workload score across all participants.</p>
 
 
 Notice from the table that some users found the tutorials even more demanding than later game stages. These users with extensive game experience suggested through interviews that the tutorials are verbose and easy to understand. From the table, we clearly see that physical or temporal demands are significantly lower than those of others, yet there are commonly high mental demands, which aligns with our game design. The performance, effort and frustration indicators vary intensely among different users, depending on their interest or previous experience in our game's genre.
