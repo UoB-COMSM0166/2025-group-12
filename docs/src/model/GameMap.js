@@ -58,6 +58,11 @@ class GameMapModel {
         let size = GameMapModel.utilityClass.relative2absolute(0.05, 0.05)[0];
         let button = new GameMapModel.MapButton(x, y, size, imgName, group);
         button.onClick = () => {
+            if(!p5.loadedAll) {
+                GameMapLogic.copyFloatingWindow(p5, "loading", this);
+                return;
+            }
+
             if (!p5.keyIsPressed || p5.key !== 'v') {
                 if (button.isLocked) {
                     if (button.isCleared) {
@@ -105,6 +110,16 @@ class GameMapModel {
         }));
 
         afw.set("moreTutorial", new GameMapModel.FloatingWindow(GameMapModel.p5, null, "{white:Click 'Tornado' again to continue tutorial.}", {
+            x: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
+            y: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
+
+        afw.set("loading", new GameMapModel.FloatingWindow(GameMapModel.p5, null, "{white:Loading...}", {
             x: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
             y: GameMapLogic.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
             fontSize: 20,
@@ -171,6 +186,10 @@ class GameMapRenderer {
         }
 
         GameMapRenderer.drawFloatingWindow(p5, gameMap);
+
+        if(gameMap.floatingWindow && gameMap.floatingWindow.text.toLowerCase().includes("loading") && p5.loadedAll) {
+            gameMap.floatingWindow = null;
+        }
 
         if (gameMap.gameState.isFading) {
             GameMapRenderer.ScreenRenderer.playFadeOutAnimation(p5, gameMap);

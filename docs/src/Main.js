@@ -83,7 +83,6 @@ new p5((p) => {
 
     p.mouseClicked = () => {
         if (!container || !container.controller) return;
-        if (!p.loadedAll && container.gameState.getState() === container.stateCode.STANDBY) return;
         container.controller.clickListener(p);
     }
 
