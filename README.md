@@ -46,6 +46,18 @@ Click the banner to play our game.
 | Rui Zhang     | xs24368@bristol.ac.uk | redial17        | developer, testing                     |
 | Zhenghao Yang | kj24716@bristol.ac.uk | saquantum       | developer, testing                     |
 
+---
+
+# Table of Contents
+- [1. Introduction](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#introduction)
+- [2. Design](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#introduction)
+- [3. Requirements](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#design)
+- [4. Implementation](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#implementation)
+- [5. Evaluation](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#evaluation)
+- [6. Process](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#process)
+- [7. Sustainability, Ethics and Accessibility](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#sustainability-ethics-and-accessibility)
+- [8. Conclusion](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#conclusion)
+
 
 # Project Report
 
@@ -541,6 +553,9 @@ In addition to technical challenges, we also lost our way while designing the ga
 We cherish user feedback since it validates our design and system functionalities. User feedback is vital to Agile development, and continuous feedback helps improve each iteration. By attending the CSS Testathon in addition to course workshops, we gathered feedback from various groups of people, uncovering usability issues which shaped other designs to be much more user-friendly.
 
 There are also regrets that we could have done better. The most immediate enhancement is the full integration of gamepad support to offer a more accessible player experience, especially to those who are keen on controllers, or with disabilities, who find it difficult to use keyboard and mouse. We have partially fulfilled the key gamepad functionalities. Audio and ambient soundscapes are essential to an immersive game experience, but we have no time to integrate them. These possible future works would not only refine the existing gameplay but also broaden the game’s appeal to different types of players.
+
+
+## Appendix
 
 
 ## Contribution Statement
