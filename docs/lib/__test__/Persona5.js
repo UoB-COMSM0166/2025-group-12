@@ -52,6 +52,7 @@ function createMockP5() {
         HALF_PI: Math.PI / 2,
 
         millis: fn,
+        loadedAll: true,
 
         // Constants
         CENTER: 'center',
