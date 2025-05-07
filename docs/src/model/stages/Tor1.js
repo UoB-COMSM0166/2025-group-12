@@ -209,8 +209,8 @@ class Tornado1PlayBoard {
         }));
 
         afw.set("101", new this.PlayBoardLogic.FloatingWindow(p5, "uc", "{white:There is your house. It will be destroyed by}\\ {white:natural disasters if you do nothing.}", {
-            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 2 / 3 + 0.01)[0],
-            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 2 / 3 + 0.01)[1],
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 2 / 3 + 0.05)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(1 / 2, 2 / 3 + 0.05)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -219,8 +219,8 @@ class Tornado1PlayBoard {
         }));
 
         afw.set("102", new this.PlayBoardLogic.FloatingWindow(p5, "ld", "{white:A tornado!}", {
-            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.67, 0.45)[0],
-            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.67, 0.45)[1],
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.73, 0.45)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.73, 0.45)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -229,8 +229,8 @@ class Tornado1PlayBoard {
         }));
 
         afw.set("103", new this.PlayBoardLogic.FloatingWindow(p5, "lu", "{white:We have prepared some plants}\\{white:to block its way.}", {
-            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.52)[0],
-            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.69, 0.52)[1],
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.72, 0.54)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.72, 0.54)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,
@@ -269,8 +269,8 @@ class Tornado1PlayBoard {
         }));
 
         afw.set("202", new this.PlayBoardLogic.FloatingWindow(p5, "lu", "{white:Click this cell to transplant it.}", {
-            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.64, 0.56)[0],
-            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.64, 0.56)[1],
+            x: this.PlayBoardLogic.utilityClass.relative2absolute(0.64, 0.58)[0],
+            y: this.PlayBoardLogic.utilityClass.relative2absolute(0.64, 0.58)[1],
             fontSize: 16,
             padding: 10,
             spacingRatio: 0.3,

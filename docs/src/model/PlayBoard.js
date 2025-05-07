@@ -456,11 +456,11 @@ class PlayBoardRenderer {
      * @param {PlayBoardLike} playBoard
      */
     static drawIdleInfo(p5, playBoard) {
-        if ((playBoard.gameState.mouseIdleDetector.isIdle() || playBoard.gameState.isIdle )&& (!playBoard.floatingWindow || playBoard.floatingWindow.playerCanClick)) {
+        if ((playBoard.gameState.mouseIdleDetector.isIdle() || playBoard.gameState.isIdle) && (!playBoard.floatingWindow || playBoard.floatingWindow.playerCanClick)) {
             if (!playBoard.infoFloatingWindow) {
                 let text = null;
                 let index;
-                if(playBoard.gameState.mode === "mouse") index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+                if (playBoard.gameState.mode === "mouse") index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
                 else index = PlayBoardModel.utilityClass.pos2CellIndex(playBoard, p5.gamepadX, p5.gamepadY);
                 // mouse is on a cell
                 if (index[0] !== -1) {
@@ -489,8 +489,8 @@ class PlayBoardRenderer {
                     }
                 }
                 if (text !== null) {
-                    let xPos = playBoard.gameState.mode === "mouse"? p5.mouseX : p5.gamepadX;
-                    let yPos = playBoard.gameState.mode === "mouse"? p5.mouseY : p5.gamepadY;
+                    let xPos = playBoard.gameState.mode === "mouse" ? p5.mouseX : p5.gamepadX;
+                    let yPos = playBoard.gameState.mode === "mouse" ? p5.mouseY : p5.gamepadY;
                     playBoard.infoFloatingWindow = new PlayBoardRenderer.FloatingWindow(p5, null, text, {
                         x: xPos,
                         y: yPos,
@@ -692,26 +692,26 @@ class PlayBoardLogic {
                 PlayBoardLogic.cancel(playBoard);
                 break;
             case 2:
-                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    let display = playBoard.buttons.find(button => button.text.toLowerCase().includes('display'));
-                    if (display) display.onClick();
-                }
+                if (playBoard.isGameOver) return;
+                if (playBoard.floatingWindow !== null && !playBoard.floatingWindow.playerCanClick) return;
+                let display = playBoard.buttons.find(button => button.text.toLowerCase().includes('display'));
+                if (display) display.onClick();
                 break;
             case 3:
-                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    playBoard.buttons[0].onClick();
-                }
+                if (playBoard.isGameOver) return;
+                if (playBoard.floatingWindow !== null && !playBoard.floatingWindow.playerCanClick) return;
+                playBoard.buttons[0].onClick();
                 break;
             case 6:
-                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    playBoard.buttons[1].onClick();
-                }
+                if (playBoard.isGameOver) return;
+                if (playBoard.floatingWindow !== null && !playBoard.floatingWindow.playerCanClick) return;
+                playBoard.buttons[1].onClick();
                 break;
             case 7:
-                if (!playBoard.isGameOver && playBoard.floatingWindow == null) {
-                    let activate = playBoard.buttons.find(button => button.text.toLowerCase().includes('activate'));
-                    if (activate) activate.onClick();
-                }
+                if (playBoard.isGameOver) return;
+                if (playBoard.floatingWindow !== null && !playBoard.floatingWindow.playerCanClick) return;
+                let activate = playBoard.buttons.find(button => button.text.toLowerCase().includes('activate'));
+                if (activate) activate.onClick();
                 break;
             case 9:
                 playBoard.gameState.togglePaused();
@@ -791,7 +791,6 @@ class PlayBoardLogic {
             // common floating windows
             if (!playBoard.floatingWindow.isFading) {
                 playBoard.floatingWindow.isFading = true;
-                return true;
             }
             if (!playBoard.floatingWindow.playerCanClick) {
                 return true;
@@ -809,7 +808,7 @@ class PlayBoardLogic {
         // when activate button is clicked, system awaits a cell input
         if (playBoard.awaitCell) {
             let index;
-            if(playBoard.gameState.mode === "mouse") index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+            if (playBoard.gameState.mode === "mouse") index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
             else index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.gamepadX, p5.gamepadY);
             if (index[0] === -1) {
                 playBoard.floatingWindow = /** @type {FloatingWindow} */ PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));

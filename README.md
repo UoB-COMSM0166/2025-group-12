@@ -14,6 +14,16 @@ Click the banner to play our game.
 
 ---
 
+<div align="center">
+    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" title="Watch the Game Demonstration">
+        <img src="documents/Image With Play button.svg" alt="Heuristic Qualitative" width="75%">
+    </a>
+    <p>
+        Find a game demonstration of the <strong>Green Renaissance</strong> game above, providing a brief overview of the gameplay mechanics and the development process. This video will give you a sneak peek into the exciting challenges!
+    </p>
+
+</div>
+
 <p align="center">
     <br>
     <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" rel="noopener">Click here to watch the introductory VIDEO.</a>
