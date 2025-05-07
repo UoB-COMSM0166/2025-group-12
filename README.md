@@ -578,6 +578,15 @@ We refactored our game from conventional OOP design patterns to the RESTful laye
 The sustainability awareness diagram.
 </p>
 
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
+
+
 ## Conclusion
 
 We gained valuable experience developing our game, The Green Renaissance, as the first step towards engineering beyond mere coding. Complying with the Agile principles and applying the agile approaches, we learned how to collaborate as a team as well as manage and maintain our work. Among all Agile practices, we have made every effort to leverage the Scrum methodology in particular by utilising weekly sprints and retrospective meetings. The continuous integration and incremental deliveries as small successes have greatly bolstered our confidence during the whole development process. 
