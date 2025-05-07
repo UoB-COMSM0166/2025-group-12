@@ -351,17 +351,26 @@ Among the two major approaches, the think-aloud and Nielsen’s heuristic, we se
     <td>
       <figure>
         <img src="documents/Heuristic%20Qualitative.svg" alt="Heuristic Qualitative" />
-        <figcaption>Statistics of usability issues across all participants</figcaption>
+        <figcaption>
+          <small>
+            Statistics of usability issues across all participants
+          </small>
+        </figcaption>
       </figure>
     </td>
     <td>
       <figure>
         <img src="documents/Heuristic%20Qualitative-Percentage.svg" alt="Heuristic Qualitative-Percentage" />
-        <figcaption>Percentage distribution across Nielsen’s ten heuristics</figcaption>
+        <figcaption>
+          <small>
+            Percentage distribution across Nielsen’s ten heuristics
+          </small>
+        </figcaption>
       </figure>
     </td>
   </tr>
 </table>
+
 
 
 #### Help & documentation
@@ -470,6 +479,10 @@ Nonetheless, the Kanban board proved to be essential for visibility over task pr
 #### Pair programming 
 
 Pair programming played a crucial role in the early stages of our game development, particularly in creating the initial working prototype and establishing the basic game components. At that time, the framework and structure of the game were still evolving, and many uncertainties remained to be addressed. Working in pairs allowed us to combine our individual strengths, share ideas more effectively, and quickly evaluate the pros and cons of different frameworks through active discussion. This collaborative approach led to a more consistent, adaptable, and durable codebase that could grow and improve as the project matured.
+
+<p align="center">
+    <img src="documents/Pair Programming.png" width="40%">
+</p>
 
 Moreover, pair programming also proved especially valuable during debugging sessions. Locating the source of bugs can often be a time-consuming and frustrating task when working alone, especially with complex game mechanics and interactions. However, collaborating allowed us to analyse the bug from different perspectives, which sped up the process.
 
