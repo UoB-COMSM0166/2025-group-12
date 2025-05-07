@@ -30,26 +30,20 @@ class OptionsModel {
     }
 
     init() {
-        let [dropdownWidth, dropdownHeight] = OptionsModel.utilityClass.relative2absolute(0.15, 0.07);
-        let [dropdownX, dropDownY] = OptionsModel.utilityClass.relative2absolute(0.6, 0.5);
-        this.dropdown = new OptionsModel.Dropdown(dropdownX, dropDownY, dropdownWidth, dropdownHeight);
+        let [dropdownWidth, dropdownHeight] = OptionsModel.utilityClass.relative2absolute(0.1, 0.05);
+        let [dropdownX, dropdownY] = OptionsModel.utilityClass.relative2absolute(0.49, 0.38);
+        this.dropdown = new OptionsModel.Dropdown(dropdownX, dropdownY, dropdownWidth, dropdownHeight);
     }
 
     shift2Gamepad(p5) {
         p5.noCursor();
-        this.buttons.forEach(button => {
-            button.mode = "gamepad";
-            button.isSelected = false;
-        });
-        this.buttons[0].isSelected = true;
+        this.dropdown.mode = "gamepad";
     }
 
     shift2Mouse(p5) {
         p5.cursor();
-        this.buttons[this.index].isSelected = false;
-        this.buttons.forEach(button => {
-            button.mode = "mouse";
-        });
+        this.dropdown.mode = "mouse";
+        this.dropdown.isSelected = false;
     }
 }
 
@@ -71,10 +65,50 @@ class OptionsRenderer {
         p5.textAlign(p5.CENTER, p5.CENTER);
         let [textX, textY] = OptionsRenderer.utilityClass.relative2absolute(0.5, 0.2);
         p5.text("Options", textX, textY);
-        [textX, textY] = OptionsRenderer.utilityClass.relative2absolute(0.5, 0.5);
-        p5.textSize(fontSizes.medium);
+        [textX, textY] = OptionsRenderer.utilityClass.relative2absolute(0.45, 0.4);
+
+        // Draw the three main panels
+        let [panelWidth, panelHeight] = OptionsRenderer.utilityClass.relative2absolute(0.2, 0.5);
+        let [panelX, panelY] = OptionsRenderer.utilityClass.relative2absolute(0.2, 0.3);
+
+        // Panel headers
+       // p5.textSize(18);
+        p5.textAlign(p5.CENTER, p5.CENTER);
+
+        // First panel
+        OptionsRenderer.drawPanel(p5,panelX, panelY, panelWidth, panelHeight, "Gameplay");
+
+        // Second panel
+        OptionsRenderer.drawPanel(p5,panelX + panelWidth, panelY, panelWidth, panelHeight, "Video");
+
+        // Third panel
+        OptionsRenderer.drawPanel(p5,panelX + 2 * panelWidth, panelY, panelWidth, panelHeight, "Gamepad");
+
+        p5.textSize(fontSizes.letter);
         p5.text("resolution: ", textX, textY);
         optionsMenu.dropdown.draw(p5);
+
+    }
+
+
+    static drawPanel(p5, x, y, width, height, title) {
+        // Panel background
+        p5.fill("rgba(13,15,23,0.66)");
+        p5.noStroke();
+        p5.rect(x, y, width, height, 3);
+
+        // Panel border
+        p5.stroke(80, 120, 160);
+        p5.strokeWeight(1);
+        p5.noFill();
+        p5.rect(x, y, width, height, 3);
+
+        // Panel title
+        p5.textSize(OptionsRenderer.utilityClass.getFontSize().letter);
+        p5.textAlign(p5.CENTER, p5.CENTER);
+        p5.fill(255);
+        p5.noStroke();
+        p5.text(title, x + width/2, y + OptionsRenderer.utilityClass.relative2absolute(0.015, 0.5)[0]);
     }
 
 
@@ -88,14 +122,43 @@ class OptionsLogic {
     }
 
 
-    static cancel(pauseMenu){
-        pauseMenu.gameState.togglePaused();
+    static cancel(optionsMenu) {
+        if(optionsMenu.dropdown.isOpen) {
+            optionsMenu.dropdown.isOpen = false;
+            optionsMenu.dropdown.index = optionsMenu.dropdown.options.indexOf(optionsMenu.dropdown.selectedOption);
+            return;
+        }
+        else if(optionsMenu.gameState.showOptions){
+            optionsMenu.gameState.showOptions = false
+        }
     }
 
 
-    static handleGamepad(index, pauseMenu){
+    static handleGamepad(index, optionsMenu){
         switch (index) {
-
+            case 1:
+                OptionsLogic.cancel(optionsMenu);
+                break;
+            case 12:
+                if(optionsMenu.dropdown.isSelected === false) {
+                    optionsMenu.dropdown.isSelected = true;
+                    return;
+                }
+                if(optionsMenu.dropdown.isSelected) {
+                    if(optionsMenu.dropdown.index ===0 ) optionsMenu.dropdown.index = optionsMenu.dropdown.options.length - 1;
+                    else optionsMenu.dropdown.index -= 1;
+                }
+                break;
+            case 13:
+                if(optionsMenu.dropdown.isSelected === false) {
+                    optionsMenu.dropdown.isSelected = true;
+                    return;
+                }
+                if(optionsMenu.dropdown.isSelected) {
+                    if(optionsMenu.dropdown.index === optionsMenu.dropdown.options.length - 1) optionsMenu.dropdown.index = 0;
+                    else optionsMenu.dropdown.index += 1;
+                }
+                break;
         }
 
     }
@@ -105,8 +168,26 @@ class OptionsLogic {
     }
 
 
-    static handleAnalogStickPressed(axes, pauseMenu) {
-
+    static handleAnalogStickPressed(axes, optionsMenu) {
+        if (axes[1] < 0) {
+            if(optionsMenu.dropdown.isSelected === false) {
+                optionsMenu.dropdown.isSelected = true;
+                return;
+            }
+            if(optionsMenu.dropdown.isSelected) {
+                if(optionsMenu.dropdown.index ===0 ) optionsMenu.dropdown.index = optionsMenu.dropdown.options.length - 1;
+                else optionsMenu.dropdown.index -= 1;
+            }
+        } else {
+            if(optionsMenu.dropdown.isSelected === false) {
+                optionsMenu.dropdown.isSelected = true;
+                return;
+            }
+            if(optionsMenu.dropdown.isSelected) {
+                if(optionsMenu.dropdown.index === optionsMenu.dropdown.options.length - 1) optionsMenu.dropdown.index = 0;
+                else optionsMenu.dropdown.index += 1;
+            }
+        }
     }
 
 
@@ -121,14 +202,13 @@ class OptionsLogic {
             p5.windowResized();
             return;
         }
-        optionsMenu.gameState.showOptions = false;
+        if(optionsMenu.gameState.mode==="mouse") optionsMenu.gameState.showOptions = false;
 
     }
 
     static resize(optionsMenu){
-        let [dropdownWidth, dropdownHeight] = OptionsModel.utilityClass.relative2absolute(0.15, 0.07);
-        let [dropdownX, dropdownY] = OptionsModel.utilityClass.relative2absolute(0.6, 0.5);
-        this.dropdown = new OptionsModel.Dropdown(dropdownX, dropdownY, dropdownWidth, dropdownHeight);
+        let [dropdownWidth, dropdownHeight] = OptionsModel.utilityClass.relative2absolute(0.1, 0.05);
+        let [dropdownX, dropdownY] = OptionsModel.utilityClass.relative2absolute(0.49, 0.38);
         optionsMenu.dropdown.x = dropdownX;
         optionsMenu.dropdown.y = dropdownY;
         optionsMenu.dropdown.width = dropdownWidth;

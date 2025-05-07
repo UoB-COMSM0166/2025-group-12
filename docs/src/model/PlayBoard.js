@@ -602,6 +602,7 @@ class PlayBoardRenderer {
         // gamepad pos
         if (playBoard.gameState.mode === "gamepad") {
             p5.fill('yellow');
+            p5.stroke(0);
             p5.circle(p5.gamepadX, p5.gamepadY, 10);
         }
 
@@ -790,6 +791,7 @@ class PlayBoardLogic {
             // common floating windows
             if (!playBoard.floatingWindow.isFading) {
                 playBoard.floatingWindow.isFading = true;
+                return true;
             }
             if (!playBoard.floatingWindow.playerCanClick) {
                 return true;
@@ -806,7 +808,9 @@ class PlayBoardLogic {
     static handleActiveSkills(p5, playBoard) {
         // when activate button is clicked, system awaits a cell input
         if (playBoard.awaitCell) {
-            let index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+            let index;
+            if(playBoard.gameState.mode === "mouse") index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.mouseX, p5.mouseY);
+            else index = PlayBoardLogic.utilityClass.pos2CellIndex(playBoard, p5.gamepadX, p5.gamepadY);
             if (index[0] === -1) {
                 playBoard.floatingWindow = /** @type {FloatingWindow} */ PlayBoardLogic.FloatingWindow.copyOf(playBoard.allFloatingWindows.get("050"));
             } else {
@@ -913,7 +917,6 @@ class PlayBoardLogic {
         if (PlayBoardLogic.handleFloatingWindow(playBoard)) {
             return;
         }
-
         PlayBoardLogic.handleActiveSkills(p5, playBoard);
 
         // click any button

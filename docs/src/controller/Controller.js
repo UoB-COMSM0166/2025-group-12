@@ -43,6 +43,7 @@ class Controller {
                 value.shift2Mouse(p5);
             }
             this.pauseMenu.shift2Mouse(p5);
+            this.optionsMenu.shift2Mouse(p5);
             console.log("Input mode changed to mouse");
         }
         this.gameState.mouseIdleDetector.detectMouseIdleness();
@@ -131,6 +132,8 @@ class Controller {
         // if we go to PLAY from STANDBY, save inventory then push stage items
         if (this.saveState === this.stateCode.STANDBY && newState === this.stateCode.PLAY) {
             this.gameState.inventory.scrollIndex = 0;
+            this.gameState.inventory.isSelected = false;
+            this.gameState.inventory.index = -1;
             this.menus[this.stateCode.PLAY].tmpInventoryItems = this.InventoryLogic.saveInventory(this.gameState.inventory);
             this.PlayBoardModel.setStageInventory(p5, this.menus[this.stateCode.PLAY]);
             return;
@@ -143,6 +146,8 @@ class Controller {
             this.gameState.setPlayerCanClick(true);
             // reset inventory
             this.gameState.inventory.scrollIndex = 0;
+            this.gameState.inventory.isSelected = false;
+            this.gameState.inventory.index = -1;
             this.InventoryLogic.loadInventory(this.menus[this.stateCode.PLAY].tmpInventoryItems, this.gameState.inventory)
             // destroy the play board
             this.menus[this.stateCode.PLAY] = null;
@@ -185,6 +190,10 @@ class Controller {
             this.PauseMenuLogic.handleGamepad(index, this.pauseMenu);
             return;
         }
+        if (this.gameState.showOptions) {
+            this.OptionsLogic.handleGamepad(index, this.optionsMenu);
+            return;
+        }
         if (this.gameState.playerCanClick === false) {
             return;
         }
@@ -215,6 +224,10 @@ class Controller {
     analogStickPressedListener(axes) {
         if (this.gameState.paused) {
             this.PauseMenuLogic.handleAnalogStickPressed(axes, this.pauseMenu);
+            return;
+        }
+        if(this.gameState.showOptions) {
+            this.OptionsLogic.handleAnalogStickPressed(axes, this.optionsMenu);
             return;
         }
         if (this.gameState.playerCanClick === false) {

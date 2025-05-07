@@ -23,7 +23,6 @@
 | Gameplay | Players should be able to undo the previous turn to avoid mistakes | User Control & Freedom | 4 | 4 | 4 | 4.00 |
 | Gameplay | Players should be able to withdraw a recently planted plant to increase strategic flexibility | User Control & Freedom | 3 | 3 | 3 | 3.00 |
 | UI/UX | The arrow on the hint window should fade or disappear when no hint is available | Aesthetic & Minimalist Design | 2 | 2 | 2 | 2.00 |
-| Gameplay | **The game may automatically skip the first round, affecting turn-based strategy** | Consistency & Standards | 4 | 4 | 4 | 4.00 |
 | UI/UX | **Players with turn-based tactics experience adapt quickly, while new players struggle with a steep learning curve** | Help & Documentation | 4 | 4 | 4 | 4.00 |
 
 ---

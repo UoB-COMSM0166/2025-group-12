@@ -85,6 +85,7 @@ import {BoardModel, BoardLogic, BoardRenderer, BoardSerializer} from "../model/B
 import {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer} from "../model/PlayBoard.js";
 import {OptionsLogic, OptionsModel, OptionsRenderer} from "../model/Options.js";
 import {Dropdown} from "../items/Dropdown.js";
+import {vibrate} from "./GamepadHandler.js";
 
 
 // to achieve loosely coupling we use lazy dependency injection
@@ -286,6 +287,7 @@ class Container {
             DijkstraSP: DijkstraSP,
             EdgeWeightedDigraph: EdgeWeightedDigraph,
             DirectedEdge: DirectedEdge,
+            vibrate: vibrate,
         };
 
         let movableModules = [

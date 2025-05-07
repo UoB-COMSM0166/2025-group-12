@@ -92,7 +92,7 @@ class StartMenuModel {
             button.mode = "gamepad";
             button.isSelected = false;
         });
-        this.buttons[0].isSelected = true;
+        if(!this.gameState.showOptions) this.buttons[0].isSelected = true;
     }
 
     shift2Mouse(p5) {
@@ -166,7 +166,8 @@ class StartMenuLogic {
         StartMenuLogic.ScreenLogic = bundle.ScreenLogic;
     }
 
-    static cancel() {
+    static cancel(startMenu) {
+
     }
 
     /**
@@ -176,6 +177,9 @@ class StartMenuLogic {
      */
     static handleGamepad(index, startMenu) {
         switch (index) {
+            case 1:
+                StartMenuLogic.cancel(startMenu);
+                break;
             case 12:
                 startMenu.buttons[startMenu.index].isSelected = false;
                 if (startMenu.index === 0) startMenu.index = startMenu.buttons.length - 1;
