@@ -68,6 +68,16 @@ class PauseMenuModel {
             this.gameState.setPlayerCanClick(true);
         };
         this.buttons.push(continueButton, loadGameButton, saveGameButton, escapeButton);
+
+        this.initAllFloatingWindows();
+    }
+
+    initAllFloatingWindows() {
+        let afw = new Map();
+
+        PauseMenuModel.utilityClass.commonFloatingWindows(PauseMenuModel.p5, afw);
+
+        this.allFloatingWindows = afw;
     }
 
     shift2Gamepad(p5) {
