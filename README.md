@@ -540,6 +540,15 @@ Moreover, pair programming also proved especially valuable during debugging sess
 
 We used an informal but effective peer feedback system to ensure code quality without introducing significant overhead. After pushing code to the GitHub repository, developers would immediately notify the rest of the team through our group chat. Other members were encouraged to pull the latest changes to test the new features locally and provide feedback or suggestions immediately. This asynchronous review process allowed us to maintain a rapid development pace while still identifying bugs, optimising designs, and ensuring coding standards across different parts of the project. 
 
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
+
+
 ## Sustainability, ethics and accessibility
 
 ### Environmental
