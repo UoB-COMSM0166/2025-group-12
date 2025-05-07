@@ -119,16 +119,23 @@ class PlantSerializer {
             plantType: plantInstance.plantType,
             health: plantInstance.health,
         }
+        if (plantInstance.imgIndex != null) object.imgIndex = plantInstance.imgIndex;
         if (plantInstance.useLeft != null) object.useLeft = plantInstance.useLeft;
         if (plantInstance.earthCounter != null) object.earthCounter = plantInstance.earthCounter;
         if (plantInstance.coldCounter != null) object.coldCounter = plantInstance.coldCounter;
         return JSON.stringify(object);
     }
 
-    static parse(json) {
+    /**
+     *
+     * @param p5
+     * @param json
+     */
+    static parse(p5, json) {
         const object = JSON.parse(json);
         let plant = PlantSerializer.plantFactory.get(object.plantType)();
         Object.assign(plant, object);
+        if (object.imgIndex) plant.img = p5.images.get(`${plant.name}` + plant.imgIndex.toString());
         return plant;
     }
 }

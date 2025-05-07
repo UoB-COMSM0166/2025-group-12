@@ -1,10 +1,10 @@
 class LumberingModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
-        this.name = "Lumbering";
+        this.name = "Lumbering Camp";
         this.terrainType = terrainTypes.LUMBERING;
         this.img = p5.images.get("baseBlock");
-        this.layer = p5.images.get(`${this.name}`);
+        this.layer = p5.images.get(`Lumbering`);
         this.weight = 0;
     }
 

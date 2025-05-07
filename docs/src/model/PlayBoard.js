@@ -1063,7 +1063,7 @@ class PlayBoardLogic {
         // increment earth counters, decrement cold counters.
         for (let cwp of cells) {
             if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.EARTHQUAKE) {
-                if (cwp.plant.earthCounter === undefined) {
+                if (!cwp.plant.earthCounter) {
                     cwp.plant.earthCounter = 1;
                 } else {
                     cwp.plant.earthCounter++;
@@ -1071,8 +1071,8 @@ class PlayBoardLogic {
             }
             if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.BLIZZARD) {
                 if (cwp.terrain.terrainType === PlayBoardLogic.terrainTypes.SNOWFIELD) {
-                    if (cwp.plant.coldCounter === undefined) {
-                        cwp.plant.coldCounter = 2;
+                    if (!cwp.plant.coldCounter) {
+                        cwp.plant.coldCounter = 1;
                     } else {
                         cwp.plant.coldCounter--;
                         if (cwp.plant.coldCounter <= 0) {
@@ -1085,9 +1085,10 @@ class PlayBoardLogic {
 
         if (playBoard.stageGroup >= PlayBoardLogic.stageGroup.EARTHQUAKE) {
             if (!playBoard.hasBamboo) {
+                cells = PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects);
                 // if a tree has a counter=10, insert bamboo into inventory.
                 for (let cwp of cells) {
-                    if (cwp.plant.earthCounter !== undefined && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
+                    if (cwp.plant.earthCounter && cwp.plant.earthCounter >= 10 && PlayBoardLogic.baseType(cwp.plant) === PlayBoardLogic.plantTypes.TREE) {
                         PlayBoardLogic.modifyBoard(p5, playBoard, "bamboo");
                         playBoard.hasBamboo = true;
                         break;
@@ -1120,6 +1121,38 @@ class PlayBoardLogic {
         if (spellCaster.plant.hasActive) {
             playBoard.awaitCell = true;
         }
+    }
+
+    // VOLCANO SPECIFIC:
+    /**
+     *
+     * @param p5
+     * @param i
+     * @param j
+     * @param {PlayBoardLike} playBoard
+     */
+    static generateVolBomb(p5, i, j, playBoard) {
+        let i1 = Math.floor(Math.random() * 3);
+        let j1 = Math.floor(Math.random() * 3);
+        while (i1 - j1 === i - j) {
+            i1 = Math.floor(Math.random() * 3);
+            j1 = Math.floor(Math.random() * 3);
+        }
+        let [x1, y1] = PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i1, j1, p5.CENTER);
+        let [x2, y2] = PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
+
+        PlayBoardLogic.movableFactory.get(PlayBoardLogic.movableTypes.BOMB)(playBoard, i1, j1, i, j, x1, y1, x2, y2);
+    }
+
+    /**
+     *
+     * @param p5
+     * @param {PlayBoardLike} playBoard
+     */
+    static generateRandomVolBomb(p5, playBoard) {
+        let i2 = Math.floor(Math.random() * (playBoard.gridSize - 3)) + 3;
+        let j2 = Math.floor(Math.random() * (playBoard.gridSize - 3)) + 3;
+        PlayBoardLogic.generateVolBomb(p5, i2, j2, playBoard);
     }
 
     // BLIZZARD SPECIFIC:

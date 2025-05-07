@@ -1,10 +1,10 @@
 class PlayerBaseModel {
     constructor(p5, superModel, itemTypes, terrainTypes) {
         Object.assign(this, new superModel(itemTypes));
-        this.name = "PlayerBase";
+        this.name = "Player's Base";
         this.terrainType = terrainTypes.BASE;
         this.img = p5.images.get("baseBlock");
-        this.layer = p5.images.get(`${this.name}`);
+        this.layer = p5.images.get(`PlayerBase`);
 
         this.health = 1;
         this.maxHealth = 1;

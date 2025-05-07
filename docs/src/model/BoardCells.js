@@ -723,15 +723,15 @@ class CellSerializer {
         let plant, terrain, seed;
         if (object.plant) {
             plant = JSON.parse(object.plant);
-            plant = CellSerializer.PlantSerializer.parse(object.plant, p5, CellSerializer.plantFactory.get(plant.plantType)());
+            plant = CellSerializer.PlantSerializer.parse(p5, object.plant);
         }
         if (object.seed) {
             seed = JSON.parse(object.seed);
-            seed = CellSerializer.SeedSerializer.parse(object.seed, p5, CellSerializer.plantFactory.get(seed.seedType)());
+            seed = CellSerializer.SeedSerializer.parse(p5, object.seed);
         }
         if (object.terrain) {
             terrain = JSON.parse(object.terrain);
-            terrain = CellSerializer.TerrainSerializer.parse(object.terrain, p5, CellSerializer.terrainFactory.get(terrain.terrainType)(), CellSerializer.plantFactory, CellSerializer.terrainTypes);
+            terrain = CellSerializer.TerrainSerializer.parse(p5, object.terrain);
         }
         let cell = new CellModel(i, j, terrain);
         if (plant) cell.plant = plant;

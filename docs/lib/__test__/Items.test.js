@@ -9,7 +9,6 @@ import {movableTypes, plantTypes, seedTypes, terrainTypes} from "../../src/items
 import {BoardLogic, BoardModel} from "../../src/model/BoardCells.js";
 import {SlideLogic} from "../../src/items/SlideAnimation.js";
 import {MovableModel} from "../../src/items/Movable.js";
-import {Volcano1PlayBoard} from "../../src/model/stages/Vol1.js";
 
 let p;
 beforeAll(() => {
@@ -283,10 +282,10 @@ test('test bomb movement', () => {
 
     BoardLogic.getCell(3, 9, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
 
-    Volcano1PlayBoard.generateVolBomb(p, 7, 9, playBoard);
-    Volcano1PlayBoard.generateVolBomb(p, 0, 9, playBoard);
-    Volcano1PlayBoard.generateVolBomb(p, 3, 9, playBoard);
-    Volcano1PlayBoard.generateVolBomb(p, 5, 9, playBoard);
+    PlayBoardLogic.generateVolBomb(p, 7, 9, playBoard);
+    PlayBoardLogic.generateVolBomb(p, 0, 9, playBoard);
+    PlayBoardLogic.generateVolBomb(p, 3, 9, playBoard);
+    PlayBoardLogic.generateVolBomb(p, 5, 9, playBoard);
 
     let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
     expect(turn).toBeTruthy();

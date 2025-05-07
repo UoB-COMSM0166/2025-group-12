@@ -69,7 +69,12 @@ class SeedSerializer {
         return JSON.stringify(object);
     }
 
-    static parse(json) {
+    /**
+     *
+     * @param p5
+     * @param json
+     */
+    static parse(p5, json) {
         const object = JSON.parse(json);
         let seed = SeedSerializer.plantFactory.get(object.seedType)();
         Object.assign(seed, object);

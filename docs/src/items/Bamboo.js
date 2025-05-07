@@ -7,7 +7,8 @@ class BambooModel {
         this.name = "Bamboo";
         this.color = "rgb(126,255,97)";
         this.plantType = plantTypes.BAMBOO;
-        this.img = p5.images.get(`${this.name}` + Math.ceil(Math.random() * 2).toString());
+        this.imgIndex = Math.ceil(Math.random() * 2);
+        this.img = p5.images.get(`${this.name}` + this.imgIndex.toString());
 
         this.seed = BambooSeedModel;
 

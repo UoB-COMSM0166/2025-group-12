@@ -81,7 +81,12 @@ class TerrainSerializer {
         return JSON.stringify(object);
     }
 
-    static parse(json) {
+    /**
+     *
+     * @param p5
+     * @param json
+     */
+    static parse(p5, json) {
         let object = JSON.parse(json);
         let newTerrainInstance = TerrainSerializer.terrainFactory.get(object.terrainType)();
 

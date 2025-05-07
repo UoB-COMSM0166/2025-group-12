@@ -7,7 +7,8 @@ class FireHerbModel {
         this.name = "FireHerb";
         this.color = "red";
         this.plantType = plantTypes.FIRE_HERB;
-        this.img = p5.images.get(`${this.name}` + Math.ceil(Math.random() * 2).toString());
+        this.imgIndex = Math.ceil(Math.random() * 2);
+        this.img = p5.images.get(`${this.name}` + this.imgIndex.toString());
 
         this.seed = FireHerbSeedModel;
 

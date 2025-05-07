@@ -93,7 +93,7 @@ class Volcano1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static nextTurnItems(p5, playBoard) {
-        this.generateVolBomb(p5, 8, 8, playBoard);
+        this.PlayBoardLogic.generateVolBomb(p5, 8, 8, playBoard);
 
         switch (playBoard.turn) {
             case 2:
@@ -194,45 +194,6 @@ class Volcano1PlayBoard {
             this.PlayBoardLogic.TerrainLogic.solidify(p5, playBoard, cell.terrain);
         }
 
-    }
-
-    /**
-     *
-     * @param p5
-     * @param {PlayBoardLike} playBoard
-     */
-    static generateRandomVolBomb(p5, playBoard) {
-        let i1 = Math.floor(Math.random() * 3);
-        let j1 = Math.floor(Math.random() * 3);
-        let i2 = Math.floor(Math.random() * (playBoard.gridSize - 3)) + 3;
-        let j2 = Math.floor(Math.random() * (playBoard.gridSize - 3)) + 3;
-        while (i1 - j1 === i2 - j2) {
-            i1 = Math.floor(Math.random() * 3);
-            j1 = Math.floor(Math.random() * 3);
-        }
-        let [x1, y1] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i1, j1, p5.CENTER);
-        let [x2, y2] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i2, j2, p5.CENTER);
-        this.movableFactory.get(this.movableTypes.BOMB)(playBoard, i1, j1, i2, j2, x1, y1, x2, y2);
-    }
-
-    /**
-     *
-     * @param p5
-     * @param i
-     * @param j
-     * @param {PlayBoardLike} playBoard
-     */
-    static generateVolBomb(p5, i, j, playBoard) {
-        let i1 = Math.floor(Math.random() * 3);
-        let j1 = Math.floor(Math.random() * 3);
-        while (i1 - j1 === i - j) {
-            i1 = Math.floor(Math.random() * 3);
-            j1 = Math.floor(Math.random() * 3);
-        }
-        let [x1, y1] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i1, j1, p5.CENTER);
-        let [x2, y2] = this.PlayBoardLogic.utilityClass.cellIndex2Pos(p5, playBoard, i, j, p5.CENTER);
-
-        this.movableFactory.get(this.movableTypes.BOMB)(playBoard, i1, j1, i, j, x1, y1, x2, y2);
     }
 
     /**

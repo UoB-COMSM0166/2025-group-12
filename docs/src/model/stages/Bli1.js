@@ -32,7 +32,7 @@ class Blizzard1PlayBoard {
         playBoard.stageGroup = this.PlayBoardModel.stageGroup.BLIZZARD;
         playBoard.stageNumbering = 1;
         // grid parameters
-        playBoard.gridSize = 10;
+        playBoard.gridSize = 6;
         [playBoard.cellWidth, playBoard.cellHeight] = this.PlayBoardModel.utilityClass.relative2absolute(14 / 160, 14 / 90);
 
         // board objects array
@@ -40,7 +40,7 @@ class Blizzard1PlayBoard {
 
         // turn counter
         playBoard.turn = 1;
-        playBoard.maxTurn = 15;
+        playBoard.maxTurn = 6;
     }
 
     /**
@@ -50,6 +50,8 @@ class Blizzard1PlayBoard {
      */
     static setStageInventory(p5, playBoard) {
         this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PLUM, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 2, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.FIRE_HERB, 2, playBoard.gameState.inventory);
     }
 
     /**
@@ -64,8 +66,8 @@ class Blizzard1PlayBoard {
                 playBoard.snowfields.push([i, j]);
             }
         }
-        this.PlayBoardLogic.BoardLogic.setCell(8, 8, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
-        playBoard.snowfields = playBoard.snowfields.filter(index => !(index[0] === 8 && index[1] === 8)); // remember to exclude cells with terrain
+        this.PlayBoardLogic.BoardLogic.setCell(4, 4, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        playBoard.snowfields = playBoard.snowfields.filter(index => !(index[0] === 4 && index[1] === 4)); // remember to exclude cells with terrain
     }
 
     /**
@@ -74,11 +76,23 @@ class Blizzard1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static nextTurnItems(p5, playBoard) {
-        if (playBoard.turn === 2) {
-            this.movableFactory.get(this.movableTypes.BLIZZARD)(playBoard, 4, 4, 0);
-        }
-        if (playBoard.turn === 3) {
-            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 3, 0, 'r');
+        switch (playBoard.turn) {
+            case 2:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 4, 0, 'r');
+                break;
+            case 3:
+                this.movableFactory.get(this.movableTypes.BLIZZARD)(playBoard, 4, 3, 0);
+                break;
+            case 4:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 4, 'd');
+                break;
+            case 5:
+                this.movableFactory.get(this.movableTypes.BLIZZARD)(playBoard, 3, 4, 0);
+                break;
+            case 6:
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 4, 0, 'r');
+                this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, 4, 'd');
+                break;
         }
     }
 

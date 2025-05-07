@@ -7,7 +7,8 @@ class PlumModel {
         this.name = "Plum";
         this.color = "rgb(222,111,161)";
         this.plantType = plantTypes.PLUM;
-        this.img = p5.images.get(`${this.name}` + Math.ceil(Math.random() * 2).toString());
+        this.imgIndex = Math.ceil(Math.random() * 2);
+        this.img = p5.images.get(`${this.name}` + this.imgIndex.toString());
         this.seed = PlumSeedModel;
 
         this.health = 2;

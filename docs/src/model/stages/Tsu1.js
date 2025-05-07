@@ -40,7 +40,7 @@ class Tsunami1PlayBoard {
 
         // turn counter
         playBoard.turn = 1;
-        playBoard.maxTurn = 30;
+        playBoard.maxTurn = 20;
 
         playBoard.fertilized = Array.from({length: playBoard.gridSize},
             () => Array.from({length: playBoard.gridSize}, () => false));
@@ -52,23 +52,23 @@ class Tsunami1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static setStageInventory(p5, playBoard) {
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PALM, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.FIRE_HERB, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.BAMBOO, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PLUM, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.KIKU, 10, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PALM, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PINE, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.CORN, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.ORCHID, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.FIRE_HERB, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.BAMBOO, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.PLUM, 3, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.plantTypes.KIKU, 3, playBoard.gameState.inventory);
 
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PALM, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.FIRE_HERB, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.BAMBOO, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PLUM, 10, playBoard.gameState.inventory);
-        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.KIKU, 10, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PALM, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PINE, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.CORN, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.ORCHID, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.FIRE_HERB, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.BAMBOO, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.PLUM, 20, playBoard.gameState.inventory);
+        this.PlayBoardLogic.InventoryLogic.pushItem2Inventory(p5, this.seedTypes.KIKU, 20, playBoard.gameState.inventory);
     }
 
     /**
@@ -86,9 +86,42 @@ class Tsunami1PlayBoard {
                 }
             }
         }
-        this.PlayBoardLogic.BoardLogic.setCell(8, 15, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
-        this.PlayBoardLogic.BoardLogic.setCell(7, 8, this.terrainFactory.get(this.terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
-        this.PlayBoardLogic.BoardLogic.setCell(7, 9, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        for (let j = 0; j < playBoard.gridSize; j++) {
+            for (let i = 0; i <= 1; i++) {
+                if (this.PlayBoardLogic.BoardLogic.getCell(i, j, playBoard.boardObjects).terrain.terrainType === this.terrainTypes.SEA) continue;
+                if (i === 0) {
+                    let hill = this.terrainFactory.get(this.terrainTypes.HILL)();
+                    hill.setCanSlide(true);
+                    this.PlayBoardLogic.BoardLogic.setCell(i, j, hill, playBoard.boardObjects);
+                } else {
+                    this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.HILL)(), playBoard.boardObjects);
+                }
+            }
+        }
+        this.PlayBoardLogic.BoardLogic.setCell(0, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(1, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(0, 1, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(1, 1, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(1, 2, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 1, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 2, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(2, 0, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(0, 2, this.terrainFactory.get(this.terrainTypes.VOLCANO)(), playBoard.boardObjects);
+
+        this.PlayBoardLogic.BoardLogic.setCell(7, 11, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+        this.PlayBoardLogic.BoardLogic.setCell(7, 12, this.terrainFactory.get(this.terrainTypes.BASE)(), playBoard.boardObjects);
+
+        for (let i = 8; i < playBoard.gridSize; i++) {
+            for (let j = 8; j < playBoard.gridSize; j++) {
+                this.PlayBoardLogic.BoardLogic.setCell(i, j, this.terrainFactory.get(this.terrainTypes.SNOWFIELD)(), playBoard.boardObjects);
+                playBoard.snowfields.push([i, j]);
+            }
+        }
+
+        this.PlayBoardLogic.BoardLogic.setCell(13, 14, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+        playBoard.snowfields = playBoard.snowfields.filter(index => !(index[0] === 13 && index[1] === 14));
+        this.PlayBoardLogic.BoardLogic.setCell(3, 14, this.terrainFactory.get(this.terrainTypes.LUMBERING)(), playBoard.boardObjects);
+
     }
 
     /**
@@ -97,17 +130,41 @@ class Tsunami1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static nextTurnItems(p5, playBoard) {
-        if (playBoard.turn === 2) {
-            this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 1, -1, 5);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        if (playBoard.turn % 2 === 0) {
+            this.movableFactory.get(this.movableTypes.EARTHQUAKE)(playBoard);
+            this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 12, 14);
+            this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 4, 14);
         }
-        if (playBoard.turn === 3) {
-            this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 2, -1, 5);
+
+        if (playBoard.turn % 2 === 1) {
+            this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 3 + Math.floor(Math.random() * 4), -1, 5);
+            this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard, 7);
         }
-        if (playBoard.turn === 4) {
-            this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 3, -1, 5);
+        let arr = [8, 9, 10, 11, 12, 13, 14, 15];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
-        if (playBoard.turn === 5) {
-            this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 4, -1, 5);
+        let p1 = arr[0];
+        let p2 = arr[1];
+        if (playBoard.turn === 3 || playBoard.turn === 6 || playBoard.turn === 9 || playBoard.turn === 12 || playBoard.turn === 15 || playBoard.turn === 18) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 15, p1, 'u', 1);
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 15, p2, 'u', 1);
+        }
+        if (playBoard.turn === 4 || playBoard.turn === 7 || playBoard.turn === 10 || playBoard.turn === 13 || playBoard.turn === 16 || playBoard.turn === 19) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, p1, 'd', 1);
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, p2, 'd', 1);
+        }
+
+        // spread bamboo after generating slide
+        for (let cwp of this.PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
+            if (cwp.plant.plantType === this.plantTypes.BAMBOO) {
+                this.PlayBoardLogic.PlantLogic.spreadBamboo(p5, playBoard, cwp);
+            }
         }
     }
 
