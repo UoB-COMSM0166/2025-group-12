@@ -69,6 +69,13 @@ The background story of our game invites you to delve into a world rebuilding af
 
 We are not looking for a conventional Mario-genre 2D side-scrolling platform game, but rather something innovative. Our initial game idea is inspired by a similar tactics game, <em>Into the Breach</em>, where players control a group of mecha warriors on a grid battlefield, and a tower defence game, <em>Carrot Fantasy</em>, where players cultivate plants that fire ballistae, similar to <em>Bloons TD</em>. Both games focus on planning and strategy. Evolved from these games, our game stands out for its uniqueness (as far as our knowledge) in gameplay and mechanics, making it enchanting to players .
 
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
 
 
 ## Requirements 
@@ -186,6 +193,13 @@ These use cases are detailed as follows:
   
   - Game Over: The player is thrown back to the game map menu and can retry the game stage.
 
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
 
 
 ## Design
@@ -272,6 +286,14 @@ To understand the sequence diagram, we can split it into three parts: action lis
 The sequence diagram.
 </p>
 
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
+
 
 ## Implementation
 
@@ -347,6 +369,14 @@ After testing the first step, we then introduced the in-play `undo` feature by p
 
 <p align="center">
 The demonstration code chunks for implementing serialisers. Upper level serialisers recursively calls lower level serialisers.
+</p>
+
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
 </p>
 
 
@@ -447,6 +477,14 @@ The second approach is more robust and reliable, but much harder to fully execut
 
 <p align="center">
 The demonstration code chunks for test cases.
+</p>
+
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
 </p>
 
 
@@ -553,6 +591,14 @@ In addition to technical challenges, we also lost our way while designing the ga
 We cherish user feedback since it validates our design and system functionalities. User feedback is vital to Agile development, and continuous feedback helps improve each iteration. By attending the CSS Testathon in addition to course workshops, we gathered feedback from various groups of people, uncovering usability issues which shaped other designs to be much more user-friendly.
 
 There are also regrets that we could have done better. The most immediate enhancement is the full integration of gamepad support to offer a more accessible player experience, especially to those who are keen on controllers, or with disabilities, who find it difficult to use keyboard and mouse. We have partially fulfilled the key gamepad functionalities. Audio and ambient soundscapes are essential to an immersive game experience, but we have no time to integrate them. These possible future works would not only refine the existing gameplay but also broaden the game’s appeal to different types of players.
+
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
 
 
 ## Appendix
