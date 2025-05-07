@@ -50,8 +50,8 @@ Click the banner to play our game.
 
 # Table of Contents
 - [1. Introduction](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#introduction)
-- [2. Design](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#introduction)
-- [3. Requirements](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#design)
+- [2. Design](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#design)
+- [3. Requirements](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#requirement)
 - [4. Implementation](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#implementation)
 - [5. Evaluation](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#evaluation)
 - [6. Process](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#process)
