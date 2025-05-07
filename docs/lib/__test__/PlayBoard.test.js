@@ -5,7 +5,7 @@ import {Container} from "../../src/controller/Container.js";
 import {stateCode} from "../../src/model/GameState.js";
 import {PlayBoardLogic, PlayBoardModel} from "../../src/model/PlayBoard.js";
 import {InventoryLogic} from "../../src/model/Inventory.js";
-import {plantTypes, movableTypes} from "../../src/items/ItemTypes.js";
+import {plantTypes, movableTypes, terrainTypes} from "../../src/items/ItemTypes.js";
 import {BoardLogic} from "../../src/model/BoardCells.js";
 
 let p;
@@ -50,11 +50,25 @@ beforeEach(() => {
 
     // next cycle - wait for fade in fade out
     tick(p, container, 50);
+
+    playBoard = /** @type {PlayBoardModel} */ container.gameState.currentStage;
+
+    for (let i = 0; i < playBoard.gridSize; i++) {
+        for (let j = 0; j < playBoard.gridSize; j++) {
+            if (j >= 8) {
+                BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.DESERT)(), playBoard.boardObjects);
+            } else {
+                BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.SEA)(), playBoard.boardObjects);
+            }
+        }
+    }
+    BoardLogic.setCell(8, 15, container.terrainFactory.get(terrainTypes.BASE)(), playBoard.boardObjects);
+    BoardLogic.setCell(7, 8, container.terrainFactory.get(terrainTypes.MOUNTAIN)(), playBoard.boardObjects);
+    BoardLogic.setCell(7, 9, container.terrainFactory.get(terrainTypes.BASE)(), playBoard.boardObjects);
 })
 
 test('test click cell and inventory', () => {
     expect(container.gameState.state).toBe(stateCode.PLAY);
-    playBoard = container.gameState.currentStage;
 
     // click a cell, displays info box
     expect(playBoard.infoBox.activateButton).toBeFalsy();
@@ -127,7 +141,6 @@ test('test quit to game map', () => {
 });
 
 test('test planting 3 plants forming ecosystem, and activate button, then modify the board to test active skills working', () => {
-    playBoard = container.gameState.currentStage;
     let inventory = container.inventory;
 
     expect(playBoard.actionPoints).toBe(playBoard.maxActionPoints);
@@ -265,7 +278,6 @@ test('test planting 3 plants forming ecosystem, and activate button, then modify
 });
 
 test('test end turn button works', () => {
-    playBoard = container.gameState.currentStage;
     let inventory = container.inventory;
     inventory.selectedItem = plantTypes.PINE;
     [p.mouseX, p.mouseY] = container.utilityClass.cellIndex2Pos(p, playBoard, 10, 10, p.CENTER);
@@ -317,7 +329,6 @@ test('test end turn button works', () => {
 });
 
 test('test undo works', () => {
-    playBoard = container.gameState.currentStage;
     let inventory = container.inventory;
 
     container.movableFactory.get(movableTypes.BANDIT)(playBoard, 12, 10);
@@ -401,7 +412,6 @@ test('test undo works', () => {
 });
 
 test('test save and load', () => {
-    playBoard = container.gameState.currentStage;
     let inventory = container.inventory;
     inventory.selectedItem = plantTypes.PINE;
     [p.mouseX, p.mouseY] = container.utilityClass.cellIndex2Pos(p, playBoard, 10, 10, p.CENTER);
