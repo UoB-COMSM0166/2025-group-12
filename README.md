@@ -351,17 +351,26 @@ Among the two major approaches, the think-aloud and Nielsen’s heuristic, we se
     <td>
       <figure>
         <img src="documents/Heuristic%20Qualitative.svg" alt="Heuristic Qualitative" />
-        <figcaption>Statistics of usability issues across all participants</figcaption>
+        <figcaption>
+          <small>
+            Statistics of usability issues across all participants
+          </small>
+        </figcaption>
       </figure>
     </td>
     <td>
       <figure>
         <img src="documents/Heuristic%20Qualitative-Percentage.svg" alt="Heuristic Qualitative-Percentage" />
-        <figcaption>Percentage distribution across Nielsen’s ten heuristics</figcaption>
+        <figcaption>
+          <small>
+            Percentage distribution across Nielsen’s ten heuristics
+          </small>
+        </figcaption>
       </figure>
     </td>
   </tr>
 </table>
+
 
 
 #### Help & documentation
