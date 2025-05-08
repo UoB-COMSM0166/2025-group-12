@@ -19,7 +19,7 @@ Click the banner to play our game.
         <img src="documents/Image With Play button.svg" width="75%">
     </a>
     <p>
-        Click the above video to watch game demonstration.
+        Click the above to watch the video of game demonstration.
     </p>
 
 </div>
