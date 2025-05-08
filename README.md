@@ -19,8 +19,9 @@ Click the banner to play our game.
         <img src="documents/Image With Play button.svg" width="75%">
     </a>
     <p>
-        Click the above to watch the video of game demonstration.
+        Click the above to watch the demonstration video.
     </p>
+
 
 </div>
 
@@ -567,8 +568,9 @@ Nonetheless, the Kanban board proved to be essential for visibility over task pr
 Pair programming played a crucial role in the early stages of our game development, particularly in creating the initial working prototype and establishing the basic game components. At that time, the framework and structure of the game were still evolving, and many uncertainties remained to be addressed. Working in pairs allowed us to combine our individual strengths, share ideas more effectively, and quickly evaluate the pros and cons of different frameworks through active discussion. This collaborative approach led to a more consistent, adaptable, and durable codebase that could grow and improve as the project matured.
 
 <p align="center">
-    <img src="documents/Pair Programming.png" width="40%">
+    <img src="documents/PairProgramming.png" width="40%">
 </p>
+
 
 Moreover, pair programming also proved especially valuable during debugging sessions. Locating the source of bugs can often be a time-consuming and frustrating task when working alone, especially with complex game mechanics and interactions. However, collaborating allowed us to analyse the bug from different perspectives, which sped up the process.
 
