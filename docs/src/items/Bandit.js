@@ -2,6 +2,14 @@
  * @implements {MovableLike}
  */
 class BanditModel {
+    static setup(bundle) {
+        BanditModel.Attacking = bundle.Attacking;
+        BanditModel.Dying = bundle.Dying;
+        BanditModel.Hurt = bundle.Hurt;
+        BanditModel.Idle = bundle.Idle;
+        BanditModel.Walking = bundle.Walking;
+    }
+
     constructor(p5, superModel, itemTypes, movableTypes, x, y) {
         Object.assign(this, new superModel(itemTypes, x, y));
         this.name = "Bandit";
@@ -9,8 +17,8 @@ class BanditModel {
 
         this.movableType = movableTypes.BANDIT;
 
-        this.health = 3;
-        this.maxHealth = 3;
+        this.health = 2;
+        this.maxHealth = 2;
         this.status = true;
 
         // at the beginning of end turn movement, isMoving = false, targetCell = null
@@ -24,6 +32,17 @@ class BanditModel {
         this.hasMoved = true;
         this.direction = [];
         this.moveSpeed = 5;
+        this.images = new Map();
+        this.initAllImages(p5);
+        this.fps = 20;
+        this.frameInterval = 1000 / this.fps;
+        this.frameTimer = 0;
+        this.index = 0;
+        this.maxFrame = 11;
+        this.states = [BanditModel.Attacking, BanditModel.Dying, BanditModel.Hurt, BanditModel.Idle, BanditModel.Walking];
+        this.currentState = this.states[0];
+        this.imageKey = "idle";
+        this.nextCell = null;
     }
 
     static create(p5, playBoard, superModel, i, j) {
@@ -37,6 +56,39 @@ class BanditModel {
         cell.enemy = bandit;
         bandit.cell = cell;
         return bandit;
+    }
+
+    initAllImages(p5){
+        let temp = [];
+        for (let i = 1; i < 13; i++) {
+            const index = i.toString().padStart(2, '0');
+            temp.push(p5.images.get("BanditIdle" + index));
+        }
+        this.images.set("idle", temp);
+        temp = [];
+        for (let i = 1; i < 19; i++) {
+            const index = i.toString().padStart(2, '0');
+            temp.push(p5.images.get("BanditWalking" + index));
+        }
+        this.images.set("walking", temp);
+        temp = [];
+        for (let i = 1; i < 12; i++) {
+            const index = i.toString().padStart(2, '0');
+            temp.push(p5.images.get("BanditAttacking" + index));
+        }
+        this.images.set("attacking", temp);
+        temp = [];
+        for (let i = 1; i < 13; i++) {
+            const index = i.toString().padStart(2, '0');
+            temp.push(p5.images.get("BanditHurt" + index));
+        }
+        this.images.set("hurt", temp);
+        temp = [];
+        for (let i = 1; i < 16; i++) {
+            const index = i.toString().padStart(2, '0');
+            temp.push(p5.images.get("BanditDying" + index));
+        }
+        this.images.set("dying", temp);
     }
 }
 
@@ -53,8 +105,21 @@ class BanditRenderer {
      * @param {BanditModel} bandit
      */
     static draw(p5, playBoard, bandit) {
+        bandit.currentState.handleInput(playBoard, bandit);
+        if (bandit.frameTimer > bandit.frameInterval) {
+            bandit.frameTimer = 0;
+            if (bandit.index < bandit.maxFrame) {
+                bandit.index++
+            }
+            else{
+                bandit.index = 0;
+            }
+        }
+        else{
+            bandit.frameTimer += p5.deltaTime;
+        }
         let imgSize = Math.min(playBoard.cellWidth, playBoard.cellHeight) / 2;
-        p5.image(bandit.img, bandit.x - imgSize / 2, bandit.y - imgSize, imgSize, imgSize);
+        p5.image(bandit.images.get(bandit.imageKey)[bandit.index], bandit.x - imgSize / 2, bandit.y - imgSize, imgSize, imgSize);
     }
 }
 
@@ -78,6 +143,7 @@ class BanditLogic {
         BanditLogic.BoardLogic = bundle.BoardLogic;
         /** @type {typeof InteractionLogic} */
         BanditLogic.InteractionLogic = bundle.InteractionLogic;
+        BanditLogic.banditStates = bundle.banditStates;
     }
 
     /**
@@ -96,6 +162,7 @@ class BanditLogic {
             bandit.isMoving = false;
             bandit.hasMoved = true;
             bandit.direction = [];
+            BanditLogic.setState(bandit, BanditLogic.banditStates.IDLE);
             return false;
         }
         // during movement
@@ -116,6 +183,7 @@ class BanditLogic {
                 bandit.cell.enemy = null;
                 bandit.cell = null;
             }
+            BanditLogic.setState(bandit, BanditLogic.banditStates.WALKING);
             bandit.isMoving = true;
             BanditLogic.move(p5, playBoard, bandit);
             return true;
@@ -221,8 +289,10 @@ class BanditLogic {
 
         // If adjacent to the target plant, attack instead of moving
         if (path.length === 1) {
-            BanditLogic.InteractionLogic.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);
-            bandit.hasMoved = true;
+            BanditLogic.setState(bandit, BanditLogic.banditStates.ATTACK);
+            bandit.nextCell = nextCell;
+            // BanditLogic.InteractionLogic.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);
+            // bandit.hasMoved = true;
             return;
         }
 
@@ -322,6 +392,11 @@ class BanditLogic {
         }
 
         return G;
+    }
+
+    static setState(bandit, state){
+        bandit.currentState = bandit.states[state];
+        bandit.currentState.enter(bandit);
     }
 
 }
