@@ -45,16 +45,17 @@ class StartMenuModel {
         this.y = StartMenuModel.utilityClass.relative2absolute(0.5, 0.5)[1];
         this.index = 0;
 
+        this.buttonWidth = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07)[0];
+        this.buttonHeight = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07)[1];
+        this.buttonX = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55)[0];
+        this.buttonY = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55)[1];
+        this.buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
+
         this.init();
     }
 
     init() {
-
-        let [buttonWidth, buttonHeight] = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55);
-        let buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
-
-        let skipTutorialButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game - Skip Tutorial");
+        let skipTutorialButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY, this.buttonWidth, this.buttonHeight, "New Game - Skip Tutorial");
         skipTutorialButton.onClick = () => {
             this.gameState.setStageCleared(StartMenuModel.stageGroup.TORNADO);
             this.gameState.setStageCleared(StartMenuModel.stageGroup.TORNADO);
@@ -62,13 +63,13 @@ class StartMenuModel {
             this.gameState.nextState = StartMenuModel.stateCode.STANDBY;
         }
 
-        let newGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "New Game");
+        let newGameButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY + this.buttonInter, this.buttonWidth, this.buttonHeight, "New Game");
         newGameButton.onClick = () => {
             this.gameState.isFading = true;
             this.gameState.nextState = StartMenuModel.stateCode.STANDBY;
         }
 
-        let loadGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Load Game");
+        let loadGameButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY + 2 * this.buttonInter, this.buttonWidth, this.buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
             if (!StartMenuModel.p5.loadedAll) return;
             if (!StartMenuModel.GameSerializer.load()) {
@@ -76,12 +77,12 @@ class StartMenuModel {
             }
         }
 
-        let optionButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Options");
+        let optionButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY + 3 * this.buttonInter, this.buttonWidth, this.buttonHeight, "Options");
         optionButton.onClick = () => {
             this.gameState.showOptions = true;
         }
 
-        this.buttons.push(newGameButton, skipTutorialButton, loadGameButton, optionButton);
+        this.buttons.push(newGameButton, loadGameButton, optionButton, skipTutorialButton);
 
         this.initAllFloatingWindows();
     }
@@ -286,31 +287,41 @@ class StartMenuLogic {
     }
 
     static resize(startMenu) {
-        let [buttonWidth, buttonHeight] = StartMenuLogic.utilityClass.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = StartMenuLogic.utilityClass.relative2absolute(0.2, 0.6);
-        let buttonInter = StartMenuLogic.utilityClass.relative2absolute(0.1, 0.1)[1];
+        let newGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("new game"));
+        if (!newGame) newGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("resume"));
+        let skip = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("new game - skip"));
+        let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("load"));
+        let option = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("opt"));
 
-        startMenu.buttons[0].x = buttonX - buttonWidth / 2;
-        startMenu.buttons[0].defaultX = buttonX - buttonWidth / 2;
-        startMenu.buttons[0].targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
-        startMenu.buttons[0].y = buttonY;
-        startMenu.buttons[0].width = buttonWidth;
-        startMenu.buttons[0].height = buttonHeight;
+        if (skip) {
+            skip.x = startMenu.buttonX - startMenu.buttonWidth / 2;
+            skip.defaultX = startMenu.buttonX - startMenu.buttonWidth / 2;
+            skip.targetX = newGame.x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+            skip.y = startMenu.buttonY;
+            skip.width = startMenu.buttonWidth;
+            skip.height = startMenu.buttonHeight;
+        }
 
-        startMenu.buttons[1].x = buttonX - buttonWidth / 2;
-        startMenu.buttons[1].defaultX = buttonX - buttonWidth / 2;
-        startMenu.buttons[1].targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
-        startMenu.buttons[1].y = buttonY + buttonInter;
-        startMenu.buttons[1].width = buttonWidth;
-        startMenu.buttons[1].height = buttonHeight;
+        newGame.x = startMenu.buttonX - startMenu.buttonWidth / 2;
+        newGame.defaultX = startMenu.buttonX - startMenu.buttonWidth / 2;
+        newGame.targetX = newGame.x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+        newGame.y = startMenu.buttonY + startMenu.buttonInter;
+        newGame.width = startMenu.buttonWidth;
+        newGame.height = startMenu.buttonHeight;
 
+        loadGame.x = startMenu.buttonX - startMenu.buttonWidth / 2;
+        loadGame.defaultX = startMenu.buttonX - startMenu.buttonWidth / 2;
+        loadGame.targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+        loadGame.y = startMenu.buttonY + 2 * startMenu.buttonInter;
+        loadGame.width = startMenu.buttonWidth;
+        loadGame.height = startMenu.buttonHeight;
 
-        startMenu.buttons[2].x = buttonX - buttonWidth / 2;
-        startMenu.buttons[2].defaultX = buttonX - buttonWidth / 2;
-        startMenu.buttons[2].targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
-        startMenu.buttons[2].y = buttonY + 2 * buttonInter;
-        startMenu.buttons[2].width = buttonWidth;
-        startMenu.buttons[2].height = buttonHeight;
+        option.x = startMenu.buttonX - startMenu.buttonWidth / 2;
+        option.defaultX = startMenu.buttonX - startMenu.buttonWidth / 2;
+        option.targetX = startMenu.buttons[0].x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+        option.y = startMenu.buttonY + 3 * startMenu.buttonInter;
+        option.width = startMenu.buttonWidth;
+        option.height = startMenu.buttonHeight;
     }
 
 }

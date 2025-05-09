@@ -17,8 +17,8 @@ class BanditModel {
 
         this.movableType = movableTypes.BANDIT;
 
-        this.health = 2;
-        this.maxHealth = 2;
+        this.health = 3;
+        this.maxHealth = 3;
         this.status = true;
 
         // at the beginning of end turn movement, isMoving = false, targetCell = null
