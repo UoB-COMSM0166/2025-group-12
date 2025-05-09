@@ -37,7 +37,9 @@ function loadEssentialImages(p5) {
         images.set(`Button${i}`, p5.loadImage(basePath + `Button${i}.png`));
         images.set(`ButtonHover${i}`, p5.loadImage(basePath + `ButtonHover${i}.png`));
     }
-
+    images.set("inv-top", p5.loadImage(basePath + "inv-top.png"));
+    images.set("inv-body", p5.loadImage(basePath + "inv-body.png"));
+    images.set("inv-bot", p5.loadImage(basePath + "inv-bot.png"));
     return images;
 }
 
@@ -168,6 +170,8 @@ async function loadImages(p5) {
         ["xbox_cross", "xbox/xbox_cross.png"],
         ["ActionPointBoard", "ActionPointBoard.png"],
         ["ActionPointBoardDeplete", "ActionPointBoardDeplete.png"],
+        ["infobox", "infobox.png"],
+        ["infobox-inner", "infobox-inner.png"],
     ];
 
     for (const [key, file] of entries) {

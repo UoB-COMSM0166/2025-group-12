@@ -24,7 +24,7 @@ class InventoryModel {
         this.isSelected = false;
     }
 
-    updateParameters(){
+    updateParameters() {
         this.padding = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[0];
         this.itemHeight = InventoryModel.utilityClass.relative2absolute(0.01, 0.06)[1];
         this.inventoryWidth = InventoryModel.utilityClass.relative2absolute(0.1, 0.03)[0];
@@ -53,16 +53,10 @@ class InventoryRenderer {
     static draw(p5, inventory) {
         inventory.updateParameters();
         p5.noStroke();
-        // Inventory background
-        p5.fill(100, 100, 100, 200);
-        p5.rect(inventory.inventoryX, inventory.inventoryY, inventory.inventoryWidth, inventory.inventoryHeight, 10);
-
-        // Inventory title text
-        p5.fill(255);
+        // Inventory top
         p5.textAlign(p5.CENTER, p5.CENTER);
         let fontSizes = InventoryRenderer.utilityClass.getFontSize();
-        p5.textSize(fontSizes.mini)
-        p5.text("INVENTORY", inventory.inventoryX + inventory.inventoryWidth / 2, inventory.inventoryY + inventory.padding);
+        p5.image(p5.images.get("inv-top"), inventory.inventoryX, inventory.inventoryY - inventory.padding, inventory.inventoryWidth, inventory.padding + inventory.itemHeight / 2)
 
         // loop inventory items
         let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
@@ -71,6 +65,7 @@ class InventoryRenderer {
             let key = visibleItems[i][0];
             let value = visibleItems[i][1];
             let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
+            p5.image(p5.images.get("inv-body"), inventory.inventoryX, itemY - inventory.padding /2 , inventory.inventoryWidth, inventory.itemHeight - inventory.itemInter + inventory.padding);
             let itemInstance = inventory.itemPrototypes.get(key)();
             p5.push();
             if (inventory.index === i) {
@@ -89,13 +84,14 @@ class InventoryRenderer {
             p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             index++;
         }
+        p5.image(p5.images.get("inv-bot"), inventory.inventoryX, inventory.inventoryY + inventory.itemHeight / 2 + inventory.inventoryHeight - inventory.padding * 2, inventory.inventoryWidth, inventory.padding);
     }
 
-    static drawGamepadInstruction(p5, inventory){
-        if(inventory.mode === "gamepad"){
+    static drawGamepadInstruction(p5, inventory) {
+        if (inventory.mode === "gamepad") {
             let gbSize = inventory.itemInter * 3;
-            p5.image(p5.images.get("xbox_cross"), inventory.inventoryX, inventory.inventoryY+ inventory.inventoryHeight, gbSize, gbSize);
-            p5.text("Cycle Plants", inventory.inventoryX + inventory.inventoryWidth / 2 + gbSize*0.5, inventory.inventoryY+ inventory.inventoryHeight + gbSize* 0.5);
+            p5.image(p5.images.get("xbox_cross"), inventory.inventoryX, inventory.inventoryY + inventory.inventoryHeight, gbSize, gbSize);
+            p5.text("Cycle Plants", inventory.inventoryX + inventory.inventoryWidth / 2 + gbSize * 0.5, inventory.inventoryY + inventory.inventoryHeight + gbSize * 0.5);
         }
     }
 }
@@ -155,7 +151,7 @@ class InventoryLogic {
      * @param i
      * @param {InventoryModel} inventory
      */
-    static getItemPosition(i, inventory){
+    static getItemPosition(i, inventory) {
         return [inventory.itemX, inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight]
     }
 
@@ -165,7 +161,7 @@ class InventoryLogic {
      * @param i
      * @param {InventoryModel} inventory
      */
-    static getItemPositionAndSize(i, inventory){
+    static getItemPositionAndSize(i, inventory) {
         return [inventory.itemX, inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight, inventory.itemWidth, (inventory.itemHeight - inventory.itemInter)];
     }
 

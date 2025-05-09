@@ -25,8 +25,8 @@ class OptionsModel {
         /** @type {Map} */
         this.allFloatingWindows = null;
 
+        this.dropdown = null;
         this.init();
-        this.drowpdown;
     }
 
     init() {

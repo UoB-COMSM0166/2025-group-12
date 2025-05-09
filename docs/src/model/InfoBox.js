@@ -12,10 +12,10 @@ class InfoBoxModel {
         this.displayButton = null;
 
         this.playBoard = playBoard;
-        this.boxWidth = InfoBoxModel.utilityClass.relative2absolute(0.2, 5 / 18)[0];
-        this.boxHeight = InfoBoxModel.utilityClass.relative2absolute(0.2, 5 / 18)[1];
-        this.paddingX = InfoBoxModel.utilityClass.relative2absolute(1 / 128, 1 / 360)[0];
-        this.paddingY = InfoBoxModel.utilityClass.relative2absolute(1 / 128, 1 / 360)[1];
+        this.boxWidth = InfoBoxModel.utilityClass.relative2absolute(0.24, 0.31)[0];
+        this.boxHeight = InfoBoxModel.utilityClass.relative2absolute(0.24, 0.31)[1];
+        this.paddingX = this.boxWidth / 30;
+        this.paddingY = this.boxHeight / 30;
         this.boxLeftX = InfoBoxModel.utilityClass.relative2absolute(1 / 128, 0)[0];
         this.boxRightX = InfoBoxModel.utilityClass.relative2absolute(1, 1)[0] - this.boxLeftX - this.boxWidth;
         this.boxY = InfoBoxModel.utilityClass.relative2absolute(1, 1)[1] - this.boxHeight - this.paddingY;
@@ -53,30 +53,25 @@ class InfoBoxRenderer {
 
         let imgSize = infoBox.boxWidth / 6;
         let textBoxWidth = infoBox.boxWidth - imgSize - 3 * infoBox.paddingX;
-        let textBoxHeight = (infoBox.boxHeight - 3 * infoBox.paddingY) / 2;
+        let textBoxHeight = (infoBox.boxHeight - 2 * infoBox.paddingY) / 2;
 
         p5.noStroke();
+        p5.fill(50);
         p5.textAlign(p5.LEFT, p5.TOP);
         p5.textWrap(p5.WORD);
         let fontSizes = InfoBoxRenderer.utilityClass.getFontSize();
         p5.textSize(fontSizes.mini);
         // draw right bottom corner: general info + ecosystem
-        // draw background box
-        p5.fill(50);
-        p5.rect(infoBox.boxRightX, infoBox.boxY, infoBox.boxWidth, infoBox.boxHeight, 10);
+        p5.image(p5.images.get("infobox"), infoBox.boxRightX, infoBox.boxY, infoBox.boxWidth, infoBox.boxHeight);
         // draw img
         p5.image(terrainImg, infoBox.boxRightX + infoBox.paddingX, infoBox.boxY + (infoBox.boxHeight - imgSize) / 2, imgSize, imgSize);
         if (terrainLayer) p5.image(terrainLayer, infoBox.boxRightX + infoBox.paddingX, infoBox.boxY + (infoBox.boxHeight - imgSize) / 2 - imgSize / 2, imgSize, imgSize);
         // draw general info
-        p5.fill(100);
-        p5.rect(infoBox.boxRightX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + infoBox.paddingY, textBoxWidth, textBoxHeight, 10);
-        p5.fill(255);
-        p5.text(GeneralInfo, infoBox.boxRightX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 2 * infoBox.paddingY, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
+        p5.image(p5.images.get("infobox-inner"), infoBox.boxRightX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + infoBox.paddingY, textBoxWidth, textBoxHeight);
+        p5.text(GeneralInfo, infoBox.boxRightX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 2.2 * infoBox.paddingY, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
         // draw eco info
-        p5.fill(100);
-        p5.rect(infoBox.boxRightX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + 2 * infoBox.paddingY + textBoxHeight, textBoxWidth, textBoxHeight, 10);
-        p5.fill(255);
-        p5.text(EcoInfo, infoBox.boxRightX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 3 * infoBox.paddingY + textBoxHeight, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
+        p5.image(p5.images.get("infobox-inner"), infoBox.boxRightX + 2 * infoBox.paddingX + imgSize, infoBox.boxY +  infoBox.paddingY + textBoxHeight, textBoxWidth, textBoxHeight);
+        p5.text(EcoInfo, infoBox.boxRightX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 2.4* infoBox.paddingY + textBoxHeight, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
 
         // draw left bottom corner: passive + active
         if (cell.plant) {
@@ -85,20 +80,15 @@ class InfoBoxRenderer {
             plantImg = cell.plant.img;
 
             // draw background box
-            p5.fill(50);
-            p5.rect(infoBox.boxLeftX, infoBox.boxY, infoBox.boxWidth, infoBox.boxHeight, 10);
+            p5.image(p5.images.get("infobox"), infoBox.boxLeftX, infoBox.boxY, infoBox.boxWidth, infoBox.boxHeight);
             // draw img
             p5.image(plantImg, infoBox.boxLeftX + infoBox.paddingX, infoBox.boxY + (infoBox.boxHeight - imgSize) / 2, imgSize, imgSize);
-            // draw general info
-            p5.fill(100);
-            p5.rect(infoBox.boxLeftX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + infoBox.paddingY, textBoxWidth, textBoxHeight, 10);
-            p5.fill(255);
-            p5.text(ActiveInfo, infoBox.boxLeftX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 2 * infoBox.paddingY, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
-            // draw eco info
-            p5.fill(100);
-            p5.rect(infoBox.boxLeftX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + 2 * infoBox.paddingY + textBoxHeight, textBoxWidth, textBoxHeight, 10);
-            p5.fill(255);
-            p5.text(PassiveInfo, infoBox.boxLeftX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 3 * infoBox.paddingY + textBoxHeight, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
+            // active
+            p5.image(p5.images.get("infobox-inner"), infoBox.boxLeftX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + infoBox.paddingY, textBoxWidth, textBoxHeight);
+            p5.text(ActiveInfo, infoBox.boxLeftX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 2.2 * infoBox.paddingY, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
+            // passive
+            p5.image(p5.images.get("infobox-inner"), infoBox.boxLeftX + 2 * infoBox.paddingX + imgSize, infoBox.boxY + infoBox.paddingY + textBoxHeight, textBoxWidth, textBoxHeight);
+            p5.text(PassiveInfo, infoBox.boxLeftX + 3 * infoBox.paddingX + imgSize, infoBox.boxY + 2.4 * infoBox.paddingY + textBoxHeight, textBoxWidth - 2 * infoBox.paddingX, textBoxHeight - 2 * infoBox.paddingY);
         }
     }
 }

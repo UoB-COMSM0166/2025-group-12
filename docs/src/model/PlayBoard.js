@@ -433,7 +433,7 @@ class PlayBoardRenderer {
             let img = playBoard.actionPoints !== 0 ? p5.images.get("ActionPointBoard") : p5.images.get("ActionPointBoardDeplete");
             p5.image(img, x, y, width, height);
 
-            p5.fill(255);
+            p5.fill(50);
             p5.textSize(15);
             p5.textAlign(p5.CENTER, p5.CENTER);
             p5.text(playBoard.actionPoints + " / " + playBoard.maxActionPoints, x + width / 2, y + height / 2);
@@ -899,7 +899,6 @@ class PlayBoardLogic {
         if (PlayBoardLogic.handleFloatingWindow(playBoard)) {
             return;
         }
-        PlayBoardLogic.handleActiveSkills(p5, playBoard);
 
         // click any button
         for (let button of playBoard.buttons) {
@@ -907,6 +906,8 @@ class PlayBoardLogic {
                 return;
             }
         }
+
+        PlayBoardLogic.handleActiveSkills(p5, playBoard);
 
         // inventory item and planting
         PlayBoardLogic.handlePlanting(p5, playBoard);
@@ -1102,7 +1103,7 @@ class PlayBoardLogic {
     static activatePlantSkill(playBoard) {
         let spellCaster = PlayBoardLogic.BoardLogic.getCell(playBoard.selectedCell[0], playBoard.selectedCell[1], playBoard.boardObjects);
         if (spellCaster.plant.hasActive) {
-            playBoard.awaitCell = true;
+            playBoard.awaitCell = !playBoard.awaitCell;
         }
     }
 
