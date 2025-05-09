@@ -55,6 +55,8 @@ class StartMenuModel {
     }
 
     init() {
+        let p5 = StartMenuModel.p5;
+
         let skipTutorialButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY, this.buttonWidth, this.buttonHeight, "New Game - Skip Tutorial");
         skipTutorialButton.onClick = () => {
             this.gameState.setStageCleared(StartMenuModel.stageGroup.TORNADO);
@@ -71,7 +73,10 @@ class StartMenuModel {
 
         let loadGameButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY + 2 * this.buttonInter, this.buttonWidth, this.buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
-            if (!StartMenuModel.p5.loadedAll) return;
+            if(!p5.loadedAll) {
+                StartMenuLogic.copyFloatingWindow(p5, "loading", this);
+                return;
+            }
             if (!StartMenuModel.GameSerializer.load()) {
                 StartMenuLogic.copyFloatingWindow(StartMenuModel.p5, "NoSaveData", this);
             }
@@ -89,6 +94,16 @@ class StartMenuModel {
 
     initAllFloatingWindows() {
         let afw = new Map();
+
+        afw.set("loading", new StartMenuModel.FloatingWindow(StartMenuModel.p5, null, "{white:Loading...}", {
+            x: StartMenuModel.utilityClass.relative2absolute(1 / 2, 1 / 4)[0],
+            y: StartMenuModel.utilityClass.relative2absolute(1 / 2, 1 / 4)[1],
+            fontSize: 20,
+            padding: 10,
+            spacingRatio: 0.3,
+            fadingSpeed: 1,
+            playerCanClick: true
+        }));
 
         StartMenuModel.utilityClass.commonFloatingWindows(StartMenuModel.p5, afw);
 
@@ -156,6 +171,10 @@ class StartMenuRenderer {
         }
 
         StartMenuRenderer.drawFloatingWindow(p5, startMenu);
+
+        if(startMenu.floatingWindow && startMenu.floatingWindow.text.toLowerCase().includes("loading") && p5.loadedAll) {
+            startMenu.floatingWindow = null;
+        }
 
         if (startMenu.gameState.isFading) {
             StartMenuRenderer.ScreenRenderer.playFadeOutAnimation(p5, startMenu);

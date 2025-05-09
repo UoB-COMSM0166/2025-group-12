@@ -65,22 +65,22 @@ class InventoryRenderer {
             let key = visibleItems[i][0];
             let value = visibleItems[i][1];
             let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
-            p5.image(p5.images.get("inv-body"), inventory.inventoryX, itemY - inventory.padding /2 , inventory.inventoryWidth, inventory.itemHeight - inventory.itemInter + inventory.padding);
+            p5.image(p5.images.get("inv-body"), inventory.inventoryX, itemY - inventory.padding / 2, inventory.inventoryWidth, inventory.itemHeight - inventory.itemInter + inventory.padding);
             let itemInstance = inventory.itemPrototypes.get(key)();
-            p5.push();
-            if (inventory.index === i) {
-                p5.stroke("rgb(200, 200, 0)");
-                p5.strokeWeight(3);
+            p5.image(p5.images.get(`inv-${itemInstance.name}`), inventory.itemX - inventory.itemWidth / 8, itemY - inventory.itemInter, inventory.itemWidth * 1.3, inventory.itemHeight + inventory.itemInter * 2.1)
+            p5.fill(20);
+            let fontSize = fontSizes.mini;
+            let firstname = itemInstance.name;
+            if (firstname.toLowerCase().includes("fire")) fontSize -= 2;
+            p5.textSize(fontSize)
+            p5.textAlign(p5.LEFT, p5.TOP);
+            if (firstname.toLowerCase().endsWith("seed")) {
+                p5.text(firstname.slice(0, -"seed".length), inventory.inventoryX + inventory.itemWidth / 2 + inventory.padding / 2, itemY + inventory.itemHeight / 2 - inventory.itemInter / 2 - inventory.padding);
+                p5.text("seed", inventory.inventoryX + inventory.itemWidth / 2 + inventory.padding / 2, fontSize + itemY + inventory.itemHeight / 2 - inventory.itemInter / 2 - inventory.padding);
             } else {
-                p5.noStroke();
+                p5.text(itemInstance.name, inventory.inventoryX + inventory.itemWidth / 2 + inventory.padding / 2, itemY + inventory.itemHeight / 2 - inventory.itemInter / 2 - inventory.padding / 2);
             }
-            p5.fill(itemInstance.color);
-            p5.rect(inventory.itemX, itemY, inventory.itemWidth, inventory.itemHeight - inventory.itemInter, inventory.itemInter);
-            p5.pop();
-            p5.fill(0);
-            p5.textSize(fontSizes.mini)
             p5.textAlign(p5.CENTER, p5.CENTER);
-            p5.text(itemInstance.name, inventory.inventoryX + inventory.itemWidth / 2 + inventory.padding, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
             index++;
         }
