@@ -7,6 +7,7 @@ class StartMenuModel {
         /** @type {typeof myUtil} */
         StartMenuModel.utilityClass = bundle.utilityClass;
         StartMenuModel.stateCode = bundle.stateCode;
+        StartMenuModel.stageGroup = bundle.stageGroup;
         /** @type {typeof Button} */
         StartMenuModel.Button = bundle.Button;
         /** @type {typeof FloatingWindow} */
@@ -50,29 +51,37 @@ class StartMenuModel {
     init() {
 
         let [buttonWidth, buttonHeight] = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07);
-        let [buttonX, buttonY] = StartMenuModel.utilityClass.relative2absolute(0.2, 0.6);
+        let [buttonX, buttonY] = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55);
         let buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
 
-        let newGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game");
+        let skipTutorialButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY, buttonWidth, buttonHeight, "New Game - Skip Tutorial");
+        skipTutorialButton.onClick = () => {
+            this.gameState.setStageCleared(StartMenuModel.stageGroup.TORNADO);
+            this.gameState.setStageCleared(StartMenuModel.stageGroup.TORNADO);
+            this.gameState.isFading = true;
+            this.gameState.nextState = StartMenuModel.stateCode.STANDBY;
+        }
+
+        let newGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "New Game");
         newGameButton.onClick = () => {
             this.gameState.isFading = true;
             this.gameState.nextState = StartMenuModel.stateCode.STANDBY;
         }
 
-        let loadGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + buttonInter, buttonWidth, buttonHeight, "Load Game");
+        let loadGameButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
-            if(!StartMenuModel.p5.loadedAll) return;
+            if (!StartMenuModel.p5.loadedAll) return;
             if (!StartMenuModel.GameSerializer.load()) {
                 StartMenuLogic.copyFloatingWindow(StartMenuModel.p5, "NoSaveData", this);
             }
         }
 
-        let optionButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 2 * buttonInter, buttonWidth, buttonHeight, "Options");
+        let optionButton = new StartMenuModel.MenuItem(buttonX - buttonWidth / 2, buttonY + 3 * buttonInter, buttonWidth, buttonHeight, "Options");
         optionButton.onClick = () => {
             this.gameState.showOptions = true;
         }
 
-        this.buttons.push(newGameButton, loadGameButton, optionButton);
+        this.buttons.push(newGameButton, skipTutorialButton, loadGameButton, optionButton);
 
         this.initAllFloatingWindows();
     }
@@ -92,7 +101,7 @@ class StartMenuModel {
             button.mode = "gamepad";
             button.isSelected = false;
         });
-        if(!this.gameState.showOptions) this.buttons[0].isSelected = true;
+        if (!this.gameState.showOptions) this.buttons[0].isSelected = true;
     }
 
     shift2Mouse(p5) {
@@ -254,6 +263,7 @@ class StartMenuLogic {
         if (newGameButton !== null && newGameButton !== undefined) {
             newGameButton.text = "Resume Game";
         }
+        startMenu.buttons = startMenu.buttons.filter(button => !button.text.startsWith("New Game - Skip Tutorial"));
     }
 
     /**

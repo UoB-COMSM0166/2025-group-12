@@ -22,6 +22,21 @@ function loadEssentialImages(p5) {
     images.set("EarthquakeIcon", p5.loadImage(basePath + "EarthquakeIcon.png"));
     images.set("RainIcon", p5.loadImage(basePath + "RainIcon.png"));
     images.set("TsunamiIcon", p5.loadImage(basePath + "TsunamiIcon.png"));
+    images.set("TornadoIconDeactivate", p5.loadImage(basePath + "TornadoIconDeactivate.png"));
+    images.set("VolcanoIconDeactivate", p5.loadImage(basePath + "VolcanoIconDeactivate.png"));
+    images.set("EarthquakeIconDeactivate", p5.loadImage(basePath + "EarthquakeIconDeactivate.png"));
+    images.set("RainIconDeactivate", p5.loadImage(basePath + "RainIconDeactivate.png"));
+    images.set("TsunamiIconDeactivate", p5.loadImage(basePath + "TsunamiIconDeactivate.png"));
+    images.set("TaskBoard", p5.loadImage(basePath + "TaskBoard.png"));
+    for (let i = 1; i <= 4; i++) {
+        for (let j = 0; j <= i; j++) {
+            images.set(`TaskProgress${i}${j}`, p5.loadImage(basePath + "StageProgressBars/" + `${i}${j}.png`));
+        }
+    }
+    for (let i = 1; i <= 2; i++) {
+        images.set(`Button${i}`, p5.loadImage(basePath + `Button${i}.png`));
+        images.set(`ButtonHover${i}`, p5.loadImage(basePath + `ButtonHover${i}.png`));
+    }
 
     return images;
 }
@@ -82,7 +97,9 @@ async function loadImages(p5) {
         ["xbox_LT", "xbox/xbox_LT.png"],
         ["xbox_RB", "xbox/xbox_RB.png"],
         ["xbox_RT", "xbox/xbox_RT.png"],
-        ["xbox_cross", "xbox/xbox_cross.png"]
+        ["xbox_cross", "xbox/xbox_cross.png"],
+        ["ActionPointBoard", "ActionPointBoard.png"],
+        ["ActionPointBoardDeplete", "ActionPointBoardDeplete.png"],
     ];
 
     for (const [key, file] of entries) {
@@ -94,6 +111,33 @@ async function loadImages(p5) {
         for (let j = 0; j <= 2; j++) {
             const key = `Landslide${i}${j}`;
             const path = basePath + `LandslidePieces/${i}${j}.png`;
+            promise = replacePromise(p5, images, path, key, promise);
+        }
+    }
+
+    // level signs
+    for (let i = 1; i <= 5; i++) {
+        let jMax;
+        switch (i) {
+            case 1:
+                jMax = 4;
+                break;
+            case 2:
+                jMax = 1;
+                break;
+            case 3:
+                jMax = 3;
+                break;
+            case 4:
+                jMax = 2;
+                break;
+            case 5:
+                jMax = 1;
+                break;
+        }
+        for (let j = 1; j <= jMax; j++) {
+            const key = `LevelSigns${i}-${j}`;
+            const path = basePath + `LevelSigns/lv${i}-${j}.png`;
             promise = replacePromise(p5, images, path, key, promise);
         }
     }

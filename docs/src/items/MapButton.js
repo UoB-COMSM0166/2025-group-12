@@ -23,15 +23,13 @@ class MapButton {
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
+        let img = this.isLocked ? p5.images.get(this.imgName + "Deactivate") : p5.images.get(this.imgName);
         if ((this.isHovered || this.circle !== null) && !this.isLocked) {
-            p5.image(p5.images.get(this.imgName), this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
+            p5.image(img, this.x - this.width * 0.1, this.y - this.height * 0.1, this.width * 1.2, this.height * 1.2);
         } else {
-            p5.image(p5.images.get(this.imgName), this.x, this.y, this.width, this.height);
+            p5.image(img, this.x, this.y, this.width, this.height);
         }
         if (this.isLocked === true) {
-            p5.noStroke();
-            p5.fill(100, 100, 100, 100);
-            p5.rect(this.x + this.width * 0.1, this.y + this.height * 0.1, this.width * 0.8, this.height * 0.8);
             p5.image(p5.images.get("Lock"), this.x + this.width / 4, this.y + this.height / 4, this.width / 2, this.height / 2);
         }
         if (this.circle) this.circle.updateAndDraw(p5);

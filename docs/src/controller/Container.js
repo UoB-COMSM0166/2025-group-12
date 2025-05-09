@@ -499,8 +499,6 @@ class Container {
             terrainFactory: this.terrainFactory,
             movableFactory: this.movableFactory,
 
-            dissolveSnowRange: PlumLogic.plumRange,
-
             ScreenLogic: ScreenLogic,
             ScreenRenderer: ScreenRenderer,
 

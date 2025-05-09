@@ -227,9 +227,7 @@ class GameMapRenderer {
         let boxX = GameMapRenderer.utilityClass.relative2absolute(1, 1)[0] - boxWidth - paddingX;
         let boxY = GameMapRenderer.utilityClass.relative2absolute(1, 1)[1] - boxHeight - paddingY;
 
-        p5.fill(100, 100, 100, 200);
-        p5.noStroke();
-        p5.rect(boxX, boxY, boxWidth, boxHeight, 10); // 10: corner roundness
+        p5.image(p5.images.get("TaskBoard"), boxX, boxY, boxWidth, boxHeight);
 
         let progress = gameMap.gameState.clearedStages.get(selectedGroup) || 0;
         let total = gameMap.gameState.gsf.stageClasses[selectedGroup].length;
@@ -270,11 +268,11 @@ class GameMapRenderer {
         p5.textSize(fontSizes.small)
         p5.text(`progress:`, boxX + boxWidth / 2, boxY + 5 * paddingY);
 
-        GameMapRenderer.utilityClass.drawHealthBar(p5, {
-            health: progress,
-            maxHealth: total
-        }, boxX + 2 * paddingX, boxY + 8 * paddingY, boxWidth - 4 * paddingX, paddingY);
-
+        // GameMapRenderer.utilityClass.drawHealthBar(p5, {
+        //     health: progress,
+        //     maxHealth: total
+        // }, boxX + 2 * paddingX, boxY + 8 * paddingY, boxWidth - 4 * paddingX, paddingY);
+        p5.image(p5.images.get(`TaskProgress${total}${progress}`), boxX + 2 * paddingX, boxY + 8 * paddingY, boxWidth - 4 * paddingX, paddingY);
     }
 }
 

@@ -231,7 +231,7 @@ class PlayBoardModel {
         // undo
         let [undoX, undoY] = PlayBoardModel.utilityClass.relative2absolute(0.02, 0.01);
         let [undoWidth, undoHeight] = PlayBoardModel.utilityClass.relative2absolute(0.09, 0.07);
-        let undoButton = new PlayBoardModel.Button(undoX, undoY, undoWidth, undoHeight, "Undo", "xbox_LT");
+        let undoButton = new PlayBoardModel.Button(undoX, undoY, undoWidth, undoHeight, "UNDO", "xbox_LT");
         undoButton.mode = playBoard.gameState.mode;
         undoButton.onClick = () => {
             PlayBoardSerializer.undo(p5, playBoard);
@@ -240,7 +240,7 @@ class PlayBoardModel {
         // turn button
         let [turnWidth, turnHeight] = PlayBoardModel.utilityClass.relative2absolute(5 / 32, 0.07);
         let [turnX, turnY] = PlayBoardModel.utilityClass.relative2absolute(0.5, 0.01);
-        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, PlayBoardModel.getTurnButtonText(playBoard), "xbox_Y");
+        let turnButton = new PlayBoardModel.Button(turnX - turnWidth / 2, turnY, turnWidth, turnHeight, PlayBoardModel.getTurnButtonText(playBoard), "xbox_Y", "2");
         turnButton.mode = playBoard.gameState.mode;
         turnButton.onClick = () => {
             playBoard.movables.sort((a, b) => {
@@ -271,7 +271,7 @@ class PlayBoardModel {
      * @param {PlayBoardLike} playBoard
      */
     static getTurnButtonText(playBoard) {
-        return `turn ${playBoard.turn} in ${playBoard.maxTurn}`;
+        return `TURN ${playBoard.turn} IN ${playBoard.maxTurn}`;
     }
 
     shift2Gamepad(p5) {
@@ -430,18 +430,8 @@ class PlayBoardRenderer {
         if (playBoard.hasActionPoints) {
             let [x, y] = PlayBoardRenderer.utilityClass.relative2absolute(0.6, 0.01);
             let [width, height] = PlayBoardRenderer.utilityClass.relative2absolute(0.07 * 9 / 16, 0.07);
-            p5.stroke("#DDDDDD");
-            p5.strokeWeight(2);
-            p5.fill("#DDDDDD");
-            p5.rect(x, y, width, height, 20);
-
-            p5.noStroke();
-            if (playBoard.actionPoints !== 0) {
-                p5.fill("rgba(0, 204, 0, 0.8)");
-            } else {
-                p5.fill("rgba(0, 100, 0, 0.3)");
-            }
-            p5.rect(x, y, width, height, 20);
+            let img = playBoard.actionPoints !== 0 ? p5.images.get("ActionPointBoard") : p5.images.get("ActionPointBoardDeplete");
+            p5.image(img, x, y, width, height);
 
             p5.fill(255);
             p5.textSize(15);
@@ -546,17 +536,10 @@ class PlayBoardRenderer {
         }
         p5.image(bg, 0, 0, PlayBoardRenderer.utilityClass.relative2absolute(1, 1)[0], PlayBoardRenderer.utilityClass.relative2absolute(1, 1)[1]);
 
-
         // stage number text
-        let [stageNumberingX, stageNumberingY] = PlayBoardRenderer.utilityClass.relative2absolute(0.38, 0.04);
-
-        let fontSizes = PlayBoardRenderer.utilityClass.getFontSize();
-        p5.textSize(fontSizes.small);
-
-        p5.fill('red');
-        p5.noStroke();
-        p5.textAlign(p5.LEFT, p5.TOP);
-        p5.text(`${playBoard.stageGroup}-${playBoard.stageNumbering}`, stageNumberingX, stageNumberingY);
+        let [stageNumberingX, stageNumberingY] = PlayBoardRenderer.utilityClass.relative2absolute(0.37, 0.01);
+        let stageNumberingSize = PlayBoardRenderer.utilityClass.relative2absolute(0.38, 0.08)[1];
+        p5.image(p5.images.get(`LevelSigns${playBoard.stageGroup}-${playBoard.stageNumbering}`),stageNumberingX, stageNumberingY, stageNumberingSize, stageNumberingSize);
 
         PlayBoardRenderer.drawGrid(p5, playBoard);
 
@@ -577,7 +560,7 @@ class PlayBoardRenderer {
         // all buttons
         // to cascade activate button above info box, place the loop after info box
         for (let button of playBoard.buttons) {
-            if (!(playBoard.turn === playBoard.maxTurn + 1 && button.text.startsWith("turn"))) {
+            if (!(playBoard.turn === playBoard.maxTurn + 1 && button.text.toLowerCase().startsWith("turn"))) {
                 button.draw(p5);
             }
         }
@@ -1002,7 +985,7 @@ class PlayBoardLogic {
 
         // set turn and counter
         playBoard.turn++;
-        playBoard.buttons.find(button => button.text.startsWith("turn")).text = PlayBoardModel.getTurnButtonText(playBoard);
+        playBoard.buttons.find(button => button.text.toLowerCase().startsWith("turn")).text = PlayBoardModel.getTurnButtonText(playBoard);
         if (playBoard.turn === playBoard.maxTurn + 1) {
             PlayBoardLogic.stageClearSettings(p5, playBoard);
             return;

@@ -3,7 +3,7 @@ class Button {
         Button.CanvasSize = bundle.CanvasSize;
     }
 
-    constructor(x, y, width, height, text, gamepadButton = null) {
+    constructor(x, y, width, height, text, gamepadButton = null, style = "1") {
         // location and size properties
         this.x = x;
         this.y = y;
@@ -19,22 +19,18 @@ class Button {
         this.mode = "mouse";
         this.gamepadButton = gamepadButton;
         this.textSize = Button.CanvasSize.getFontSize().small;
+        this.imgStyle = style;
     }
 
     draw(p5) {
         this.isHovered = this.hasMouseOver(p5);
-        let baseColor = "rgb(0, 102, 0)";
-        let hoverColor = "rgb(0, 204, 0)";
-        let buttonColor = this.isHovered ? hoverColor : baseColor;
+        let img = !this.isHovered ? p5.images.get("Button" + this.imgStyle) : p5.images.get("ButtonHover" + this.imgStyle);
         p5.push();
+        p5.image(img, this.x, this.y, this.width, this.height);
         p5.drawingContext.shadowBlur = this.isHovered ? 15 : 5;
         p5.drawingContext.shadowColor = p5.color(0, 0, 0, 50);
-        // rectangle shape of button
-        p5.noStroke();
-        p5.fill(buttonColor);
-        p5.rect(this.x, this.y, this.width, this.height, 10); // 10: corner roundedness
         // draw gamepad button
-        if(this.mode === "gamepad" && this.gamepadButton){
+        if (this.mode === "gamepad" && this.gamepadButton) {
             let gbSize = this.height / 2;
             p5.image(p5.images.get(this.gamepadButton), this.x + this.width - gbSize - this.height / 8, this.y + this.height - gbSize - this.height / 8, gbSize, gbSize);
         }
