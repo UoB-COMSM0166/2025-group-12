@@ -86,6 +86,7 @@ import {PlayBoardModel, PlayBoardLogic, PlayBoardRenderer, PlayBoardSerializer} 
 import {OptionsLogic, OptionsModel, OptionsRenderer} from "../model/Options.js";
 import {Dropdown} from "../items/Dropdown.js";
 import {vibrate} from "./GamepadHandler.js";
+import {Attacking, banditStates, Dying, Hurt, Idle, Walking} from "../items/BanditState.js";
 
 
 // to achieve loosely coupling we use lazy dependency injection
@@ -270,6 +271,8 @@ class Container {
             itemTypes: itemTypes,
             plantTypes: plantTypes,
             BoardLogic: BoardLogic,
+            banditStates: banditStates,
+            BanditLogic: BanditLogic,
         });
 
         let movableBundle = {
@@ -288,6 +291,12 @@ class Container {
             EdgeWeightedDigraph: EdgeWeightedDigraph,
             DirectedEdge: DirectedEdge,
             vibrate: vibrate,
+            banditStates: banditStates,
+            Attacking: Attacking,
+            Dying: Dying,
+            Hurt: Hurt,
+            Idle: Idle,
+            Walking: Walking,
         };
 
         let movableModules = [

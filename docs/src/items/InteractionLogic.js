@@ -9,6 +9,8 @@ class InteractionLogic {
         InteractionLogic.plantTypes = bundle.plantTypes;
         /** @type {typeof BoardLogic} */
         InteractionLogic.BoardLogic = bundle.BoardLogic;
+        InteractionLogic.banditStates = bundle.banditStates;
+        InteractionLogic.BanditLogic = bundle.BanditLogic;
     }
 
     /**
@@ -137,9 +139,13 @@ class InteractionLogic {
         let target = targetCell.enemy;
         target.health--;
         if (target.health === 0) {
-            target.status = false;
-            InteractionLogic.findMovableAndDelete(playBoard, target);
-            targetCell.enemy = null;
+            InteractionLogic.BanditLogic.setState(target, InteractionLogic.banditStates.DYING);
+            // target.status = false;
+            // InteractionLogic.findMovableAndDelete(playBoard, target);
+            // targetCell.enemy = null;
+        }
+        else{
+            InteractionLogic.BanditLogic.setState(target, InteractionLogic.banditStates.HURT);
         }
         spellCasterCell.plant.useLeft--;
         return true;
