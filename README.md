@@ -15,7 +15,7 @@ Click the banner to play our game.
 ---
 
 <div align="center">
-    <a href="https://www.youtube.com/watch?v=ZiUGkE-snPQ" target="_blank" title="Watch the Game Demonstration">
+    <a href="https://youtu.be/6LQHvl5hCUA" target="_blank" title="Watch the Game Demonstration">
         <img src="documents/Image With Play button.svg" width="75%">
     </a>
     <p>
