@@ -73,7 +73,7 @@ class StartMenuModel {
 
         let loadGameButton = new StartMenuModel.MenuItem(this.buttonX - this.buttonWidth / 2, this.buttonY + 2 * this.buttonInter, this.buttonWidth, this.buttonHeight, "Load Game");
         loadGameButton.onClick = () => {
-            if(!p5.loadedAll) {
+            if (!p5.loadedAll) {
                 StartMenuLogic.copyFloatingWindow(p5, "loading", this);
                 return;
             }
@@ -87,7 +87,7 @@ class StartMenuModel {
             this.gameState.showOptions = true;
         }
 
-        this.buttons.push(skipTutorialButton, newGameButton, loadGameButton, optionButton);
+        this.buttons.push(newGameButton, skipTutorialButton, loadGameButton, optionButton);
 
         this.initAllFloatingWindows();
     }
@@ -172,7 +172,7 @@ class StartMenuRenderer {
 
         StartMenuRenderer.drawFloatingWindow(p5, startMenu);
 
-        if(startMenu.floatingWindow && startMenu.floatingWindow.text.toLowerCase().includes("loading") && p5.loadedAll) {
+        if (startMenu.floatingWindow && startMenu.floatingWindow.text.toLowerCase().includes("loading") && p5.loadedAll) {
             startMenu.floatingWindow = null;
         }
 

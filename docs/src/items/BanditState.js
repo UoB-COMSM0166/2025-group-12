@@ -7,11 +7,12 @@ const banditStates = {
 }
 
 class BanditState {
-    static setup(bundle){
+    static setup(bundle) {
         BanditState.InteractionLogic = bundle.InteractionLogic;
         BanditState.BanditLogic = bundle.BanditLogic;
     }
-    constructor(state, bandit){
+
+    constructor(state, bandit) {
         this.state = state;
         this.bandit = bandit;
     }
@@ -30,10 +31,10 @@ class Attacking extends BanditState {
 
     static handleInput(playBoard, bandit) {
         //after playing attack animation, execute plantIsAttacked, then return to idle
-        if(bandit.index === bandit.maxFrame){
-            if(!bandit.nextCell) return;
-            if(!bandit.nextCell.plant && !bandit.nextCell.seed){
-            }else{
+        if (bandit.index === bandit.maxFrame) {
+            if (!bandit.nextCell) return;
+            if (!bandit.nextCell.plant && !bandit.nextCell.seed) {
+            } else {
                 BanditState.InteractionLogic.plantIsAttacked(playBoard, bandit.nextCell.plant !== null ? bandit.nextCell.plant : bandit.nextCell.seed, 1);
             }
             bandit.isMoving = false;
@@ -46,66 +47,74 @@ class Attacking extends BanditState {
 }
 
 class Idle extends BanditState {
-    constructor(bandit){
+    constructor(bandit) {
         super('IDLE', bandit);
     }
-    static enter(bandit){
+
+    static enter(bandit) {
         bandit.index = 0;
         bandit.maxFrame = 11;
         bandit.imageKey = "idle";
     }
-    static handleInput() {}
+
+    static handleInput() {
+    }
 }
 
 class Walking extends BanditState {
-    constructor(bandit){
+    constructor(bandit) {
         super('WALKING', bandit);
     }
-    static enter(bandit){
+
+    static enter(bandit) {
         bandit.index = 0;
         bandit.maxFrame = 17;
         bandit.imageKey = "walking";
     }
+
     static handleInput() {
 
     }
 }
 
 class Hurt extends BanditState {
-    constructor(bandit){
+    constructor(bandit) {
         super('HURT', bandit);
     }
-    static enter(bandit){
+
+    static enter(bandit) {
         bandit.index = 0;
         bandit.maxFrame = 11;
         bandit.imageKey = "hurt";
     }
+
     static handleInput(playBoard, bandit) {
         //after playing hurt animation, return to idle
-        if(bandit.index === bandit.maxFrame){
+        if (bandit.index === bandit.maxFrame) {
             BanditState.BanditLogic.setState(bandit, banditStates.IDLE);
         }
     }
 }
 
 class Dying extends BanditState {
-    constructor(bandit){
+    constructor(bandit) {
         super('DYING', bandit);
     }
 
-    static enter(bandit){
+    static enter(bandit) {
         bandit.index = 0;
         bandit.maxFrame = 14;
         bandit.imageKey = "dying";
     }
 
     static handleInput(playBoard, bandit) {
-        if(bandit.index === bandit.maxFrame){
+        if (bandit.index === bandit.maxFrame) {
             bandit.status = false;
             BanditState.InteractionLogic.findMovableAndDelete(playBoard, bandit);
         }
     }
 }
+
 export {banditStates, BanditState, Attacking, Dying, Hurt, Idle, Walking};
 
 if (typeof module !== 'undefined') {
