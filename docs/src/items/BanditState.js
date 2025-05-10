@@ -33,12 +33,13 @@ class Attacking extends BanditState {
         if(bandit.index === bandit.maxFrame){
             if(!bandit.nextCell) return;
             if(!bandit.nextCell.plant && !bandit.nextCell.seed){
-                bandit.nextCell = null;
             }else{
                 BanditState.InteractionLogic.plantIsAttacked(playBoard, bandit.nextCell.plant !== null ? bandit.nextCell.plant : bandit.nextCell.seed, 1);
             }
-            this.hasMoved = true;
+            bandit.isMoving = false;
+            bandit.hasMoved = true;
             bandit.nextCell = null;
+            bandit.isAttacking = false;
             BanditState.BanditLogic.setState(bandit, banditStates.IDLE);
         }
     }

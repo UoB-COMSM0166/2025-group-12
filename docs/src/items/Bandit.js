@@ -43,6 +43,7 @@ class BanditModel {
         this.currentState = this.states[0];
         this.imageKey = "idle";
         this.nextCell = null;
+        this.isAttacking = false;
     }
 
     static create(p5, playBoard, superModel, i, j) {
@@ -159,6 +160,7 @@ class BanditLogic {
 
         // end movement
         if (bandit.isMoving === true && bandit.targetCell === null) {
+            if(bandit.isAttacking) return;
             bandit.isMoving = false;
             bandit.hasMoved = true;
             bandit.direction = [];
@@ -175,7 +177,11 @@ class BanditLogic {
             BanditLogic.setTarget(playBoard, bandit);
             // if setting target fails, the bandit holds.
             if (bandit.targetCell === null) {
-                bandit.hasMoved = true;
+                if(bandit.isAttacking) {
+                    bandit.isMoving = true;
+                }else{
+                    bandit.hasMoved = true;
+                }
                 return false;
             }
 
@@ -293,6 +299,7 @@ class BanditLogic {
             bandit.nextCell = nextCell;
             // BanditLogic.InteractionLogic.plantIsAttacked(playBoard, nextCell.plant !== null ? nextCell.plant : nextCell.seed, 1);
             // bandit.hasMoved = true;
+            bandit.isAttacking = true;
             return;
         }
 
