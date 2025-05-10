@@ -245,8 +245,8 @@ function loadSounds(p5) {
     const basePath = window.location.hostname.includes("localhost") ? "/docs/assets/sounds/" : "./assets/sounds/";
 
     let sounds = new Map();
-    sounds.set("click", p5.loadSound(basePath + "click.mp3"));
-    sounds.get("click").setVolume(0.5);
+    sounds.set("menu", p5.loadSound(basePath + "menu.mp3"));
+
     return sounds;
 }
 

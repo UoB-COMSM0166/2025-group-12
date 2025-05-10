@@ -592,7 +592,9 @@ class CellRenderer {
                 img = cell.plant.img;
             }
             p5.image(img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);
-            CellRenderer.utilityClass.drawHealthBar(p5, cell.plant, avgX - 21, avgY - 42, 40, 5);
+            let [xOff, yOff] = CellRenderer.utilityClass.relative2absolute(21/1280, 42/720);
+            let [widthOff, heightOff] = CellRenderer.utilityClass.relative2absolute(40/1280, 5/720);
+            CellRenderer.utilityClass.drawHealthBar(p5, cell.plant, avgX - xOff  , avgY - yOff, widthOff, heightOff);
         }
         if (cell.seed !== null) {
             p5.image(cell.seed.img, avgX - imgSize / 2, avgY - 3 * imgSize / 4, imgSize, imgSize);

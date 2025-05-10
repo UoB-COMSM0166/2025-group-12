@@ -1,5 +1,5 @@
 import {Container} from "./controller/Container.js";
-import {loadEssentialImages, loadImages} from "./Preloader.js";
+import {loadEssentialImages, loadImages, loadSounds} from "./Preloader.js";
 import {
     analogStickIdle,
     analogStickMoved, analogStickPressed,

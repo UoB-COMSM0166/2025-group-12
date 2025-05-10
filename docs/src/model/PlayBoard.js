@@ -407,7 +407,9 @@ class PlayBoardRenderer {
         // health bar last
         for (let movable of playBoard.movables) {
             if (movable.health !== undefined) {
-                PlayBoardRenderer.utilityClass.drawHealthBar(p5, movable, movable.x - 20, movable.y - 50, 40, 5);
+                let [xOff, yOff] = PlayBoardRenderer.utilityClass.relative2absolute(21/1280, 50/720);
+                let [widthOff, heightOff] = PlayBoardRenderer.utilityClass.relative2absolute(40/1280, 5/720);
+                PlayBoardRenderer.utilityClass.drawHealthBar(p5, movable, movable.x - xOff, movable.y - yOff, widthOff, heightOff);
             }
         }
     }

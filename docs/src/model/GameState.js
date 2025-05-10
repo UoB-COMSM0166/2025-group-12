@@ -62,6 +62,9 @@ class GameState {
         /** @type {MouseIdleDetector} */
         this.mouseIdleDetector = null;
         this.isIdle = false;
+
+        this.musicVolume = 0.5;
+        this.soundEffect = 0.5;
     }
 
     setState(newState) {
