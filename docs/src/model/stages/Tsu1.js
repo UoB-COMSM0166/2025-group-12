@@ -130,44 +130,42 @@ class Tsunami1PlayBoard {
      * @param {PlayBoardLike} playBoard
      */
     static nextTurnItems(p5, playBoard) {
-        this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 4, 14);
-        this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 4, 13);
-        // this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
-        // this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
-        // this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
-        // this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
-        // if (playBoard.turn % 2 === 0) {
-        //     this.movableFactory.get(this.movableTypes.EARTHQUAKE)(playBoard);
-        //     this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 12, 14);
-        //     this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 4, 14);
-        // }
-        //
-        // if (playBoard.turn % 2 === 1) {
-        //     this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 3 + Math.floor(Math.random() * 4), -1, 5);
-        //     this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard, 7);
-        // }
-        // let arr = [8, 9, 10, 11, 12, 13, 14, 15];
-        // for (let i = arr.length - 1; i > 0; i--) {
-        //     const j = Math.floor(Math.random() * (i + 1));
-        //     [arr[i], arr[j]] = [arr[j], arr[i]];
-        // }
-        // let p1 = arr[0];
-        // let p2 = arr[1];
-        // if (playBoard.turn === 3 || playBoard.turn === 6 || playBoard.turn === 9 || playBoard.turn === 12 || playBoard.turn === 15 || playBoard.turn === 18) {
-        //     this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 15, p1, 'u', 1);
-        //     this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 15, p2, 'u', 1);
-        // }
-        // if (playBoard.turn === 4 || playBoard.turn === 7 || playBoard.turn === 10 || playBoard.turn === 13 || playBoard.turn === 16 || playBoard.turn === 19) {
-        //     this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, p1, 'd', 1);
-        //     this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, p2, 'd', 1);
-        // }
-        //
-        // // spread bamboo after generating slide
-        // for (let cwp of this.PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
-        //     if (cwp.plant.plantType === this.plantTypes.BAMBOO) {
-        //         this.PlayBoardLogic.PlantLogic.spreadBamboo(p5, playBoard, cwp);
-        //     }
-        // }
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        this.PlayBoardLogic.generateRandomVolBomb(p5, playBoard);
+        if (playBoard.turn % 2 === 0) {
+            this.movableFactory.get(this.movableTypes.EARTHQUAKE)(playBoard);
+            this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 12, 14);
+            this.movableFactory.get(this.movableTypes.BANDIT)(playBoard, 4, 14);
+        }
+
+        if (playBoard.turn % 2 === 1) {
+            this.movableFactory.get(this.movableTypes.TSUNAMI)(playBoard, 3 + Math.floor(Math.random() * 4), -1, 5);
+            this.PlayBoardLogic.MovableLogic.generateSlide(p5, playBoard, 7);
+        }
+        let arr = [8, 9, 10, 11, 12, 13, 14, 15];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        let p1 = arr[0];
+        let p2 = arr[1];
+        if (playBoard.turn === 3 || playBoard.turn === 6 || playBoard.turn === 9 || playBoard.turn === 12 || playBoard.turn === 15 || playBoard.turn === 18) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 15, p1, 'u', 1);
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 15, p2, 'u', 1);
+        }
+        if (playBoard.turn === 4 || playBoard.turn === 7 || playBoard.turn === 10 || playBoard.turn === 13 || playBoard.turn === 16 || playBoard.turn === 19) {
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, p1, 'd', 1);
+            this.movableFactory.get(this.movableTypes.TORNADO)(playBoard, 0, p2, 'd', 1);
+        }
+
+        // spread bamboo after generating slide
+        for (let cwp of this.PlayBoardLogic.BoardLogic.getAllCellsWithPlant(playBoard.boardObjects)) {
+            if (cwp.plant.plantType === this.plantTypes.BAMBOO) {
+                this.PlayBoardLogic.PlantLogic.spreadBamboo(p5, playBoard, cwp);
+            }
+        }
     }
 
     /**
