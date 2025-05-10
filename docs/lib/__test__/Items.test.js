@@ -461,7 +461,6 @@ test('test bandit movement 3', () => {
     controller.clickListener(p);
     playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
     tick(p, container, 500);
-
     expect(BoardLogic.getCell(4, 3, playBoard.boardObjects).plant.health).toBe(2);
     expect(BoardLogic.getCell(4, 4, playBoard.boardObjects).enemy).toBeTruthy();
 })

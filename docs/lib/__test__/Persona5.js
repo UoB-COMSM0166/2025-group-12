@@ -65,6 +65,7 @@ function createMockP5() {
         WORD: 'word',
         ARROW: 'arrow',
         BLUR: 'blur',
+        deltaTime: 16.66,
 
         color: (...args) => ({
             toString: () => args.join(','),
