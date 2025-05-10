@@ -32,7 +32,11 @@ class Attacking extends BanditState {
         //after playing attack animation, execute plantIsAttacked, then return to idle
         if(bandit.index === bandit.maxFrame){
             if(!bandit.nextCell) return;
-            BanditState.InteractionLogic.plantIsAttacked(playBoard, bandit.nextCell.plant !== null ? bandit.nextCell.plant : bandit.nextCell.seed, 1);
+            if(!bandit.nextCell.plant && !bandit.nextCell.seed){
+                bandit.nextCell = null;
+            }else{
+                BanditState.InteractionLogic.plantIsAttacked(playBoard, bandit.nextCell.plant !== null ? bandit.nextCell.plant : bandit.nextCell.seed, 1);
+            }
             this.hasMoved = true;
             bandit.nextCell = null;
             BanditState.BanditLogic.setState(bandit, banditStates.IDLE);

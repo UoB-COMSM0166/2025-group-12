@@ -90,18 +90,20 @@ test("gamepad confirm button pressed is equal to a mouse click", () => {
 });
 
 test("gamepad direction button in start menu", () => {
+    let skipTutorial = startMenu.buttons.find(button => button.text.toLowerCase().includes('tutorial'));
+    expect(skipTutorial).toBeTruthy();
     let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
     expect(newGame).toBeTruthy();
     let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('load'));
-    expect(newGame).toBeTruthy();
+    expect(loadGame).toBeTruthy();
     let options = startMenu.buttons.find(button => button.text.toLowerCase().includes('options'));
-    expect(newGame).toBeTruthy();
+    expect(options).toBeTruthy();
     simulateGamepad(12, true);
     simulateGamepad(12, false);
-    expect(newGame.isSelected).toBe(true);
+    expect(skipTutorial.isSelected).toBe(true);
     simulateGamepad(12, true);
     simulateGamepad(12, false);
-    expect(newGame.isSelected).toBe(false);
+    expect(skipTutorial.isSelected).toBe(false);
     expect(options.isSelected).toBe(true);
     simulateGamepad(12, true);
     simulateGamepad(12, false);
@@ -111,22 +113,24 @@ test("gamepad direction button in start menu", () => {
     expect(options.isSelected).toBe(true);
     simulateGamepad(13, true);
     simulateGamepad(13, false);
-    expect(newGame.isSelected).toBe(true);
+    expect(skipTutorial.isSelected).toBe(true);
 });
 
 test("gamepad analog stick in start menu", () => {
+    let skipTutorial = startMenu.buttons.find(button => button.text.toLowerCase().includes('tutorial'));
+    expect(skipTutorial).toBeTruthy();
     let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
     expect(newGame).toBeTruthy();
     let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('load'));
-    expect(newGame).toBeTruthy();
+    expect(loadGame).toBeTruthy();
     let options = startMenu.buttons.find(button => button.text.toLowerCase().includes('options'));
-    expect(newGame).toBeTruthy();
+    expect(options).toBeTruthy();
     simulateGamepad(0, false, [0, -0.8, 0, 0]);
     simulateGamepad(0, false, [0, 0, 0, 0]);
-    expect(newGame.isSelected).toBe(true);
+    expect(skipTutorial.isSelected).toBe(true);
     simulateGamepad(0, false, [0, -0.8, 0, 0]);
     simulateGamepad(0, false, [0, 0, 0, 0]);
-    expect(newGame.isSelected).toBe(false);
+    expect(skipTutorial.isSelected).toBe(false);
     expect(options.isSelected).toBe(true);
     simulateGamepad(0, false, [0, -0.8, 0, 0]);
     simulateGamepad(0, false, [0, 0, 0, 0]);
@@ -136,7 +140,7 @@ test("gamepad analog stick in start menu", () => {
     expect(options.isSelected).toBe(true);
     simulateGamepad(0, false, [0, 0.8, 0, 0]);
     simulateGamepad(0, false, [0, 0, 0, 0]);
-    expect(newGame.isSelected).toBe(true);
+    expect(skipTutorial.isSelected).toBe(true);
 });
 
 test("gamepad button in game map", () => {
