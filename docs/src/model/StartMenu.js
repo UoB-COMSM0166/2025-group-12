@@ -87,7 +87,7 @@ class StartMenuModel {
             this.gameState.showOptions = true;
         }
 
-        this.buttons.push(newGameButton, skipTutorialButton, loadGameButton, optionButton);
+        this.buttons.push(skipTutorialButton, newGameButton, loadGameButton, optionButton);
 
         this.initAllFloatingWindows();
     }
