@@ -306,16 +306,22 @@ class StartMenuLogic {
     }
 
     static resize(startMenu) {
-        let newGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("new game"));
+        let newGame = startMenu.buttons.find(button => button.text.toLowerCase() === "new game");
         if (!newGame) newGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("resume"));
-        let skip = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("new game - skip"));
+        let skip = startMenu.buttons.find(button => button.text.toLowerCase().includes("skip"));
         let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("load"));
         let option = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("opt"));
+
+        startMenu.buttonWidth = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07)[0];
+        startMenu.buttonHeight = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07)[1];
+        startMenu.buttonX = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55)[0];
+        startMenu.buttonY = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55)[1];
+        startMenu.buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
 
         if (skip) {
             skip.x = startMenu.buttonX - startMenu.buttonWidth / 2;
             skip.defaultX = startMenu.buttonX - startMenu.buttonWidth / 2;
-            skip.targetX = newGame.x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
+            skip.targetX = skip.x + StartMenuLogic.utilityClass.relative2absolute(0.01, 0.07)[0];
             skip.y = startMenu.buttonY;
             skip.width = startMenu.buttonWidth;
             skip.height = startMenu.buttonHeight;
