@@ -663,7 +663,49 @@ There are also regrets that we could have done better. The most immediate enhanc
 </p>
 
 
-## Appendix
+## Appendix-Gameplay Framework
+
+### 1. Primary Objective
+
+Players are tasked with deploying botanical units from their inventory onto a central grid in order to erect a defensive formation. The overarching goal is to withstand assaults launched by two antagonistic agents—natural calamities and lumberjacks—and to preserve the integrity of the base. The destruction of the base constitutes immediate game termination.
+
+### 2. Threat Taxonomy
+
+| Adversary | Capacity to Damage Flora | Capacity to Damage Base | Remarks |
+| --- | --- | --- | --- |
+| Natural calamities | Yes | Yes | e.g., lava flows, hurricanes |
+| Lumberjacks | Yes | No | Fell only botanical units; incapable of razing the base |
+
+### 3. Stage‑Specific Hazard Dynamics
+
+Each level is characterized by a distinctive attack pattern executed by natural calamities. The player must identify, analyse, and anticipate these patterns; such anticipatory cognition is indispensable to strategic optimisation.
+
+### 4. Ecological System—The Central Mechanism
+
+An ecological system emerges when a contiguous sequence of heterogeneous plants is established. The functional synergies derived from particular species combinations confer bespoke defensive or auxiliary benefits:
+
+| Botanical Unit | Representative Function |
+| --- | --- |
+| **Fireherb** | Confers immunity to lava‑based assaults |
+| **Tree** | Absorbs incoming damage on behalf of neighbouring plants and restores their hit points |
+| **Grass** | Executes offensive actions against lumberjacks |
+| **Bush** | Expands the spatial extent of the ecological system |
+
+Accordingly, the deliberate ordering of plant species—balancing individual strengths and weaknesses—constitutes a pivotal design variable in defensive architecture.
+
+### 5. Resource Inheritance and Strategic Conservation
+
+Upon stage completion, all surviving plants are transferred to the player’s inventory, thereby augmenting the pool of deployable resources for subsequent levels. Consequently, safeguarding extant plants is not merely an immediate tactical concern but a long‑term strategic imperative: profligate losses in early stages may constrain viable options in later gameplay phases.
+
+By orchestrating an optimally sequenced ecological system, decoding hazard temporalities, and judiciously stewarding botanical resources, players can maximise their probability of sustaining the base across progressively complex scenarios.
+
+<p align="right">
+  <small>
+    <a href="https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#table-of-contents">
+      🔝 Back to Table of Contents
+    </a>
+  </small>
+</p>
 
 
 ## Contribution Statement
