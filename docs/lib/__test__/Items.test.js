@@ -494,7 +494,6 @@ test('test bandit movement: find nearest plant and move towards it', () => {
 })
 
 test('test bandit movement: multiple bandits, some move and some attacks', () => {
-    // If adjacent to the target plant, attack instead of moving
     // reset terrain
     for (let i = 0; i < playBoard.gridSize; i++) {
         for (let j = 0; j < playBoard.gridSize; j++) {
@@ -502,12 +501,13 @@ test('test bandit movement: multiple bandits, some move and some attacks', () =>
         }
     }
 
-    BoardLogic.getCell(4, 3, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
-    BoardLogic.getCell(4, 0, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
-    BoardLogic.getCell(4, 6, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.PINE)();
-    BoardLogic.getCell(3, 3, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.ORCHID)();
-    BoardLogic.getCell(2, 2, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.CORN)();
-    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 4, 4);
+    BoardLogic.getCell(9, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+    BoardLogic.getCell(9, 8, playBoard.boardObjects).plant.health = 1;
+    BoardLogic.getCell(8, 8, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 8, 0);
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 8, 15);
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 9, 7);
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 9, 9);
 
     let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
     expect(turn).toBeTruthy();
@@ -515,7 +515,15 @@ test('test bandit movement: multiple bandits, some move and some attacks', () =>
     p.mouseY = turn.y + turn.height / 2;
     controller.clickListener(p);
     playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
-    tick(p, container, 500);
-    expect(BoardLogic.getCell(4, 3, playBoard.boardObjects).plant.health).toBe(2);
-    expect(BoardLogic.getCell(4, 4, playBoard.boardObjects).enemy).toBeTruthy();
+    tick(p, container, 1000);
+    expect(BoardLogic.getCell(9, 8, playBoard.boardObjects).plant).toBeFalsy();
+    expect(BoardLogic.getCell(8, 8, playBoard.boardObjects).plant.health).toBe(4);
+    expect(BoardLogic.getCell(8, 1, playBoard.boardObjects).enemy).toBeTruthy();
+    expect(BoardLogic.getCell(8, 14, playBoard.boardObjects).enemy).toBeTruthy();
+    if(BoardLogic.getCell(9, 7, playBoard.boardObjects).enemy){
+        expect(BoardLogic.getCell(9, 9, playBoard.boardObjects).enemy).toBeFalsy();
+    }
+    if(BoardLogic.getCell(9, 9, playBoard.boardObjects).enemy){
+        expect(BoardLogic.getCell(9, 7, playBoard.boardObjects).enemy).toBeFalsy();
+    }
 })

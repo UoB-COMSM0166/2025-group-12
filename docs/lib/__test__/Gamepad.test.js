@@ -71,7 +71,7 @@ test("anyGamepadButtonPressed game mode should change", () => {
 });
 
 test("gamepad confirm button pressed is equal to a mouse click", () => {
-    let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
+    let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new') && !button.text.toLowerCase().includes('skip'));
     expect(newGame).toBeTruthy();
     simulateGamepad(0, true);
     simulateGamepad(0, false);

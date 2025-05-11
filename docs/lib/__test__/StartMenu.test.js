@@ -25,7 +25,7 @@ beforeEach(() => {
 })
 
 test('test new game button, entered game map then quit to menu', () => {
-    let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new'));
+    let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes('new') && !button.text.toLowerCase().includes('skip'));
     expect(newGame).toBeTruthy();
     p.mouseX = newGame.x + newGame.width / 2;
     p.mouseY = newGame.y + newGame.height / 2;
