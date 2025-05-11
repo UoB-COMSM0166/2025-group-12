@@ -765,7 +765,7 @@ Accordingly, the deliberate ordering of plant species—balancing individual str
              height="300" />
         <figcaption>
           <small>
-            <br>Build an ecosystem through aligning the different botanical units
+            <br>Build an ecosystem through aligning botanical units
           </small>
         </figcaption>
       </figure>
