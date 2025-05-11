@@ -667,14 +667,42 @@ There are also regrets that we could have done better. The most immediate enhanc
 
 ### 1. Primary Objective
 
-Players are tasked with deploying botanical units from their inventory onto a central grid in order to erect a defensive formation. The overarching goal is to withstand assaults launched by two antagonistic agents—natural calamities and lumberjacks—and to preserve the integrity of the base. The destruction of the base constitutes immediate game termination.
+Players are tasked with deploying botanical units from their inventory onto a central grid in order to erect a defensive formation. The overarching goal is to withstand assaults launched by two antagonistic agents—natural calamities and bandits—and to preserve the integrity of the base. The destruction of the base constitutes immediate game termination.
 
 ### 2. Threat Taxonomy
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center;">Adversary</th>
+      <th style="text-align: center;">Image</th>
+      <th style="text-align: center;">Capacity to Damage Botanical Unit</th>
+      <th style="text-align: center;">Capacity to Damage Base</th>
+      <th style="text-align: center;">Remarks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;">
+        <img src="docs/assets/images/Tsunami.png" width="50" alt="Tsunami" />
+      </td>
+      <td style="text-align: center; vertical-align: middle;">Natural calamities</td>
+      <td style="text-align: center; vertical-align: middle;">Yes</td>
+      <td style="text-align: center; vertical-align: middle;">Yes</td>
+      <td>e.g., lava flows, hurricanes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center; vertical-align: middle;">
+        <img src="docs/assets/images/Bandit.png" width="80" alt="Bandit" />
+      </td>
+      <td style="text-align: center; vertical-align: middle;">Bandit</td>
+      <td style="text-align: center; vertical-align: middle;">Yes</td>
+      <td style="text-align: center; vertical-align: middle;">No</td>
+      <td>Fell only botanical units; incapable of razing the base</td>
+    </tr>
+  </tbody>
+</table>
 
-| Adversary | Capacity to Damage Flora | Capacity to Damage Base | Remarks |
-| --- | --- | --- | --- |
-| Natural calamities | Yes | Yes | e.g., lava flows, hurricanes |
-| Lumberjacks | Yes | No | Fell only botanical units; incapable of razing the base |
+
 
 ### 3. Stage‑Specific Hazard Dynamics
 
@@ -684,12 +712,46 @@ Each level is characterized by a distinctive attack pattern executed by natural 
 
 An ecological system emerges when a contiguous sequence of heterogeneous plants is established. The functional synergies derived from particular species combinations confer bespoke defensive or auxiliary benefits:
 
-| Botanical Unit | Representative Function |
-| --- | --- |
-| **Fireherb** | Confers immunity to lava‑based assaults |
-| **Tree** | Absorbs incoming damage on behalf of neighbouring plants and restores their hit points |
-| **Grass** | Executes offensive actions against lumberjacks |
-| **Bush** | Expands the spatial extent of the ecological system |
+<table>
+  <thead>
+    <tr>
+      <th>Botanical Unit</th>
+      <th>Image</th>
+      <th>Representative Function</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Fireherb</strong></td>
+      <td style="text-align: center;">
+        <img src="docs/assets/images/FireHerb1.png" alt="Fireherb" width="80" />
+      </td>
+      <td>Confers immunity to lava-based assaults</td>
+    </tr>
+    <tr>
+      <td><strong>Tree</strong></td>
+      <td style="text-align: center;">
+        <img src="docs/assets/images/Pine.png" alt="Tree" width="80" />
+      </td>
+      <td>Absorbs incoming damage on behalf of neighbouring plants and restores their hit points</td>
+    </tr>
+    <tr>
+      <td><strong>Grass</strong></td>
+      <td style="text-align: center;">
+        <img src="docs/assets/images/Orchid.png" alt="Grass" width="80" />
+      </td>
+      <td>Executes offensive actions against bandits</td>
+    </tr>
+    <tr>
+      <td><strong>Bush</strong></td>
+      <td style="text-align: center;">
+        <img src="docs/assets/images/Corn.png" alt="Bush" width="80" />
+      </td>
+      <td>Expands the spatial extent of the ecological system</td>
+    </tr>
+  </tbody>
+</table>
+
 
 Accordingly, the deliberate ordering of plant species—balancing individual strengths and weaknesses—constitutes a pivotal design variable in defensive architecture.
 
