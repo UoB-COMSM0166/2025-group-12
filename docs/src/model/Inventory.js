@@ -67,7 +67,12 @@ class InventoryRenderer {
             let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
             p5.image(p5.images.get("inv-body"), inventory.inventoryX, itemY - inventory.padding / 2, inventory.inventoryWidth, inventory.itemHeight - inventory.itemInter + inventory.padding);
             let itemInstance = inventory.itemPrototypes.get(key)();
-            p5.image(p5.images.get(`inv-${itemInstance.name}`), inventory.itemX - inventory.itemWidth / 8, itemY - inventory.itemInter, inventory.itemWidth * 1.3, inventory.itemHeight + inventory.itemInter * 2.1)
+            if(inventory.mode === "gamepad" && inventory.index === i){
+                p5.image(p5.images.get(`inv-${itemInstance.name}Hover`), inventory.itemX - inventory.itemWidth / 8, itemY - inventory.itemInter, inventory.itemWidth * 1.3, inventory.itemHeight + inventory.itemInter * 2.1)
+            }
+            else{
+                p5.image(p5.images.get(`inv-${itemInstance.name}`), inventory.itemX - inventory.itemWidth / 8, itemY - inventory.itemInter, inventory.itemWidth * 1.3, inventory.itemHeight + inventory.itemInter * 2.1)
+            }
             p5.fill(20);
             let fontSize = fontSizes.mini;
             let firstname = itemInstance.name;

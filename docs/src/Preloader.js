@@ -88,6 +88,33 @@ async function loadImages(p5) {
         ["inv-BambooSeed", "plants/BambooSeed.png"],
         ["inv-FireHerb", "plants/FireHerb.png"],
         ["inv-FireHerbSeed", "plants/FireHerbSeed.png"],
+
+        ["inv-BambooHover", "plants/BambooHover.png"],
+        ["inv-BambooSeedHover", "plants/BambooSeedHover.png"],
+
+        ["inv-CornHover", "plants/CornHover.png"],
+        ["inv-CornSeedHover", "plants/CornSeedHover.png"],
+
+        ["inv-FireHerbHover", "plants/FireHerbHover.png"],
+        ["inv-FireHerbSeedHover", "plants/FireHerbSeedHover.png"],
+
+        ["inv-KikuHover", "plants/KikuHover.png"],
+        ["inv-KikuSeedHover", "plants/KikuSeedHover.png"],
+
+        ["inv-PineHover", "plants/PineHover.png"],
+        ["inv-PineSeedHover", "plants/PineSeedHover.png"],
+
+        ["inv-OrchidHover", "plants/OrchidHover.png"],
+        ["inv-OrchidSeedHover", "plants/OrchidSeedHover.png"],
+
+        ["inv-PalmHover", "plants/PalmHover.png"],
+        ["inv-PalmSeedHover", "plants/PalmSeedHover.png"],
+
+        ["inv-PlumHover", "plants/PlumHover.png"],
+        ["inv-PlumSeedHover", "plants/PlumSeedHover.png"],
+
+
+
         ["Tornado", "Tornado.png"],
         ["alertArrow", "alertArrow.png"],
         ["Bandit", "Bandit.png"],
