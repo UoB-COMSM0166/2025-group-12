@@ -279,11 +279,12 @@ class StartMenuLogic {
      * @param {StartMenuModel} startMenu
      */
     static changeNewToResume(startMenu) {
-        let newGameButton = startMenu.buttons.find(button => button.text.startsWith("New Game"));
+        startMenu.buttons = startMenu.buttons.filter(button => !button.text.toLowerCase().includes("skip"));
+
+        let newGameButton = startMenu.buttons.find(button => button.text.toLowerCase().includes("new"));
         if (newGameButton !== null && newGameButton !== undefined) {
             newGameButton.text = "Resume Game";
         }
-        startMenu.buttons = startMenu.buttons.filter(button => !button.text.startsWith("New Game - Skip Tutorial"));
     }
 
     /**
@@ -306,11 +307,11 @@ class StartMenuLogic {
     }
 
     static resize(startMenu) {
-        let newGame = startMenu.buttons.find(button => button.text.toLowerCase() === "new game");
-        if (!newGame) newGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("resume"));
+        let newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes("new") && !button.text.toLowerCase().includes("skip"));
+        if (!newGame) newGame = startMenu.buttons.find(button => button.text.toLowerCase().includes("resume"));
         let skip = startMenu.buttons.find(button => button.text.toLowerCase().includes("skip"));
-        let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("load"));
-        let option = startMenu.buttons.find(button => button.text.toLowerCase().startsWith("opt"));
+        let loadGame = startMenu.buttons.find(button => button.text.toLowerCase().includes("load"));
+        let option = startMenu.buttons.find(button => button.text.toLowerCase().includes("option"));
 
         startMenu.buttonWidth = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07)[0];
         startMenu.buttonHeight = StartMenuModel.utilityClass.relative2absolute(0.15, 0.07)[1];
