@@ -757,28 +757,35 @@ Accordingly, the deliberate ordering of plant species—balancing individual str
 
 <table>
   <tr>
-    <td>
+    <td align="center" valign="middle">
       <figure>
-        <img src="documents/Game Video - Demo3.gif" alt="Ecosystem Demo" />
+        <img src="documents/Game Video - Demo2.gif"
+             alt="Ecosystem Demo"
+             width="450"
+             height="300" />
         <figcaption>
           <small>
-            Build an ecosystem through aligning the different botanical units
+            <br>Build an ecosystem through aligning the different botanical units
           </small>
         </figcaption>
       </figure>
     </td>
-    <td>
+    <td align="center" valign="middle">
       <figure>
-        <img src="documents/Game Video - Demo2.gif" alt="Resource Inheritance Demo" />
+        <img src="documents/Game Video - Demo3.gif"
+             alt="Resource Inheritance Demo"
+             width="450"
+             height="300" />
         <figcaption>
           <small>
-            Resource inheritance between two different stages
+            <br>Resource inheritance between two different stages
           </small>
         </figcaption>
       </figure>
     </td>
   </tr>
 </table>
+
 
 ### 5. Resource Inheritance and Strategic Conservation
 
