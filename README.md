@@ -755,6 +755,31 @@ An ecological system emerges when a contiguous sequence of heterogeneous plants 
 
 Accordingly, the deliberate ordering of plant species—balancing individual strengths and weaknesses—constitutes a pivotal design variable in defensive architecture. There are many others plants we have designed in the game; they are left for players to discover.
 
+<table>
+  <tr>
+    <td>
+      <figure>
+        <img src="documents/Game Video - Demo3.gif" alt="Ecosystem Demo" />
+        <figcaption>
+          <small>
+            Build an ecosystem through aligning the different botanical units
+          </small>
+        </figcaption>
+      </figure>
+    </td>
+    <td>
+      <figure>
+        <img src="documents/Game Video - Demo2.gif" alt="Resource Inheritance Demo" />
+        <figcaption>
+          <small>
+            Resource inheritance between two different stages
+          </small>
+        </figcaption>
+      </figure>
+    </td>
+  </tr>
+</table>
+
 ### 5. Resource Inheritance and Strategic Conservation
 
 Upon stage completion, all surviving plants are transferred to the player’s inventory, thereby augmenting the pool of deployable resources for subsequent levels. Consequently, safeguarding extant plants is not merely an immediate tactical concern but a long‑term strategic imperative: profligate losses in early stages may constrain viable options in later gameplay phases.
