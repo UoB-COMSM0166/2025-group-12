@@ -104,7 +104,9 @@ class InventoryRenderer {
             let gbSize = inventory.itemInter * 3;
             p5.image(p5.images.get("xbox_cross"), inventory.inventoryX, inventory.inventoryY + inventory.inventoryHeight + inventory.itemInter, gbSize, gbSize);
             p5.fill(255);
-            p5.text("Cycle Plants", inventory.inventoryX + inventory.inventoryWidth / 2 + gbSize * 0.4, inventory.inventoryY + inventory.inventoryHeight + inventory.itemInter * 2.5);
+            p5.textAlign(p5.CENTER, p5.CENTER);
+            p5.textSize(InventoryRenderer.utilityClass.getFontSize().letter);
+            p5.text("Cycle Plants", inventory.inventoryX + inventory.inventoryWidth / 2 + gbSize * 0.6, inventory.inventoryY + inventory.inventoryHeight + inventory.itemInter * 2.5);
         }
     }
 }
