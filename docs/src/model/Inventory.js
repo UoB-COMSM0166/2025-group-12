@@ -60,14 +60,25 @@ class InventoryRenderer {
 
         // loop inventory items
         let visibleItems = Array.from(inventory.items.entries()).slice(inventory.scrollIndex, inventory.scrollIndex + inventory.maxVisibleItems);
-        let index = 0;
+        for (let i = 0; i < visibleItems.length; i++) {
+            let itemY = inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight;
+            p5.image(p5.images.get("inv-body"), inventory.inventoryX, itemY - inventory.padding / 2, inventory.inventoryWidth, inventory.itemHeight - inventory.itemInter + inventory.padding);
+        }
         for (let i = 0; i < visibleItems.length; i++) {
             let key = visibleItems[i][0];
             let value = visibleItems[i][1];
-            let itemY = inventory.inventoryY + inventory.padding * 2 + index * inventory.itemHeight;
-            p5.image(p5.images.get("inv-body"), inventory.inventoryX, itemY - inventory.padding / 2, inventory.inventoryWidth, inventory.itemHeight - inventory.itemInter + inventory.padding);
+            let itemY = inventory.inventoryY + inventory.padding * 2 + i * inventory.itemHeight;
             let itemInstance = inventory.itemPrototypes.get(key)();
-            p5.image(p5.images.get(`inv-${itemInstance.name}`), inventory.itemX - inventory.itemWidth / 8, itemY - inventory.itemInter, inventory.itemWidth * 1.3, inventory.itemHeight + inventory.itemInter * 2.1)
+            let imgX = inventory.itemX - inventory.itemWidth / 8;
+            let imgY = itemY - inventory.itemInter;
+            let imgWidth = inventory.itemWidth * 1.3;
+            let imgHeight = inventory.itemHeight + inventory.itemInter * 2.1;
+            if (imgX < p5.mouseX && p5.mouseX <= imgX + imgWidth
+                && imgY < p5.mouseY && p5.mouseY <= imgY + imgHeight) {
+                p5.image(p5.images.get(`inv-${itemInstance.name}`), imgX - imgWidth * 0.05, imgY - imgHeight * 0.05, imgWidth * 1.1, imgHeight * 1.1);
+            } else {
+                p5.image(p5.images.get(`inv-${itemInstance.name}`), imgX, imgY, imgWidth, imgHeight);
+            }
             p5.fill(20);
             let fontSize = fontSizes.mini;
             let firstname = itemInstance.name;
@@ -82,7 +93,6 @@ class InventoryRenderer {
             }
             p5.textAlign(p5.CENTER, p5.CENTER);
             p5.text(value, inventory.inventoryX + inventory.inventoryWidth - (inventory.inventoryWidth - (inventory.itemWidth + inventory.padding)) / 2, itemY + (inventory.itemHeight - inventory.itemInter) / 2);
-            index++;
         }
         p5.image(p5.images.get("inv-bot"), inventory.inventoryX, inventory.inventoryY + inventory.itemHeight / 2 + inventory.inventoryHeight - inventory.padding * 2, inventory.inventoryWidth, inventory.padding);
     }
