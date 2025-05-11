@@ -36,6 +36,11 @@ class StartMenuModel {
         this.isEntering = false;
         this.fadeIn = 255;
 
+        // first time in game
+        this.isFirst = true;
+        this.breatheSpeed = 0.03;
+        this.angle = 0;
+
         // gamepad
         this.interactives = Array.from({length: 20},
             () => Array.from({length: 20}, () => null));
@@ -163,6 +168,28 @@ class StartMenuRenderer {
         p5.image(p5.images.get("TitleBanner"), titlePos[0] - targetWidth / 2, titlePos[1] - targetHeight / 2, targetWidth, targetHeight);
         p5.fill(255);
 
+        if(startMenu.isFirst){
+            let message = "Press any key";
+            let minSize = StartMenuRenderer.utilityClass.getFontSize().large;
+            let maxSize = StartMenuRenderer.utilityClass.getFontSize().huge;
+            let [textX, textY] = StartMenuRenderer.utilityClass.relative2absolute(0.5, 0.6);
+
+            startMenu.angle += startMenu.breatheSpeed;
+            p5.push();
+            p5.fontSize = p5.map(p5.sin(startMenu.angle), -1, 1, minSize, maxSize);
+
+            p5.fill(255, 255, 255, 255);
+
+            p5.drawingContext.shadowBlur = p5.fontSize / 8;
+            p5.drawingContext.shadowColor = 'rgba(100, 200, 255, 0.5)';
+
+            p5.textAlign(p5.CENTER, p5.CENTER);
+            p5.textSize(p5.fontSize);
+            p5.text(message, textX, textY);
+            p5.pop();
+            return;
+        }
+
         for (let button of startMenu.buttons) {
             if (button.update) {
                 button.update(p5);
@@ -175,7 +202,6 @@ class StartMenuRenderer {
         if (startMenu.floatingWindow && startMenu.floatingWindow.text.toLowerCase().includes("loading") && p5.loadedAll) {
             startMenu.floatingWindow = null;
         }
-
         if (startMenu.gameState.isFading) {
             StartMenuRenderer.ScreenRenderer.playFadeOutAnimation(p5, startMenu);
         }
@@ -262,6 +288,11 @@ class StartMenuLogic {
      * @param {StartMenuModel} startMenu
      */
     static handleClick(p5, startMenu) {
+        if(startMenu.isFirst) {
+            startMenu.isFirst = false;
+            p5.mySounds.get("menu").loop();
+            return;
+        }
         if (StartMenuLogic.handleFloatingWindow(startMenu)) {
             return;
         }

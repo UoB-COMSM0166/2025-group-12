@@ -13,6 +13,7 @@ let container;
 new p5((p) => {
     p.preload = () => {
         p.images = loadEssentialImages(p);
+        p.mySounds = loadSounds(p);
     };
 
     p.setup = () => {
