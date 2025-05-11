@@ -729,21 +729,21 @@ An ecological system emerges when a contiguous sequence of heterogeneous plants 
       <td>Confers immunity to lava-based assaults</td>
     </tr>
     <tr>
-      <td><strong>Tree</strong></td>
+      <td><strong>Pine</strong></td>
       <td style="text-align: center;">
         <img src="docs/assets/images/Pine.png" alt="Tree" width="80" />
       </td>
       <td>Absorbs incoming damage on behalf of neighbouring plants and restores their hit points</td>
     </tr>
     <tr>
-      <td><strong>Grass</strong></td>
+      <td><strong>Orchid</strong></td>
       <td style="text-align: center;">
         <img src="docs/assets/images/Orchid.png" alt="Grass" width="80" />
       </td>
       <td>Executes offensive actions against bandits</td>
     </tr>
     <tr>
-      <td><strong>Bush</strong></td>
+      <td><strong>Corn</strong></td>
       <td style="text-align: center;">
         <img src="docs/assets/images/Corn.png" alt="Bush" width="80" />
       </td>
@@ -753,7 +753,7 @@ An ecological system emerges when a contiguous sequence of heterogeneous plants 
 </table>
 
 
-Accordingly, the deliberate ordering of plant species—balancing individual strengths and weaknesses—constitutes a pivotal design variable in defensive architecture.
+Accordingly, the deliberate ordering of plant species—balancing individual strengths and weaknesses—constitutes a pivotal design variable in defensive architecture. There are many others plants we have designed in the game; they are left for players to discover.
 
 ### 5. Resource Inheritance and Strategic Conservation
 
