@@ -468,6 +468,12 @@ Among the two major approaches, the think-aloud and Nielsen’s heuristic, we se
 
 Players without experience in tactics games tend to give feedback concerning the “confusing” game process. We have introduced helpful floating windows and redesigned the tutorial game stages to alleviate these usability concerns. However, we encourage players to engage and dive deeply into the game mechanics and explore them, instead of us explaining everything explicitly.
 
+<p align="center">
+        <img src="documents/Game Video - Demo1.gif" width="75%" />
+</p>
+
+<p align="center">Tutorial stages with detailed instructions</p>
+
 #### User control & freedom
 
 - “Players should be able to withdraw a recently planted plant to increase strategic flexibility”
