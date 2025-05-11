@@ -73,8 +73,9 @@ class InventoryRenderer {
             let imgY = itemY - inventory.itemInter;
             let imgWidth = inventory.itemWidth * 1.3;
             let imgHeight = inventory.itemHeight + inventory.itemInter * 2.1;
-            if ((imgX < p5.mouseX && p5.mouseX <= imgX + imgWidth
-                && imgY < p5.mouseY && p5.mouseY <= imgY + imgHeight)
+            let threshold = inventory.itemWidth * 0.2;
+            if ((imgX + threshold < p5.mouseX && p5.mouseX <= imgX + imgWidth - threshold
+                && imgY + threshold < p5.mouseY && p5.mouseY <= imgY + imgHeight - threshold)
                 || (inventory.mode === "gamepad" && inventory.index === i)
             ) {
                 p5.image(p5.images.get(`inv-${itemInstance.name}`), imgX - imgWidth * 0.05, imgY - imgHeight * 0.05, imgWidth * 1.1, imgHeight * 1.1);
