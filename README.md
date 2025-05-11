@@ -93,7 +93,7 @@ Click the banner to play our game.
 - [6. Process](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#process)
 - [7. Sustainability, Ethics and Accessibility](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#sustainability-ethics-and-accessibility)
 - [8. Conclusion](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#conclusion)
-
+- [9. Appendix](https://github.com/UoB-COMSM0166/2025-group-12?tab=readme-ov-file#appendix-gameplay-framework)
 ---
 
 # Project Report
