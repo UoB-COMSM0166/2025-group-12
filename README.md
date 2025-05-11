@@ -212,21 +212,21 @@ These use cases are detailed as follows:
 
   - New Game: Start the game from the first game stage by clicking the ‘New Game’ button at the main menu.
   
-  - Load Game: Load save data to continue playing by clicking the ‘Load Game’ button at the main menu.
+  - Load Game: Load saved data to continue playing by clicking the ‘Load Game’ button at the main menu.
   
-  - Play: Click the next stage from the game map menu, then the player goes into the play board. Includes several actions the player can perform, or choose to do nothing and stay at this stage.
+  - Play: Click the next available stage from the game map menu, then the player goes into the play board. Several actions the player can perform, including cultivating a plant or seed from the inventory to the board, activating plant skills, undoing last action, and go to next turn by clicking the turn button.
   
-  - Cultivate: Click an item from the inventory, then click a grid cell to cultivate it.
+  - Cultivate: Click an item from the inventory, then click a grid cell to cultivate it. If three plants of different base type (a tree, a bush and a grass) are cultivated together then an ecosystem forms which provides with powerful buffs.
   
-  - Activate Skills: Click the activate button, then click a target from the board to activate skills of the plants.
+  - Activate Skills: Click the activate button, then click a target from the board to activate skills of the plant, including healing a plant, or attacking an enemy.
   
-  - End Turn: Click the turn button to go to the next turn.
+  - End Turn: Click the turn button, then the enemies start to move and attack.
   
   - Enemy Movements: After the turn button is clicked, if there are enemies on the board, they start to move and attack. Automatically goes to the next turn once all enemies have moved, or clears the current stage if the win condition is satisfied.
   
-  - Plants Attacked: Plants only get hit when enemies are moving.
+  - Plants Attacked: Plants only get hit when enemies are able to move.
   
-  - Base Attacked: Game Over if an enemy attacks the player's base.
+  - Base Attacked: Game Over if an enemy attacked the player's base.
   
   - Game Over: The player is thrown back to the game map menu and can retry the game stage.
 
@@ -467,6 +467,12 @@ Among the two major approaches, the think-aloud and Nielsen’s heuristic, we se
 - “Significant difficulty gap between the tutorial and the first level, impacting new player experience”
 
 Players without experience in tactics games tend to give feedback concerning the “confusing” game process. We have introduced helpful floating windows and redesigned the tutorial game stages to alleviate these usability concerns. However, we encourage players to engage and dive deeply into the game mechanics and explore them, instead of us explaining everything explicitly.
+
+<p align="center">
+        <img src="documents/Game Video - Demo1.gif" width="75%" />
+</p>
+
+<p align="center">Tutorial stages with detailed instructions</p>
 
 #### User control & freedom
 

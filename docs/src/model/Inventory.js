@@ -73,11 +73,13 @@ class InventoryRenderer {
             let imgY = itemY - inventory.itemInter;
             let imgWidth = inventory.itemWidth * 1.3;
             let imgHeight = inventory.itemHeight + inventory.itemInter * 2.1;
-            if (imgX < p5.mouseX && p5.mouseX <= imgX + imgWidth
-                && imgY < p5.mouseY && p5.mouseY <= imgY + imgHeight) {
+            if ((imgX < p5.mouseX && p5.mouseX <= imgX + imgWidth
+                && imgY < p5.mouseY && p5.mouseY <= imgY + imgHeight)
+                || (inventory.mode === "gamepad" && inventory.index === i)
+            ) {
                 p5.image(p5.images.get(`inv-${itemInstance.name}`), imgX - imgWidth * 0.05, imgY - imgHeight * 0.05, imgWidth * 1.1, imgHeight * 1.1);
             } else {
-                p5.image(p5.images.get(`inv-${itemInstance.name}`), imgX, imgY, imgWidth, imgHeight);
+                p5.image(p5.images.get(`inv-${itemInstance.name}Hover`), imgX, imgY, imgWidth, imgHeight);
             }
             p5.fill(20);
             let fontSize = fontSizes.mini;
