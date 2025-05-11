@@ -152,7 +152,7 @@ class Tornado4PlayBoard {
 
         this.PlayBoardLogic.utilityClass.commonFloatingWindows(p5, afw);
 
-        this.allFloatingWindows = afw;
+        playBoard.allFloatingWindows = afw;
     }
 }
 
