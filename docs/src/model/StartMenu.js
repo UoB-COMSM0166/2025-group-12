@@ -56,6 +56,9 @@ class StartMenuModel {
         this.buttonY = StartMenuModel.utilityClass.relative2absolute(0.2, 0.55)[1];
         this.buttonInter = StartMenuModel.utilityClass.relative2absolute(0.1, 0.1)[1];
 
+        //bgm
+        this.music = null;
+
         this.init();
     }
 
@@ -95,6 +98,8 @@ class StartMenuModel {
         this.buttons.push(skipTutorialButton, newGameButton, loadGameButton, optionButton);
 
         this.initAllFloatingWindows();
+
+        this.music = p5.mySounds.get("menu");
     }
 
     initAllFloatingWindows() {
@@ -231,6 +236,11 @@ class StartMenuLogic {
      * @param {StartMenuModel} startMenu
      */
     static handleGamepad(index, startMenu) {
+        if(startMenu.isFirst) {
+            startMenu.isFirst = false;
+            startMenu.music.loop();
+            return;
+        }
         switch (index) {
             case 1:
                 StartMenuLogic.cancel(startMenu);
@@ -252,7 +262,6 @@ class StartMenuLogic {
     }
 
     static handleAnalogStick(p5, axes, startMenu) {
-
     }
 
     /**
@@ -290,7 +299,7 @@ class StartMenuLogic {
     static handleClick(p5, startMenu) {
         if(startMenu.isFirst) {
             startMenu.isFirst = false;
-            p5.mySounds.get("menu").loop();
+            startMenu.music.loop();
             return;
         }
         if (StartMenuLogic.handleFloatingWindow(startMenu)) {
