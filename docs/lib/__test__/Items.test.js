@@ -375,7 +375,7 @@ test('test tornado movement', () => {
     expect(BoardLogic.getCell(6, 9, playBoard.boardObjects).plant).toBeFalsy();
 })
 
-test('test bandit movement 1', () => {
+test('test bandit movement: surrounded by plants and escaped', () => {
     // if the bandit is at the same cell with a plant, it first tries to leave.
     // reset terrain
     for (let i = 0; i < playBoard.gridSize; i++) {
@@ -406,7 +406,7 @@ test('test bandit movement 1', () => {
     expect(BoardLogic.getCell(5, 4, playBoard.boardObjects).enemy.movableType).toBe(movableTypes.BANDIT);
 })
 
-test('test bandit movement 2', () => {
+test('test bandit movement: surrounded by plants and died', () => {
     // if no way out, the bandit dies of forest insects and animal attacks.
     // reset terrain
     for (let i = 0; i < playBoard.gridSize; i++) {
@@ -438,7 +438,7 @@ test('test bandit movement 2', () => {
     expect(playBoard.movables.length).toBe(0);
 })
 
-test('test bandit movement 3', () => {
+test('test bandit movement: attack nearest plant', () => {
     // If adjacent to the target plant, attack instead of moving
     // reset terrain
     for (let i = 0; i < playBoard.gridSize; i++) {
@@ -465,7 +465,7 @@ test('test bandit movement 3', () => {
     expect(BoardLogic.getCell(4, 4, playBoard.boardObjects).enemy).toBeTruthy();
 })
 
-test('test bandit movement 4', () => {
+test('test bandit movement: find nearest plant and move towards it', () => {
     // moving
     // reset terrain
     for (let i = 0; i < playBoard.gridSize; i++) {
@@ -490,5 +490,32 @@ test('test bandit movement 4', () => {
     tick(p, container, 500);
 
     expect(BoardLogic.getCell(5, 4, playBoard.boardObjects).enemy).toBeFalsy();
+    expect(BoardLogic.getCell(4, 4, playBoard.boardObjects).enemy).toBeTruthy();
+})
+
+test('test bandit movement: multiple bandits, some move and some attacks', () => {
+    // If adjacent to the target plant, attack instead of moving
+    // reset terrain
+    for (let i = 0; i < playBoard.gridSize; i++) {
+        for (let j = 0; j < playBoard.gridSize; j++) {
+            BoardLogic.setCell(i, j, container.terrainFactory.get(terrainTypes.DESERT)(), playBoard.boardObjects);
+        }
+    }
+
+    BoardLogic.getCell(4, 3, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.PINE)();
+    BoardLogic.getCell(4, 0, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.BAMBOO)();
+    BoardLogic.getCell(4, 6, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.PINE)();
+    BoardLogic.getCell(3, 3, playBoard.boardObjects).plant = container.plantFactory.get(plantTypes.ORCHID)();
+    BoardLogic.getCell(2, 2, playBoard.boardObjects).seed = container.plantFactory.get(seedTypes.CORN)();
+    container.movableFactory.get(movableTypes.BANDIT)(playBoard, 4, 4);
+
+    let turn = playBoard.buttons.find(button => button.text.toLowerCase().includes("turn"));
+    expect(turn).toBeTruthy();
+    p.mouseX = turn.x + turn.width / 2;
+    p.mouseY = turn.y + turn.height / 2;
+    controller.clickListener(p);
+    playBoard.movables.forEach(movable => expect(movable.hasMoved).toBeFalsy());
+    tick(p, container, 500);
+    expect(BoardLogic.getCell(4, 3, playBoard.boardObjects).plant.health).toBe(2);
     expect(BoardLogic.getCell(4, 4, playBoard.boardObjects).enemy).toBeTruthy();
 })
